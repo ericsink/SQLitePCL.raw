@@ -180,6 +180,10 @@ the build and its supported platforms:
 
  * Added build support for Xamarin.Android
 
+ * Updated WinRT to support both P/Invoke and C++ Interop
+
+ * Updated Net45 to support both P/Invoke and C++ Interop
+
  * Added a new set of automated test projects, sharing the same test code for MS Test and NUnit
 
  * Simplified the platform injection interfaces from 3 down to 1
@@ -343,7 +347,7 @@ handle, but you still have to do things like this:
 
 The Ugly layer allows me to do things like this:
 
-    using (sqlite3 db = ugly.open(":memory:))
+    using (sqlite3 db = ugly.open(":memory:"))
     {
         sqlite3_stmt stmt = db.prepare("CREATE TABLE foo (x int)");
         stmt.step();
@@ -465,5 +469,12 @@ On iOS/Android, you have two choices:
   2.  Understand all the linkage issues and be very careful.
 
 On other platforms, make sure you are including exactly one instance of the SQLite library.
+
+## Why do the project subdirectories mostly not have any source code in them?
+
+To avoid duplication.
+
+The src directory contains most of the actual source code.  In several cases, a code
+file is actually being compiled by more than one project.
 
 
