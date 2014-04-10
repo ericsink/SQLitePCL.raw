@@ -453,7 +453,7 @@ If you have
 two instances of the SQLite library linked into your app, you can corrupt a SQLite
 database file.  
 
-That's bad.  And it's kind of an easy to mistake, especially on mobile platforms
+That's bad.  And it's kind of an easy mistake to make, especially on mobile platforms
 where the OS provides SQLite preinstalled.
 
 ## Whoa.  I don't want my SQLite files corrupted.  How do I make sure that won't happen?
