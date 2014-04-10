@@ -251,18 +251,18 @@ In other words, it adds nothing except type checking.
 For example, consider the C function sqlite3\_prepare\_v2().  In C, this
 function looks like this:
 
-    int sqlite3\_prepare_v2(
+    int sqlite3_prepare_v2(
       sqlite3* db,
       const char* pzSql,
       int nByte,
-      sqlite3\_stmt** ppStmt,
+      sqlite3_stmt** ppStmt,
       const char** pzTail
       );
 
 One layer up, it becomes:
 
     [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
-    public static extern int sqlite3\_prepare_v2(
+    public static extern int sqlite3_prepare_v2(
       IntPtr db, 
       byte[] pSql, 
       int nBytes, 
@@ -276,7 +276,7 @@ a utf8 C string.
 
 One layer up, in the interface, the function looks like this:
 
-    int sqlite3\_prepare_v2(
+    int sqlite3_prepare_v2(
       IntPtr db, 
       string sql, 
       out IntPtr stmt, 
@@ -287,10 +287,10 @@ The utf8 stuff is gone, and we've got strings.  But IntPtr is still there.
 
 Finally, in the raw API, this function is:
 
-    static public int sqlite3\_prepare_v2(
+    static public int sqlite3_prepare_v2(
       sqlite3 db, 
       string sql, 
-      out sqlite3\_stmt stmt, 
+      out sqlite3_stmt stmt, 
       out string tail
       );
 
@@ -319,18 +319,18 @@ handle, but you still have to do things like this:
     int rc;
 
     sqlite3 db;
-    rc = raw.sqlite3\_open(":memory:", out db);
+    rc = raw.sqlite3_open(":memory:", out db);
     if (rc != raw.SQLITE_OK)
     {
         error
     }
-    sqlite3\_stmt stmt;
-    rc = raw.sqlite3\_prepare(db, "CREATE TABLE foo (x int)", out stmt);
+    sqlite3_stmt stmt;
+    rc = raw.sqlite3_prepare(db, "CREATE TABLE foo (x int)", out stmt);
     if (rc != raw.SQLITE_OK)
     {
         error
     }
-    rc = raw.sqlite3\_step(stmt);
+    rc = raw.sqlite3_step(stmt);
     if (rc == raw.SQLITE_DONE)
     {
         whatever
@@ -339,13 +339,13 @@ handle, but you still have to do things like this:
     {
         error
     }
-    raw.sqlite3\_finalize(stmt);
+    raw.sqlite3_finalize(stmt);
 
 The Ugly layer allows me to do things like this:
 
     using (sqlite3 db = ugly.open(":memory:))
     {
-        sqlite3\_stmt stmt = db.prepare("CREATE TABLE foo (x int)");
+        sqlite3_stmt stmt = db.prepare("CREATE TABLE foo (x int)");
         stmt.step();
     }
 
