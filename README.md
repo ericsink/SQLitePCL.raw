@@ -10,7 +10,7 @@ Yes.  Apache License v2.
 
 ## What is a Portable Class Library (PCL)?
 
-A Portable Class Library is not merely a class library which happens to be avoid using
+A Portable Class Library is not merely a class library which happens to avoid using
 things that are not portable.  The PCL concept also includes tooling support.
 You can tell the compiler which .NET targets you want to support (a profile) 
 and then it will complain at you if you try to use something that wouldn't
