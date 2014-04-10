@@ -114,7 +114,7 @@ It feels like using C.  Intentionally.
 
 This library is designed to be the common portable layer upon which friendlier
 wrappers can be built.  Right now, every C# SQLite library writes their
-own P/Invoke and COM and marshaling and stuff (and usually does it kinda badly).
+own P/Invoke and COM and marshaling and stuff.
 Build on this library instead and focus more on the upper layer and its
 goal of providing a pleasant, easy-to-use API for app developers.
 
@@ -271,7 +271,7 @@ One layer up, it becomes:
       );
 
 Both the sqlite3 and the sqlite3\_stmt pointers became IntPtr, thus losing their type info and our ability to distinguish them by type.
-The string argument became a byte[], because it's utf8.  The pzTail argument for returning a string becomes and IntPtr, but is also
+The string argument became a byte[], because it's utf8.  The pzTail argument for returning a string becomes an IntPtr, but is also
 a utf8 C string.
 
 One layer up, in the interface, the function looks like this:
