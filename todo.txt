@@ -1,0 +1,106 @@
+
+it would be nice to prevent Ext.Net45.cppinterop from loading
+in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
+is incompatible.
+
+add tests that use actual named sqlite database files, not just
+:memory: and temp dbs.
+
+update/fix the nuget stuff
+
+add an NUnit project on Windows/Net45, so that build breakage
+with NUnit can be detected when making changes on windows.
+
+in the csproj files, consider use of Choose/When to have conditional 
+references and such.  or conditional profile 78/158/etc.
+
+special build for desktop Mono?  or does net45 cover that?
+
+sqlite3.Mac?  or use platform-installed sqlite on MacOS?
+
+separate build of iOS version with a bundled SQLite __Internal ?
+would need to build sqlite3 for iOS so we can embed it in the resource
+for __Internal.  MonoDevelop Makefile integration?
+
+docs on all the methods in raw, especially where the params
+differ from the C API
+
+need separate test projects for each platform assembly, including
+both pinvoke and cppinterop?
+
+question about whether we are statically linking the C library
+or not, for the mixed mode assembly.
+
+building static lib for sqlite3 when what we really need is the
+dll, for winrt/pinvoke and for desktop/pinvoke anyway.
+
+remove the VS gallery sqlite references
+
+Xamarin.Android, pinvoke my_sqlite3, with sqlite3 lib in resource
+
+i hate the way all the tests show up in visual studio, 5 tests with
+the same name, no way to distinguish between the platform versions
+of each test.
+
+if we marked the iOS platform assembly with something that
+forced the linker to include it no matter what, would the platform
+resolver reflection code find it?
+
+fix those weird compiler warnings on iOS and Android ?
+
+sqlcipher?
+
+note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
+
+document cases where we have code that is shared by different platform
+assemblies
+
+----------------
+
+sqlite API issues:
+
+should sqlite3_commit_hook() return something?  the C function returns the
+user pointer, which has no useful parallel for us to return.  I sort of hate
+the fact that it returns void, since we can't check errors on it.  but
+the underlying C function doesn't really return any useful info for error
+checking either.
+
+unprotected sqlite3_value:  sqlite3_column_value, sqlite3_bind_value, sqlite3_result_value
+
+sqlite3_create_module
+
+sqlite3_db_config
+
+sqlite3_db_filename
+sqlite3_db_mutex
+sqlite3_db_readonly
+sqlite3_db_status
+
+sqlite3_get_auxdata
+sqlite3_set_auxdata
+
+sqlite3_limit
+
+sqlite3_progress_handler
+
+sqlite3_randomness
+
+sqlite3_soft_heap_limit64
+
+sqlite3_status
+
+sqlite3_stmt_status
+
+sqlite3_wal_autocheckpoint
+sqlite3_wal_checkpoint
+sqlite3_wal_checkpoint_v2
+sqlite3_wal_hook
+
+sqlite3_busy_handler
+
+sqlite3_collation_needed -- difficult because of the be handle passed
+to the callback
+
+sqlite3_config
+
+
