@@ -67,6 +67,10 @@ The following platforms are currently supported:
 Some of these platforms have more than one implementation of the platform assembly,
 for reasons explained later in this README.
 
+## Is this available in NuGet?
+
+Not quite yet.  It will be soon.  I'm polishing a few more things first.
+
 ## What is the state of this code?  Is it completely done?
 
 I'm not sure it'll ever be completely done, but it's in pretty good shape.
@@ -476,5 +480,11 @@ To avoid duplication.
 
 The src directory contains most of the actual source code.  In several cases, a code
 file is actually being compiled by more than one project.
+
+## Is this compatible with SQLCipher?
+
+Yes.  But I want to make that use case painless, and I haven't decided how to do that yet.
+It's a slippery slope with no obvious place to stop.  If I slide all the way
+to the bottom of the hill, I'll be providing platform assemblies that include SQLCipher.
 
 
