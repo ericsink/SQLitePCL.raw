@@ -1128,11 +1128,13 @@ namespace SQLitePCL
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
             public static extern void sqlite3_result_text16(IntPtr context, string strName, int nLen, IntPtr pvReserved);
 
+#if not // TODO removed, perhaps temporarily.  not sure if we want these or PRAGMA key.
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_key(IntPtr db, byte[] key, int keylen);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_rekey(IntPtr db, byte[] key, int keylen);
+#endif
 
             // Since sqlite3_config() takes a variable argument list, we have to overload declarations
             // for all possible calls that we want to use.

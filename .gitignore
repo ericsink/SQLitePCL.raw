@@ -4,3 +4,6 @@
 */*/obj/**
 */obj/**
 *.userprefs
+*.sdf
+*.user
+*.suo
