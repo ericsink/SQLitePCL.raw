@@ -114,9 +114,9 @@
       <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
       <Name>SQLitePCL_profile78</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly\SQLitePCL.Ugly.csproj">
+    <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
       <Project>{B3C430E9-2920-416C-808D-58D0BB94A836}</Project>
-      <Name>SQLitePCL.Ugly</Name>
+      <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -58,9 +58,9 @@
       <Project>{50dfba97-344a-4213-be20-7057067e2a07}</Project>
       <Name>SQLitePCL.Ext.Net45.cppinterop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly\SQLitePCL.Ugly.csproj">
+    <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
       <Project>{b3c430e9-2920-416c-808d-58d0bb94a836}</Project>
-      <Name>SQLitePCL.Ugly</Name>
+      <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
       <Project>{e7f6aae8-d264-49a2-8295-4e3b02b9bf0b}</Project>
