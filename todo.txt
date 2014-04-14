@@ -1,4 +1,14 @@
 
+small mystery:  the WP81 platform assemblies reference
+the profile78 build of the reference assembly (like they all
+do, to get the interface declaration), but profile78 doesn't
+claim support for WP81, so it seems like that should fail,
+but it doesn't.
+
+the RootNameSpace and AssemblyName properties need to be
+consistently used across all the platform assemblies.
+currently they are not.
+
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
 
@@ -11,7 +21,10 @@ project adjacent
 
 it would be nice to prevent Ext.Net45.cppinterop from loading
 in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
-is incompatible.
+is incompatible.  this is especially important because it appears
+that any modification to the sln or its projects will cause
+Xamarin Studio to rewrite Ext.Net.cppinterop.csproj with that
+reference removed.
 
 add tests that use actual named sqlite database files, not just
 :memory: and temp dbs.
@@ -22,7 +35,8 @@ add an NUnit project on Windows/Net45, so that build breakage
 with NUnit can be detected when making changes on windows.
 
 in the csproj files, consider use of Choose/When to have conditional 
-references and such.  or conditional profile 78/158/etc.
+references and such.  or conditional profile 78/158/etc.  would
+such a thing be compatible with xbuild/XamarinStudio?
 
 special build for desktop Mono?  or does net45 cover that?
 
