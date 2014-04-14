@@ -1,4 +1,14 @@
 
+docs: need a complete list, in tabular form, of the platform
+assemblies and an explanation of the use cases for each one.
+
+consider reorganizing the Ext directories into a hierarchy.
+so many of them, and more to come.
+
+need one test projects for each platform assembly.  maybe
+if we organize the Ext dirs into a hierarchy, put the test
+project adjacent
+
 it would be nice to prevent Ext.Net45.cppinterop from loading
 in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
 is incompatible.
@@ -24,9 +34,6 @@ for __Internal.  MonoDevelop Makefile integration?
 
 docs on all the methods in raw, especially where the params
 differ from the C API
-
-need separate test projects for each platform assembly, including
-both pinvoke and cppinterop?
 
 question about whether we are statically linking the C library
 or not, for the mixed mode assembly.
