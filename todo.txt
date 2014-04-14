@@ -1,4 +1,8 @@
 
+when Xamarin Studio rewrites the sln file, its VisualStudioVersion
+gets changed such that "start SQLitePCL.sln" from the command
+prompt opens it in VS 2012.  No biggie.  Just noting it.
+
 small mystery:  the WP81 platform assemblies reference
 the profile78 build of the reference assembly (like they all
 do, to get the interface declaration), but profile78 doesn't

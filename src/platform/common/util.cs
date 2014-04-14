@@ -389,6 +389,7 @@ namespace SQLitePCL
         {
             string[] values = new string[n];
             string[] names = new string[n];
+            // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
             for (int i=0; i<n; i++)
             {
@@ -456,6 +457,7 @@ namespace SQLitePCL
             scalar_sqlite3_context ctx = new scalar_sqlite3_context(context, _user_data);
 
             sqlite3_value[] a = new sqlite3_value[num_args];
+            // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
             for (int i=0; i<num_args; i++)
             {
@@ -562,6 +564,7 @@ namespace SQLitePCL
             sqlite3_context ctx = get_context(context, agg_context);
 
             sqlite3_value[] a = new sqlite3_value[num_args];
+            // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
             for (int i=0; i<num_args; i++)
             {
