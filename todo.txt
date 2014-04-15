@@ -1,7 +1,10 @@
 
+should reference NUnit as a nuget package
+
 for the native code projects, consider separate projects for 
 x86 vs x64 vs ARM instead of using the VS configuration stuff, 
 so that a single build will construct all the stuff we need automatically.
+or setup a batch build?
 
 do we need separate platform assemblies for Windows 8.1 vs 8.0 ?
 
@@ -14,6 +17,15 @@ when Xamarin Studio rewrites the sln file, its VisualStudioVersion
 gets changed such that "start SQLitePCL.sln" from the command
 prompt opens it in VS 2012.  No biggie.  Just noting it.
 
+it would be nice to prevent Ext.Net45.cppinterop from loading
+in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
+is incompatible.  this is especially important because it appears
+that any modification to the sln or its projects will cause
+Xamarin Studio to rewrite Ext.Net.cppinterop.csproj with that
+reference removed.
+
+should Xamarin Studio just have its own sln file?
+
 the RootNameSpace and AssemblyName properties need to be
 consistently used across all the platform assemblies.
 currently they are not.
@@ -24,16 +36,9 @@ assemblies and an explanation of the use cases for each one.
 consider reorganizing the Ext directories into a hierarchy.
 so many of them, and more to come.
 
-need one test projects for each platform assembly.  maybe
-if we organize the Ext dirs into a hierarchy, put the test
-project adjacent
-
-it would be nice to prevent Ext.Net45.cppinterop from loading
-in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
-is incompatible.  this is especially important because it appears
-that any modification to the sln or its projects will cause
-Xamarin Studio to rewrite Ext.Net.cppinterop.csproj with that
-reference removed.
+need at least one test project for each platform assembly.  
+maybe if we organize the Ext dirs into a hierarchy, put the test
+projects adjacent
 
 add tests that use actual named sqlite database files, not just
 :memory: and temp dbs.
@@ -42,6 +47,17 @@ update/fix the nuget stuff
 
 add an NUnit project on Windows/Net45, so that build breakage
 with NUnit can be detected when making changes on windows.
+
+if we marked the iOS platform assembly with something that
+forced the linker to include it no matter what, would the platform
+resolver reflection code find it?
+
+consider removing the reflection-based platform resolver.
+maybe we should just require the following line to do the
+dependency injection on every platform.  it's require on Xamarin
+anyway:
+
+    SQLitePCL.Platform.Instance = new SQLitePCL.SQLite3Provider();
 
 in the csproj files, consider use of Choose/When to have conditional 
 references and such.  or conditional profile 78/158/etc.  would
@@ -72,15 +88,13 @@ i hate the way all the tests show up in visual studio, 5 tests with
 the same name, no way to distinguish between the platform versions
 of each test.
 
-if we marked the iOS platform assembly with something that
-forced the linker to include it no matter what, would the platform
-resolver reflection code find it?
-
 fix those weird compiler warnings on iOS and Android ?
 
 sqlcipher?
 
 note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
+
+looks like profile 259 is the new 78
 
 document cases where we have code that is shared by different platform
 assemblies
