@@ -54,9 +54,11 @@ of a platform assembly.
 
 The following platforms are currently supported:
 
- * .NET 4.5
+ * .NET 4.5 on Windows
 
  * Windows Phone 8
+
+ * Windows Phone 8.1, both SL and RT flavors
 
  * WinRT
 
@@ -71,6 +73,10 @@ for reasons explained later in this README.
 
 Not quite yet.  It will be soon.  I'm polishing a few more things first.
 
+## Is this available in the Xamarin Component Store?
+
+Not quite yet.  It will be soon.  I'm polishing a few more things first.
+
 ## What is the state of this code?  Is it completely done?
 
 I'm not sure it'll ever be completely done, but it's in pretty good shape.
@@ -81,19 +87,24 @@ Look in todo.txt for an informal working list of stuff I still want to do.
 
 ## How do I build this?
 
-SQLitePCL.sln works fine for me with either Visual Studio or Xamarin Studio.
+SQLitePCL.sln works fine for me with Visual Studio 2012, Visual Studio 2013, or Xamarin Studio.
 Each one refuses to load the respective project types that are not compatible, but there
 seems to be no harm done when that happens.
 
 ## Which PCL profile is supported?
 
 The .sln file contains projects to build the PCL with profile 78, profile 136,
-and profile 158.  Others might work as well, but those are the ones I have
-tried.
+profile 158, and profile 259.  Others might work as well, but those are the ones I 
+have tried.
 
-The test suites are configured to use the profile 78 version.
+The test suites are configured to use the profile 78 version in most places, but
+profile 259 for Windows Phone 8.1..
 
-## Can this be used to write a mobile app?
+The main reason to keep profile 158 is because MvvmCross is using it.  If they
+end up switching to the new reflection APIs and profile 259, then 158 won't be
+very important here either.  Folks are saying that profile 259 is the new 78.
+
+## Can this library be used to write a mobile app?
 
 Technically, yes, but that's not what you want to do.
 This is *not* the sort of SQLite library you would use to write an app.
@@ -178,11 +189,13 @@ code going forward.
 Since beginning with the SQLitePCL code, I've made a bunch of improvements to
 the build and its supported platforms:
 
- * Added support for profile 158 (as well as profile 78)
+ * Added support for more PCL profiles
 
  * Added build support for Xamarin.iOS
 
  * Added build support for Xamarin.Android
+
+ * Added support for Windows Phone 8.1, RT and SL
 
  * Updated WinRT to support both P/Invoke and C++ Interop
 
