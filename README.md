@@ -79,17 +79,21 @@ Not quite yet.  It will be soon.  I'm polishing a few more things first.
 
 ## What is the state of this code?  Is it completely done?
 
-I'm not sure it'll ever be completely done, but it's in pretty good shape.
+(I'm not sure it'll ever be completely done, but...) 
+
+The code itself is in pretty good shape.
 There are some more tests I want to write.  There are some platform configurations
 I still want to support.
 
-Look in todo.txt for an informal working list of stuff I still want to do.
+The most important item To-Do is creating nuget packages.
+
+Look in todo.txt for an informal working list of tasks pending.
 
 ## How do I build this?
 
-SQLitePCL.sln works fine for me with Visual Studio 2012, Visual Studio 2013, or Xamarin Studio.
-Each one refuses to load the respective project types that are not compatible, but there
-seems to be no harm done when that happens.
+For Xamarin Studio, use SQLitePCL\_XamarinStudio.sln
+
+For Visual Studio, use SQLitePCL\_VisualStudio.sln
 
 ## Which PCL profile is supported?
 
