@@ -8,9 +8,9 @@
     <ProjectGuid>{24768C1D-A0A7-4D96-B6DD-742E0425DB40}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>SQLitePCL.Ext.iOS</RootNamespace>
+    <RootNamespace>SQLitePCL</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>SQLitePCL.Ext.iOS</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
