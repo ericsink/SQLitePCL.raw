@@ -13,19 +13,6 @@ do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 do we need separate platform assemblies for older versions of .NET,
 like 4.0 ?
 
-when Xamarin Studio rewrites the sln file, its VisualStudioVersion
-gets changed such that "start SQLitePCL.sln" from the command
-prompt opens it in VS 2012.  No biggie.  Just noting it.
-
-it would be nice to prevent Ext.Net45.cppinterop from loading
-in Xamarin since it depends on SQLitePCL.cppinterop.Net45, which
-is incompatible.  this is especially important because it appears
-that any modification to the sln or its projects will cause
-Xamarin Studio to rewrite Ext.Net.cppinterop.csproj with that
-reference removed.
-
-should Xamarin Studio just have its own sln file?
-
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
 

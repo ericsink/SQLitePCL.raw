@@ -47,7 +47,7 @@ namespace SQLitePCL.Test.XS.Android
 			global::Xamarin.Android.NUnitLite.Resource.Layout.results = global::SQLitePCL.Test.XS.Android.Resource.Layout.results;
 			global::Xamarin.Android.NUnitLite.Resource.Layout.test_result = global::SQLitePCL.Test.XS.Android.Resource.Layout.test_result;
 			global::Xamarin.Android.NUnitLite.Resource.Layout.test_suite = global::SQLitePCL.Test.XS.Android.Resource.Layout.test_suite;
-			global::SQLitePCL.Ext.Android.Resource.String.library_name = global::SQLitePCL.Test.XS.Android.Resource.String.library_name;
+			global::SQLitePCL.Resource.String.library_name = global::SQLitePCL.Test.XS.Android.Resource.String.library_name;
 		}
 		
 		public partial class Attribute
