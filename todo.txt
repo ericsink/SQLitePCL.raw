@@ -1,5 +1,5 @@
 
-should reference NUnit as a nuget package
+update/fix the nuget stuff
 
 for the native code projects, consider separate projects for 
 x86 vs x64 vs ARM instead of using the VS configuration stuff, 
@@ -26,10 +26,6 @@ reference removed.
 
 should Xamarin Studio just have its own sln file?
 
-the RootNameSpace and AssemblyName properties need to be
-consistently used across all the platform assemblies.
-currently they are not.
-
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
 
@@ -43,18 +39,14 @@ projects adjacent
 add tests that use actual named sqlite database files, not just
 :memory: and temp dbs.
 
-update/fix the nuget stuff
+should reference NUnit as a nuget package
 
 add an NUnit project on Windows/Net45, so that build breakage
 with NUnit can be detected when making changes on windows.
 
-if we marked the iOS platform assembly with something that
-forced the linker to include it no matter what, would the platform
-resolver reflection code find it?
-
 consider removing the reflection-based platform resolver.
 maybe we should just require the following line to do the
-dependency injection on every platform.  it's require on Xamarin
+dependency injection on every platform.  it's required on Xamarin
 anyway:
 
     SQLitePCL.Platform.Instance = new SQLitePCL.SQLite3Provider();
