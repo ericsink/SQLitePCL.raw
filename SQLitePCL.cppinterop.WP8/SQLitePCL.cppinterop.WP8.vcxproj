@@ -153,8 +153,8 @@
     <ClCompile Include="..\src\platform\cppinterop\sqlite3_cx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sqlite3.wp8\sqlite3.wp8.vcxproj">
-      <Project>{dac73ab5-f03a-471e-949c-cdcae7d439e4}</Project>
+    <ProjectReference Include="..\sqlite3\sqlite3.wp80.x86.vcxproj">
+      <Project>{A65651BF-AD23-4842-BC9B-5C5DDDDE628B}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

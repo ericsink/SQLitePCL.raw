@@ -1,10 +1,9 @@
 
-update/fix the nuget stuff
+the cppinterop projects need the same thing the sqlite3 projects
+got:  separate vcxproj for each platform, sharing as much of the
+msbuild stuff as possible among them.
 
-for the native code projects, consider separate projects for 
-x86 vs x64 vs ARM instead of using the VS configuration stuff, 
-so that a single build will construct all the stuff we need automatically.
-or setup a batch build?
+update/fix the nuget stuff
 
 do we need separate platform assemblies for Windows 8.1 vs 8.0 ?
 

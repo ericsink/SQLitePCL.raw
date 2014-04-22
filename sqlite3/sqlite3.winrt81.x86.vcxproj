@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{837C846D-8D06-4590-81DA-4CDF376CA669}</ProjectGuid>
+    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <PlatformToolset>v120</PlatformToolset>
+    <my_kind>winrt</my_kind>
+    <AppContainerApplication>true</AppContainerApplication>
+    <WindowsAppContainer>true</WindowsAppContainer>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>SQLITE_OS_WINRT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="sqlite3_common.msbuild" />
+</Project>

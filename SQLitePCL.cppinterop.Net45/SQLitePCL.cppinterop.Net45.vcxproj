@@ -149,7 +149,7 @@
     <ClCompile Include="..\src\platform\cppinterop\sqlite3_cx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sqlite3.Win32\sqlite3.Win32.vcxproj">
+    <ProjectReference Include="..\sqlite3\sqlite3.winxp.x86.vcxproj">
       <Project>{a5698cef-2375-458a-946d-d3966d6813f1}</Project>
     </ProjectReference>
   </ItemGroup>

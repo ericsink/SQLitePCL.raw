@@ -90,7 +90,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SQLitePCL.cppinterop.WP8\SQLitePCL.cppinterop.WP8.vcxproj">
       <Project>{09D56E6B-8FEC-48D7-8246-6479BB0FE8C5}</Project>
-      <Name>SQLitePCL.cpp.WP8</Name>
+      <Name>SQLitePCL.cppinterop.WP8</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL\profile259\SQLitePCL_profile259.csproj">
       <Project>{7ef5dc39-1483-454c-99c8-88cdef4c93be}</Project>

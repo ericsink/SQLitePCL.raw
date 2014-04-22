@@ -209,8 +209,8 @@
     <ClCompile Include="..\src\platform\cppinterop\sqlite3_cx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sqlite3.WinRT\sqlite3.WinRT.vcxproj">
-      <Project>{0db2a617-1166-4097-b119-154c6f85d9d2}</Project>
+    <ProjectReference Include="..\sqlite3\sqlite3.winrt80.x86.vcxproj">
+      <Project>{A15B6415-EC2F-4142-A20D-D7705B2E9D2D}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
