@@ -43,7 +43,7 @@
     <Compile Include="..\src\platform\net45\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cppinterop\cppinterop.net45.vcxproj">
+    <ProjectReference Include="..\cppinterop\cppinterop.net45.x86.vcxproj">
       <Project>{c4b49a5c-f003-4d46-a542-862484f18272}</Project>
       <Name>SQLitePCL.cppinterop.Net45</Name>
     </ProjectReference>

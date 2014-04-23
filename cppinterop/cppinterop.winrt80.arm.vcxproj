@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|ARM">
       <Configuration>Debug</Configuration>
       <Platform>ARM</Platform>
@@ -19,31 +11,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{c6f65288-359e-4b46-92ac-0f415a6efdc0}</ProjectGuid>
+    <ProjectGuid>{64B9F843-9E7B-42EF-B692-AF8A053E1139}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>SQLitePCL.cppinterop.WP81.SL</ProjectName>
-    <RootNamespace>SQLitePCL_cppinterop_WP81_SL</RootNamespace>
+    <RootNamespace>SQLitePCL.cppinterop</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
-    <ApplicationType>Windows Phone Silverlight</ApplicationType>
-    <ApplicationTypeRevision>8.1</ApplicationTypeRevision>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
-    <my_kind>wp81_sl</my_kind>
+    <PlatformToolset>v110</PlatformToolset>
+    <my_kind>winrt</my_kind>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_WINRT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>runtimeobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="cppinterop_common.msbuild" />
   <ItemGroup>
-    <ProjectReference Include="..\sqlite3\sqlite3.wp81.sl.x86.vcxproj">
-      <Project>{A6CF3A6A-DF0C-4C4E-B8E9-A8A712B6C8FD}</Project>
+    <ProjectReference Include="..\sqlite3\sqlite3.winrt80.arm.vcxproj">
+      <Project>{471df791-a2fb-488d-82d6-6870e79695c9}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

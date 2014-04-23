@@ -101,7 +101,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="..\cppinterop\cppinterop.winrt80.vcxproj">
+    <ProjectReference Include="..\cppinterop\cppinterop.winrt80.x86.vcxproj">
       <Project>{729e60ee-9768-436a-80ad-8dd9f330e090}</Project>
       <Name>SQLitePCL.cppinterop.WinRT</Name>
     </ProjectReference>
