@@ -87,7 +87,7 @@
     <Compile Include="..\src\platform\wp8\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL.cppinterop.WP81.RT\SQLitePCL.cppinterop.WP81.RT.vcxproj">
+    <ProjectReference Include="..\cppinterop\cppinterop.wp81.rt.vcxproj">
       <Project>{58a207e1-a60b-4fab-8abc-f704e323c852}</Project>
       <Name>SQLitePCL.cppinterop.WP81.RT</Name>
     </ProjectReference>

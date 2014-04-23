@@ -33,6 +33,7 @@
   <PropertyGroup>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v120_wp81</PlatformToolset>
+    <my_kind>wp81_rt</my_kind>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -44,8 +45,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
     <IncludePath>..\src\sqlite3;$(IncludePath)</IncludePath>
-    <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>bin\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
