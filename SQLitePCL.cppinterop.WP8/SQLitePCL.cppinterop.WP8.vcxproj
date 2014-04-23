@@ -40,25 +40,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
     <GenerateManifest>false</GenerateManifest>
+    <IncludePath>..\src\sqlite3;$(IncludePath)</IncludePath>
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(WP80ToolSetPath)include;$(WindowsSDK_IncludePath);..\src\sqlite3;</IncludePath>
-    <LibraryPath>$(WP80ToolSetPath)lib;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\sqlite3.wp8\bin\Debug\Win32\;</LibraryPath>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(WP80ToolSetPath)include;$(WindowsSDK_IncludePath);..\src\sqlite3;</IncludePath>
-    <LibraryPath>$(WP80ToolSetPath)lib;$(WindowsSDK_LibraryPath_x86);$(SolutionDir)\sqlite3.wp8\bin\Release\Win32;</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>$(WP80ToolSetPath)include;$(WindowsSDK_IncludePath);..\src\sqlite3;</IncludePath>
-    <LibraryPath>$(WP80ToolSetPath)lib\arm;$(WindowsSDK_LibraryPath_ARM);$(SolutionDir)\sqlite3.wp8\bin\Release\ARM;</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>$(WP80ToolSetPath)include;$(WindowsSDK_IncludePath);..\src\sqlite3;</IncludePath>
-    <LibraryPath>$(WP80ToolSetPath)lib\arm;$(WindowsSDK_LibraryPath_ARM);$(SolutionDir)\sqlite3.wp8\bin\Debug\ARM;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
