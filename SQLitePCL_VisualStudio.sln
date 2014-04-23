@@ -93,7 +93,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.net45.x64", "cpp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.winrt80.arm", "cppinterop\cppinterop.winrt80.arm.vcxproj", "{64B9F843-9E7B-42EF-B692-AF8A053E1139}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.winrt80.arm", "cppinterop\cppinterop.winrt80.x64.vcxproj", "{E37F4EDB-8F39-4447-900E-917AB0D8D6E7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.winrt80.x64", "cppinterop\cppinterop.winrt80.x64.vcxproj", "{E37F4EDB-8F39-4447-900E-917AB0D8D6E7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.wp80.arm", "cppinterop\cppinterop.wp80.arm.vcxproj", "{F463E6AC-3EB1-463D-A91E-C6013A8A04CF}"
 EndProject

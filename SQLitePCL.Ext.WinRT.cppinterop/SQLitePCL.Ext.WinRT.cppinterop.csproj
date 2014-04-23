@@ -103,7 +103,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <ProjectReference Include="..\cppinterop\cppinterop.winrt80.x86.vcxproj">
       <Project>{729e60ee-9768-436a-80ad-8dd9f330e090}</Project>
-      <Name>SQLitePCL.cppinterop.WinRT</Name>
+      <Name>cppinterop.winrt80.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
       <Project>{e7f6aae8-d264-49a2-8295-4e3b02b9bf0b}</Project>

@@ -45,7 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.net45.x86.vcxproj">
       <Project>{c4b49a5c-f003-4d46-a542-862484f18272}</Project>
-      <Name>SQLitePCL.cppinterop.Net45</Name>
+      <Name>cppinterop.net45.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
       <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
