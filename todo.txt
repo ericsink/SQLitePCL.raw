@@ -1,10 +1,10 @@
 
-reference from Ext.WP81.SL to cppinterop is to the wp80 version,
-not to wp81 like it should be
+I wish those .log files in sqlite3 builds would go away.
 
-the cppinterop projects need the same thing the sqlite3 projects
-got:  separate vcxproj for each platform, sharing as much of the
-msbuild stuff as possible among them.
+cppinterop common draws the line at a different place than sqlite3 common
+
+now the Ext.*.cppinterop projects also need to be explicit about
+which CPU they are building for
 
 update/fix the nuget stuff
 
