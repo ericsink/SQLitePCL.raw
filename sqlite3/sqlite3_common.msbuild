@@ -5,6 +5,8 @@
   <PropertyGroup>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <TargetName>sqlite3</TargetName>
+    <Keyword>Win32Proj</Keyword>
+    <DefaultLanguage>en-US</DefaultLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">

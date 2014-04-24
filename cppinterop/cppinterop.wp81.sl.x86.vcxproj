@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{c6f65288-359e-4b46-92ac-0f415a6efdc0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SQLitePCL_cppinterop_WP81_SL</RootNamespace>
+    <RootNamespace>SQLitePCL.cppinterop</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
