@@ -1,4 +1,6 @@
 
+use solution folders to organize how things look in visual studio
+
 I wish those .log files in sqlite3 builds would go away.
 
 cppinterop common draws the line at a different place than sqlite3 common
