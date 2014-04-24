@@ -1,13 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-
-  <PropertyGroup>
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <TargetName>sqlite3</TargetName>
-    <Keyword>Win32Proj</Keyword>
-    <DefaultLanguage>en-US</DefaultLanguage>
-  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>

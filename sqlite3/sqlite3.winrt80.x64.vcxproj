@@ -13,10 +13,17 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F6B74C01-53EA-4EB5-952B-B0F318B474A2}</ProjectGuid>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <PlatformToolset>v110</PlatformToolset>
-    <my_kind>winrt</my_kind>
     <AppContainerApplication>true</AppContainerApplication>
     <WindowsAppContainer>true</WindowsAppContainer>
+    <Keyword>Win32Proj</Keyword>
+    <DefaultLanguage>en-US</DefaultLanguage>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <TargetName>sqlite3</TargetName>
+    <PlatformToolset>v110</PlatformToolset>
+    <my_kind>winrt</my_kind>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

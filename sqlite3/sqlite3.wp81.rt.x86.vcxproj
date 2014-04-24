@@ -13,11 +13,18 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1043675F-F714-4508-8C37-47DFB5E1FC45}</ProjectGuid>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
-    <PlatformToolset>v120_wp81</PlatformToolset>
-    <my_kind>wp81_rt</my_kind>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Phone</ApplicationType>
     <ApplicationTypeRevision>8.1</ApplicationTypeRevision>
+    <Keyword>Win32Proj</Keyword>
+    <DefaultLanguage>en-US</DefaultLanguage>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <TargetName>sqlite3</TargetName>
+    <PlatformToolset>v120_wp81</PlatformToolset>
+    <my_kind>wp81_rt</my_kind>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

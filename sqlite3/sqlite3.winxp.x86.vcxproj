@@ -12,6 +12,13 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A5698CEF-2375-458A-946D-D3966D6813F1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <DefaultLanguage>en-US</DefaultLanguage>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <TargetName>sqlite3</TargetName>
     <PlatformToolset>v110_xp</PlatformToolset>
     <my_kind>winxp</my_kind>
   </PropertyGroup>

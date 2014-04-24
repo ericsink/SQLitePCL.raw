@@ -13,6 +13,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A65651BF-AD23-4842-BC9B-5C5DDDDE628B}</ProjectGuid>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Keyword>Win32Proj</Keyword>
+    <DefaultLanguage>en-US</DefaultLanguage>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <TargetName>sqlite3</TargetName>
     <PlatformToolset>v110_wp80</PlatformToolset>
     <my_kind>wp80</my_kind>
   </PropertyGroup>

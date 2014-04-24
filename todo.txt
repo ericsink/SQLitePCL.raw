@@ -1,14 +1,12 @@
 
 use solution folders to organize how things look in visual studio
 
-I wish those .log files in sqlite3 builds would go away.
-
-cppinterop common draws the line at a different place than sqlite3 common
-
 now the Ext.*.cppinterop projects also need to be explicit about
 which CPU they are building for
 
 update/fix the nuget stuff
+
+separate cppinterop for winrt81?
 
 do we need separate platform assemblies for Windows 8.1 vs 8.0 ?
 
