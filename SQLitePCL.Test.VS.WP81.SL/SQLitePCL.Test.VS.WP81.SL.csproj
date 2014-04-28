@@ -143,7 +143,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL.Ext.WP81.SL\SQLitePCL.Ext.WP81.SL.csproj">
+    <ProjectReference Include="..\SQLitePCL.Ext.WP81.SL\SQLitePCL.Ext.WP81.SL.x86.csproj">
       <Project>{3c5bff0e-85a3-4e01-81a0-b191cc283c1b}</Project>
       <Name>SQLitePCL.Ext.WP81.SL</Name>
     </ProjectReference>
