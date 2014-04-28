@@ -56,7 +56,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SQLitePCL.Ext.Net45.cppinterop\SQLitePCL.Ext.Net45.cppinterop.x86.csproj">
       <Project>{50dfba97-344a-4213-be20-7057067e2a07}</Project>
-      <Name>SQLitePCL.Ext.Net45.cppinterop</Name>
+      <Name>SQLitePCL.Ext.Net45.cppinterop.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
       <Project>{b3c430e9-2920-416c-808d-58d0bb94a836}</Project>
