@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlite-net", "sqlite-net\sqlite-net.csproj", "{9F5829DC-D2AE-4ED1-A2C2-C16A6E654F52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.preinstalled", "SQLitePCL.Ext.iOS.preinstalled\SQLitePCL.Ext.iOS.preinstalled.csproj", "{24768C1D-A0A7-4D96-B6DD-742E0425DB40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.preinstalled", "platforms\SQLitePCL.Ext.iOS.preinstalled.csproj", "{24768C1D-A0A7-4D96-B6DD-742E0425DB40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.Net45", "SQLitePCL.Test.VS.Net45\SQLitePCL.Test.VS.Net45.csproj", "{01E88141-1C0F-4F7B-8B43-E467F7A1AC24}"
 EndProject
@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WP81.SL.x86",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WP81.RT.x86", "platforms\SQLitePCL.Ext.WP81.RT.x86.csproj", "{B5D9840B-BCD1-45AF-8283-8F0FFE0AE873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.other", "SQLitePCL.Ext.iOS.other\SQLitePCL.Ext.iOS.other.csproj", "{B31B715A-D590-4E36-99C9-D7E537AB9D86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.other", "platforms\SQLitePCL.Ext.iOS.other.csproj", "{B31B715A-D590-4E36-99C9-D7E537AB9D86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.WP81.RT", "SQLitePCL.Test.VS.WP81.RT\SQLitePCL.Test.VS.WP81.RT.csproj", "{E8BC2971-7782-40FB-A61B-0975B32E1401}"
 EndProject
