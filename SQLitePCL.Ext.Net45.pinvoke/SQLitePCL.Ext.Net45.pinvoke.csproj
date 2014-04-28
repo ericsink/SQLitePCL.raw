@@ -19,6 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\net45\pinvoke\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\net45\pinvoke\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,6 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\net45\pinvoke\Release\</OutputPath>
+    <IntermediateOutputPath>obj\net45\pinvoke\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

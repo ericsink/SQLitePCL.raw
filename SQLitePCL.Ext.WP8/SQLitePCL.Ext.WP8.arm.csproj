@@ -24,6 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\wp8\ARM\Debug</OutputPath>
+    <IntermediateOutputPath>obj\wp8\ARM\Debug</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -34,6 +35,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\wp8\ARM\Release</OutputPath>
+    <IntermediateOutputPath>obj\wp8\ARM\Release</IntermediateOutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>

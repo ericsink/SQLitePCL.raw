@@ -20,6 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\wp81_rt\ARM\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\wp81_rt\ARM\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -30,6 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\wp81_rt\ARM\Release\</OutputPath>
+    <IntermediateOutputPath>obj\wp81_rt\ARM\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>

@@ -24,6 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\wp81_sl\x86\Debug</OutputPath>
+    <IntermediateOutputPath>obj\wp81_sl\x86\Debug</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -34,6 +35,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\wp81_sl\x86\Release</OutputPath>
+    <IntermediateOutputPath>obj\wp81_sl\x86\Release</IntermediateOutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
