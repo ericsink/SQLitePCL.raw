@@ -22,6 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\android\Debug</OutputPath>
+    <IntermediateOutputPath>obj\android\Debug</IntermediateOutputPath>
     <DefineConstants>DEBUG;__MOBILE__;__ANDROID__;PINVOKE_FROM_SQLITE3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,6 +33,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\android\Release</OutputPath>
+    <IntermediateOutputPath>obj\android\Release</IntermediateOutputPath>
     <DefineConstants>__MOBILE__;__ANDROID__;PINVOKE_FROM_SQLITE3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
