@@ -63,7 +63,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL.Ext.Android\SQLitePCL.Ext.Android.csproj">
+    <ProjectReference Include="..\platforms\SQLitePCL.Ext.Android.csproj">
       <Project>{8A697E13-B0E1-47A8-8CDF-9AA7B2F7885C}</Project>
       <Name>SQLitePCL.Ext.Android</Name>
     </ProjectReference>

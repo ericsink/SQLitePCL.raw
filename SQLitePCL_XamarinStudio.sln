@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.preinstalled", "platforms\SQLitePCL.Ext.iOS.preinstalled.csproj", "{24768C1D-A0A7-4D96-B6DD-742E0425DB40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Android", "SQLitePCL.Ext.Android\SQLitePCL.Ext.Android.csproj", "{8A697E13-B0E1-47A8-8CDF-9AA7B2F7885C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Android", "platforms\SQLitePCL.Ext.Android.csproj", "{8A697E13-B0E1-47A8-8CDF-9AA7B2F7885C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlite-net", "sqlite-net\sqlite-net.csproj", "{9F5829DC-D2AE-4ED1-A2C2-C16A6E654F52}"
 EndProject
