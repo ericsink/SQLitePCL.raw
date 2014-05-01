@@ -11,8 +11,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 
   <PropertyGroup>
-    <OutDir>bin\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>obj\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>bin\$(my_kind)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(my_kind)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
 
   <ItemDefinitionGroup >

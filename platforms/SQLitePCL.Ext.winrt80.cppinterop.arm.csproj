@@ -10,15 +10,15 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext.winrt.cppinterop.arm</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.winrt80.cppinterop.arm</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\winrt\cppinterop\ARM\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\cppinterop\ARM\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\cppinterop\ARM\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\cppinterop\ARM\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -28,8 +28,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <OutputPath>bin\winrt\cppinterop\ARM\Release\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\cppinterop\ARM\Release\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\cppinterop\ARM\Release\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\cppinterop\ARM\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>

@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext.winrt.pinvoke</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.winrt80.pinvoke</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -19,8 +19,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\winrt\pinvoke\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,16 +29,16 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\winrt\pinvoke\Release\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\Release\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\Release\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\winrt\pinvoke\ARM\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\ARM\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\ARM\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\ARM\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -48,8 +48,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <OutputPath>bin\winrt\pinvoke\ARM\Release\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\ARM\Release\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\ARM\Release\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\ARM\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
@@ -61,8 +61,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\winrt\pinvoke\x64\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\x64\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\x64\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\x64\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -72,8 +72,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\winrt\pinvoke\x64\Release\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\x64\Release\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\x64\Release\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\x64\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
@@ -85,8 +85,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\winrt\pinvoke\x86\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\x86\Debug\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\x86\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\x86\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
@@ -96,8 +96,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\winrt\pinvoke\x86\Release\</OutputPath>
-    <IntermediateOutputPath>obj\winrt\pinvoke\x86\Release\</IntermediateOutputPath>
+    <OutputPath>bin\winrt80\pinvoke\x86\Release\</OutputPath>
+    <IntermediateOutputPath>obj\winrt80\pinvoke\x86\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE;NETFX_CORE;PINVOKE_FROM_SQLITE3_DLL</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>

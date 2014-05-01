@@ -1,15 +1,16 @@
 
-rm old sqlite projects
+check that sharing of assemblyinfo.cs is the way it should be
+
+naming convention: put cppinterop/pinvoke/preinstalled/other before the
+platform identifier stuff?
+
+does the winrt 80 vs 81 distinction make sense for the C# code?
 
 rm xamarin projects from visual studio SLN so that msbuild will work
-
-wp81_rt vs wp81.rt
 
 winrt vs winrt80
 
 all the winmd files have the same name
-
-naming convention wp8 vs wp80
 
 should pinvoke build for x86/x64?
 

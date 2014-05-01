@@ -22,7 +22,7 @@
   <PropertyGroup>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
-    <my_kind>winrt</my_kind>
+    <my_kind>winrt80</my_kind>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

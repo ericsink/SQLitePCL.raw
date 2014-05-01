@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile158", "SQL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Net45.pinvoke", "platforms\SQLitePCL.Ext.Net45.pinvoke.csproj", "{2D92B6AF-04FB-4635-B203-007D4465AFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WinRT.pinvoke", "platforms\SQLitePCL.Ext.WinRT.pinvoke.csproj", "{9B474238-4545-4362-A5A6-198EAEAB4259}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.winrt80.pinvoke", "platforms\SQLitePCL.Ext.winrt80.pinvoke.csproj", "{9B474238-4545-4362-A5A6-198EAEAB4259}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.wp80.x86", "cppinterop\cppinterop.wp80.x86.vcxproj", "{09D56E6B-8FEC-48D7-8246-6479BB0FE8C5}"
 EndProject
@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.Net45", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Android", "platforms\SQLitePCL.Ext.Android.csproj", "{8A697E13-B0E1-47A8-8CDF-9AA7B2F7885C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.WinRT", "SQLitePCL.Test.VS.WinRT\SQLitePCL.Test.VS.WinRT.csproj", "{7000877B-3475-42A0-8BAC-36036B7C773E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.winrt80", "SQLitePCL.Test.VS.winrt80\SQLitePCL.Test.VS.winrt80.csproj", "{7000877B-3475-42A0-8BAC-36036B7C773E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.wp80", "SQLitePCL.Test.VS.wp80\SQLitePCL.Test.VS.wp80.csproj", "{77D1F852-D075-4260-B2BA-7BD9B9463E41}"
 EndProject
@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.XS.Android",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.winrt80.x86", "cppinterop\cppinterop.winrt80.x86.vcxproj", "{729E60EE-9768-436A-80AD-8DD9F330E090}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WinRT.cppinterop.x86", "platforms\SQLitePCL.Ext.WinRT.cppinterop.x86.csproj", "{1584F610-A82A-430C-A37A-08F9BA2368CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.winrt80.cppinterop.x86", "platforms\SQLitePCL.Ext.winrt80.cppinterop.x86.csproj", "{1584F610-A82A-430C-A37A-08F9BA2368CD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.net45.x86", "cppinterop\cppinterop.net45.x86.vcxproj", "{C4B49A5C-F003-4D46-A542-862484F18272}"
 EndProject
@@ -107,9 +107,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sqlite3", "sqlite3", "{6764
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Net45.cppinterop.x64", "platforms\SQLitePCL.Ext.Net45.cppinterop.x64.csproj", "{A1DBB1CF-7AA8-4A1C-B221-C2D7D40448C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WinRT.cppinterop.arm", "platforms\SQLitePCL.Ext.WinRT.cppinterop.arm.csproj", "{6F064B7A-ED14-46B1-9035-F8588D964B38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.winrt80.cppinterop.arm", "platforms\SQLitePCL.Ext.winrt80.cppinterop.arm.csproj", "{6F064B7A-ED14-46B1-9035-F8588D964B38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.WinRT.cppinterop.x64", "platforms\SQLitePCL.Ext.WinRT.cppinterop.x64.csproj", "{49809E2C-9FE8-4708-87C0-CDED891B88A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.winrt80.cppinterop.x64", "platforms\SQLitePCL.Ext.winrt80.cppinterop.x64.csproj", "{49809E2C-9FE8-4708-87C0-CDED891B88A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.wp80.arm", "platforms\SQLitePCL.Ext.wp80.arm.csproj", "{6C9C4110-FD4D-4869-AF87-93AAF71E503F}"
 EndProject

@@ -23,7 +23,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <TargetName>sqlite3</TargetName>
     <PlatformToolset>v120</PlatformToolset>
-    <my_kind>winrt</my_kind>
+    <my_kind>winrt81</my_kind>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

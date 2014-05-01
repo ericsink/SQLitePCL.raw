@@ -9,8 +9,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
     <IncludePath>..\src\sqlite3;$(IncludePath)</IncludePath>
-    <OutDir>bin\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>obj\$(my_kind)\$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>SQLitePCL.cppinterop</TargetName>
+    <OutDir>bin\$(my_kind)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(my_kind)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
