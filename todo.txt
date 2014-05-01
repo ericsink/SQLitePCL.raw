@@ -1,4 +1,20 @@
 
+rm old sqlite projects
+
+rm xamarin projects from visual studio SLN so that msbuild will work
+
+wp81_rt vs wp81.rt
+
+winrt vs winrt80
+
+all the winmd files have the same name
+
+naming convention wp8 vs wp80
+
+should pinvoke build for x86/x64?
+
+should ext platform assemblies built anycpu have anycpu in the name?
+
 update/fix the nuget stuff
 
 separate cppinterop for winrt81?
