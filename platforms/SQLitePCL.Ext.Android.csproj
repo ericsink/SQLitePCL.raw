@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SQLitePCL</RootNamespace>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <AssemblyName>SQLitePCL.Ext</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.Android</AssemblyName>
     <TargetFrameworkVersion>v4.0.3</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

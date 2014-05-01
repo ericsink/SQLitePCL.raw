@@ -94,9 +94,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\platforms\SQLitePCL.Ext.WP81.RT.x86.csproj">
+    <ProjectReference Include="..\platforms\SQLitePCL.Ext.wp81_rt.x86.csproj">
       <Project>{b5d9840b-bcd1-45af-8283-8f0ffe0ae873}</Project>
-      <Name>SQLitePCL.Ext.WP81.RT.x86</Name>
+      <Name>SQLitePCL.Ext.wp81_rt.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL.Ugly.profile259\SQLitePCL.Ugly.profile259.csproj">
       <Project>{5346943d-ce35-4a6b-b753-db26c60832b2}</Project>

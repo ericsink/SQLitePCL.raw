@@ -33,7 +33,7 @@
   </ItemDefinitionGroup>
   <Import Project="cppinterop_common.msbuild" />
   <ItemGroup>
-    <ProjectReference Include="..\sqlite3\sqlite3.wp81.rt.arm.vcxproj">
+    <ProjectReference Include="..\sqlite3\sqlite3.wp81_rt.arm.vcxproj">
       <Project>{87f6c24f-0c6d-4cfd-a50d-9e3d113660e9}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SQLitePCL</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>SQLitePCL.Ext</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.ios.other</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

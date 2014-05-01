@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.net45.pinvoke</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>

@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext</AssemblyName>
+    <AssemblyName>SQLitePCL.Ext.wp81_sl.arm</AssemblyName>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -48,9 +48,9 @@
     <Compile Include="..\src\platform\wp8\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cppinterop\cppinterop.wp81.sl.arm.vcxproj">
+    <ProjectReference Include="..\cppinterop\cppinterop.wp81_sl.arm.vcxproj">
       <Project>{B9BC576E-9836-4287-A91B-1DB178135D59}</Project>
-      <Name>cppinterop.wp81.sl.arm</Name>
+      <Name>cppinterop.wp81_sl.arm</Name>
     </ProjectReference>
     <ProjectReference Include="..\SQLitePCL\profile259\SQLitePCL_profile259.csproj">
       <Project>{7ef5dc39-1483-454c-99c8-88cdef4c93be}</Project>
