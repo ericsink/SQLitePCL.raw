@@ -4,7 +4,7 @@
 		<id>SQLitePCL.raw</id>
 		<version>0.9.0</version>
 		<title>SQLitePCL.raw</title>
-		<authors>Eric Sink</authors>
+		<authors>Eric Sink, et al</authors>
 		<owners>Eric Sink</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
         <licenseUrl>https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT</licenseUrl>
@@ -22,45 +22,63 @@
 		<!-- net45 -->
         <!-- TODO note that this is Windows-specific.  -->
         <!-- TODO what about x86 vs x64? -->
-		<file src="..\SQLitePCL.Ext.Net45.cppinterop\bin\Release\SQLitePCL.Ext.Net45.dll" target="lib\net45\Cirrious.CrossCore.Wpf.dll" />
+		<file src="..\platforms\bin\net45\cppinterop\x64\Release\SQLitePCL.Ext.dll" target="lib\net45\SQLitePCL.Ext.Net45.dll" />
         <!-- TODO the cppinterop DLL -->
         <!-- TODO the PCL dll again -->
 		
 		<!-- wpf - PCL -->
+		<!--
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.CrossCore.dll" target="lib\net45\Cirrious.CrossCore.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Localization.dll" target="lib\net45\Cirrious.MvvmCross.Localization.dll" />
+		-->
 
 		<!-- store -->
+		<!--
 		<file src="..\bin\Release\Mvx\WindowsStore\Cirrious.CrossCore.WindowsStore.dll" target="lib\netcore45\Cirrious.CrossCore.WindowsStore.dll" />
+		-->
 
 		<!-- store - PCL -->
+		<!--
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.CrossCore.dll" target="lib\netcore45\Cirrious.CrossCore.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Localization.dll" target="lib\netcore45\Cirrious.MvvmCross.Localization.dll" />
+		-->
         
 		<!-- phone -->
+		<!--
 		<file src="..\bin\Release\Mvx\WindowsPhone\Cirrious.CrossCore.WindowsPhone.dll" target="lib\wp8\Cirrious.CrossCore.WindowsPhone.dll" />
+		-->
 
 		<!-- phone - PCL -->
+		<!--
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.CrossCore.dll" target="lib\wp8\Cirrious.CrossCore.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Localization.dll" target="lib\wp8\Cirrious.MvvmCross.Localization.dll" />
+		-->
 
 		<!-- droid -->
+		<!--
 		<file src="..\bin\Release\Mvx\Droid\Cirrious.CrossCore.Droid.dll" target="lib\MonoAndroid\Cirrious.CrossCore.Droid.dll" />
 		<file src="..\bin\Release\Mvx\Droid\Cirrious.MvvmCross.Binding.Droid.dll" target="lib\MonoAndroid\Cirrious.MvvmCross.Binding.Droid.dll" />
+		-->
 
 		<!-- droid - PCL -->
+		<!--
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.CrossCore.dll" target="lib\MonoAndroid\Cirrious.CrossCore.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Binding.dll" target="lib\MonoAndroid\Cirrious.MvvmCross.Binding.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Localization.dll" target="lib\MonoAndroid\Cirrious.MvvmCross.Localization.dll" />
+		-->
 			
 		<!-- touch -->
+		<!--
 		<file src="..\bin\Release\Mvx\Touch\Cirrious.CrossCore.Touch.dll" target="lib\MonoTouch\Cirrious.CrossCore.Touch.dll" />
 		<file src="..\bin\Release\Mvx\Touch\Cirrious.MvvmCross.Binding.Touch.dll" target="lib\MonoTouch\Cirrious.MvvmCross.Binding.Touch.dll" />
+		-->
 
 		<!-- touch - PCL -->
+		<!--
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.CrossCore.dll" target="lib\MonoTouch\Cirrious.CrossCore.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Binding.dll" target="lib\MonoTouch\Cirrious.MvvmCross.Binding.dll" />
 		<file src="..\bin\Release\Mvx\Portable\Cirrious.MvvmCross.Localization.dll" target="lib\MonoTouch\Cirrious.MvvmCross.Localization.dll" />
+		-->
 
 		<!-- mac (hidden in lib\MonoMac - but won't ever pick up) -->
 		<!--
