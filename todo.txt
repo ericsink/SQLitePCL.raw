@@ -12,8 +12,6 @@ should ext platform assemblies built anycpu have anycpu in the name?
 
 update/fix the nuget stuff
 
-do we need separate platform assemblies for Windows 8.1 vs 8.0 ?
-
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
 do we need separate platform assemblies for older versions of .NET,

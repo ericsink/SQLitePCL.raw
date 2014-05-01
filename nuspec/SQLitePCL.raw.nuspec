@@ -27,6 +27,9 @@
 		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\x64\" />
 		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\x86\" />
 		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\arm\" />
+		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\x64\" />
+		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\x86\" />
+		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\arm\" />
 		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\x86\" />
 		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\arm\" />
 		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_rt\x86\" />
@@ -39,6 +42,9 @@
 		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\x64\" />
 		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\x86\" />
 		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\arm\" />
+		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\x64\" />
+		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\x86\" />
+		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\arm\" />
 		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\x86\" />
 		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\arm\" />
 		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_rt\x86\" />
@@ -53,6 +59,9 @@
 		<file src="..\platforms\bin\winrt80\cppinterop\x64\Release\SQLitePCL.Ext.winrt80.cppinterop.x64.dll" target="build\native\winrt80\x64\" />
 		<file src="..\platforms\bin\winrt80\cppinterop\x86\Release\SQLitePCL.Ext.winrt80.cppinterop.x86.dll" target="build\native\winrt80\x86\" />
 		<file src="..\platforms\bin\winrt80\cppinterop\arm\Release\SQLitePCL.Ext.winrt80.cppinterop.arm.dll" target="build\native\winrt80\arm\" />
+		<file src="..\platforms\bin\winrt81\cppinterop\x64\Release\SQLitePCL.Ext.winrt81.cppinterop.x64.dll" target="build\native\winrt81\x64\" />
+		<file src="..\platforms\bin\winrt81\cppinterop\x86\Release\SQLitePCL.Ext.winrt81.cppinterop.x86.dll" target="build\native\winrt81\x86\" />
+		<file src="..\platforms\bin\winrt81\cppinterop\arm\Release\SQLitePCL.Ext.winrt81.cppinterop.arm.dll" target="build\native\winrt81\arm\" />
 		<file src="..\platforms\bin\wp80\x86\Release\SQLitePCL.Ext.wp80.x86.dll" target="build\native\wp80\x86\" />
 		<file src="..\platforms\bin\wp80\arm\Release\SQLitePCL.Ext.wp80.arm.dll" target="build\native\wp80\arm\" />
 		<file src="..\platforms\bin\wp81_rt\x86\Release\SQLitePCL.Ext.wp81_rt.x86.dll" target="build\native\wp81_rt\x86\" />
