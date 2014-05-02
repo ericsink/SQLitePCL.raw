@@ -1,4 +1,6 @@
 
+some of those solution platform configurations could go away?
+
 check that sharing of assemblyinfo.cs is the way it should be
 
 naming convention: put cppinterop/pinvoke/preinstalled/other before the
