@@ -78,5 +78,6 @@
 
 		<!-- TODO android -->
 
+		<file src="SQLitePCL.raw.targets" target="build\native\" />
 	</files>
 </package>
