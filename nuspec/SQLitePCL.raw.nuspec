@@ -70,14 +70,13 @@
 		<file src="..\platforms\bin\wp81_sl\arm\Release\SQLitePCL.Ext.wp81_sl.arm.dll" target="build\native\wp81_sl\arm\" />
 		<file src="..\platforms\bin\net45\pinvoke\x86\Release\SQLitePCL.Ext.net45.pinvoke.x86.dll" target="build\native\net45\x86\" />
 		<file src="..\platforms\bin\net45\pinvoke\x64\Release\SQLitePCL.Ext.net45.pinvoke.x64.dll" target="build\native\net45\x64\" />
+		<file src="..\platforms\bin\winrt80\pinvoke\x86\Release\SQLitePCL.Ext.winrt80.pinvoke.x86.dll" target="build\native\winrt80\x86\" />
+		<file src="..\platforms\bin\winrt80\pinvoke\x64\Release\SQLitePCL.Ext.winrt80.pinvoke.x64.dll" target="build\native\winrt80\x64\" />
+		<file src="..\platforms\bin\winrt80\pinvoke\arm\Release\SQLitePCL.Ext.winrt80.pinvoke.arm.dll" target="build\native\winrt80\arm\" />
 
 		<!-- TODO ios -->
 
 		<!-- TODO android -->
-
-		<!-- TODO
-		<file src="..\platforms\bin\winrt80\pinvoke\Release\SQLitePCL.Ext.winrt80.pinvoke.dll" target="build\native\winrt80\" />
-		-->
 
 	</files>
 </package>

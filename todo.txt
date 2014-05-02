@@ -8,10 +8,6 @@ platform identifier stuff?
 
 rm xamarin projects from visual studio SLN so that msbuild will work
 
-should pinvoke build for x86/x64?
-
-should ext platform assemblies built anycpu have anycpu in the name?
-
 update/fix the nuget stuff
 
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
