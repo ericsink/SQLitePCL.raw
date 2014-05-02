@@ -17,8 +17,10 @@
 	</metadata>
 	<files>		
 		<!-- PCL -->
-		<file src="..\SQLitePCL\profile78\bin\Release\SQLitePCL.dll" target="lib\portable-net45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
-		<!-- TODO other profiles -->
+		<file src="..\SQLitePCL\profile78\bin\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
+		<file src="..\SQLitePCL\profile158\bin\Release\SQLitePCL.dll" target="lib\portable-net45+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
+		<!-- TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong? -->
+		<file src="..\SQLitePCL\profile259\bin\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.dll" />
 
 		<!-- cppinterop DLLs -->
 

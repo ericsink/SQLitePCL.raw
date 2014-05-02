@@ -1,6 +1,4 @@
 
-put the other pcl profile builds in the nuget package
-
 write the .props and .targets part of the nuget package
 
 move the test projects down a folder
