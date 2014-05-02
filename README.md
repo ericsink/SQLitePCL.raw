@@ -91,9 +91,9 @@ Look in todo.txt for an informal working list of tasks pending.
 
 ## How do I build this?
 
-For Xamarin Studio, use SQLitePCL\_XamarinStudio.sln
+For Xamarin Studio, use SQLitePCL\_XamarinStudio.sln.
 
-For Visual Studio, use SQLitePCL\_VisualStudio.sln
+For Visual Studio, use SQLitePCL\_VisualStudio.sln.  The current build setup is expecting you to have Visual Studio 2012 *and* Visual Studio 2013, the latter with Update 2 installed for the Phone 8.1 stuff.
 
 ## Which PCL profile is supported?
 

@@ -1,4 +1,12 @@
 
+put the other pcl profile builds in the nuget package
+
+write the .props and .targets part of the nuget package
+
+move the test projects down a folder
+
+move the ugly projects down a folder
+
 some of those solution platform configurations could go away?
 
 check that sharing of assemblyinfo.cs is the way it should be
@@ -18,12 +26,7 @@ like 4.0 ?
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
 
-consider reorganizing the Ext directories into a hierarchy.
-so many of them, and more to come.
-
 need at least one test project for each platform assembly.  
-maybe if we organize the Ext dirs into a hierarchy, put the test
-projects adjacent
 
 add tests that use actual named sqlite database files, not just
 :memory: and temp dbs.
@@ -54,8 +57,6 @@ question about whether we are statically linking the C library
 or not, for the mixed mode assembly.
 
 for the windows pinvoke projects, we need to be building sqlite3 native dlls
-
-remove the VS gallery sqlite references
 
 Xamarin.Android, pinvoke my_sqlite3, with sqlite3 lib in resource
 
