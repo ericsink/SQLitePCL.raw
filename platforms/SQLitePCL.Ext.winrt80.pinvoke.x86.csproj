@@ -42,7 +42,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\sqlite3_pinvoke.cs" />
+    <Compile Include="..\src\pcl\sqlite3_pinvoke.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

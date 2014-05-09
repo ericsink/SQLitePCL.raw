@@ -37,7 +37,7 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <Reference Include="SQLitePCL">
-      <HintPath>..\SQLitePCL\profile78\bin\$(Configuration)\SQLitePCL.dll</HintPath>
+      <HintPath>..\platforms\bin\profile78\$(Configuration)\SQLitePCL.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -46,11 +46,4 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

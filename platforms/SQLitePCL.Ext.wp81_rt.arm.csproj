@@ -46,7 +46,7 @@
   </ItemGroup>
   <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\sqlite3_cppinterop.cs" />
+    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.wp81_rt.arm.vcxproj">

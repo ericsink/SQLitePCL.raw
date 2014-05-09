@@ -1,4 +1,15 @@
 
+rename the platforms dir
+
+for the reference from ugly to the pcl assembly, using projectreference
+fails because it ends up the copylocal issue.  using reference sometimes
+fails because the dependency information is missing so vs sometimes
+build in the wrong order.
+
+fix assemblyinfo.cs for ugly.
+
+maybe ugly should be a nuget package of its own
+
 consolidate src/pcl and src/platforms a bit further to more
 cleanly reflect the way to think about bait and switch
 

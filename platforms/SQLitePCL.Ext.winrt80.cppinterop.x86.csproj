@@ -48,7 +48,7 @@
   </ItemGroup>
   <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\sqlite3_cppinterop.cs" />
+    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

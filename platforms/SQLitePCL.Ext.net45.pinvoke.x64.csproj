@@ -43,7 +43,7 @@
   </ItemGroup>
   <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\sqlite3_pinvoke.cs" />
+    <Compile Include="..\src\pcl\sqlite3_pinvoke.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

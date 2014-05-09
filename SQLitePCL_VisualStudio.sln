@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile78", "SQLitePCL\profile78\SQLitePCL_profile78.csproj", "{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile78", "platforms\SQLitePCL_profile78.csproj", "{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile259", "SQLitePCL\profile259\SQLitePCL_profile259.csproj", "{7EF5DC39-1483-454C-99C8-88CDEF4C93BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile259", "platforms\SQLitePCL_profile259.csproj", "{7EF5DC39-1483-454C-99C8-88CDEF4C93BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile136", "SQLitePCL\profile136\SQLitePCL_profile136.csproj", "{B3CCC80E-0AC3-49F1-9AC2-CA4B6BC7544A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile158", "SQLitePCL\profile158\SQLitePCL_profile158.csproj", "{6CA3734F-68A1-4216-B842-0F3B17DB7E4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile158", "platforms\SQLitePCL_profile158.csproj", "{6CA3734F-68A1-4216-B842-0F3B17DB7E4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.net45.pinvoke.x86", "platforms\SQLitePCL.Ext.net45.pinvoke.x86.csproj", "{2D92B6AF-04FB-4635-B203-007D4465AFE2}"
 EndProject
