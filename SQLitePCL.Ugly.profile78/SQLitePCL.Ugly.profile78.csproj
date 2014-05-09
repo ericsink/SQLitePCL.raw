@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
-      <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
-      <Name>SQLitePCL_profile78</Name>
-    </ProjectReference>
+    <Reference Include="SQLitePCL">
+      <HintPath>..\SQLitePCL\profile78\bin\$(Configuration)\SQLitePCL.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\src\ugly\ugly.cs" />

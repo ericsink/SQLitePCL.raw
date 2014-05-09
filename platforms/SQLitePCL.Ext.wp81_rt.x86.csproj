@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext.wp81_rt.x86</AssemblyName>
+    <AssemblyName>SQLitePCL</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
@@ -44,19 +44,14 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
+  <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\util.cs" />
     <Compile Include="..\src\platform\common\sqlite3_cppinterop.cs" />
-    <Compile Include="..\src\platform\wp8\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.wp81_rt.x86.vcxproj">
       <Project>{58a207e1-a60b-4fab-8abc-f704e323c852}</Project>
       <Name>cppinterop.wp81_rt.x86</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL\profile259\SQLitePCL_profile259.csproj">
-      <Project>{7ef5dc39-1483-454c-99c8-88cdef4c93be}</Project>
-      <Name>SQLitePCL_profile259</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

@@ -135,10 +135,6 @@
       <Project>{B3C430E9-2920-416C-808D-58D0BB94A836}</Project>
       <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
-      <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
-      <Name>SQLitePCL_profile78</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

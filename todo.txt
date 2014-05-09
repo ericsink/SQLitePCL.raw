@@ -1,4 +1,16 @@
 
+consolidate src/pcl and src/platforms a bit further to more
+cleanly reflect the way to think about bait and switch
+
+update readme flavor pcl
+
+move csprojs for the pcl assembly into the same place and
+have it share common_files.msbuild
+
+remove profile 136
+
+.Ext. is weird now
+
 write the .props and .targets part of the nuget package
 
 move the test projects down a folder

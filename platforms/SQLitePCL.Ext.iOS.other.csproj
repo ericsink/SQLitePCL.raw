@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SQLitePCL</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>SQLitePCL.Ext.ios.other</AssemblyName>
+    <AssemblyName>SQLitePCL</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,16 +39,9 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
   </ItemGroup>
+  <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\util.cs" />
     <Compile Include="..\src\platform\common\sqlite3_pinvoke.cs" />
-    <Compile Include="..\src\platform\net45\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
-      <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
-      <Name>SQLitePCL_profile78</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

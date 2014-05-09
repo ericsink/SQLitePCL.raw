@@ -39,10 +39,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL\profile259\SQLitePCL_profile259.csproj">
-      <Project>{7ef5dc39-1483-454c-99c8-88cdef4c93be}</Project>
-      <Name>SQLitePCL_profile259</Name>
-    </ProjectReference>
+    <Reference Include="SQLitePCL">
+      <HintPath>..\SQLitePCL\profile259\bin\$(Configuration)\SQLitePCL.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

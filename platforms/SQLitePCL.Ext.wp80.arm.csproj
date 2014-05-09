@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext.wp80.arm</AssemblyName>
+    <AssemblyName>SQLitePCL</AssemblyName>
     <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -42,19 +42,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\util.cs" />
     <Compile Include="..\src\platform\common\sqlite3_cppinterop.cs" />
-    <Compile Include="..\src\platform\wp8\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.wp80.arm.vcxproj">
       <Project>{F463E6AC-3EB1-463D-A91E-C6013A8A04CF}</Project>
       <Name>cppinterop.wp80.arm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
-      <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
-      <Name>SQLitePCL_profile78</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />

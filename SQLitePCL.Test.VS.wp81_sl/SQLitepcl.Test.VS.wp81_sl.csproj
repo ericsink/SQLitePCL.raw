@@ -151,10 +151,6 @@
       <Project>{5346943d-ce35-4a6b-b753-db26c60832b2}</Project>
       <Name>SQLitePCL.Ugly.profile259</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL\profile259\SQLitePCL_profile259.csproj">
-      <Project>{7ef5dc39-1483-454c-99c8-88cdef4c93be}</Project>
-      <Name>SQLitePCL_profile259</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

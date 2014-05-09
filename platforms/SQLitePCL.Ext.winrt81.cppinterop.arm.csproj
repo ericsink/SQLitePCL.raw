@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLitePCL</RootNamespace>
-    <AssemblyName>SQLitePCL.Ext.winrt81.cppinterop.arm</AssemblyName>
+    <AssemblyName>SQLitePCL</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -48,15 +48,10 @@
       <Project>{D2BF7C1F-E6C4-4CF9-8A6D-6C58B08FE675}</Project>
       <Name>cppinterop.winrt81.arm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL\profile78\SQLitePCL_profile78.csproj">
-      <Project>{e7f6aae8-d264-49a2-8295-4e3b02b9bf0b}</Project>
-      <Name>SQLitePCL_profile78</Name>
-    </ProjectReference>
   </ItemGroup>
+  <Import Project="common_files.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\platform\common\util.cs" />
     <Compile Include="..\src\platform\common\sqlite3_cppinterop.cs" />
-    <Compile Include="..\src\platform\winrt\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

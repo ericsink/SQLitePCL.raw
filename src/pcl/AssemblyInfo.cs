@@ -4,12 +4,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SQLitePCL")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("SQLitePCL.raw")]
+[assembly: AssemblyDescription("A Portable Class Library (PCL) for low-level (raw) access to SQLite")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Open Technologies, Inc.")]
-[assembly: AssemblyProduct("SQLitePCL")]
-[assembly: AssemblyCopyright("Copyright © Microsoft Open Technologies, Inc.")]
+[assembly: AssemblyCompany("Zumero, LLC")]
+[assembly: AssemblyProduct("SQLitePCL.raw")]
+[assembly: AssemblyCopyright("Copyright 2014 Zumero, LLC.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
@@ -24,5 +24,5 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.8.3.1")]
-[assembly: AssemblyFileVersion("3.8.3.1")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]

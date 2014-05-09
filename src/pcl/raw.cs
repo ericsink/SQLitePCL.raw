@@ -29,7 +29,7 @@ namespace SQLitePCL
 
     public static class raw
     {
-        private static ISQLite3Provider _imp = Platform.Instance;
+        private static ISQLite3Provider _imp = new SQLite3Provider();
 
         public const int SQLITE_UTF8                = 1;
         public const int SQLITE_UTF16LE             = 2;

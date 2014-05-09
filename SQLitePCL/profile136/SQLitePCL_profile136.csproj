@@ -36,11 +36,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\src\pcl\isqlite3.cs" />
+    <Compile Include="..\..\src\pcl\AssemblyInfo.cs" />
     <Compile Include="..\..\src\pcl\raw.cs" />
     <Compile Include="..\..\src\pcl\intptrs.cs" />
-    <Compile Include="..\..\src\pcl\platform_resolver_oldrefapi.cs" />
-    <Compile Include="..\..\src\pcl\AssemblyInfo.cs" />
+    <Compile Include="..\..\src\pcl\isqlite3.cs" />
+    <Compile Include="..\..\src\pcl\bait.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
