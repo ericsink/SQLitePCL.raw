@@ -56,7 +56,7 @@
   </ItemDefinitionGroup>
 
   <ItemGroup>
-    <ClCompile Include="..\src\sqlite3\sqlite3.c" />
+    <ClCompile Include="src\sqlite3.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
