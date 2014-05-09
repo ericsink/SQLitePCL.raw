@@ -18,6 +18,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.wp80.x86", "pcl\SQLitePCL.Ext.wp80.x86.csproj", "{DC4F7766-AFB9-46FD-AD1E-2ECAC1F71576}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", "ugly\SQLitePCL.Ugly.profile78.csproj", "{B3C430E9-2920-416C-808D-58D0BB94A836}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B} = {E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlite-net", "sqlite-net\sqlite-net.csproj", "{9F5829DC-D2AE-4ED1-A2C2-C16A6E654F52}"
 EndProject
@@ -52,6 +55,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.VS.wp81_rt", "test\SQLitePCL.Test.VS.wp81_rt\SQLitePCL.Test.VS.wp81_rt.csproj", "{E8BC2971-7782-40FB-A61B-0975B32E1401}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile259", "ugly\SQLitePCL.Ugly.profile259.csproj", "{5346943D-CE35-4A6B-B753-DB26C60832B2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7EF5DC39-1483-454C-99C8-88CDEF4C93BE} = {7EF5DC39-1483-454C-99C8-88CDEF4C93BE}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppinterop.wp81_sl.x86", "cppinterop\cppinterop.wp81_sl.x86.vcxproj", "{C6F65288-359E-4B46-92AC-0F415A6EFDC0}"
 EndProject
