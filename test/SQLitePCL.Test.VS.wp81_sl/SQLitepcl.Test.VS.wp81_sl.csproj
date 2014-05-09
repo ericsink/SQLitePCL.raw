@@ -75,7 +75,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="..\src\test\test_cases.cs" />
+    <Compile Include="..\test_cases.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -143,11 +143,11 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\pcl\SQLitePCL.Ext.wp81_sl.x86.csproj">
+    <ProjectReference Include="..\..\pcl\SQLitePCL.Ext.wp81_sl.x86.csproj">
       <Project>{3c5bff0e-85a3-4e01-81a0-b191cc283c1b}</Project>
       <Name>SQLitePCL.Ext.wp81_sl.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly.profile259\SQLitePCL.Ugly.profile259.csproj">
+    <ProjectReference Include="..\..\ugly\SQLitePCL.Ugly.profile259.csproj">
       <Project>{5346943d-ce35-4a6b-b753-db26c60832b2}</Project>
       <Name>SQLitePCL.Ugly.profile259</Name>
     </ProjectReference>

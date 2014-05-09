@@ -116,7 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\src\test\test_cases.cs" />
+    <Compile Include="..\test_cases.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -138,11 +138,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\pcl\SQLitePCL.Ext.winrt80.cppinterop.x86.csproj">
+    <ProjectReference Include="..\..\pcl\SQLitePCL.Ext.winrt80.cppinterop.x86.csproj">
       <Project>{1584f610-a82a-430c-a37a-08f9ba2368cd}</Project>
       <Name>SQLitePCL.Ext.winrt80.cppinterop.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
+    <ProjectReference Include="..\..\ugly\SQLitePCL.Ugly.profile78.csproj">
       <Project>{b3c430e9-2920-416c-808d-58d0bb94a836}</Project>
       <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>

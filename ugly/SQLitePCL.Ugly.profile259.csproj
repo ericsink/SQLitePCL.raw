@@ -21,7 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\profile259\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\profile259\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,18 +30,18 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\profile259\Release\</OutputPath>
+    <IntermediateOutputPath>obj\profile259\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\src\ugly\ugly.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\ugly.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLitePCL">
-      <HintPath>..\platforms\bin\profile259\$(Configuration)\SQLitePCL.dll</HintPath>
+      <HintPath>..\pcl\bin\profile259\$(Configuration)\SQLitePCL.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

@@ -21,7 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\profile78\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\profile78\Debug\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,7 +30,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\profile78\Release\</OutputPath>
+    <IntermediateOutputPath>obj\profile78\Release\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,13 +39,12 @@
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <Reference Include="SQLitePCL">
-      <HintPath>..\platforms\bin\profile78\$(Configuration)\SQLitePCL.dll</HintPath>
+      <HintPath>..\pcl\bin\profile78\$(Configuration)\SQLitePCL.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\ugly\ugly.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\ugly.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

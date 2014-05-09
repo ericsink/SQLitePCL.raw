@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile78", "pcl\SQLitePCL_profile78.csproj", "{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", "SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj", "{B3C430E9-2920-416C-808D-58D0BB94A836}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", "ugly\SQLitePCL.Ugly.profile78.csproj", "{B3C430E9-2920-416C-808D-58D0BB94A836}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.preinstalled", "pcl\SQLitePCL.Ext.iOS.preinstalled.csproj", "{24768C1D-A0A7-4D96-B6DD-742E0425DB40}"
 EndProject
@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.Android", "pc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlite-net", "sqlite-net\sqlite-net.csproj", "{9F5829DC-D2AE-4ED1-A2C2-C16A6E654F52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.XS.Android", "SQLitePCL.Test.XS.Android\SQLitePCL.Test.XS.Android.csproj", "{B535F20F-40B9-44F0-9C90-471FBA53EFED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.XS.Android", "test\SQLitePCL.Test.XS.Android\SQLitePCL.Test.XS.Android.csproj", "{B535F20F-40B9-44F0-9C90-471FBA53EFED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.XS.iOS", "SQLitePCL.Test.XS.iOS\SQLitePCL.Test.XS.iOS.csproj", "{99ED63D9-FB89-402D-9755-8BF54A6ED2BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Test.XS.iOS", "test\SQLitePCL.Test.XS.iOS\SQLitePCL.Test.XS.iOS.csproj", "{99ED63D9-FB89-402D-9755-8BF54A6ED2BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ext.iOS.other", "pcl\SQLitePCL.Ext.iOS.other.csproj", "{4458189C-918D-46D3-9D17-09208AFEE4BE}"
 EndProject
