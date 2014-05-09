@@ -16,40 +16,17 @@ You can tell the compiler which .NET targets you want to support (a profile)
 and then it will complain at you if you try to use something that wouldn't
 work.
 
-When a PCL needs to call some code that would not be portable, the
-usual approach is to use [Dependency Injection](http://en.wikipedia.org/wiki/Dependency_injection).
-The PCL defines a C# interface around the functionality it needs.
-The code using the PCL must provide (inject) an implementation of
-that interface for the platform on which it is running. 
-
-The PCL assembly can therefore be used unchanged on any of its
-supported platforms.  The non-portable code lives in platform assemblies.
-
 ## Which flavor of PCL is this?
 
-I've seen people do PCLs in two different ways.  Both ways involve a reference
-assembly and a platform assembly.
+See [my blog entry](http://www.ericsink.com/entries/pcl_bait_and_switch.html) about the two different ways of doing PCLs.
 
-One approach is that the reference assembly contains a stubbed-out class.
-All platform assemblies must implement the exact same class.  A platform-specific
-project gets resolved at deploy time, when
-the appropriate platform assembly is substituted for the reference assembly.
-
-The other approach is that the reference assembly contains an interface.
-All platform assemblies provide an implementation of that interface.
-A platform-specific project gets resolved at build time, by referencing the
-reference assembly *and* the appropriate platform assembly.
-
-SQLitePCL.raw is of the latter approach.  To use it, you build against two
-assemblies:
-
- * The reference assembly (the PCL itself)
-
- * Exactly one platform assembly (whichever one is appropriate for your platform and configuration)
+SQLitePCL.raw uses the Bait and Switch approach.  It provides a portable assembly (the Bait)
+which can be referenced by projects that are libraries.  When building an executable or app,
+reference the appropriate platform-specific alternative.
 
 ## Which platform assemblies are provided in this library?
 
-Each subdirectory with a name of the form SQLitePCL.Ext.\* contains an implementation
+In the pcl subdirectory, each csproj with a name of the form SQLitePCL.Ext.\* contains an implementation
 of a platform assembly.
 
 The following platforms are currently supported:
@@ -97,7 +74,7 @@ For Visual Studio, use SQLitePCL\_VisualStudio.sln.  The current build setup is 
 
 ## Which PCL profile is supported?
 
-The .sln file contains projects to build the PCL with profile 78, profile 136,
+The .sln file contains projects to build the PCL with profile 78, 
 profile 158, and profile 259.  Others might work as well, but those are the ones I 
 have tried.
 
@@ -238,33 +215,25 @@ Even within this thin library, there are three layers to be explained:
 At the very bottom is the SQLite library itself.  Written in C.  This is 
 unmanaged code, compiled for x86 or ARM or whatever.
 
-Building on that, SQLitePCL.raw has three layers.  The first two live
-in the platform assemblies.  The third one lives in the PCL itself and
-provides the public API.
+Building on that, SQLitePCL.raw has three layers.
 
-(1) We need something that can call the C code.  For most .NET-ish
+(1) We need something that can call the C code.  For the Xamarin
 implementations this is DllImport (aka P/Invoke).  For Windows Phone 8, this
-is a C++ wrapper.  In either case, this presents an extremely low-level API.
+is a C++ wrapper.  For the others, it is both.  In either case, this presents an extremely low-level API.
 C pointers become System.IntPtr.  Strings are not actually .NET strings, but rather, are in utf-8
 encoding, represented in C# as either an IntPtr or a byte[].
 
-(2) Next layer up, but still within the platform-specific assemblies, we have a
+(2) Next layer up, we have a
 C# layer which makes things just a tiny bit friendlier.  Not much.
-It maps strings to/from utf8.  And it manages delegates.  Both of these
-things require platform-specific code or else I would have moved this
-functionality up one layer into the PCL itself.  However, it is also
-the case that these things can share some code.  So there is a file
-called src/platform/util.cs which is portable in the sense that it can
-be recompiled into each platform assembly, but it not portable enough
-to be compiled into a PCL assembly.
+It maps strings to/from utf8.  And it manages delegates.  The
+implementation of this layer varies depending on which assembly
+it is.  For the PCL assembly itself (the Bait assembly), this is
+implemented as a set of stubs that throw errors.
 
-This layer is the boundary between the platform assembly and the PCL
-assembly.  It implements a C# interface defined in the PCL assembly.
-It is implemented as a class so it can be instantiated and injected.
-
-(3) Inside the PCL assembly, we have one more layer called "raw".  
+(3) Finally, we have one more layer called "raw".  
 This layer
 is the top layer of the PCL, the one that is presented publicly.
+It is identical in all of the assemblies, portable or not.
 It adds one more C# nicety, which is that all IntPtrs are packaged up
 inside typed wrapper classes.  For example, at the level of the C API,
 a database connection is represented by a sqlite3\*.  One layer up,
@@ -414,20 +383,6 @@ SQLite functions.  Alternatively, you can bundle a recent version of SQLite
 into your mobile app rather than using the build that is preinstalled on the
 platform.
 
-## Why do I get a "Platform assembly not found" error?
-
-Maybe you forgot to reference one of the platform assemblies.
-
-Or maybe you're on iOS or Android, where you have to do the platform
-injection step manually.  Insert this line very early in the execution
-of your app:
-
-    SQLitePCL.Platform.Instance = new SQLitePCL.SQLite3Provider();
-
-It's safe (and somewhat more explicit) to do this on any of the platforms,
-but iOS and Android seem to be the only ones where it is required.  The others
-use reflection to find the platform assembly and initialize it automatically.
-
 ## Why do some of the platforms have multiple platform assemblies?
 
 Because there are multiple options available in how the native SQLite code
@@ -491,17 +446,9 @@ On iOS/Android, you have two choices:
 
 On other platforms, make sure you are including exactly one instance of the SQLite library.
 
-## Why do the project subdirectories mostly not have any source code in them?
-
-To avoid duplication.
-
-The src directory contains most of the actual source code.  In several cases, a code
-file is actually being compiled by more than one project.
-
 ## Is this compatible with SQLCipher?
 
 Yes.  But I want to make that use case painless, and I haven't decided how to do that yet.
 It's a slippery slope with no obvious place to stop.  If I slide all the way
 to the bottom of the hill, I'll be providing platform assemblies that include SQLCipher.
-
 
