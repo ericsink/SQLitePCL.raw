@@ -17,64 +17,66 @@
 	</metadata>
 	<files>		
 		<!-- PCL -->
-		<file src="..\SQLitePCL\profile78\bin\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
-		<file src="..\SQLitePCL\profile158\bin\Release\SQLitePCL.dll" target="lib\portable-net45+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
+		<file src="..\pcl\bin\profile78\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
+		<file src="..\pcl\bin\profile158\Release\SQLitePCL.dll" target="lib\portable-net45+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\SQLitePCL.dll" />
 		<!-- TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong? -->
-		<file src="..\SQLitePCL\profile259\bin\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.dll" />
+		<file src="..\pcl\bin\profile259\Release\SQLitePCL.dll" target="lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.dll" />
 
 		<!-- cppinterop DLLs -->
 
-		<file src="..\cppinterop\bin\net45\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\net45\x64\" />
-		<file src="..\cppinterop\bin\net45\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\net45\x86\" />
-		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\x64\" />
-		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\x86\" />
-		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\arm\" />
-		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\x64\" />
-		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\x86\" />
-		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\arm\" />
-		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\x86\" />
-		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\arm\" />
-		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_rt\x86\" />
-		<file src="..\cppinterop\bin\wp81_rt\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_rt\arm\" />
-		<file src="..\cppinterop\bin\wp81_sl\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_sl\x86\" />
-		<file src="..\cppinterop\bin\wp81_sl\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_sl\arm\" />
+		<file src="..\cppinterop\bin\net45\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\net45\cppinterop\x64\" />
+		<file src="..\cppinterop\bin\net45\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\net45\cppinterop\x86\" />
+
+		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\cppinterop\x64\" />
+		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt80\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\cppinterop\x64\" />
+		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\winrt81\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp80\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_rt\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp81_rt\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_rt\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp81_sl\Win32\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_sl\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp81_sl\arm\Release\SQLitePCL.cppinterop.dll" target="build\native\wp81_sl\cppinterop\arm\" />
 
 		<!-- cppinterop winmd files -->
 
-		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\x64\" />
-		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\x86\" />
-		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\arm\" />
-		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\x64\" />
-		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\x86\" />
-		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\arm\" />
-		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\x86\" />
-		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\arm\" />
-		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_rt\x86\" />
-		<file src="..\cppinterop\bin\wp81_rt\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_rt\arm\" />
-		<file src="..\cppinterop\bin\wp81_sl\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_sl\x86\" />
-		<file src="..\cppinterop\bin\wp81_sl\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_sl\arm\" />
+		<file src="..\cppinterop\bin\winrt80\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\cppinterop\x64\" />
+		<file src="..\cppinterop\bin\winrt80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\winrt80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt80\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\winrt81\x64\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\cppinterop\x64\" />
+		<file src="..\cppinterop\bin\winrt81\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\winrt81\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\winrt81\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp80\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp80\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp80\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp81_rt\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_rt\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp81_rt\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_rt\cppinterop\arm\" />
+		<file src="..\cppinterop\bin\wp81_sl\Win32\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_sl\cppinterop\x86\" />
+		<file src="..\cppinterop\bin\wp81_sl\arm\Release\SQLitePCL.cppinterop.winmd" target="build\native\wp81_sl\cppinterop\arm\" />
 
-		<!-- Ext/platform assemblies -->
+		<!-- platform assemblies -->
 
-		<file src="..\platforms\bin\net45\cppinterop\x64\Release\SQLitePCL.Ext.net45.cppinterop.x64.dll" target="build\native\net45\x64\" />
-		<file src="..\platforms\bin\net45\cppinterop\x86\Release\SQLitePCL.Ext.net45.cppinterop.x86.dll" target="build\native\net45\x86\" />
-		<file src="..\platforms\bin\winrt80\cppinterop\x64\Release\SQLitePCL.Ext.winrt80.cppinterop.x64.dll" target="build\native\winrt80\x64\" />
-		<file src="..\platforms\bin\winrt80\cppinterop\x86\Release\SQLitePCL.Ext.winrt80.cppinterop.x86.dll" target="build\native\winrt80\x86\" />
-		<file src="..\platforms\bin\winrt80\cppinterop\arm\Release\SQLitePCL.Ext.winrt80.cppinterop.arm.dll" target="build\native\winrt80\arm\" />
-		<file src="..\platforms\bin\winrt81\cppinterop\x64\Release\SQLitePCL.Ext.winrt81.cppinterop.x64.dll" target="build\native\winrt81\x64\" />
-		<file src="..\platforms\bin\winrt81\cppinterop\x86\Release\SQLitePCL.Ext.winrt81.cppinterop.x86.dll" target="build\native\winrt81\x86\" />
-		<file src="..\platforms\bin\winrt81\cppinterop\arm\Release\SQLitePCL.Ext.winrt81.cppinterop.arm.dll" target="build\native\winrt81\arm\" />
-		<file src="..\platforms\bin\wp80\x86\Release\SQLitePCL.Ext.wp80.x86.dll" target="build\native\wp80\x86\" />
-		<file src="..\platforms\bin\wp80\arm\Release\SQLitePCL.Ext.wp80.arm.dll" target="build\native\wp80\arm\" />
-		<file src="..\platforms\bin\wp81_rt\x86\Release\SQLitePCL.Ext.wp81_rt.x86.dll" target="build\native\wp81_rt\x86\" />
-		<file src="..\platforms\bin\wp81_rt\arm\Release\SQLitePCL.Ext.wp81_rt.arm.dll" target="build\native\wp81_rt\arm\" />
-		<file src="..\platforms\bin\wp81_sl\x86\Release\SQLitePCL.Ext.wp81_sl.x86.dll" target="build\native\wp81_sl\x86\" />
-		<file src="..\platforms\bin\wp81_sl\arm\Release\SQLitePCL.Ext.wp81_sl.arm.dll" target="build\native\wp81_sl\arm\" />
-		<file src="..\platforms\bin\net45\pinvoke\x86\Release\SQLitePCL.Ext.net45.pinvoke.x86.dll" target="build\native\net45\x86\" />
-		<file src="..\platforms\bin\net45\pinvoke\x64\Release\SQLitePCL.Ext.net45.pinvoke.x64.dll" target="build\native\net45\x64\" />
-		<file src="..\platforms\bin\winrt80\pinvoke\x86\Release\SQLitePCL.Ext.winrt80.pinvoke.x86.dll" target="build\native\winrt80\x86\" />
-		<file src="..\platforms\bin\winrt80\pinvoke\x64\Release\SQLitePCL.Ext.winrt80.pinvoke.x64.dll" target="build\native\winrt80\x64\" />
-		<file src="..\platforms\bin\winrt80\pinvoke\arm\Release\SQLitePCL.Ext.winrt80.pinvoke.arm.dll" target="build\native\winrt80\arm\" />
+		<file src="..\pcl\bin\net45\cppinterop\x64\Release\SQLitePCL.dll" target="build\native\net45\cppinterop\x64\" />
+		<file src="..\pcl\bin\net45\cppinterop\x86\Release\SQLitePCL.dll" target="build\native\net45\cppinterop\x86\" />
+		<file src="..\pcl\bin\winrt80\cppinterop\x64\Release\SQLitePCL.dll" target="build\native\winrt80\cppinterop\x64\" />
+		<file src="..\pcl\bin\winrt80\cppinterop\x86\Release\SQLitePCL.dll" target="build\native\winrt80\cppinterop\x86\" />
+		<file src="..\pcl\bin\winrt80\cppinterop\arm\Release\SQLitePCL.dll" target="build\native\winrt80\cppinterop\arm\" />
+		<file src="..\pcl\bin\winrt81\cppinterop\x64\Release\SQLitePCL.dll" target="build\native\winrt81\cppinterop\x64\" />
+		<file src="..\pcl\bin\winrt81\cppinterop\x86\Release\SQLitePCL.dll" target="build\native\winrt81\cppinterop\x86\" />
+		<file src="..\pcl\bin\winrt81\cppinterop\arm\Release\SQLitePCL.dll" target="build\native\winrt81\cppinterop\arm\" />
+		<file src="..\pcl\bin\wp80\x86\Release\SQLitePCL.dll" target="build\native\wp80\cppinterop\x86\" />
+		<file src="..\pcl\bin\wp80\arm\Release\SQLitePCL.dll" target="build\native\wp80\cppinterop\arm\" />
+		<file src="..\pcl\bin\wp81_rt\x86\Release\SQLitePCL.dll" target="build\native\wp81_rt\cppinterop\x86\" />
+		<file src="..\pcl\bin\wp81_rt\arm\Release\SQLitePCL.dll" target="build\native\wp81_rt\cppinterop\arm\" />
+		<file src="..\pcl\bin\wp81_sl\x86\Release\SQLitePCL.dll" target="build\native\wp81_sl\cppinterop\x86\" />
+		<file src="..\pcl\bin\wp81_sl\arm\Release\SQLitePCL.dll" target="build\native\wp81_sl\cppinterop\arm\" />
+
+		<file src="..\pcl\bin\net45\pinvoke\x86\Release\SQLitePCL.dll" target="build\native\net45\pinvoke\x86\" />
+		<file src="..\pcl\bin\net45\pinvoke\x64\Release\SQLitePCL.dll" target="build\native\net45\pinvoke\x64\" />
+		<file src="..\pcl\bin\winrt80\pinvoke\x86\Release\SQLitePCL.dll" target="build\native\winrt80\pinvoke\x86\" />
+		<file src="..\pcl\bin\winrt80\pinvoke\x64\Release\SQLitePCL.dll" target="build\native\winrt80\pinvoke\x64\" />
+		<file src="..\pcl\bin\winrt80\pinvoke\arm\Release\SQLitePCL.dll" target="build\native\winrt80\pinvoke\arm\" />
 
 		<!-- TODO ios -->
 
