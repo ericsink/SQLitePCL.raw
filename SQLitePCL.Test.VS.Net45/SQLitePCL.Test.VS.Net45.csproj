@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\platforms\SQLitePCL.Ext.Net45.cppinterop.x86.csproj">
+    <ProjectReference Include="..\pcl\SQLitePCL.Ext.Net45.cppinterop.x86.csproj">
       <Project>{50dfba97-344a-4213-be20-7057067e2a07}</Project>
       <Name>SQLitePCL.Ext.Net45.cppinterop.x86</Name>
     </ProjectReference>

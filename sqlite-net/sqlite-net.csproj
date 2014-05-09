@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\platforms\SQLitePCL_profile78.csproj">
+    <ProjectReference Include="..\pcl\SQLitePCL_profile78.csproj">
       <Project>{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}</Project>
       <Name>SQLitePCL_profile78</Name>
     </ProjectReference>

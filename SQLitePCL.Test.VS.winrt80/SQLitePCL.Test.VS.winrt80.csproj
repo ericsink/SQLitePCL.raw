@@ -138,7 +138,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\platforms\SQLitePCL.Ext.winrt80.cppinterop.x86.csproj">
+    <ProjectReference Include="..\pcl\SQLitePCL.Ext.winrt80.cppinterop.x86.csproj">
       <Project>{1584f610-a82a-430c-a37a-08f9ba2368cd}</Project>
       <Name>SQLitePCL.Ext.winrt80.cppinterop.x86</Name>
     </ProjectReference>

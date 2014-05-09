@@ -127,7 +127,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\platforms\SQLitePCL.Ext.wp80.x86.csproj">
+    <ProjectReference Include="..\pcl\SQLitePCL.Ext.wp80.x86.csproj">
       <Project>{DC4F7766-AFB9-46FD-AD1E-2ECAC1F71576}</Project>
       <Name>SQLitePCL.Ext.wp80.x86</Name>
     </ProjectReference>
