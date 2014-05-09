@@ -1,43 +1,25 @@
 
-rename the platforms dir
+update/fix the nuget stuff
 
 for the reference from ugly to the pcl assembly, using projectreference
 fails because it ends up the copylocal issue.  using reference sometimes
 fails because the dependency information is missing so vs sometimes
 build in the wrong order.
 
-fix assemblyinfo.cs for ugly.
-
 maybe ugly should be a nuget package of its own
 
-consolidate src/pcl and src/platforms a bit further to more
-cleanly reflect the way to think about bait and switch
-
 update readme flavor pcl
-
-move csprojs for the pcl assembly into the same place and
-have it share common_files.msbuild
-
-remove profile 136
 
 .Ext. is weird now
 
 write the .props and .targets part of the nuget package
 
-move the test projects down a folder
-
-move the ugly projects down a folder
-
 some of those solution platform configurations could go away?
-
-check that sharing of assemblyinfo.cs is the way it should be
 
 naming convention: put cppinterop/pinvoke/preinstalled/other before the
 platform identifier stuff?
 
 rm xamarin projects from visual studio SLN so that msbuild will work
-
-update/fix the nuget stuff
 
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
@@ -55,13 +37,6 @@ add tests that use actual named sqlite database files, not just
 add an NUnit project on Windows/Net45, so that build breakage
 with NUnit can be detected when making changes on windows.
 should reference NUnit as a nuget package
-
-consider removing the reflection-based platform resolver.
-maybe we should just require the following line to do the
-dependency injection on every platform.  it's required on Xamarin
-anyway:
-
-    SQLitePCL.Platform.Instance = new SQLitePCL.SQLite3Provider();
 
 special build for desktop Mono?  or does net45 cover that?
 
@@ -92,9 +67,6 @@ sqlcipher?
 note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
 
 looks like profile 259 is the new 78
-
-document cases where we have code that is shared by different platform
-assemblies
 
 ----------------
 
