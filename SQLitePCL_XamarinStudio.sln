@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile78", "SQLitePCL\profile78\SQLitePCL_profile78.csproj", "{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL_profile78", "platforms\SQLitePCL_profile78.csproj", "{E7F6AAE8-D264-49A2-8295-4E3B02B9BF0B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLitePCL.Ugly.profile78", "SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj", "{B3C430E9-2920-416C-808D-58D0BB94A836}"
 EndProject
