@@ -43,7 +43,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\cppinterop\sqlite3_cx.h" />
-    <ClCompile Include="..\src\cppinterop\sqlite3_cx.cpp" />
+    <ClInclude Include="sqlite3_cx.h" />
+    <ClCompile Include="sqlite3_cx.cpp" />
   </ItemGroup>
 </Project>
