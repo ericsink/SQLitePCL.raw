@@ -44,10 +44,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
-  </ItemGroup>
+  <Import Project="common_files_cppinterop.msbuild" />
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.wp81_rt.x86.vcxproj">
       <Project>{58a207e1-a60b-4fab-8abc-f704e323c852}</Project>

@@ -39,9 +39,6 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
   </ItemGroup>
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\platform\common\sqlite3_pinvoke.cs" />
-  </ItemGroup>
+  <Import Project="common_files_pinvoke.msbuild" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -40,19 +40,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_pinvoke.cs" />
-  </ItemGroup>
+  <Import Project="common_files_pinvoke.msbuild" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

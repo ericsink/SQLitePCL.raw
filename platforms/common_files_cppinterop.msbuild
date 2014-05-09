@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="common_files_portable.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\pcl\util.cs" />
+    <Compile Include="src\sqlite3_cppinterop.cs" />
+    <Compile Include="src\util.cs" />
   </ItemGroup>
 </Project>

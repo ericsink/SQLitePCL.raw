@@ -40,10 +40,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
-  </ItemGroup>
+  <Import Project="common_files_cppinterop.msbuild" />
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.net45.x86.vcxproj">
       <Project>{c4b49a5c-f003-4d46-a542-862484f18272}</Project>

@@ -38,7 +38,7 @@
   </PropertyGroup>
   <Import Project="common_files_portable.msbuild" />
   <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_bait.cs" />
+    <Compile Include="src\sqlite3_bait.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

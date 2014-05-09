@@ -46,10 +46,7 @@
       <Name>cppinterop.winrt80.x64</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
-  </ItemGroup>
+  <Import Project="common_files_cppinterop.msbuild" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

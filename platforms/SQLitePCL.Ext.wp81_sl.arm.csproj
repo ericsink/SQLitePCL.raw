@@ -42,10 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <Import Project="common_files.msbuild" />
-  <ItemGroup>
-    <Compile Include="..\src\pcl\sqlite3_cppinterop.cs" />
-  </ItemGroup>
+  <Import Project="common_files_cppinterop.msbuild" />
   <ItemGroup>
     <ProjectReference Include="..\cppinterop\cppinterop.wp81_sl.arm.vcxproj">
       <Project>{B9BC576E-9836-4287-A91B-1DB178135D59}</Project>
