@@ -78,9 +78,9 @@
 		<file src="..\pcl\bin\winrt80\pinvoke\x64\Release\SQLitePCL.dll" target="build\native\winrt80\pinvoke\x64\" />
 		<file src="..\pcl\bin\winrt80\pinvoke\arm\Release\SQLitePCL.dll" target="build\native\winrt80\pinvoke\arm\" />
 
-		<!-- TODO ios -->
-
-		<!-- TODO android -->
+		<file src="..\pcl\bin\android\Release\SQLitePCL.dll" target="build\native\android\" />
+		<file src="..\pcl\bin\ios\preinstalled\Release\SQLitePCL.dll" target="build\native\ios\preinstalled\" />
+		<file src="..\pcl\bin\ios\other\Release\SQLitePCL.dll" target="build\native\ios\other\" />
 
 		<file src="SQLitePCL.raw.targets" target="build\native\" />
 	</files>
