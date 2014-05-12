@@ -26,7 +26,7 @@ reference the appropriate platform-specific alternative.
 
 ## Which platform assemblies are provided in this library?
 
-In the pcl subdirectory, each csproj with a name of the form SQLitePCL.Ext.\* contains an implementation
+In the pcl subdirectory, each csproj with a name of the form SQLitePCL.platform.\* contains an implementation
 of a platform assembly.
 
 The following platforms are currently supported:

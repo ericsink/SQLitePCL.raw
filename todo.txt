@@ -1,18 +1,11 @@
 
 update/fix the nuget stuff
 
-maybe ugly should be a nuget package of its own
-
-update readme flavor pcl
-
-.Ext. is weird now
-
 write the .props and .targets part of the nuget package
 
-some of those solution platform configurations could go away?
+maybe ugly should be a nuget package of its own
 
-naming convention: put cppinterop/pinvoke/preinstalled/other before the
-platform identifier stuff?
+some of those solution platform configurations could go away?
 
 rm xamarin projects from visual studio SLN so that msbuild will work
 
