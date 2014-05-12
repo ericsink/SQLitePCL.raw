@@ -102,15 +102,15 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="UnitTestAppDelegate.cs" />
-    <Compile Include="..\src\test\test_cases.cs" />
+    <Compile Include="..\test_cases.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\SQLitePCL.Ext.iOS.preinstalled\SQLitePCL.Ext.iOS.preinstalled.csproj">
+    <ProjectReference Include="..\..\pcl\SQLitePCL.platform.ios.preinstalled.csproj">
       <Project>{24768C1D-A0A7-4D96-B6DD-742E0425DB40}</Project>
-      <Name>SQLitePCL.Ext.iOS.preinstalled</Name>
+      <Name>SQLitePCL.platform.ios.preinstalled</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
+    <ProjectReference Include="..\..\ugly\SQLitePCL.Ugly.profile78.csproj">
       <Project>{B3C430E9-2920-416C-808D-58D0BB94A836}</Project>
       <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>

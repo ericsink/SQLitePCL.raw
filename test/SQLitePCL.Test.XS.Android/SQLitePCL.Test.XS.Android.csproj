@@ -51,7 +51,7 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\src\test\test_cases.cs" />
+    <Compile Include="..\test_cases.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -63,11 +63,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\platforms\SQLitePCL.Ext.Android.csproj">
+    <ProjectReference Include="..\..\pcl\SQLitePCL.platform.android.csproj">
       <Project>{8A697E13-B0E1-47A8-8CDF-9AA7B2F7885C}</Project>
-      <Name>SQLitePCL.Ext.Android</Name>
+      <Name>SQLitePCL.platform.android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SQLitePCL.Ugly.profile78\SQLitePCL.Ugly.profile78.csproj">
+    <ProjectReference Include="..\..\ugly\SQLitePCL.Ugly.profile78.csproj">
       <Project>{B3C430E9-2920-416C-808D-58D0BB94A836}</Project>
       <Name>SQLitePCL.Ugly.profile78</Name>
     </ProjectReference>

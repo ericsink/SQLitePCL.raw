@@ -10,8 +10,6 @@ namespace SQLitePCL.Test.XS.Android
 	{
 		protected override void OnCreate (Bundle bundle)
 		{
-			SQLitePCL.Platform.Instance = new SQLitePCL.SQLite3Provider();
-			
 			// tests can be inside the main assembly
 			AddTest (Assembly.GetExecutingAssembly ());
 			// or in any reference assemblies

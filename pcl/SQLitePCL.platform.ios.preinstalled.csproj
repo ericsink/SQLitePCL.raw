@@ -39,6 +39,22 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
   </ItemGroup>
-  <Import Project="common_files_pinvoke.msbuild" />
+
+  <!-- 
+      for some reason, the import doesn't work here
+      <Import Project="common_files_pinvoke.msbuild" />
+  -->
+  <ItemGroup>
+    <Compile Include="src\AssemblyInfo.cs" />
+    <Compile Include="src\raw.cs" />
+    <Compile Include="src\intptrs.cs" />
+    <Compile Include="src\isqlite3.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="src\sqlite3_pinvoke.cs" />
+    <Compile Include="src\util.cs" />
+  </ItemGroup>
+
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
