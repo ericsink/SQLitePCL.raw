@@ -1306,7 +1306,7 @@ public class gen
 
 	public static void Main(string[] args)
 	{
-		string root = ".";
+		string root = ".."; // assumes that gen_build.exe is being run from the root directory of the project
 		string top = "bld";
 
 		Directory.CreateDirectory(top);
