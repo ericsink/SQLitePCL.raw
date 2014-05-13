@@ -252,19 +252,19 @@ public class gen
 
 	private static void write_section(pcl_config cfg, XmlWriter f, bool debug, List<string> defines)
 	{
-		string name = debug ? "Debug" : "Release";
+		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
 
 		if (cfg.is_portable())
 		{
-			f.WriteElementString("OutputPath", string.Format("bin\\pcl\\{0}\\{1}\\", cfg.env, name));
-			f.WriteElementString("IntermediateOutputPath", string.Format("obj\\pcl\\{0}\\{1}\\", cfg.env, name));
+			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\", name, cfg.env));
+			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\", name, cfg.env));
 		}
 		else
 		{
-			f.WriteElementString("OutputPath", string.Format("bin\\pcl\\{0}\\{1}\\{2}\\{3}\\{4}\\", cfg.env, cfg.api, cfg.sqlite, cfg.cpu, name));
-			f.WriteElementString("IntermediateOutputPath", string.Format("obj\\pcl\\{0}\\{1}\\{2}\\{3}\\{4}\\", cfg.env, cfg.api, cfg.sqlite, cfg.cpu, name));
+			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\{2}\\{3}\\{4}\\", name, cfg.env, cfg.api, cfg.sqlite, cfg.cpu));
+			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\{2}\\{3}\\{4}\\", name, cfg.env, cfg.api, cfg.sqlite, cfg.cpu));
 		}
 
 		string defs;
@@ -442,8 +442,8 @@ public class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("bin\\sqlite3\\{0}\\{1}\\$(Configuration)\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("obj\\sqlite3\\{0}\\{1}\\$(Configuration)\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -733,8 +733,8 @@ public class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("bin\\cppinterop\\{0}\\{1}\\$(Configuration)\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("obj\\cppinterop\\{0}\\{1}\\$(Configuration)\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\cppinterop\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\cppinterop\\{0}\\{1}\\", cfg.env, cfg.cpu));
 			write_cpp_includepath(f, root, "sqlite3\\src\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
