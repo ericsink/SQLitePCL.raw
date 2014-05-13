@@ -77,19 +77,33 @@ internal class cppinterop_config
 internal class pcl_config
 {
 	public string env;
-	public string api;
-	public string sqlite;
+	public string nat;
 	public string cpu;
 	public string guid;
 
 	public bool is_portable()
 	{
-		if (env.Length <= 7)
+		return env.StartsWith("profile");
+	}
+
+	public bool is_cppinterop()
+	{
+		if (is_portable())
 		{
 			return false;
 		}
 
-		return "profile" == env.Substring(0,7);
+		return nat.StartsWith("cppinterop");
+	}
+
+	public bool is_pinvoke()
+	{
+		if (is_portable())
+		{
+			return false;
+		}
+
+		return nat.StartsWith("pinvoke");
 	}
 
 	public string get_name()
@@ -100,7 +114,7 @@ internal class pcl_config
 		}
 		else
 		{
-			return string.Format("platform.{0}.{1}.{2}.{3}", this.env, this.api, this.sqlite, this.cpu);
+			return string.Format("platform.{0}.{1}.{2}", this.env, this.nat, this.cpu);
 		}
 	}
 
@@ -176,43 +190,43 @@ public class gen
 		new pcl_config { env="profile259", cpu="anycpu" },
 		//new pcl_config { env="profile158", cpu="anycpu" },
 
-		new pcl_config { env="android", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
-		new pcl_config { env="ios", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
-		new pcl_config { env="ios", api="pinvoke", sqlite="internal_other", cpu="anycpu"},
+		//new pcl_config { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
+		//new pcl_config { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
+		//new pcl_config { env="ios", nat="pinvoke_internal_other", cpu="anycpu"},
 
-		new pcl_config { env="net45", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
-		new pcl_config { env="net45", api="cppinterop", sqlite="bundled_sqlite3", cpu="x64"},
+		new pcl_config { env="net45", nat="cppinterop_bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="net45", nat="cppinterop_bundled_sqlite3", cpu="x64"},
 
-		new pcl_config { env="net45", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
-		new pcl_config { env="net45", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x86"},
-		new pcl_config { env="net45", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x64"},
+		new pcl_config { env="net45", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new pcl_config { env="net45", nat="pinvoke_sqlite3", cpu="x86"},
+		new pcl_config { env="net45", nat="pinvoke_sqlite3", cpu="x64"},
 
-		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
-		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="x64"},
-		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="winrt80", nat="cppinterop_bundled_sqlite3", cpu="arm"},
+		new pcl_config { env="winrt80", nat="cppinterop_bundled_sqlite3", cpu="x64"},
+		new pcl_config { env="winrt80", nat="cppinterop_bundled_sqlite3", cpu="x86"},
 
-		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
-		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="arm"},
-		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x64"},
-		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x86"},
+		new pcl_config { env="winrt80", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new pcl_config { env="winrt80", nat="pinvoke_sqlite3", cpu="arm"},
+		new pcl_config { env="winrt80", nat="pinvoke_sqlite3", cpu="x64"},
+		new pcl_config { env="winrt80", nat="pinvoke_sqlite3", cpu="x86"},
 
-		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
-		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="x64"},
-		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="winrt81", nat="cppinterop_bundled_sqlite3", cpu="arm"},
+		new pcl_config { env="winrt81", nat="cppinterop_bundled_sqlite3", cpu="x64"},
+		new pcl_config { env="winrt81", nat="cppinterop_bundled_sqlite3", cpu="x86"},
 
-		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
-		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="arm"},
-		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x64"},
-		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x86"},
+		new pcl_config { env="winrt81", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new pcl_config { env="winrt81", nat="pinvoke_sqlite3", cpu="arm"},
+		new pcl_config { env="winrt81", nat="pinvoke_sqlite3", cpu="x64"},
+		new pcl_config { env="winrt81", nat="pinvoke_sqlite3", cpu="x86"},
 
-		new pcl_config { env="wp80", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
-		new pcl_config { env="wp80", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="wp80", nat="cppinterop_bundled_sqlite3", cpu="arm"},
+		new pcl_config { env="wp80", nat="cppinterop_bundled_sqlite3", cpu="x86"},
 
-		new pcl_config { env="wp81_rt", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
-		new pcl_config { env="wp81_rt", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="wp81_rt", nat="cppinterop_bundled_sqlite3", cpu="arm"},
+		new pcl_config { env="wp81_rt", nat="cppinterop_bundled_sqlite3", cpu="x86"},
 
-		new pcl_config { env="wp81_sl", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
-		new pcl_config { env="wp81_sl", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+		new pcl_config { env="wp81_sl", nat="cppinterop_bundled_sqlite3", cpu="arm"},
+		new pcl_config { env="wp81_sl", nat="cppinterop_bundled_sqlite3", cpu="x86"},
 	};
 
 	private static void write_reference(XmlWriter f, string s)
@@ -263,8 +277,8 @@ public class gen
 		}
 		else
 		{
-			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\{2}\\{3}\\{4}\\", name, cfg.env, cfg.api, cfg.sqlite, cfg.cpu));
-			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\{2}\\{3}\\{4}\\", name, cfg.env, cfg.api, cfg.sqlite, cfg.cpu));
+			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\{2}\\{3}\\", name, cfg.env, cfg.nat, cfg.cpu));
+			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\{2}\\{3}\\", name, cfg.env, cfg.nat, cfg.cpu));
 		}
 
 		string defs;
@@ -1014,17 +1028,14 @@ public class gen
 				}
 			}
 
-			if (cfg.api == "pinvoke")
+			switch (cfg.nat)
 			{
-				switch (cfg.sqlite)
-				{
-					case "sharedlib_sqlite3":
-						defines.Add("PINVOKE_FROM_SQLITE3");
-						break;
-					case "internal_other":
-						defines.Add("PINVOKE_FROM_INTERNAL");
-						break;
-				}
+				case "pinvoke_sqlite3":
+					defines.Add("PINVOKE_FROM_SQLITE3");
+					break;
+				case "pinvoke_internal_other":
+					defines.Add("PINVOKE_FROM_INTERNAL");
+					break;
 			}
 
 			if (cfg.is_portable())
@@ -1071,25 +1082,22 @@ public class gen
 				write_cs_compile(f, root, "pcl\\src\\sqlite3_bait.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
-			else
+			else if (cfg.is_cppinterop())
 			{
-				if (cfg.api == "cppinterop")
-				{
-					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "pcl\\src\\sqlite3_cppinterop.cs");
-					write_cs_compile(f, root, "pcl\\src\\util.cs");
-					f.WriteEndElement(); // ItemGroup
-				}
-				else if (cfg.api == "pinvoke")
-				{
-					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "pcl\\src\\sqlite3_pinvoke.cs");
-					write_cs_compile(f, root, "pcl\\src\\util.cs");
-					f.WriteEndElement(); // ItemGroup
-				}
+				f.WriteStartElement("ItemGroup");
+				write_cs_compile(f, root, "pcl\\src\\sqlite3_cppinterop.cs");
+				write_cs_compile(f, root, "pcl\\src\\util.cs");
+				f.WriteEndElement(); // ItemGroup
+			}
+			else if (cfg.is_pinvoke())
+			{
+				f.WriteStartElement("ItemGroup");
+				write_cs_compile(f, root, "pcl\\src\\sqlite3_pinvoke.cs");
+				write_cs_compile(f, root, "pcl\\src\\util.cs");
+				f.WriteEndElement(); // ItemGroup
 			}
 
-			if (cfg.api == "cppinterop")
+			if (cfg.is_cppinterop())
 			{
 				f.WriteStartElement("ItemGroup");
 				f.WriteStartElement("ProjectReference");
