@@ -188,7 +188,7 @@ public class gen
 	{
 		new pcl_config { env="profile78", cpu="anycpu" },
 		new pcl_config { env="profile259", cpu="anycpu" },
-		//new pcl_config { env="profile158", cpu="anycpu" },
+		new pcl_config { env="profile158", cpu="anycpu" },
 
 		//new pcl_config { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
 		//new pcl_config { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
@@ -955,77 +955,75 @@ public class gen
 			f.WriteElementString("RootNamespace", "SQLitePCL");
 			f.WriteElementString("AssemblyName", "SQLitePCL");
 
-			// TODO ProductVersion 12.0.0
-
 			List<string> defines = new List<string>();
 
-			if (cfg.is_portable())
+			switch (cfg.env)
 			{
-				f.WriteElementString("TargetFrameworkVersion", "v4.5");
-			}
-			else
-			{
-				switch (cfg.env)
-				{
-					case "ios":
-						defines.Add("PLATFORM_IOS");
-						break;
-					case "android":
-						defines.Add("__MOBILE__");
-						defines.Add("__ANDROID__");
-						f.WriteElementString("AndroidUseLatestPlatformdk", "true");
-						break;
-					case "winrt80":
-						//f.WriteElementString("TargetPlatformVersion", "8.0");
-						f.WriteElementString("UseVSHostingProcess", "false");
-						//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-						// TargetFrameworkVersion?
-						defines.Add("NETFX_CORE");
-						break;
-					case "winrt81":
-						f.WriteElementString("TargetPlatformVersion", "8.1");
-						f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-						f.WriteElementString("TargetFrameworkVersion", null);
-						defines.Add("NETFX_CORE");
-						break;
-					case "net45":
-						f.WriteElementString("ProductVersion", "12.0.0");
-						f.WriteElementString("TargetFrameworkVersion", "v4.5");
-						break;
-					case "wp80":
-						f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-						f.WriteElementString("TargetFrameworkVersion", "v8.0");
-						f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-						f.WriteElementString("SilverlightVersion", "v8.0");
-						f.WriteElementString("SilverlightApplication", "false");
-						f.WriteElementString("ValidateXaml", "true");
-						f.WriteElementString("ThrowErrorsInValidation", "true");
-						defines.Add("WINDOWS_PHONE");
-						defines.Add("SILVERLIGHT");
-						f.WriteElementString("NoStdLib", "true");
-						f.WriteElementString("NoConfig", "true");
-						break;
-					case "wp81_rt":
-						f.WriteElementString("TargetPlatformVersion", "8.1");
-						f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-						f.WriteElementString("UseVSHostingProcess", "false");
-						defines.Add("NETFX_CORE");
-						defines.Add("WINDOWS_PHONE_APP");
-						break;
-					case "wp81_sl":
-						f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-						f.WriteElementString("TargetFrameworkVersion", "v8.1");
-						f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-						f.WriteElementString("SilverlightVersion", "v8.0");
-						f.WriteElementString("SilverlightApplication", "false");
-						f.WriteElementString("ValidateXaml", "true");
-						f.WriteElementString("ThrowErrorsInValidation", "true");
-						defines.Add("WINDOWS_PHONE");
-						defines.Add("SILVERLIGHT");
-						f.WriteElementString("NoStdLib", "true");
-						f.WriteElementString("NoConfig", "true");
-						break;
-				}
+				case "profile158":
+					f.WriteElementString("TargetFrameworkVersion", "v4.0");
+					break;
+				case "profile78":
+				case "profile259":
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+				case "ios":
+					defines.Add("PLATFORM_IOS");
+					break;
+				case "android":
+					defines.Add("__MOBILE__");
+					defines.Add("__ANDROID__");
+					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
+					break;
+				case "winrt80":
+					//f.WriteElementString("TargetPlatformVersion", "8.0");
+					f.WriteElementString("UseVSHostingProcess", "false");
+					//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+					// TargetFrameworkVersion?
+					defines.Add("NETFX_CORE");
+					break;
+				case "winrt81":
+					f.WriteElementString("TargetPlatformVersion", "8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("TargetFrameworkVersion", null);
+					defines.Add("NETFX_CORE");
+					break;
+				case "net45":
+					f.WriteElementString("ProductVersion", "12.0.0");
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+				case "wp80":
+					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+					f.WriteElementString("TargetFrameworkVersion", "v8.0");
+					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+					f.WriteElementString("SilverlightVersion", "v8.0");
+					f.WriteElementString("SilverlightApplication", "false");
+					f.WriteElementString("ValidateXaml", "true");
+					f.WriteElementString("ThrowErrorsInValidation", "true");
+					defines.Add("WINDOWS_PHONE");
+					defines.Add("SILVERLIGHT");
+					f.WriteElementString("NoStdLib", "true");
+					f.WriteElementString("NoConfig", "true");
+					break;
+				case "wp81_rt":
+					f.WriteElementString("TargetPlatformVersion", "8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("UseVSHostingProcess", "false");
+					defines.Add("NETFX_CORE");
+					defines.Add("WINDOWS_PHONE_APP");
+					break;
+				case "wp81_sl":
+					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+					f.WriteElementString("TargetFrameworkVersion", "v8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("SilverlightVersion", "v8.0");
+					f.WriteElementString("SilverlightApplication", "false");
+					f.WriteElementString("ValidateXaml", "true");
+					f.WriteElementString("ThrowErrorsInValidation", "true");
+					defines.Add("WINDOWS_PHONE");
+					defines.Add("SILVERLIGHT");
+					f.WriteElementString("NoStdLib", "true");
+					f.WriteElementString("NoConfig", "true");
+					break;
 			}
 
 			switch (cfg.nat)

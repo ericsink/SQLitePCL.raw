@@ -1,4 +1,12 @@
 
+Win32 in the sln file
+
+gen nuspec
+
+gen msbuild that invokes all the others?
+
+sqlite3_static
+
 update/fix the nuget stuff
 
 write the .props and .targets part of the nuget package
