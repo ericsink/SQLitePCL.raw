@@ -113,6 +113,8 @@ internal class pcl_config
 public class gen
 {
 	private const string GUID_CSHARP = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+	private const string GUID_CPP = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
+	private const string GUID_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 	private const string GUID_PCL = "{786C830F-07A1-408B-BD7F-6EE04809D6DB}";
 	private const string GUID_IOS = "{6BC8ED88-2882-458C-8E55-DFD12B67127B}";
 	private const string GUID_ANDROID = "{EFBA0AD7-5A72-4C68-AF49-83D382785DCF}";
@@ -188,6 +190,7 @@ public class gen
 		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
 		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="x64"},
 		new pcl_config { env="winrt80", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+
 		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
 		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="arm"},
 		new pcl_config { env="winrt80", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x64"},
@@ -196,6 +199,7 @@ public class gen
 		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="arm"},
 		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="x64"},
 		new pcl_config { env="winrt81", api="cppinterop", sqlite="bundled_sqlite3", cpu="x86"},
+
 		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="anycpu"},
 		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="arm"},
 		new pcl_config { env="winrt81", api="pinvoke", sqlite="sharedlib_sqlite3", cpu="x64"},
@@ -1177,6 +1181,19 @@ public class gen
 		}
 	}
 
+	public static string write_folder(StreamWriter f, string name)
+	{
+		string folder_guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				GUID_FOLDER,
+				name,
+				name,
+				folder_guid
+				);
+		f.WriteLine("EndProject");
+		return folder_guid;
+	}
+
 	public static void gen_solution()
 	{
 		using (StreamWriter f = new StreamWriter("sqlitepcl.sln"))
@@ -1186,12 +1203,17 @@ public class gen
 			f.WriteLine("VisualStudioVersion = 12.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
 
-			// TODO solution folders
+			// solution folders
+
+			string folder_sqlite3 = write_folder(f, "sqlite3");
+			string folder_cppinterop = write_folder(f, "cppinterop");
+			string folder_platforms = write_folder(f, "platforms");
+			string folder_portable = write_folder(f, "portable");
 
 			foreach (sqlite3_config cfg in sqlite3_items)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-						"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}",
+						GUID_CPP,
 						cfg.get_name(),
 						cfg.get_filename(),
 						cfg.guid
@@ -1202,7 +1224,7 @@ public class gen
 			foreach (cppinterop_config cfg in cppinterop_items)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-						"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}",
+						GUID_CPP,
 						cfg.get_name(),
 						cfg.get_filename(),
 						cfg.guid
@@ -1213,7 +1235,7 @@ public class gen
 			foreach (pcl_config cfg in pcl_items)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-						"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}",
+						GUID_CSHARP,
 						cfg.get_name(),
 						cfg.get_filename(),
 						cfg.guid
@@ -1254,6 +1276,28 @@ public class gen
 
 			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
 			f.WriteLine("\t\tHideSolutionNode = FALSE");
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
+			foreach (sqlite3_config cfg in sqlite3_items)
+			{
+				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_sqlite3);
+			}
+			foreach (cppinterop_config cfg in cppinterop_items)
+			{
+				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_cppinterop);
+			}
+			foreach (pcl_config cfg in pcl_items)
+			{
+				if (cfg.is_portable())
+				{
+					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_portable);
+				}
+				else
+				{
+					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
+				}
+			}
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");
