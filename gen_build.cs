@@ -285,7 +285,7 @@ public class gen
 
 		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
 		f.WriteElementString("Optimize", debug ? "false" : "true");
-		f.WriteElementString("DebugType", debug ? "full" : "pdbonly");
+		f.WriteElementString("DebugType", debug ? "full" : "none");
 
 		f.WriteEndElement(); // PropertyGroup
 	}
@@ -460,7 +460,6 @@ public class gen
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
 			f.WriteElementString("GenerateWindowsMetadata", "false");
-			f.WriteElementString("GenerateDebugInformation", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
@@ -471,6 +470,7 @@ public class gen
 			write_cpp_define(f, "_DEBUG");
 			f.WriteEndElement(); // ClCompile
 			f.WriteStartElement("Link");
+			f.WriteElementString("GenerateDebugInformation", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
@@ -483,6 +483,7 @@ public class gen
 			write_cpp_define(f, "NDEBUG");
 			f.WriteEndElement(); // ClCompile
 			f.WriteStartElement("Link");
+			f.WriteElementString("GenerateDebugInformation", "false");
 			f.WriteElementString("EnableCOMDATFolding", "true");
 			f.WriteElementString("OptimizeReferences", "true");
 			f.WriteEndElement(); // Link
@@ -751,7 +752,6 @@ public class gen
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
-			f.WriteElementString("GenerateDebugInformation", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
@@ -762,6 +762,7 @@ public class gen
 			write_cpp_define(f, "_DEBUG");
 			f.WriteEndElement(); // ClCompile
 			f.WriteStartElement("Link");
+			f.WriteElementString("GenerateDebugInformation", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
@@ -774,6 +775,7 @@ public class gen
 			write_cpp_define(f, "NDEBUG");
 			f.WriteEndElement(); // ClCompile
 			f.WriteStartElement("Link");
+			f.WriteElementString("GenerateDebugInformation", "false");
 			//f.WriteElementString("EnableCOMDATFolding", "true");
 			//f.WriteElementString("OptimizeReferences", "true");
 			f.WriteEndElement(); // Link
