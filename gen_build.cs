@@ -290,13 +290,13 @@ public class gen
 		f.WriteEndElement(); // PropertyGroup
 	}
 
-	private static void gen_sqlite3(sqlite3_config cfg, string root)
+	private static void gen_sqlite3(sqlite3_config cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(cfg.get_filename(), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -537,13 +537,13 @@ public class gen
 		throw new Exception();
 	}
 
-	private static void gen_cppinterop(cppinterop_config cfg, string root)
+	private static void gen_cppinterop(cppinterop_config cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(cfg.get_filename(), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -852,13 +852,13 @@ public class gen
 		}
 	}
 
-	private static void gen_pcl(pcl_config cfg, string root)
+	private static void gen_pcl(pcl_config cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(cfg.get_filename(), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1194,9 +1194,9 @@ public class gen
 		return folder_guid;
 	}
 
-	public static void gen_solution()
+	public static void gen_solution(string top)
 	{
-		using (StreamWriter f = new StreamWriter("sqlitepcl.sln"))
+		using (StreamWriter f = new StreamWriter(Path.Combine(top, "sqlitepcl.sln")))
 		{
 			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
 			f.WriteLine("# Visual Studio 2013");
@@ -1306,15 +1306,10 @@ public class gen
 
 	public static void Main(string[] args)
 	{
-		if (args.Length == 0)
-		{
-			Console.WriteLine("You must give the path of the root directory as the first parameter");
-			return;
-		}
+		string root = ".";
+		string top = "bld";
 
-		string root = args[0];
-
-		// TODO options to skip things
+		Directory.CreateDirectory(top);
 
 		// assign all the guids
 
@@ -1336,20 +1331,20 @@ public class gen
 
 		foreach (sqlite3_config cfg in sqlite3_items)
 		{
-			gen_sqlite3(cfg, root);
+			gen_sqlite3(cfg, root, top);
 		}
 
 		foreach (cppinterop_config cfg in cppinterop_items)
 		{
-			gen_cppinterop(cfg, root);
+			gen_cppinterop(cfg, root, top);
 		}
 
 		foreach (pcl_config cfg in pcl_items)
 		{
-			gen_pcl(cfg, root);
+			gen_pcl(cfg, root, top);
 		}
 
-		gen_solution();
+		gen_solution(top);
 
 		// TODO write out the nuspec file
 	}
