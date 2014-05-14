@@ -86,19 +86,6 @@ internal class config_pcl
 		return env.StartsWith("profile");
 	}
 
-	public bool must_build_on_mac()
-	{
-		switch (env)
-		{
-			case "android": // TODO temporary
-			case "ios":
-			case "mac":
-				return true;
-			default:
-				return false;
-		}
-	}
-
 	public bool is_cppinterop()
 	{
 		if (is_portable())
@@ -203,9 +190,9 @@ public class gen
 		new config_pcl { env="profile259", cpu="anycpu" },
 		new config_pcl { env="profile158", cpu="anycpu" },
 
-		//new config_pcl { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
-		//new config_pcl { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
-		//new config_pcl { env="ios", nat="pinvoke_internal_other", cpu="anycpu"},
+		new config_pcl { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="ios", nat="pinvoke_internal_other", cpu="anycpu"},
 
 		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x86"},
 		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x64"},
@@ -1181,7 +1168,7 @@ public class gen
 				{
 					case "ios":
 						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildBinPath)\\Microsoft.CSharp.targets");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 						f.WriteEndElement(); // Import
 						break;
 					case "android":
@@ -1273,16 +1260,13 @@ public class gen
 
 			foreach (config_pcl cfg in items_pcl)
 			{
-				if (!cfg.must_build_on_mac())
-				{
-					f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-							GUID_CSHARP,
-							cfg.get_name(),
-							cfg.get_filename(),
-							cfg.guid
-							);
-					f.WriteLine("EndProject");
-				}
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_filename(),
+						cfg.guid
+						);
+				f.WriteLine("EndProject");
 			}
 
 			f.WriteLine("Global");
@@ -1309,13 +1293,10 @@ public class gen
 			}
 			foreach (config_pcl cfg in items_pcl)
 			{
-				if (!cfg.must_build_on_mac())
-				{
-					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
-				}
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -1340,63 +1321,9 @@ public class gen
 				}
 				else
 				{
-					if (!cfg.must_build_on_mac())
-					{
-						f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
-					}
+					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
 				}
 			}
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("EndGlobal");
-		}
-	}
-
-	public static void gen_mac_solution(string top)
-	{
-		using (StreamWriter f = new StreamWriter(Path.Combine(top, "mac_sqlitepcl.sln")))
-		{
-			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 2013");
-			f.WriteLine("VisualStudioVersion = 12.0");
-			f.WriteLine("MinimumVisualStudioVersion = 12.0");
-
-			foreach (config_pcl cfg in items_pcl)
-			{
-				if (!cfg.must_build_on_mac())
-				{
-					f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-							GUID_CSHARP,
-							cfg.get_name(),
-							cfg.get_filename(),
-							cfg.guid
-							);
-					f.WriteLine("EndProject");
-				}
-			}
-
-			f.WriteLine("Global");
-
-			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
-			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_pcl cfg in items_pcl)
-			{
-				if (cfg.must_build_on_mac())
-				{
-					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-					f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
-				}
-			}
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
-			f.WriteLine("\t\tHideSolutionNode = FALSE");
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");
@@ -1452,7 +1379,6 @@ public class gen
 		// --------------------------------
 
 		gen_solution(top);
-		gen_mac_solution(top);
 
 		// --------------------------------
 		// TODO write out the nuspec file
