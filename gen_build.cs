@@ -33,7 +33,6 @@ internal class config_sqlite3_static
 	}
 }
 
-// TODO should maybe be called cppinterop_static_sqlite3_config
 internal class config_cppinterop_static_sqlite3 
 {
 	public string env;
@@ -85,6 +84,19 @@ internal class config_pcl
 	public bool is_portable()
 	{
 		return env.StartsWith("profile");
+	}
+
+	public bool must_build_on_mac()
+	{
+		switch (env)
+		{
+			case "android": // TODO temporary
+			case "ios":
+			case "mac":
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public bool is_cppinterop()
@@ -457,8 +469,8 @@ public class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\sqlite3_static\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\sqlite3_static\\{0}\\{1}\\", cfg.env, cfg.cpu));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -698,6 +710,15 @@ public class gen
 					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
 				case "winrt81":
+					f.WriteStartElement("ItemDefinitionGroup");
+					f.WriteStartElement("ClCompile");
+					write_cpp_define(f, "_WINRT_DLL");
+					f.WriteElementString("AdditionalUsingDirectories", "$(WindowsSDK_WindowsMetaData);$(AdditionalUsingDirectories)");
+					f.WriteEndElement(); // ClCompile
+					f.WriteStartElement("Link");
+					f.WriteElementString("AdditionalDependencies", "runtimeobject.lib;%(AdditionalDependencies)");
+					f.WriteEndElement(); // Link
+					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
 				case "wp80":
 					f.WriteStartElement("ItemDefinitionGroup");
@@ -749,8 +770,8 @@ public class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\cppinterop\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\cppinterop\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\cppinterop_static_sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\cppinterop_static_sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
 			write_cpp_includepath(f, root, "sqlite3\\src\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
@@ -1111,6 +1132,7 @@ public class gen
 							f.WriteAttributeString("Include", other.get_filename());
 							f.WriteElementString("Project", other.guid);
 							f.WriteElementString("Name", other.get_name());
+							f.WriteElementString("Private", "true");
 						}
 						f.WriteEndElement(); // ProjectReference
 						f.WriteEndElement(); // ItemGroup
@@ -1251,13 +1273,16 @@ public class gen
 
 			foreach (config_pcl cfg in items_pcl)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_filename(),
-						cfg.guid
-						);
-				f.WriteLine("EndProject");
+				if (!cfg.must_build_on_mac())
+				{
+					f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+							GUID_CSHARP,
+							cfg.get_name(),
+							cfg.get_filename(),
+							cfg.guid
+							);
+					f.WriteLine("EndProject");
+				}
 			}
 
 			f.WriteLine("Global");
@@ -1284,10 +1309,13 @@ public class gen
 			}
 			foreach (config_pcl cfg in items_pcl)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				if (!cfg.must_build_on_mac())
+				{
+					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				}
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -1312,9 +1340,63 @@ public class gen
 				}
 				else
 				{
-					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
+					if (!cfg.must_build_on_mac())
+					{
+						f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
+					}
 				}
 			}
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("EndGlobal");
+		}
+	}
+
+	public static void gen_mac_solution(string top)
+	{
+		using (StreamWriter f = new StreamWriter(Path.Combine(top, "mac_sqlitepcl.sln")))
+		{
+			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
+			f.WriteLine("# Visual Studio 2013");
+			f.WriteLine("VisualStudioVersion = 12.0");
+			f.WriteLine("MinimumVisualStudioVersion = 12.0");
+
+			foreach (config_pcl cfg in items_pcl)
+			{
+				if (!cfg.must_build_on_mac())
+				{
+					f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+							GUID_CSHARP,
+							cfg.get_name(),
+							cfg.get_filename(),
+							cfg.guid
+							);
+					f.WriteLine("EndProject");
+				}
+			}
+
+			f.WriteLine("Global");
+
+			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
+			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
+			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
+			foreach (config_pcl cfg in items_pcl)
+			{
+				if (cfg.must_build_on_mac())
+				{
+					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
+					f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				}
+			}
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
+			f.WriteLine("\t\tHideSolutionNode = FALSE");
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");
@@ -1370,6 +1452,7 @@ public class gen
 		// --------------------------------
 
 		gen_solution(top);
+		gen_mac_solution(top);
 
 		// --------------------------------
 		// TODO write out the nuspec file

@@ -1,5 +1,14 @@
 
+why doesn't the cppinterop.dll get copied to the pcl build
+output for winmd stuff?
+
+for the cppinterop dll build, why does winrt80 generate .exp
+and .lib?
+
 Win32 in the sln file
+
+need a way to handle gathering of build products across both
+build machines.  check in the dlls to git?
 
 gen nuspec
 
@@ -63,6 +72,10 @@ sqlcipher?
 note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
 
 looks like profile 259 is the new 78
+
+hmmm.  note that one axis of configuration we are not varying is
+the compile options for sqlite itself.  we always build with FTS
+and with ENABLE_COLUMN_METADATA, and nothing else
 
 ----------------
 
