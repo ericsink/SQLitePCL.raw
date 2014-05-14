@@ -5,7 +5,7 @@ gen nuspec
 
 gen msbuild that invokes all the others?
 
-sqlite3_static
+auto-generate the tests as well?
 
 update/fix the nuget stuff
 
