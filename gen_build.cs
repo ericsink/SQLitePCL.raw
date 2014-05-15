@@ -167,6 +167,8 @@ internal class config_pcl : config_info
 		else
 		{
 			// TODO I wonder if one default assembly for each env should actually go into lib?
+			// maybe we need a flag in config_pcl called "put in lib" ?
+			// but then we might want something in two places...
 
 			return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat, cpu);
 		}
@@ -263,7 +265,7 @@ internal class config_pcl : config_info
 	}
 }
 
-public class gen
+public static class gen
 {
 	private const string GUID_CSHARP = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
 	private const string GUID_CPP = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
@@ -1495,6 +1497,7 @@ public class gen
 
 			f.WriteStartElement("files");
 
+#if not
 			foreach (config_sqlite3_static cfg in items_sqlite3_static)
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
@@ -1504,6 +1507,7 @@ public class gen
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 			}
+#endif
 
 			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
 
@@ -1517,6 +1521,9 @@ public class gen
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				var a = new List<string>();
 				cfg.get_products(a);
+
+				// TODO the following is ugly.  it would be cleaner if
+				// config_pcl.get_products() simply called its dependencies
 				if (cfg.is_cppinterop())
 				{
 					switch (cfg.nat)
@@ -1582,12 +1589,12 @@ public class gen
 
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				f.WriteStartElement("ItemGroup");
-				f.WriteAttributeString("Condition", "TODO");
+				f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
 
 				f.WriteStartElement("Reference");
 				f.WriteAttributeString("Include", "SQLitePCL");
 
-				f.WriteElementString("HintPath", "TODO");
+				f.WriteElementString("HintPath", Path.Combine(cfg.get_nuget_target_path(), "SQLitePCL.dll"));
 
 				f.WriteEndElement(); // Reference
 
