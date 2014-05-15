@@ -6,7 +6,6 @@ using System.Xml;
 
 internal interface config_info
 {
-	string get_category();
 	string get_project_filename();
 	string get_name();
 	string get_dest_subpath();
@@ -144,6 +143,44 @@ internal class config_pcl : config_info
 		return "pcl";
 	}
 
+	public static string get_nuget_framework_name(string env)
+	{
+		// TODO maybe I should just use these names?
+		switch (env)
+		{
+			case "ios":
+				return "MonoTouch";
+			case "android":
+				return "MonoAndroid";
+			case "net45":
+				return "net45";
+			case "wp80":
+				return "wp8";
+			case "wp81_sl":
+				return "wp81";
+			case "wp81_rt":
+				return "wpa81";
+			case "winrt80":
+				return "netcore45";
+			case "winrt81":
+				return "netcore451";
+			default:
+				throw new Exception();
+		}
+	}
+					
+	public string get_nuget_target_path()
+	{
+		if (is_portable())
+		{
+			return string.Format("lib\\{0}\\", get_portable_nuget_target_string());
+		}
+		else
+		{
+			return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat, cpu);
+		}
+	}
+
 	private void add_product(List<string> a, string s)
 	{
 		a.Add(Path.Combine(get_dest_subpath(), s));
@@ -172,12 +209,12 @@ internal class config_pcl : config_info
 		switch (env)
 		{
 			case "profile78":
-				return "portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1";
+				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
 			case "profile259":
 				// TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong?
 				return "portable-net45+netcore45+wpa81+wp8";
 			case "profile158":
-				return "portable-net45+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1";
+				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
 			default:
 				throw new Exception();
 		}
@@ -1445,7 +1482,7 @@ public class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", "SQLitePCL.raw");
 			f.WriteElementString("version", "0.1.0-alpha");
@@ -1459,7 +1496,7 @@ public class gen
 			f.WriteElementString("description", "TODO");
 			f.WriteElementString("releaseNotes", "TODO");
 			f.WriteElementString("summary", "TODO");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android native");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteEndElement(); // metadata
 
@@ -1475,10 +1512,15 @@ public class gen
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 			}
 
-			// TODO cfg item needs a way of listing all the cfg items on which it is dependent
+			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
 
 			foreach (config_pcl cfg in items_pcl)
 			{
+				if (!cfg.is_portable())
+				{
+					pcl_env[cfg.env] = null;
+				}
+
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				var a = new List<string>();
 				cfg.get_products(a);
@@ -1496,23 +1538,21 @@ public class gen
 				{
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
-					if (cfg.is_portable())
-					{
-						f.WriteAttributeString("target", string.Format("lib\\{0}\\", cfg.get_portable_nuget_target_string()));
-					}
-					else
-					{
-						f.WriteAttributeString("target", string.Format("build\\native\\{0}\\", cfg.get_dest_subpath()));
-					}
+					f.WriteAttributeString("target", cfg.get_nuget_target_path());
 					f.WriteEndElement(); // file
 				}
 
 			}
 
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", "SQLitePCL.raw.targets");
-			f.WriteAttributeString("target", "build\\native\\");
-			f.WriteEndElement(); // file
+			foreach (string env in pcl_env.Keys)
+			{
+				gen_nuget_targets(top, env);
+
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", string.Format("{0}.targets", env));
+				f.WriteAttributeString("target", string.Format("build\\{0}\\", config_pcl.get_nuget_framework_name(env)));
+				f.WriteEndElement(); // file
+			}
 
 			f.WriteEndElement(); // files
 
@@ -1522,13 +1562,13 @@ public class gen
 		}
 	}
 
-	private static void gen_nuget_targets(string top)
+	private static void gen_nuget_targets(string top, string env)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, "SQLitePCL.raw.targets"), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.targets", env)), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1536,7 +1576,32 @@ public class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
-			// TODO
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", "InjectReference");
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+
+			foreach (config_pcl cfg in items_pcl)
+			{
+				if (cfg.env != env)
+				{
+					continue;
+				}
+
+				f.WriteComment(string.Format("{0}", cfg.get_name()));
+				f.WriteStartElement("ItemGroup");
+				f.WriteAttributeString("Condition", "TODO");
+
+				f.WriteStartElement("Reference");
+				f.WriteAttributeString("Include", "SQLitePCL");
+
+				f.WriteElementString("HintPath", "TODO");
+
+				f.WriteEndElement(); // Reference
+
+				f.WriteEndElement(); // ItemGroup
+			}
+
+			f.WriteEndElement(); // Target
 
 			f.WriteEndElement(); // Project
 
@@ -1598,7 +1663,6 @@ public class gen
 
 		gen_nuspec(top);
 
-		gen_nuget_targets(top);
 	}
 }
 
