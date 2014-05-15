@@ -4,18 +4,41 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
-internal class config_sqlite3_static
+internal interface config_info
+{
+	string get_category();
+	string get_project_filename();
+	string get_name();
+	string get_dest_subpath();
+	void get_products(List<string> a);
+}
+
+internal class config_sqlite3_static : config_info
 {
 	public string env;
 	public string cpu;
 	public string guid;
 
-	public string get_name()
+	public string get_category()
 	{
-		return string.Format("sqlite3_static.{0}.{1}", this.env, this.cpu);
+		return "sqlite3_static";
 	}
 
-	public string get_filename()
+	public void get_products(List<string> a)
+	{
+	}
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}\\{2}\\", get_category(), env, cpu);
+	}
+
+	public string get_name()
+	{
+		return string.Format("{0}.{1}.{2}", get_category(), env, cpu);
+	}
+
+	public string get_project_filename()
 	{
 		return string.Format("{0}.vcxproj", get_name());
 	}
@@ -33,18 +56,53 @@ internal class config_sqlite3_static
 	}
 }
 
-internal class config_cppinterop_static_sqlite3 
+internal class config_cppinterop_static_sqlite3 : config_info
 {
 	public string env;
 	public string cpu;
 	public string guid;
 
-	public string get_name()
+	public string get_category()
 	{
-		return string.Format("cppinterop_static_sqlite3.{0}.{1}", this.env, this.cpu);
+		return "cppinterop_static_sqlite3";
 	}
 
-	public string get_filename()
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, "SQLitePCL.cppinterop.dll");
+		switch (env)
+		{
+			case "wp80":
+				// TODO why don't we get a .pri file for wp80?
+				add_product(a, "SQLitePCL.cppinterop.winmd");
+				break;
+
+			case "winrt80":
+			case "winrt81":
+			case "wp81_rt":
+			case "wp81_sl":
+				add_product(a, "SQLitePCL.cppinterop.pri");
+				add_product(a, "SQLitePCL.cppinterop.winmd");
+				break;
+		}
+	}
+
+	public string get_name()
+	{
+		return string.Format("{0}.{1}.{2}", get_category(), env, cpu);
+	}
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}\\{2}\\", get_category(), env, cpu);
+	}
+
+	public string get_project_filename()
 	{
 		return string.Format("{0}.vcxproj", get_name());
 	}
@@ -74,16 +132,55 @@ internal class config_cppinterop_static_sqlite3
 	}
 }
 
-internal class config_pcl
+internal class config_pcl : config_info
 {
 	public string env;
 	public string nat;
 	public string cpu;
 	public string guid;
 
+	public string get_category()
+	{
+		return "pcl";
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, "SQLitePCL.dll");
+		switch (env)
+		{
+			case "winrt80":
+			case "winrt81":
+			case "wp81_rt":
+				add_product(a, "SQLitePCL.pri");
+				break;
+		}
+	}
+
 	public bool is_portable()
 	{
 		return env.StartsWith("profile");
+	}
+
+	public string get_portable_nuget_target_string()
+	{
+		switch (env)
+		{
+			case "profile78":
+				return "portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1";
+			case "profile259":
+				// TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong?
+				return "portable-net45+netcore45+wpa81+wp8";
+			case "profile158":
+				return "portable-net45+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1";
+			default:
+				throw new Exception();
+		}
 	}
 
 	public bool is_cppinterop()
@@ -106,19 +203,31 @@ internal class config_pcl
 		return nat.StartsWith("pinvoke_");
 	}
 
+	public string get_dest_subpath()
+	{
+		if (is_portable())
+		{
+			return string.Format("{0}\\{1}\\", get_category(), env);
+		}
+		else
+		{
+			return string.Format("{0}\\{1}\\{2}\\{3}\\", get_category(), env, nat, cpu);
+		}
+	}
+
 	public string get_name()
 	{
 		if (is_portable())
 		{
-			return string.Format("portable.{0}", this.env);
+			return string.Format("portable.{0}", env);
 		}
 		else
 		{
-			return string.Format("platform.{0}.{1}.{2}", this.env, this.nat, this.cpu);
+			return string.Format("platform.{0}.{1}.{2}", env, nat, cpu);
 		}
 	}
 
-	public string get_filename()
+	public string get_project_filename()
 	{
 		return string.Format("{0}.csproj", get_name());
 	}
@@ -270,16 +379,8 @@ public class gen
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
 
-		if (cfg.is_portable())
-		{
-			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\", name, cfg.env));
-			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\", name, cfg.env));
-		}
-		else
-		{
-			f.WriteElementString("OutputPath", string.Format("{0}\\bin\\pcl\\{1}\\{2}\\{3}\\", name, cfg.env, cfg.nat, cfg.cpu));
-			f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\pcl\\{1}\\{2}\\{3}\\", name, cfg.env, cfg.nat, cfg.cpu));
-		}
+		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}", name, cfg.get_dest_subpath()));
+		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}", name, cfg.get_dest_subpath()));
 
 		string defs;
 		if (debug)
@@ -310,7 +411,7 @@ public class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -456,8 +557,8 @@ public class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\sqlite3_static\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\sqlite3_static\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}", cfg.get_dest_subpath()));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}", cfg.get_dest_subpath()));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -558,7 +659,7 @@ public class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -757,8 +858,8 @@ public class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\cppinterop_static_sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\cppinterop_static_sqlite3\\{0}\\{1}\\", cfg.env, cfg.cpu));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}", cfg.get_dest_subpath()));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}", cfg.get_dest_subpath()));
 			write_cpp_includepath(f, root, "sqlite3\\src\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
@@ -845,7 +946,7 @@ public class gen
 			f.WriteStartElement("ProjectReference");
 			{
 				config_sqlite3_static other = find_sqlite3_static(cfg.sqlite3_env(), cfg.cpu);
-				f.WriteAttributeString("Include", other.get_filename());
+				f.WriteAttributeString("Include", other.get_project_filename());
 				f.WriteElementString("Project", other.guid);
 			}
 			f.WriteEndElement(); // ProjectReference
@@ -886,7 +987,7 @@ public class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_filename()), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1116,7 +1217,7 @@ public class gen
 						f.WriteStartElement("ProjectReference");
 						{
 							config_cppinterop_static_sqlite3 other = find_cppinterop_static_sqlite3(cfg.env, cfg.cpu);
-							f.WriteAttributeString("Include", other.get_filename());
+							f.WriteAttributeString("Include", other.get_project_filename());
 							f.WriteElementString("Project", other.guid);
 							f.WriteElementString("Name", other.get_name());
 							f.WriteElementString("Private", "true");
@@ -1241,7 +1342,7 @@ public class gen
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CPP,
 						cfg.get_name(),
-						cfg.get_filename(),
+						cfg.get_project_filename(),
 						cfg.guid
 						);
 				f.WriteLine("EndProject");
@@ -1252,7 +1353,7 @@ public class gen
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CPP,
 						cfg.get_name(),
-						cfg.get_filename(),
+						cfg.get_project_filename(),
 						cfg.guid
 						);
 				f.WriteLine("EndProject");
@@ -1263,7 +1364,7 @@ public class gen
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CSHARP,
 						cfg.get_name(),
-						cfg.get_filename(),
+						cfg.get_project_filename(),
 						cfg.guid
 						);
 				f.WriteLine("EndProject");
@@ -1346,7 +1447,7 @@ public class gen
 			f.WriteStartElement("metadata");
 
 			f.WriteElementString("id", "SQLitePCL.raw");
-			f.WriteElementString("version", "TODO");
+			f.WriteElementString("version", "0.1.0-alpha");
 			f.WriteElementString("title", "TODO");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -1373,23 +1474,38 @@ public class gen
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 			}
 
-			// TODO cfg item needs a way of listing all the files it generates
-			
 			// TODO cfg item needs a way of listing all the cfg items on which it is dependent
 
 			foreach (config_pcl cfg in items_pcl)
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", string.Format("TODO cfg.getOutputPath"));
-				if (cfg.is_portable())
+				var a = new List<string>();
+				cfg.get_products(a);
+				if (cfg.is_cppinterop())
 				{
+					switch (cfg.nat)
+					{
+						case "cppinterop_static_sqlite3":
+							config_cppinterop_static_sqlite3 other = find_cppinterop_static_sqlite3(cfg.env, cfg.cpu);
+							other.get_products(a);
+							break;
+					}
 				}
-				else
+				foreach (string s in a)
 				{
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\{2}\\", cfg.env, cfg.nat, cfg.cpu));
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+					if (cfg.is_portable())
+					{
+						f.WriteAttributeString("target", string.Format("lib\\{0}\\", cfg.get_portable_nuget_target_string()));
+					}
+					else
+					{
+						f.WriteAttributeString("target", string.Format("build\\native\\{0}\\", cfg.get_dest_subpath()));
+					}
+					f.WriteEndElement(); // file
 				}
-				f.WriteEndElement(); // file
+
 			}
 
 			f.WriteEndElement(); // files
