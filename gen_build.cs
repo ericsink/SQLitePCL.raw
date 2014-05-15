@@ -30,7 +30,7 @@ internal class config_sqlite3_static : config_info
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}\\", get_category(), env, cpu);
+		return string.Format("{0}\\{1}\\{2}", get_category(), env, cpu);
 	}
 
 	public string get_name()
@@ -99,7 +99,7 @@ internal class config_cppinterop_static_sqlite3 : config_info
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}\\", get_category(), env, cpu);
+		return string.Format("{0}\\{1}\\{2}", get_category(), env, cpu);
 	}
 
 	public string get_project_filename()
@@ -207,11 +207,11 @@ internal class config_pcl : config_info
 	{
 		if (is_portable())
 		{
-			return string.Format("{0}\\{1}\\", get_category(), env);
+			return string.Format("{0}\\{1}", get_category(), env);
 		}
 		else
 		{
-			return string.Format("{0}\\{1}\\{2}\\{3}\\", get_category(), env, nat, cpu);
+			return string.Format("{0}\\{1}\\{2}\\{3}", get_category(), env, nat, cpu);
 		}
 	}
 
@@ -1437,7 +1437,7 @@ public class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, "sqlitepcl.nuspec"), settings))
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, "SQLitePCL.raw.nuspec"), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1445,6 +1445,7 @@ public class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5");
 
 			f.WriteElementString("id", "SQLitePCL.raw");
 			f.WriteElementString("version", "0.1.0-alpha");
@@ -1508,9 +1509,36 @@ public class gen
 
 			}
 
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", "SQLitePCL.raw.targets");
+			f.WriteAttributeString("target", "build\\native\\");
+			f.WriteEndElement(); // file
+
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuget_targets(string top)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, "SQLitePCL.raw.targets"), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			// TODO
+
+			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
 		}
@@ -1569,6 +1597,8 @@ public class gen
 		// --------------------------------
 
 		gen_nuspec(top);
+
+		gen_nuget_targets(top);
 	}
 }
 
