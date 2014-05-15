@@ -158,6 +158,11 @@ internal class config_pcl : config_info
 		}
 	}
 					
+	public string get_nuget_target_subpath()
+	{
+		return string.Format("{0}\\{1}\\", nat, cpu);
+	}
+
 	public string get_nuget_target_path()
 	{
 		if (is_portable())
@@ -1594,7 +1599,7 @@ public static class gen
 				f.WriteStartElement("Reference");
 				f.WriteAttributeString("Include", "SQLitePCL");
 
-				f.WriteElementString("HintPath", Path.Combine(cfg.get_nuget_target_path(), "SQLitePCL.dll"));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.dll")));
 
 				f.WriteEndElement(); // Reference
 
