@@ -18,23 +18,20 @@ internal class config_sqlite3_static : config_info
 	public string cpu;
 	public string guid;
 
-	public string get_category()
-	{
-		return "sqlite3_static";
-	}
-
 	public void get_products(List<string> a)
 	{
 	}
 
+	private const string AREA = "sqlite3_static";
+
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}", get_category(), env, cpu);
+		return string.Format("{0}\\{1}\\{2}", AREA, env, cpu);
 	}
 
 	public string get_name()
 	{
-		return string.Format("{0}.{1}.{2}", get_category(), env, cpu);
+		return string.Format("{0}.{1}.{2}", AREA, env, cpu);
 	}
 
 	public string get_project_filename()
@@ -61,11 +58,6 @@ internal class config_cppinterop_static_sqlite3 : config_info
 	public string cpu;
 	public string guid;
 
-	public string get_category()
-	{
-		return "cppinterop_static_sqlite3";
-	}
-
 	private void add_product(List<string> a, string s)
 	{
 		a.Add(Path.Combine(get_dest_subpath(), s));
@@ -91,14 +83,16 @@ internal class config_cppinterop_static_sqlite3 : config_info
 		}
 	}
 
+	private const string AREA = "cppinterop_static_sqlite3";
+
 	public string get_name()
 	{
-		return string.Format("{0}.{1}.{2}", get_category(), env, cpu);
+		return string.Format("{0}.{1}.{2}", AREA, env, cpu);
 	}
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}", get_category(), env, cpu);
+		return string.Format("{0}\\{1}\\{2}", AREA, env, cpu);
 	}
 
 	public string get_project_filename()
@@ -138,11 +132,6 @@ internal class config_pcl : config_info
 	public string cpu;
 	public string guid;
 
-	public string get_category()
-	{
-		return "pcl";
-	}
-
 	public static string get_nuget_framework_name(string env)
 	{
 		// TODO maybe I should just use these names?
@@ -177,6 +166,8 @@ internal class config_pcl : config_info
 		}
 		else
 		{
+			// TODO I wonder if one default assembly for each env should actually go into lib?
+
 			return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat, cpu);
 		}
 	}
@@ -240,15 +231,17 @@ internal class config_pcl : config_info
 		return nat.StartsWith("pinvoke_");
 	}
 
+	private const string AREA = "pcl";
+
 	public string get_dest_subpath()
 	{
 		if (is_portable())
 		{
-			return string.Format("{0}\\{1}", get_category(), env);
+			return string.Format("{0}\\{1}", AREA, env);
 		}
 		else
 		{
-			return string.Format("{0}\\{1}\\{2}\\{3}", get_category(), env, nat, cpu);
+			return string.Format("{0}\\{1}\\{2}\\{3}", AREA, env, nat, cpu);
 		}
 	}
 
