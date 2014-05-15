@@ -7,9 +7,6 @@ and .lib?
 
 Win32 in the sln file
 
-need a way to handle gathering of build products across both
-build machines.  check in the dlls to git?
-
 gen nuspec
 
 gen msbuild that invokes all the others?

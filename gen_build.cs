@@ -1330,6 +1330,76 @@ public class gen
 		}
 	}
 
+	private static void gen_nuspec(string top)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, "sqlitepcl.nuspec"), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+
+			f.WriteElementString("id", "SQLitePCL.raw");
+			f.WriteElementString("version", "TODO");
+			f.WriteElementString("title", "TODO");
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android native");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_sqlite3_static cfg in items_sqlite3_static)
+			{
+				f.WriteComment(string.Format("{0}", cfg.get_name()));
+			}
+
+			foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+			{
+				f.WriteComment(string.Format("{0}", cfg.get_name()));
+			}
+
+			// TODO cfg item needs a way of listing all the files it generates
+			
+			// TODO cfg item needs a way of listing all the cfg items on which it is dependent
+
+			foreach (config_pcl cfg in items_pcl)
+			{
+				f.WriteComment(string.Format("{0}", cfg.get_name()));
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", string.Format("TODO cfg.getOutputPath"));
+				if (cfg.is_portable())
+				{
+				}
+				else
+				{
+					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\{2}\\", cfg.env, cfg.nat, cfg.cpu));
+				}
+				f.WriteEndElement(); // file
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	public static void Main(string[] args)
 	{
 		string root = ".."; // assumes that gen_build.exe is being run from the root directory of the project
@@ -1381,7 +1451,8 @@ public class gen
 		gen_solution(top);
 
 		// --------------------------------
-		// TODO write out the nuspec file
+
+		gen_nuspec(top);
 	}
 }
 
