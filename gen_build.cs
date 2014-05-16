@@ -17,21 +17,32 @@ internal class config_sqlite3_static : config_info
 	public string env;
 	public string cpu;
 	public string guid;
+	public bool dll = false;
 
 	public void get_products(List<string> a)
 	{
 	}
 
-	private const string AREA = "sqlite3_static";
+	private string area()
+	{
+		if (dll)
+		{
+			return "sqlite3_dynamic";
+		}
+		else
+		{
+			return "sqlite3_static";
+		}
+	}
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}", AREA, env, cpu);
+		return string.Format("{0}\\{1}\\{2}", area(), env, cpu);
 	}
 
 	public string get_name()
 	{
-		return string.Format("{0}.{1}.{2}", AREA, env, cpu);
+		return string.Format("{0}.{1}.{2}", area(), env, cpu);
 	}
 
 	public string get_project_filename()
@@ -304,6 +315,27 @@ public static class gen
 		new config_sqlite3_static { env="wp81_sl", cpu="arm" },
 		new config_sqlite3_static { env="wp81_sl", cpu="x86" },
 
+
+		new config_sqlite3_static { env="winxp", cpu="x86" , dll=true},
+		new config_sqlite3_static { env="winxp", cpu="x64" , dll=true},
+
+		new config_sqlite3_static { env="winrt80", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="winrt80", cpu="x64" , dll=true},
+		new config_sqlite3_static { env="winrt80", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="winrt81", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="winrt81", cpu="x64" , dll=true},
+		new config_sqlite3_static { env="winrt81", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp80", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp80", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp81_rt", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp81_rt", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp81_sl", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp81_sl", cpu="x86" , dll=true},
+
 	};
 
 	private static config_cppinterop_static_sqlite3[] items_cppinterop_static_sqlite3 =
@@ -517,7 +549,14 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ConfigurationType", "StaticLibrary");
+			if (cfg.dll)
+			{
+				f.WriteElementString("ConfigurationType", "DynamicLibrary");
+			}
+			else
+			{
+				f.WriteElementString("ConfigurationType", "StaticLibrary");
+			}
 			f.WriteElementString("TargetName", "sqlite3");
 
 			switch (cfg.env)
@@ -600,7 +639,15 @@ public static class gen
 
 			f.WriteStartElement("ItemDefinitionGroup");
 			f.WriteStartElement("ClCompile");
-			write_cpp_define(f, "_LIB");
+			if (cfg.dll)
+			{
+				write_cpp_define(f, "_USRDLL");
+				write_cpp_define(f, "SQLITE_API=__declspec(dllexport)");
+			}
+			else
+			{
+				write_cpp_define(f, "_LIB");
+			}
 			write_cpp_define(f, "SQLITE_ENABLE_FTS4");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS3_PARENTHESIS");
 			write_cpp_define(f, "SQLITE_ENABLE_COLUMN_METADATA");
