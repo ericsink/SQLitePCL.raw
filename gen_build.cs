@@ -4,7 +4,148 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
-internal interface config_info
+public static class projects
+{
+	public static config_sqlite3_static[] items_sqlite3_static =
+	{
+		new config_sqlite3_static { env="winxp", cpu="x86" },
+		new config_sqlite3_static { env="winxp", cpu="x64" },
+
+		new config_sqlite3_static { env="winrt80", cpu="arm" },
+		new config_sqlite3_static { env="winrt80", cpu="x64" },
+		new config_sqlite3_static { env="winrt80", cpu="x86" },
+
+		new config_sqlite3_static { env="winrt81", cpu="arm" },
+		new config_sqlite3_static { env="winrt81", cpu="x64" },
+		new config_sqlite3_static { env="winrt81", cpu="x86" },
+
+		new config_sqlite3_static { env="wp80", cpu="arm" },
+		new config_sqlite3_static { env="wp80", cpu="x86" },
+
+		new config_sqlite3_static { env="wp81_rt", cpu="arm" },
+		new config_sqlite3_static { env="wp81_rt", cpu="x86" },
+
+		new config_sqlite3_static { env="wp81_sl", cpu="arm" },
+		new config_sqlite3_static { env="wp81_sl", cpu="x86" },
+
+		// now the same as above.  but with dll=true.  DISLIKE.
+
+		new config_sqlite3_static { env="winxp", cpu="x86" , dll=true},
+		new config_sqlite3_static { env="winxp", cpu="x64" , dll=true},
+
+		new config_sqlite3_static { env="winrt80", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="winrt80", cpu="x64" , dll=true},
+		new config_sqlite3_static { env="winrt80", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="winrt81", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="winrt81", cpu="x64" , dll=true},
+		new config_sqlite3_static { env="winrt81", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp80", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp80", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp81_rt", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp81_rt", cpu="x86" , dll=true},
+
+		new config_sqlite3_static { env="wp81_sl", cpu="arm" , dll=true},
+		new config_sqlite3_static { env="wp81_sl", cpu="x86" , dll=true},
+
+	};
+
+	public static config_cppinterop_static_sqlite3[] items_cppinterop_static_sqlite3 =
+	{
+		new config_cppinterop_static_sqlite3 { env="net45", cpu="x64" },
+		new config_cppinterop_static_sqlite3 { env="net45", cpu="x86" },
+
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="arm" },
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x64" },
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x86" },
+
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="arm" },
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x64" },
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x86" },
+
+		new config_cppinterop_static_sqlite3 { env="wp80", cpu="arm" },
+		new config_cppinterop_static_sqlite3 { env="wp80", cpu="x86" },
+
+		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="arm" },
+		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="x86" },
+
+		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="arm" },
+		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="x86" },
+
+		// now the same as above.  but with dll=true.  DISLIKE.
+
+		new config_cppinterop_static_sqlite3 { env="net45", cpu="x64" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="net45", cpu="x86" , dll=true},
+
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="arm" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x64" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x86" , dll=true},
+
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="arm" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x64" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x86" , dll=true},
+
+		new config_cppinterop_static_sqlite3 { env="wp80", cpu="arm" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="wp80", cpu="x86" , dll=true},
+
+		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="arm" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="x86" , dll=true},
+
+		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="arm" , dll=true},
+		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="x86" , dll=true},
+
+	};
+
+	public static config_pcl[] items_pcl = 
+	{
+		new config_pcl { env="profile78", cpu="anycpu" },
+		new config_pcl { env="profile259", cpu="anycpu" },
+		new config_pcl { env="profile158", cpu="anycpu" },
+
+		new config_pcl { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="ios", nat="pinvoke_internal_other", cpu="anycpu"},
+
+		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x86"},
+		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x64"},
+
+		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="x86"},
+		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="x64"},
+
+		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="arm"},
+		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="x64"},
+		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="x86"},
+
+		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="arm"},
+		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="x64"},
+		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="x86"},
+
+		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="arm"},
+		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="x64"},
+		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="x86"},
+
+		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="anycpu"},
+		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="arm"},
+		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="x64"},
+		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="x86"},
+
+		new config_pcl { env="wp80", nat="cppinterop_static_sqlite3", cpu="arm"},
+		new config_pcl { env="wp80", nat="cppinterop_static_sqlite3", cpu="x86"},
+
+		new config_pcl { env="wp81_rt", nat="cppinterop_static_sqlite3", cpu="arm"},
+		new config_pcl { env="wp81_rt", nat="cppinterop_static_sqlite3", cpu="x86"},
+
+		new config_pcl { env="wp81_sl", nat="cppinterop_static_sqlite3", cpu="arm"},
+		new config_pcl { env="wp81_sl", nat="cppinterop_static_sqlite3", cpu="x86"},
+	};
+
+}
+
+public interface config_info
 {
 	string get_project_filename();
 	string get_name();
@@ -12,7 +153,7 @@ internal interface config_info
 	void get_products(List<string> a);
 }
 
-internal class config_sqlite3_static : config_info
+public class config_sqlite3_static : config_info
 {
 	public string env;
 	public string cpu;
@@ -63,11 +204,28 @@ internal class config_sqlite3_static : config_info
 	}
 }
 
-internal class config_cppinterop_static_sqlite3 : config_info
+public class config_cppinterop_static_sqlite3 : config_info
 {
 	public string env;
 	public string cpu;
 	public string guid;
+	public bool dll = false;
+
+	public config_sqlite3_static get_sqlite3_item()
+	{
+		foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
+		{
+			if (
+					(cfg.env == sqlite3_env())
+					&& (cfg.cpu == cpu)
+					&& (cfg.dll == dll)
+			   )
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(get_name());
+	}
 
 	private void add_product(List<string> a, string s)
 	{
@@ -94,16 +252,26 @@ internal class config_cppinterop_static_sqlite3 : config_info
 		}
 	}
 
-	private const string AREA = "cppinterop_static_sqlite3";
+	private string area()
+	{
+		if (dll)
+		{
+			return "cppinterop_dynamic_sqlite3";
+		}
+		else
+		{
+			return "cppinterop_static_sqlite3";
+		}
+	}
 
 	public string get_name()
 	{
-		return string.Format("{0}.{1}.{2}", AREA, env, cpu);
+		return string.Format("{0}.{1}.{2}", area(), env, cpu);
 	}
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}", AREA, env, cpu);
+		return string.Format("{0}\\{1}\\{2}", area(), env, cpu);
 	}
 
 	public string get_project_filename()
@@ -123,7 +291,7 @@ internal class config_cppinterop_static_sqlite3 : config_info
 		}
 	}
 
-	public string sqlite3_env()
+	private string sqlite3_env()
 	{
 		if (env == "net45")
 		{
@@ -136,12 +304,28 @@ internal class config_cppinterop_static_sqlite3 : config_info
 	}
 }
 
-internal class config_pcl : config_info
+public class config_pcl : config_info
 {
 	public string env;
 	public string nat;
 	public string cpu;
 	public string guid;
+
+	public config_cppinterop_static_sqlite3 get_cppinterop_item()
+	{
+		foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
+		{
+			if (
+					(cfg.env == env)
+					&& (cfg.cpu == cpu)
+					&& (cfg.dll == false) // TODO
+			   )
+			{
+				return cfg;
+			}
+		}
+		throw new Exception();
+	}
 
 	public static string get_nuget_framework_name(string env)
 	{
@@ -205,6 +389,12 @@ internal class config_pcl : config_info
 			case "wp81_rt":
 				add_product(a, "SQLitePCL.pri");
 				break;
+		}
+
+		if (is_cppinterop())
+		{
+			config_cppinterop_static_sqlite3 other = get_cppinterop_item();
+			other.get_products(a);
 		}
 	}
 
@@ -293,120 +483,6 @@ public static class gen
 	private const string GUID_WP8 = "{C089C8C0-30E0-4E22-80C0-CE093F111A43}";
 	private const string GUID_WP81RT = "{76F1466A-8B6D-4E39-A767-685A06062A39}";
 
-	private static config_sqlite3_static[] items_sqlite3_static =
-	{
-		new config_sqlite3_static { env="winxp", cpu="x86" },
-		new config_sqlite3_static { env="winxp", cpu="x64" },
-
-		new config_sqlite3_static { env="winrt80", cpu="arm" },
-		new config_sqlite3_static { env="winrt80", cpu="x64" },
-		new config_sqlite3_static { env="winrt80", cpu="x86" },
-
-		new config_sqlite3_static { env="winrt81", cpu="arm" },
-		new config_sqlite3_static { env="winrt81", cpu="x64" },
-		new config_sqlite3_static { env="winrt81", cpu="x86" },
-
-		new config_sqlite3_static { env="wp80", cpu="arm" },
-		new config_sqlite3_static { env="wp80", cpu="x86" },
-
-		new config_sqlite3_static { env="wp81_rt", cpu="arm" },
-		new config_sqlite3_static { env="wp81_rt", cpu="x86" },
-
-		new config_sqlite3_static { env="wp81_sl", cpu="arm" },
-		new config_sqlite3_static { env="wp81_sl", cpu="x86" },
-
-
-		new config_sqlite3_static { env="winxp", cpu="x86" , dll=true},
-		new config_sqlite3_static { env="winxp", cpu="x64" , dll=true},
-
-		new config_sqlite3_static { env="winrt80", cpu="arm" , dll=true},
-		new config_sqlite3_static { env="winrt80", cpu="x64" , dll=true},
-		new config_sqlite3_static { env="winrt80", cpu="x86" , dll=true},
-
-		new config_sqlite3_static { env="winrt81", cpu="arm" , dll=true},
-		new config_sqlite3_static { env="winrt81", cpu="x64" , dll=true},
-		new config_sqlite3_static { env="winrt81", cpu="x86" , dll=true},
-
-		new config_sqlite3_static { env="wp80", cpu="arm" , dll=true},
-		new config_sqlite3_static { env="wp80", cpu="x86" , dll=true},
-
-		new config_sqlite3_static { env="wp81_rt", cpu="arm" , dll=true},
-		new config_sqlite3_static { env="wp81_rt", cpu="x86" , dll=true},
-
-		new config_sqlite3_static { env="wp81_sl", cpu="arm" , dll=true},
-		new config_sqlite3_static { env="wp81_sl", cpu="x86" , dll=true},
-
-	};
-
-	private static config_cppinterop_static_sqlite3[] items_cppinterop_static_sqlite3 =
-	{
-		new config_cppinterop_static_sqlite3 { env="net45", cpu="x64" },
-		new config_cppinterop_static_sqlite3 { env="net45", cpu="x86" },
-
-		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="arm" },
-		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x64" },
-		new config_cppinterop_static_sqlite3 { env="winrt80", cpu="x86" },
-
-		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="arm" },
-		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x64" },
-		new config_cppinterop_static_sqlite3 { env="winrt81", cpu="x86" },
-
-		new config_cppinterop_static_sqlite3 { env="wp80", cpu="arm" },
-		new config_cppinterop_static_sqlite3 { env="wp80", cpu="x86" },
-
-		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="arm" },
-		new config_cppinterop_static_sqlite3 { env="wp81_rt", cpu="x86" },
-
-		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="arm" },
-		new config_cppinterop_static_sqlite3 { env="wp81_sl", cpu="x86" },
-
-	};
-
-	private static config_pcl[] items_pcl = 
-	{
-		new config_pcl { env="profile78", cpu="anycpu" },
-		new config_pcl { env="profile259", cpu="anycpu" },
-		new config_pcl { env="profile158", cpu="anycpu" },
-
-		new config_pcl { env="android", nat="pinvoke_sqlite3", cpu="anycpu"},
-		new config_pcl { env="ios", nat="pinvoke_sqlite3", cpu="anycpu"},
-		new config_pcl { env="ios", nat="pinvoke_internal_other", cpu="anycpu"},
-
-		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x86"},
-		new config_pcl { env="net45", nat="cppinterop_static_sqlite3", cpu="x64"},
-
-		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="anycpu"},
-		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="x86"},
-		new config_pcl { env="net45", nat="pinvoke_sqlite3", cpu="x64"},
-
-		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="arm"},
-		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="x64"},
-		new config_pcl { env="winrt80", nat="cppinterop_static_sqlite3", cpu="x86"},
-
-		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="anycpu"},
-		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="arm"},
-		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="x64"},
-		new config_pcl { env="winrt80", nat="pinvoke_sqlite3", cpu="x86"},
-
-		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="arm"},
-		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="x64"},
-		new config_pcl { env="winrt81", nat="cppinterop_static_sqlite3", cpu="x86"},
-
-		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="anycpu"},
-		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="arm"},
-		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="x64"},
-		new config_pcl { env="winrt81", nat="pinvoke_sqlite3", cpu="x86"},
-
-		new config_pcl { env="wp80", nat="cppinterop_static_sqlite3", cpu="arm"},
-		new config_pcl { env="wp80", nat="cppinterop_static_sqlite3", cpu="x86"},
-
-		new config_pcl { env="wp81_rt", nat="cppinterop_static_sqlite3", cpu="arm"},
-		new config_pcl { env="wp81_rt", nat="cppinterop_static_sqlite3", cpu="x86"},
-
-		new config_pcl { env="wp81_sl", nat="cppinterop_static_sqlite3", cpu="arm"},
-		new config_pcl { env="wp81_sl", nat="cppinterop_static_sqlite3", cpu="x86"},
-	};
-
 	private static void write_reference(XmlWriter f, string s)
 	{
 		f.WriteStartElement("Reference");
@@ -448,8 +524,8 @@ public static class gen
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
 
-		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}", name, cfg.get_dest_subpath()));
-		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}", name, cfg.get_dest_subpath()));
+		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath()));
+		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath()));
 
 		string defs;
 		if (debug)
@@ -633,8 +709,8 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}", cfg.get_dest_subpath()));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}", cfg.get_dest_subpath()));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath()));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath()));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -705,36 +781,6 @@ public static class gen
 
 			f.WriteEndDocument();
 		}
-	}
-
-	private static config_sqlite3_static find_sqlite3_static(string env, string cpu)
-	{
-		foreach (config_sqlite3_static cfg in items_sqlite3_static)
-		{
-			if (
-					(cfg.env == env)
-					&& (cfg.cpu == cpu)
-			   )
-			{
-				return cfg;
-			}
-		}
-		throw new Exception();
-	}
-
-	private static config_cppinterop_static_sqlite3 find_cppinterop_static_sqlite3(string env, string cpu)
-	{
-		foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
-		{
-			if (
-					(cfg.env == env)
-					&& (cfg.cpu == cpu)
-			   )
-			{
-				return cfg;
-			}
-		}
-		throw new Exception();
 	}
 
 	private static void gen_cppinterop_static_sqlite3(config_cppinterop_static_sqlite3 cfg, string root, string top)
@@ -942,8 +988,8 @@ public static class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}", cfg.get_dest_subpath()));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}", cfg.get_dest_subpath()));
+			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath()));
+			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath()));
 			write_cpp_includepath(f, root, "sqlite3\\src\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
@@ -959,6 +1005,7 @@ public static class gen
 			f.WriteStartElement("Link");
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
+			f.WriteElementString("AdditionalDependencies", string.Format("$(Configuration)\\bin\\{0}\\sqlite3.lib;%(AdditionalDependencies)", cfg.get_sqlite3_item().get_dest_subpath()));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
@@ -1023,18 +1070,20 @@ public static class gen
 					break;
 			}
 
+#if not
 			// TODO if this supported other ways of getting sqlite, like
 			// _dynamic_sqlite3 or _static_sqlcipher, the following would be different
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteStartElement("ProjectReference");
 			{
-				config_sqlite3_static other = find_sqlite3_static(cfg.sqlite3_env(), cfg.cpu);
+				config_sqlite3_static other = cfg.get_sqlite3_item();
 				f.WriteAttributeString("Include", other.get_project_filename());
 				f.WriteElementString("Project", other.guid);
 			}
 			f.WriteEndElement(); // ProjectReference
 			f.WriteEndElement(); // ItemGroup
+#endif
 
 			f.WriteStartElement("Import");
 			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.targets");
@@ -1296,11 +1345,12 @@ public static class gen
 			{
 				switch (cfg.nat)
 				{
+					// TODO cppinterop_dynamic
 					case "cppinterop_static_sqlite3":
 						f.WriteStartElement("ItemGroup");
 						f.WriteStartElement("ProjectReference");
 						{
-							config_cppinterop_static_sqlite3 other = find_cppinterop_static_sqlite3(cfg.env, cfg.cpu);
+							config_cppinterop_static_sqlite3 other = cfg.get_cppinterop_item();
 							f.WriteAttributeString("Include", other.get_project_filename());
 							f.WriteElementString("Project", other.guid);
 							f.WriteElementString("Name", other.get_name());
@@ -1421,7 +1471,7 @@ public static class gen
 			string folder_platforms = write_folder(f, "platforms");
 			string folder_portable = write_folder(f, "portable");
 
-			foreach (config_sqlite3_static cfg in items_sqlite3_static)
+			foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CPP,
@@ -1432,7 +1482,7 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
-			foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+			foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CPP,
@@ -1440,10 +1490,15 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
+				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+				config_sqlite3_static other = cfg.get_sqlite3_item();
+				f.WriteLine("\t\t{0} = {0}", other.guid);
+				f.WriteLine("\tEndProjectSection");
+
 				f.WriteLine("EndProject");
 			}
 
-			foreach (config_pcl cfg in items_pcl)
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
 						GUID_CSHARP,
@@ -1451,6 +1506,13 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
+				if (cfg.is_cppinterop())
+				{
+					f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+					config_cppinterop_static_sqlite3 other = cfg.get_cppinterop_item();
+					f.WriteLine("\t\t{0} = {0}", other.guid);
+					f.WriteLine("\tEndProjectSection");
+				}
 				f.WriteLine("EndProject");
 			}
 
@@ -1462,21 +1524,21 @@ public static class gen
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_sqlite3_static cfg in items_sqlite3_static)
+			foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
 			}
-			foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+			foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
 			}
-			foreach (config_pcl cfg in items_pcl)
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
@@ -1490,15 +1552,15 @@ public static class gen
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
-			foreach (config_sqlite3_static cfg in items_sqlite3_static)
+			foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 			{
 				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_sqlite3);
 			}
-			foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+			foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 			{
 				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_cppinterop);
 			}
-			foreach (config_pcl cfg in items_pcl)
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				if (cfg.is_portable())
 				{
@@ -1550,12 +1612,12 @@ public static class gen
 			f.WriteStartElement("files");
 
 #if not
-			foreach (config_sqlite3_static cfg in items_sqlite3_static)
+			foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 			}
 
-			foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+			foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 			}
@@ -1563,7 +1625,7 @@ public static class gen
 
 			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
 
-			foreach (config_pcl cfg in items_pcl)
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				if (!cfg.is_portable())
 				{
@@ -1574,18 +1636,6 @@ public static class gen
 				var a = new List<string>();
 				cfg.get_products(a);
 
-				// TODO the following is ugly.  it would be cleaner if
-				// config_pcl.get_products() simply called its dependencies
-				if (cfg.is_cppinterop())
-				{
-					switch (cfg.nat)
-					{
-						case "cppinterop_static_sqlite3":
-							config_cppinterop_static_sqlite3 other = find_cppinterop_static_sqlite3(cfg.env, cfg.cpu);
-							other.get_products(a);
-							break;
-					}
-				}
 				foreach (string s in a)
 				{
 					f.WriteStartElement("file");
@@ -1632,7 +1682,7 @@ public static class gen
 			f.WriteAttributeString("Name", "InjectReference");
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
-			foreach (config_pcl cfg in items_pcl)
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				if (cfg.env != env)
 				{
@@ -1674,17 +1724,17 @@ public static class gen
 		// --------------------------------
 		// assign all the guids
 
-		foreach (config_sqlite3_static cfg in items_sqlite3_static)
+		foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+		foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_pcl cfg in items_pcl)
+		foreach (config_pcl cfg in projects.items_pcl)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
@@ -1692,17 +1742,17 @@ public static class gen
 		// --------------------------------
 		// generate all the project files
 
-		foreach (config_sqlite3_static cfg in items_sqlite3_static)
+		foreach (config_sqlite3_static cfg in projects.items_sqlite3_static)
 		{
 			gen_sqlite3_static(cfg, root, top);
 		}
 
-		foreach (config_cppinterop_static_sqlite3 cfg in items_cppinterop_static_sqlite3)
+		foreach (config_cppinterop_static_sqlite3 cfg in projects.items_cppinterop_static_sqlite3)
 		{
 			gen_cppinterop_static_sqlite3(cfg, root, top);
 		}
 
-		foreach (config_pcl cfg in items_pcl)
+		foreach (config_pcl cfg in projects.items_pcl)
 		{
 			gen_pcl(cfg, root, top);
 		}
