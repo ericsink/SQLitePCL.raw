@@ -141,11 +141,18 @@ public class config_sqlite3 : config_info
 	public string guid;
 	public bool dll = false;
 
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
 	public void get_products(List<string> a)
 	{
 		if (dll)
 		{
-			// TODO sqlite3.dll
+			add_product(a, "sqlite3.dll");
+			// add_product(a, "sqlite3.lib"); // TODO need this?
+			// add_product(a, "sqlite3.exp"); // TODO need this?
 		}
 	}
 
@@ -228,6 +235,9 @@ public class config_cppinterop : config_info
 				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 		}
+
+		config_sqlite3 other = get_sqlite3_item();
+		other.get_products(a);
 	}
 
 	private string area()
@@ -297,7 +307,7 @@ public class config_pcl : config_info
 				return cfg;
 			}
 		}
-		throw new Exception();
+		throw new Exception(get_name());
 	}
 
 	public static string get_nuget_framework_name(string env)
@@ -322,7 +332,7 @@ public class config_pcl : config_info
 			case "winrt81":
 				return "netcore451";
 			default:
-				throw new Exception();
+				throw new Exception(env);
 		}
 	}
 					
@@ -338,7 +348,7 @@ public class config_pcl : config_info
 		}
 		else
 		{
-			throw new Exception();
+			throw new Exception(get_name());
 		}
 	}
 
@@ -404,7 +414,7 @@ public class config_pcl : config_info
 			case "profile158":
 				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
 			default:
-				throw new Exception();
+				throw new Exception(env);
 		}
 	}
 

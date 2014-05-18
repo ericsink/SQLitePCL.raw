@@ -1,4 +1,7 @@
 
+figure out a way to disable the mac/ios projects while
+using msbuild
+
 error if configuration is not release or debug
 
 why doesn't the cppinterop.dll get copied to the pcl build
@@ -8,8 +11,6 @@ for the cppinterop dll build, why does winrt80 generate .exp
 and .lib?
 
 Win32 in the sln file
-
-gen nuspec
 
 gen msbuild that invokes all the others?
 
