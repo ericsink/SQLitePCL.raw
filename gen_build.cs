@@ -1195,7 +1195,7 @@ public static class gen
 			f.WriteElementString("DefaultLanguage", "en-us");
 			//f.WriteElementString("FileAlignment", "512");
 			f.WriteElementString("WarningLevel", "4");
-			f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
 			f.WriteElementString("AssemblyName", "SQLitePCL");
