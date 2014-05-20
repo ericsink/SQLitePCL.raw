@@ -1649,7 +1649,7 @@ public static class gen
 
 				f.WriteStartElement("file");
 				f.WriteAttributeString("src", string.Format("{0}.targets", env));
-				f.WriteAttributeString("target", string.Format("build\\{0}\\", config_pcl.get_nuget_framework_name(env)));
+				f.WriteAttributeString("target", string.Format("build\\{0}\\SQLitePCL.raw.targets", config_pcl.get_nuget_framework_name(env)));
 				f.WriteEndElement(); // file
 			}
 
