@@ -1260,7 +1260,7 @@ public static class gen
 					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
 					f.WriteElementString("TargetFrameworkVersion", "v8.1");
 					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("SilverlightVersion", "v8.0");
+					f.WriteElementString("SilverlightVersion", "v8.1");
 					f.WriteElementString("SilverlightApplication", "false");
 					f.WriteElementString("ValidateXaml", "true");
 					f.WriteElementString("ThrowErrorsInValidation", "true");
@@ -1353,7 +1353,7 @@ public static class gen
 					f.WriteAttributeString("Include", other.get_project_filename());
 					f.WriteElementString("Project", other.guid);
 					f.WriteElementString("Name", other.get_name());
-					f.WriteElementString("Private", "true");
+					//f.WriteElementString("Private", "true");
 				}
 				f.WriteEndElement(); // ProjectReference
 				f.WriteEndElement(); // ItemGroup
