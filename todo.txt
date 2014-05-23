@@ -1,6 +1,120 @@
 
+nuspecs:
+	basic
+		ios in lib
+		android in lib
+		all others in build/targets, bundle current
+	naked
+		ios in lib
+		android in lib
+		all others in build/targets, bundle nothing
+	kitchen_sink
+		everything in build
+		no references added
+		basically just a zip file
+	bundle_current
+		ios in lib
+		android in lib
+		all others in build/targets, bundle current
+
+Aha!  winrt dyn sqlite3 works if the Microsoft Visual C++ 2013 Runtime Package
+for Windows is added as a reference.
+
+nuget package which has no sqlite libraries in it:
+	ios -- system
+	android -- system
+	winrt -- vs gallery
+	wp8 -- vs gallery
+	wp81 -- vs gallery?
+	net45 -- SOL
+
+nuget package which bundles current sqlite for every plat:
+	ios -- __internal, resource (build on mac)
+	android -- resource (build somewhere)
+	all others -- c++/cx (static?  or dynamic?)
+
+can't get sqlite3.dll for cppinterop_dynamic to work out.
+for winrt81, it gets copied to the output directory, but
+the test suite won't run, saying it can't find the file.
+error message doesn't say sqlite3.dll, but adding a reference
+to the WinRT sqlite SDK makes it work.
+
+wp81_rt fails just like winrt81
+
+wp81_sl fails too.
+
+ios: doesn't even build.  injectreference in targets just doesn't
+seem to work.
+
+for net45, works fine.
+
+wp80 works too.  sqlite3.dll ends up in the xap.
+
+android: works fine.
+
+should we use the sqlite sdks in the vs gallery instead?
+weird that they're not nuget.  and weird that there isn't
+one for regular net45.  and the distinction between the two
+flavors of WP81 is not there.  and the WP81 is pre-release.
+
+need to error on anycpu
+
+maybe pinvoke versions should install sqlite3.dll?
+
+maybe sqlite3.dll should go in build/native?  
+so pinvoke could share it?
+
+why does the sqlitepcl ios platform assembly show
+no assembly info when viewed in xamarin studio?
+
+ios nuget.  adds reference to the bait.  not good.
+the .targets file doesn't seem to have any effect.
+
+if lib/portable stuff is there, it gets added as a
+reference (to the bait), and then the stuff in build/targets
+doesn't work.  take out the bait assemblies, and the
+build/targets thing works (on winrt anyway).  reference
+doesn't show up in references, but the build succeeds,
+even as you change the platform in configuration manager.
+
+android
+	currently only one platform assembly
+	always match?  no condition?
+	move to the lib directory?
+	anycpu.  no platform condition.
+
+ios
+	no platform condition.
+	always want the pinvoke_sqlite3 option.
+	
+net45
+	cppinterop_sqlite3_dynamic
+	platform matching works: x64 and x86
+	anycpu not available
+
+winrt, wp (all of them)
+	cppinterop_sqlite3_dynamic
+	platform matching works: arm and x86
+	anycpu not available
+
+nuget targets match any cpu is busted
+
+how do you get the reference to reset when the platform changes?
+or why doesn't the reference properties dialog show the new one?
+
+include the dynamic sqlite3.dll with pinvoke versions?
+
+make the dynamic sqlite3 version work somehow.  copytooutput?
+
+each nuget package should only try to set one reference in any
+given situation.
+
+test the nuget targets file with wp8 and other envs.
+
 figure out a way to disable the mac/ios projects while
 using msbuild from the command line
+
+delete the old build system
 
 error if configuration is not release or debug
 
