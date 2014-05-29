@@ -1,8 +1,6 @@
 
 switch net45 to pinvoke so mono can use it too.
 
-need to error on anycpu
-
 maybe pinvoke versions should install sqlite3.dll?
 
 add visual studio 2013 c++ runtime sdkreference
@@ -18,6 +16,8 @@ maybe ugly should be a nuget package of its own
 nuget package for "sqlite-net on sqlitepcl.raw"
 
 build sqlite with foreign keys default on
+
+updated sqlite-net code
 
 nuspecs:
 	basic

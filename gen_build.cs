@@ -1677,7 +1677,7 @@ public static class gen
 
 		if (needy)
 		{
-			id = "SQLitePCL.raw_naked";
+			id = "SQLitePCL.raw_needy";
 		}
 		else
 		{
@@ -1699,7 +1699,7 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.1.0-alpha");
+			f.WriteElementString("version", "0.1.1-alpha");
 			if (needy)
 			{
 				f.WriteElementString("title", "SQLitePCL.raw - no SQLite instances included");
@@ -1808,10 +1808,11 @@ public static class gen
 
 				f.WriteComment("msbuild .targets file to inject reference for the right cpu");
 
-				gen_nuget_targets(top, env, a);
+				string tname = string.Format("{0}_{1}.targets", needy?"needy":"regular", env);
+				gen_nuget_targets(top, tname, needy, a);
 
 				f.WriteStartElement("file");
-				f.WriteAttributeString("src", string.Format("{0}.targets", env));
+				f.WriteAttributeString("src", tname);
 				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
 				f.WriteEndElement(); // file
 			}
@@ -1824,19 +1825,45 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets(string top, string env, List<config_pcl> a)
+	private static void gen_nuget_targets(string top, string tname, bool needy, List<config_pcl> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.targets", env)), settings))
+		Dictionary<string,string> cpus = new Dictionary<string,string>();
+		foreach (config_pcl cfg in a)
+		{
+			cpus[cfg.cpu.ToLower()] = null;
+		}
+
+		string cond = "";
+		foreach (string cpu in cpus.Keys)
+		{
+			if (cond.Length > 0)
+			{
+				cond += " AND ";
+			}
+
+			cond += string.Format("($(Platform.ToLower()) != '{0}')", cpu);
+		}
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", "check_cpu");
+			f.WriteAttributeString("BeforeTargets", "Build");
+			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
+			f.WriteStartElement("Error");
+			f.WriteAttributeString("Text", "Unsupported: $(Platform)");
+			f.WriteEndElement(); // Error
+			f.WriteEndElement(); // Target
 
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", "InjectReference");
@@ -1890,6 +1917,7 @@ public static class gen
 
 					// TODO SDKReference, for all the RT-flavor platforms
 				}
+				// TODO might need SDKReference even for !cfg.dll
 
 				f.WriteEndElement(); // ItemGroup
 			}
