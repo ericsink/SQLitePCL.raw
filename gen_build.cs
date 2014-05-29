@@ -797,6 +797,11 @@ public static class gen
 			{
 				write_cpp_define(f, "_LIB");
 			}
+			//write_cpp_define(f, "SQLITE_OMIT_LOAD_EXTENSION");
+			//write_cpp_define(f, "SQLITE_THREADSAFE=whatever");
+			//write_cpp_define(f, "SQLITE_TEMP_STORE=whatever");
+			write_cpp_define(f, "SQLITE_DEFAULT_FOREIGN_KEYS=1");
+			//write_cpp_define(f, "SQLITE_ENABLE_RTREE");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS4");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS3_PARENTHESIS");
 			write_cpp_define(f, "SQLITE_ENABLE_COLUMN_METADATA");
@@ -1699,7 +1704,7 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.1.1-alpha");
+			f.WriteElementString("version", "0.2.0-alpha");
 			if (needy)
 			{
 				f.WriteElementString("title", "SQLitePCL.raw - no SQLite instances included");
