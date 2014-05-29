@@ -1222,6 +1222,7 @@ public static class gen
 				case "wp81_sl":
 					break;
 				default:
+					// TODO is this actually needed?
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
 					f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
@@ -1813,7 +1814,7 @@ public static class gen
 
 				f.WriteComment("msbuild .targets file to inject reference for the right cpu");
 
-				string tname = string.Format("{0}_{1}.targets", needy?"needy":"regular", env);
+				string tname = string.Format("{0}_{1}.targets", needy?"needy":"basic", env);
 				gen_nuget_targets(top, tname, needy, a);
 
 				f.WriteStartElement("file");

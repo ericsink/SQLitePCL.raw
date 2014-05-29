@@ -1,21 +1,25 @@
 
-switch net45 to pinvoke so mono can use it too.
+switch net45 from cppinterop to pinvoke so mono can use it too.
 
 maybe pinvoke versions should install sqlite3.dll?
+but this is platform-specific.  don't add sqlite3.dll
+for mac/mono, etc.
+
+or maybe the targets file for net45 could figure out the
+right thing to do
 
 add visual studio 2013 c++ runtime sdkreference
 
 error if configuration is not release or debug
+but configuration in xamarin.ios is actually stuff like iPhone, etc
 
-configuration in xamarin.ios is actually stuff like iPhone, etc
+gen csproj for ugly.cs
 
 maybe ugly should be a nuget package of its own
 
 nuget package for "sqlite-net on sqlitepcl.raw"
 
-build sqlite with foreign keys default on
-
-updated sqlite-net code
+update the private copy of the sqlite-net code
 
 nuspecs:
 	basic
@@ -96,10 +100,6 @@ and .lib?
 Win32 in the sln file
 
 auto-generate the tests as well?
-
-some of those solution platform configurations could go away?
-
-rm xamarin projects from visual studio SLN so that msbuild will work
 
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
