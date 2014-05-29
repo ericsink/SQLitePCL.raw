@@ -5,8 +5,6 @@ maybe pinvoke versions should install sqlite3.dll?
 
 add visual studio 2013 c++ runtime sdkreference
 
-delete the old build system
-
 error if configuration is not release or debug
 
 configuration in xamarin.ios is actually stuff like iPhone, etc

@@ -48,11 +48,12 @@ for reasons explained later in this README.
 
 ## Is this available in NuGet?
 
-Not quite yet.  It will be soon.  I'm polishing a few more things first.
+Sort of.  A pre-release NuGet package is available.  I have a few
+more things to polish before I market it as a regular package.
 
 ## Is this available in the Xamarin Component Store?
 
-Not quite yet.  It will be soon.  I'm polishing a few more things first.
+Not quite yet.  It probably will be soon.  I'm polishing a few more things first.
 
 ## What is the state of this code?  Is it completely done?
 
@@ -62,19 +63,21 @@ The code itself is in pretty good shape.
 There are some more tests I want to write.  There are some platform configurations
 I still want to support.
 
-The most important item To-Do is creating nuget packages.
-
 Look in todo.txt for an informal working list of tasks pending.
 
 ## How do I build this?
 
-For Xamarin Studio, use SQLitePCL\_XamarinStudio.sln.
+For all practical purposes, it's impossible.  :-)
 
-For Visual Studio, use SQLitePCL\_VisualStudio.sln.  The current build setup is expecting you to have Visual Studio 2012 *and* Visual Studio 2013, the latter with Update 2 installed for the Phone 8.1 stuff.
+But if you're dying to try it, look at gen\_build.cs.  It's a script which
+generates the build system.  I build everything on Windows.  The script
+will expect you to have Visual Studio 2012 *and* Visual Studio 2013, 
+the latter with Update 2 installed for the Phone 8.1 stuff.  You also
+need the Xamarin stuff installed.  And the relevant Android SDK(s).
 
 ## Which PCL profile is supported?
 
-The .sln file contains projects to build the PCL with profile 78, 
+The build system contains projects to build the PCL with profile 78, 
 profile 158, and profile 259.  Others might work as well, but those are the ones I 
 have tried.
 
