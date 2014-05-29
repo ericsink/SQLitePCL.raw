@@ -844,7 +844,7 @@ public static class gen
 
 			f.WriteStartElement("ItemGroup");
 			{
-				string path = Path.Combine(root, "sqlite3\\src\\sqlite3.c");
+				string path = Path.Combine(root, "sqlite3\\sqlite3.c");
 				f.WriteStartElement("ClCompile");
 				f.WriteAttributeString("Include", path);
 				f.WriteEndElement(); // ClCompile
@@ -1068,7 +1068,7 @@ public static class gen
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
 			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath()));
 			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath()));
-			write_cpp_includepath(f, root, "sqlite3\\src\\");
+			write_cpp_includepath(f, root, "sqlite3\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
 			f.WriteEndElement(); // PropertyGroup
@@ -1116,7 +1116,7 @@ public static class gen
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteStartElement("ClCompile");
-			f.WriteAttributeString("Include", Path.Combine(root, "cppinterop\\src\\sqlite3_cx.cpp"));
+			f.WriteAttributeString("Include", Path.Combine(root, "src\\cpp\\sqlite3_cx.cpp"));
 			f.WriteEndElement(); // ClCompile
 			f.WriteEndElement(); // ItemGroup
 
@@ -1396,30 +1396,30 @@ public static class gen
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteStartElement("ItemGroup");
-			write_cs_compile(f, root, "pcl\\src\\AssemblyInfo.cs");
-			write_cs_compile(f, root, "pcl\\src\\raw.cs");
-			write_cs_compile(f, root, "pcl\\src\\intptrs.cs");
-			write_cs_compile(f, root, "pcl\\src\\isqlite3.cs");
+			write_cs_compile(f, root, "src\\cs\\AssemblyInfo.cs");
+			write_cs_compile(f, root, "src\\cs\\raw.cs");
+			write_cs_compile(f, root, "src\\cs\\intptrs.cs");
+			write_cs_compile(f, root, "src\\cs\\isqlite3.cs");
 			f.WriteEndElement(); // ItemGroup
 
 			if (cfg.is_portable())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "pcl\\src\\sqlite3_bait.cs");
+				write_cs_compile(f, root, "src\\cs\\sqlite3_bait.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
 			else if (cfg.is_cppinterop())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "pcl\\src\\sqlite3_cppinterop.cs");
-				write_cs_compile(f, root, "pcl\\src\\util.cs");
+				write_cs_compile(f, root, "src\\cs\\sqlite3_cppinterop.cs");
+				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
 			else if (cfg.is_pinvoke())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "pcl\\src\\sqlite3_pinvoke.cs");
-				write_cs_compile(f, root, "pcl\\src\\util.cs");
+				write_cs_compile(f, root, "src\\cs\\sqlite3_pinvoke.cs");
+				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
 
