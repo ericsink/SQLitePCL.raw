@@ -12,6 +12,7 @@ public static class projects
 	public static List<config_sqlite3> items_sqlite3 = new List<config_sqlite3>();
 	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
 	public static List<config_pcl> items_pcl = new List<config_pcl>();
+	public static List<config_higher> items_higher = new List<config_higher>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -25,6 +26,7 @@ public static class projects
 		init_pcl_pinvoke();
 		init_pcl_cppinterop(false);
 		init_pcl_cppinterop(true);
+		init_higher();
 	}
 
 	private static void init_sqlite3(bool dyn)
@@ -80,6 +82,14 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
 	}
 
+	private static void init_higher()
+	{
+		items_higher.Add(new config_higher { name="ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+
+		items_higher.Add(new config_higher { name="krueger", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
+	}
+
 	private static void init_pcl_cppinterop(bool dyn)
 	{
 		items_pcl.Add(new config_pcl { env="net45", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
@@ -122,6 +132,34 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x86"});
+	}
+
+	public static string get_portable_nuget_target_string(string env)
+	{
+		switch (env)
+		{
+			case "profile78":
+				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
+			case "profile259":
+				// TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong?
+				return "portable-net45+netcore45+wpa81+wp8";
+			case "profile158":
+				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
+			default:
+				throw new Exception(env);
+		}
+	}
+
+	public static config_pcl find_bait(string env)
+	{
+		foreach (config_pcl cfg in projects.items_pcl)
+		{
+			if (cfg.env == env)
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(env);
 	}
 
 	public static List<config_pcl> find_pcls(string env, string api, string what, string cpu, string linkage)
@@ -344,6 +382,30 @@ public class config_cppinterop : config_info
 	}
 }
 
+public class config_higher : config_info
+{
+	public string env;
+	public string name;
+	public string guid;
+	public List<string> csfiles;
+	public List<string> defines;
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}", name, env);
+	}
+
+	public string get_name()
+	{
+		return string.Format("{0}_{1}", name, env);
+	}
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", get_name());
+	}
+}
+
 public class config_pcl : config_info
 {
 	public string env;
@@ -433,7 +495,7 @@ public class config_pcl : config_info
 		{
 			if (is_portable())
 			{
-				return string.Format("lib\\{0}\\", get_portable_nuget_target_string());
+				return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
 			}
 			else
 			{
@@ -474,22 +536,6 @@ public class config_pcl : config_info
 	public bool is_portable()
 	{
 		return env.StartsWith("profile");
-	}
-
-	public string get_portable_nuget_target_string()
-	{
-		switch (env)
-		{
-			case "profile78":
-				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
-			case "profile259":
-				// TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong?
-				return "portable-net45+netcore45+wpa81+wp8";
-			case "profile158":
-				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
-			default:
-				throw new Exception(env);
-		}
 	}
 
 	public bool is_cppinterop()
@@ -589,6 +635,45 @@ public static class gen
 	private static void write_project_type_guids(XmlWriter f, string s1, string s2)
 	{
 		f.WriteElementString("ProjectTypeGuids", string.Format("{0};{1}", s1, s2));
+	}
+
+	private static void write_section(string dest_subpath, XmlWriter f, bool debug, List<string> defines)
+	{
+		string name = debug ? "debug" : "release";
+		f.WriteStartElement("PropertyGroup");
+		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == '{0}' ", name));
+
+		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}\\", name, dest_subpath));
+		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}\\", name, dest_subpath));
+
+		string defs;
+		if (debug)
+		{
+			defs = "DEBUG;";
+		}
+		else
+		{
+			defs = "";
+		}
+		if (defines != null)
+		{
+			foreach (string d in defines)
+			{
+				defs += d;
+				defs += ";";
+			}
+		}
+
+		if (defs.Length > 0)
+		{
+			f.WriteElementString("DefineConstants", defs);
+		}
+
+		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
+		f.WriteElementString("Optimize", debug ? "false" : "true");
+		f.WriteElementString("DebugType", debug ? "full" : "none");
+
+		f.WriteEndElement(); // PropertyGroup
 	}
 
 	private static void write_section(config_pcl cfg, XmlWriter f, bool debug, List<string> defines)
@@ -1519,6 +1604,100 @@ public static class gen
 		}
 	}
 
+	private static void gen_higher(
+			config_higher cfg,
+			string root, 
+			string top
+			)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+			f.WriteAttributeString("DefaultTargets", "Build");
+
+			// TODO is this actually needed?
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
+			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
+			f.WriteEndElement(); // Import
+
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("ProjectGuid", cfg.guid);
+			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
+
+			f.WriteStartElement("Configuration");
+			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
+
+			f.WriteString("Debug");
+
+			f.WriteEndElement(); // Configuration
+
+			f.WriteElementString("SchemaVersion", "2.0");
+			f.WriteElementString("Platform", "AnyCPU");
+			f.WriteElementString("DefaultLanguage", "en-us");
+			//f.WriteElementString("FileAlignment", "512");
+			f.WriteElementString("WarningLevel", "4");
+			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+			f.WriteElementString("OutputType", "Library");
+			//f.WriteElementString("RootNamespace", "SQLitePCL"); // TODO
+			//f.WriteElementString("AssemblyName", "SQLitePCL"); // TODO
+
+			switch (cfg.env)
+			{
+				case "profile158":
+					f.WriteElementString("TargetFrameworkVersion", "v4.0");
+					break;
+				case "profile78":
+				case "profile259":
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+			}
+
+			f.WriteElementString("TargetFrameworkProfile", cfg.env);
+
+			f.WriteEndElement(); // PropertyGroup
+
+			write_section(cfg.get_dest_subpath(), f, true, cfg.defines);
+			write_section(cfg.get_dest_subpath(), f, false, cfg.defines);
+
+			f.WriteStartElement("ItemGroup");
+			foreach (string csfile in cfg.csfiles)
+			{
+				write_cs_compile(f, root, csfile);
+			}
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+			f.WriteStartElement("ProjectReference");
+			{
+				config_pcl other = projects.find_bait(cfg.env);
+				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			f.WriteEndElement(); // ProjectReference
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
+			f.WriteEndElement(); // Import
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+	}
+
 	public static string write_folder(StreamWriter f, string name)
 	{
 		string folder_guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -1593,6 +1772,21 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
+			foreach (config_higher cfg in projects.items_higher)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
+				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+				config_pcl other = projects.find_bait(cfg.env);
+				f.WriteLine("\t\t{0} = {0}", other.guid);
+				f.WriteLine("\tEndProjectSection");
+				f.WriteLine("EndProject");
+			}
+
 			f.WriteLine("Global");
 
 			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
@@ -1621,6 +1815,13 @@ public static class gen
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+			}
+			foreach (config_higher cfg in projects.items_higher)
+			{
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "anycpu");
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -1966,6 +2167,11 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
+		foreach (config_higher cfg in projects.items_higher)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
 		// --------------------------------
 		// generate all the project files
 
@@ -1982,6 +2188,11 @@ public static class gen
 		foreach (config_pcl cfg in projects.items_pcl)
 		{
 			gen_pcl(cfg, root, top);
+		}
+
+		foreach (config_higher cfg in projects.items_higher)
+		{
+			gen_higher(cfg, root, top);
 		}
 
 		// --------------------------------
