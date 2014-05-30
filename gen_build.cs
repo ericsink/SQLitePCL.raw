@@ -87,7 +87,9 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 
-		items_higher.Add(new config_higher { name="krueger", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
+		items_higher.Add(new config_higher { name="krueger", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
+		items_higher.Add(new config_higher { name="krueger", env="profile259", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
+		//items_higher.Add(new config_higher { name="krueger", env="profile158", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
