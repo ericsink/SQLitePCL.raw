@@ -84,12 +84,12 @@ public static class projects
 
 	private static void init_higher()
 	{
-		items_higher.Add(new config_higher { name="ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
-		items_higher.Add(new config_higher { name="ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 
-		items_higher.Add(new config_higher { name="krueger", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
-		items_higher.Add(new config_higher { name="krueger", env="profile259", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
-		//items_higher.Add(new config_higher { name="krueger", env="profile158", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
+		items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
+		items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile259", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
+		//items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile158", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -143,8 +143,7 @@ public static class projects
 			case "profile78":
 				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
 			case "profile259":
-				// TODO so, when Xamarin adds support for profile 259, the nuget target string below will be wrong?
-				return "portable-net45+netcore45+wpa81+wp8";
+				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch";
 			case "profile158":
 				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
 			default:
@@ -388,6 +387,7 @@ public class config_higher : config_info
 {
 	public string env;
 	public string name;
+	public string assemblyname;
 	public string guid;
 	public List<string> csfiles;
 	public List<string> defines;
@@ -405,6 +405,21 @@ public class config_higher : config_info
 	public string get_project_filename()
 	{
 		return string.Format("{0}.csproj", get_name());
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public string get_nuget_target_path()
+	{
+		return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, string.Format("{0}.dll", assemblyname));
 	}
 }
 
@@ -1651,7 +1666,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			//f.WriteElementString("RootNamespace", "SQLitePCL"); // TODO
-			//f.WriteElementString("AssemblyName", "SQLitePCL"); // TODO
+			f.WriteElementString("AssemblyName", cfg.assemblyname);
 
 			switch (cfg.env)
 			{
@@ -1872,6 +1887,21 @@ public static class gen
 		}
 	}
 
+	private static void write_nuspec_file_entry(config_higher cfg, XmlWriter f)
+	{
+		f.WriteComment(string.Format("{0}", cfg.get_name()));
+		var a = new List<string>();
+		cfg.get_products(a);
+
+		foreach (string s in a)
+		{
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+			f.WriteAttributeString("target", cfg.get_nuget_target_path());
+			f.WriteEndElement(); // file
+		}
+	}
+
 	private static void write_nuspec_file_entries(XmlWriter f, string where, List<config_pcl> a, bool needy)
 	{
 		foreach (config_pcl cfg in a)
@@ -2024,6 +2054,128 @@ public static class gen
 				f.WriteAttributeString("src", tname);
 				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
 				f.WriteEndElement(); // file
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_ugly(string top)
+	{
+		string id = "SQLitePCL.ugly";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("title", "SQLitePCL.ugly");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw_basic");
+			f.WriteEndElement(); // dependency
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_higher cfg in projects.items_higher)
+			{
+				if (cfg.name == "ugly")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_krueger(string top)
+	{
+		string id = "sqlite-net-pcl";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("title", "sqlite-net PCL");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("authors", "Frank Krueger");
+			f.WriteElementString("owners", "Frank Krueger,Tim Heuer");
+			//f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/praeclarum/sqlite-net/master/license.md");
+			f.WriteElementString("projectUrl", "https://github.com/praeclarum/sqlite-net");
+			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw_basic");
+			f.WriteEndElement(); // dependency
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_higher cfg in projects.items_higher)
+			{
+				if (cfg.name == "krueger")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
 			}
 
 			f.WriteEndElement(); // files
@@ -2205,6 +2357,9 @@ public static class gen
 
 		gen_nuspec_basic(top, false);
 		gen_nuspec_basic(top, true);
+
+		gen_nuspec_ugly(top);
+		gen_nuspec_krueger(top);
 
 	}
 }

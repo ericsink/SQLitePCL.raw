@@ -1,5 +1,9 @@
 
+maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
+
 switch net45 from cppinterop to pinvoke so mono can use it too.
+
+switch my env keywords to be the same as the ones nuget uses?
 
 maybe pinvoke versions should install sqlite3.dll?
 but this is platform-specific.  don't add sqlite3.dll
