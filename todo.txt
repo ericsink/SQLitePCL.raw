@@ -1,4 +1,11 @@
 
+generate a csproj to build test_cases.cs (in a simple net45 project)
+so we can verify no build breakage against the tests.
+
+create/generate a csproj which just builds the bait, for use by
+praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
+defined.
+
 maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
 
 switch net45 from cppinterop to pinvoke so mono can use it too.
@@ -19,14 +26,6 @@ add visual studio 2013 c++ runtime sdkreference
 
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
-
-can the test cases become a PCL?  if they do, maybe it
-would be possible to just add that PCL to a unit test
-project and the test cases would Just Work?
-
-maybe ugly should be a nuget package of its own
-
-nuget package for "sqlite-net on sqlitepcl.raw"
 
 nuspecs:
 	basic
@@ -106,7 +105,7 @@ and .lib?
 
 Win32 in the sln file
 
-auto-generate the tests as well?
+auto-generate the test projects as well?
 
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
@@ -115,6 +114,7 @@ like 4.0 ?
 
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
+auto-generate this.
 
 need at least one test project for each platform assembly.  
 

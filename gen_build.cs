@@ -2186,6 +2186,61 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_tests(string top, string root)
+	{
+		string id = "SQLitePCL.tests";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("title", "Test cases for SQLitePCL.raw");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.ugly");
+			f.WriteEndElement(); // dependency
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", Path.Combine(root, "src\\cs\\test_cases.cs"));
+			f.WriteAttributeString("target", "content");
+			f.WriteEndElement(); // file
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuget_targets(string top, string tname, bool needy, List<config_pcl> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2360,6 +2415,8 @@ public static class gen
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_krueger(top);
+
+		gen_nuspec_tests(top, root);
 
 	}
 }
