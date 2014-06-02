@@ -1380,7 +1380,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "SQLitePCL");
+			f.WriteElementString("AssemblyName", "SQLitePCL"); // match the name in get_products()
 
 			List<string> defines = new List<string>();
 
@@ -1665,7 +1665,7 @@ public static class gen
 			f.WriteElementString("WarningLevel", "4");
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
-			//f.WriteElementString("RootNamespace", "SQLitePCL"); // TODO
+			//f.WriteElementString("RootNamespace", "whatever"); // TODO
 			f.WriteElementString("AssemblyName", cfg.assemblyname);
 
 			switch (cfg.env)

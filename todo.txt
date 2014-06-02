@@ -5,6 +5,9 @@ switch net45 from cppinterop to pinvoke so mono can use it too.
 
 switch my env keywords to be the same as the ones nuget uses?
 
+annoying that an injected reference doesn't show up in the
+References list in visual studio
+
 maybe pinvoke versions should install sqlite3.dll?
 but this is platform-specific.  don't add sqlite3.dll
 for mac/mono, etc.
@@ -17,13 +20,13 @@ add visual studio 2013 c++ runtime sdkreference
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
 
-gen csproj for ugly.cs
+can the test cases become a PCL?  if they do, maybe it
+would be possible to just add that PCL to a unit test
+project and the test cases would Just Work?
 
 maybe ugly should be a nuget package of its own
 
 nuget package for "sqlite-net on sqlitepcl.raw"
-
-update the private copy of the sqlite-net code
 
 nuspecs:
 	basic
