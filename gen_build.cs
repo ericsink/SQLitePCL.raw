@@ -2085,7 +2085,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", "0.2.0-alpha");
 			f.WriteElementString("title", "SQLitePCL.ugly");
-			f.WriteElementString("description", "TODO");
+			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
@@ -2093,7 +2093,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			//f.WriteElementString("releaseNotes", "TODO");
-			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("summary", "Extension methods for SQLitePCL.raw, providing an ugly-but-usable API");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -2207,7 +2207,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", "0.2.0-alpha");
 			f.WriteElementString("title", "Test cases for SQLitePCL.raw");
-			f.WriteElementString("description", "TODO");
+			f.WriteElementString("description", "Create a new unit test project.  Add this NuGetPackage.  Build.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
@@ -2215,7 +2215,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			//f.WriteElementString("releaseNotes", "TODO");
-			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("summary", "test_cases.cs is a bunch unit tests for SQLitePCL.raw");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -2330,11 +2330,29 @@ public static class gen
 					// TODO link
 					f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 					f.WriteEndElement(); // Content
-
-					// TODO SDKReference, for all the RT-flavor platforms
 				}
-				// TODO might need SDKReference even for !cfg.dll
 
+#if not
+				// TODO this doesn't seem to ever work
+				// TODO try something like: microsoft.vclibs.120.sdkreference by mmaitre
+				// TODO or http://timheuer.com/blog/archive/2013/11/25/add-extension-sdk-dependency-to-nuget-package-reference.aspx
+				switch (cfg.env)
+				{
+					case "winrt80":
+						f.WriteStartElement("SDKReference");
+						f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=11.0");
+						f.WriteEndElement(); // SDKReference
+						break;
+					case "winrt81":
+					case "wp81_rt":
+					case "wp81_sl":
+						f.WriteStartElement("SDKReference");
+						f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=12.0");
+						f.WriteEndElement(); // SDKReference
+						break;
+				}
+#endif
+				
 				f.WriteEndElement(); // ItemGroup
 			}
 

@@ -1,16 +1,22 @@
 
+add visual studio 2013 c++ runtime sdkreference
+
+clean up TODOs in new nuspecs
+
 generate a csproj to build test_cases.cs (in a simple net45 project)
 so we can verify no build breakage against the tests.
+
+switch my env keywords to be the same as the ones nuget uses?
+
+nuget package: SQLitePCL.raw_bait
+
+switch net45 from cppinterop to pinvoke so mono can use it too.
 
 create/generate a csproj which just builds the bait, for use by
 praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
 defined.
 
 maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
-
-switch net45 from cppinterop to pinvoke so mono can use it too.
-
-switch my env keywords to be the same as the ones nuget uses?
 
 annoying that an injected reference doesn't show up in the
 References list in visual studio
@@ -21,8 +27,6 @@ for mac/mono, etc.
 
 or maybe the targets file for net45 could figure out the
 right thing to do
-
-add visual studio 2013 c++ runtime sdkreference
 
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
