@@ -2630,7 +2630,7 @@ public static class gen
 
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", "check_cpu");
-			f.WriteAttributeString("BeforeTargets", "Build");
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
 			f.WriteStartElement("Error");
 			f.WriteAttributeString("Text", "Unsupported: $(Platform)");

@@ -1,4 +1,20 @@
 
+maybe I should have config_csproj instead of three different
+flavors of same.
+
+fix error message on AnyCPU to be more informative
+
+fix error message thrown This is the bait
+
+switch net45 from cppinterop to pinvoke so mono can use it too.
+
+maybe pinvoke versions should install sqlite3.dll?
+but this is platform-specific.  don't add sqlite3.dll
+for mac/mono, etc.
+
+or maybe the targets file for net45 could figure out the
+right thing to do
+
 test_cases.cs nuget, nunit vs mstest
 
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
@@ -11,8 +27,6 @@ switch my env keywords to be the same as the ones nuget uses?
 
 nuget package: SQLitePCL.raw_bait
 
-switch net45 from cppinterop to pinvoke so mono can use it too.
-
 create/generate a csproj which just builds the bait, for use by
 praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
 defined.
@@ -21,13 +35,6 @@ maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
 
 annoying that an injected reference doesn't show up in the
 References list in visual studio
-
-maybe pinvoke versions should install sqlite3.dll?
-but this is platform-specific.  don't add sqlite3.dll
-for mac/mono, etc.
-
-or maybe the targets file for net45 could figure out the
-right thing to do
 
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
@@ -49,9 +56,6 @@ nuspecs:
 		ios in lib
 		android in lib
 		all others in build/targets, bundle current
-
-Aha!  winrt dyn sqlite3 works if the Microsoft Visual C++ 2013 Runtime Package
-for Windows is added as a reference.
 
 nuget package which has no sqlite libraries in it:
 	ios -- system
