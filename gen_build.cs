@@ -13,6 +13,7 @@ public static class projects
 	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
 	public static List<config_pcl> items_pcl = new List<config_pcl>();
 	public static List<config_higher> items_higher = new List<config_higher>();
+	public static List<config_tests> items_tests = new List<config_tests>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -27,6 +28,7 @@ public static class projects
 		init_pcl_cppinterop(false);
 		init_pcl_cppinterop(true);
 		init_higher();
+		init_tests();
 	}
 
 	private static void init_sqlite3(bool dyn)
@@ -80,6 +82,14 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="profile78", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile259", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
+	}
+
+	private static void init_tests()
+	{
+		// TODO it is not confirmed that any other env besides winrt80 will work here.
+		// for now that's fine.
+
+		items_tests.Add(new config_tests { env="winrt80", pcl="profile78" });
 	}
 
 	private static void init_higher()
@@ -156,6 +166,21 @@ public static class projects
 		foreach (config_pcl cfg in projects.items_pcl)
 		{
 			if (cfg.env == env)
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(env);
+	}
+
+	public static config_higher find_ugly(string env)
+	{
+		foreach (config_higher cfg in projects.items_higher)
+		{
+			if (
+					(cfg.name == "ugly")
+					&& (cfg.env == env)
+			   )
 			{
 				return cfg;
 			}
@@ -421,6 +446,29 @@ public class config_higher : config_info
 	{
 		add_product(a, string.Format("{0}.dll", assemblyname));
 	}
+}
+
+public class config_tests : config_info
+{
+	public string env;
+	public string pcl;
+	public string guid;
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", get_name());
+	}
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}", "tests", env);
+	}
+
+	public string get_name()
+	{
+		return string.Format("{0}_{1}", "tests", env);
+	}
+
 }
 
 public class config_pcl : config_info
@@ -1621,6 +1669,292 @@ public static class gen
 		}
 	}
 
+	// TODO the following function works when cfg.env is winrt80.  it might
+	// not work for any other configuration.  for now, that's fine.
+	private static void gen_tests(config_tests cfg, string root, string top)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			switch (cfg.env)
+			{
+				case "winrt81":
+				case "wp81_rt":
+				case "wp81_sl":
+					f.WriteAttributeString("ToolsVersion", "12.0");
+					break;
+				default:
+					f.WriteAttributeString("ToolsVersion", "4.0");
+					break;
+			}
+			f.WriteAttributeString("DefaultTargets", "Build");
+
+			switch (cfg.env)
+			{
+				case "wp81_sl":
+					break;
+				default:
+					// TODO is this actually needed?
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
+					f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
+					f.WriteEndElement(); // Import
+					break;
+			}
+
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("ProjectGuid", cfg.guid);
+
+			switch (cfg.env)
+			{
+				case "ios":
+					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
+					break;
+				case "android":
+					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
+					break;
+				case "winrt80":
+				case "winrt81":
+					write_project_type_guids(f, GUID_WINRT, GUID_CSHARP);
+					break;
+				case "wp80":
+					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
+					break;
+				case "wp81_rt":
+					write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
+					break;
+				case "wp81_sl":
+					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
+					break;
+			}
+
+			f.WriteStartElement("Configuration");
+			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
+
+			f.WriteString("Debug");
+
+			f.WriteEndElement(); // Configuration
+
+			f.WriteElementString("SchemaVersion", "2.0");
+			//f.WriteElementString("Platform", cfg.cpu.Replace(" ", ""));
+			f.WriteElementString("DefaultLanguage", "en-us");
+			//f.WriteElementString("FileAlignment", "512");
+			f.WriteElementString("WarningLevel", "4");
+			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+			f.WriteElementString("OutputType", "Library");
+			// TODO f.WriteElementString("RootNamespace", "SQLitePCL");
+			// TODO f.WriteElementString("AssemblyName", "SQLitePCL"); // match the name in get_products()
+
+			List<string> defines = new List<string>();
+
+			switch (cfg.env)
+			{
+				case "profile158":
+					f.WriteElementString("TargetFrameworkVersion", "v4.0");
+					break;
+				case "profile78":
+				case "profile259":
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+				case "ios":
+					defines.Add("PLATFORM_IOS");
+					break;
+				case "android":
+					defines.Add("__MOBILE__");
+					defines.Add("__ANDROID__");
+					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
+					break;
+				case "winrt80":
+					//f.WriteElementString("TargetPlatformVersion", "8.0");
+					f.WriteElementString("UseVSHostingProcess", "false");
+					//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+					// TargetFrameworkVersion?
+					defines.Add("NETFX_CORE");
+					break;
+				case "winrt81":
+					f.WriteElementString("TargetPlatformVersion", "8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("TargetFrameworkVersion", null);
+					defines.Add("NETFX_CORE");
+					break;
+				case "net45":
+					f.WriteElementString("ProductVersion", "12.0.0");
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+				case "wp80":
+					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+					f.WriteElementString("TargetFrameworkVersion", "v8.0");
+					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+					f.WriteElementString("SilverlightVersion", "v8.0");
+					f.WriteElementString("SilverlightApplication", "false");
+					f.WriteElementString("ValidateXaml", "true");
+					f.WriteElementString("ThrowErrorsInValidation", "true");
+					defines.Add("WINDOWS_PHONE");
+					defines.Add("SILVERLIGHT");
+					f.WriteElementString("NoStdLib", "true");
+					f.WriteElementString("NoConfig", "true");
+					break;
+				case "wp81_rt":
+					f.WriteElementString("TargetPlatformVersion", "8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("UseVSHostingProcess", "false");
+					defines.Add("NETFX_CORE");
+					defines.Add("WINDOWS_PHONE_APP");
+					break;
+				case "wp81_sl":
+					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+					f.WriteElementString("TargetFrameworkVersion", "v8.1");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("SilverlightVersion", "v8.1");
+					f.WriteElementString("SilverlightApplication", "false");
+					f.WriteElementString("ValidateXaml", "true");
+					f.WriteElementString("ThrowErrorsInValidation", "true");
+					defines.Add("WINDOWS_PHONE");
+					defines.Add("SILVERLIGHT");
+					f.WriteElementString("NoStdLib", "true");
+					f.WriteElementString("NoConfig", "true");
+					break;
+			}
+
+			// TODO maybe define NUNIT
+
+			f.WriteEndElement(); // PropertyGroup
+
+			write_section(cfg.get_dest_subpath(), f, true, defines);
+			write_section(cfg.get_dest_subpath(), f, false, defines);
+
+			f.WriteStartElement("ItemGroup");
+			switch (cfg.env)
+			{
+				case "ios":
+				case "android":
+				case "net45":
+					write_reference(f, "System");
+					write_reference(f, "System.Core");
+					break;
+				case "winrt80":
+					f.WriteStartElement("SDKReference");
+					f.WriteAttributeString("Include", "MSTestFramework, Version=11.0");
+					f.WriteEndElement(); // SDKReference
+					break;
+			}
+			switch (cfg.env)
+			{
+				case "ios":
+					write_reference(f, "monotouch");
+					break;
+				case "android":
+					write_reference(f, "Mono.Android");
+					break;
+			}
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+			write_cs_compile(f, root, "src\\cs\\test_cases.cs");
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+			f.WriteStartElement("ProjectReference");
+			{
+				config_pcl other = projects.find_bait(cfg.pcl);
+				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			f.WriteEndElement(); // ProjectReference
+			f.WriteStartElement("ProjectReference");
+			{
+				config_higher other = projects.find_ugly(cfg.pcl);
+				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			f.WriteEndElement(); // ProjectReference
+			f.WriteEndElement(); // ItemGroup
+
+			{
+				switch (cfg.env)
+				{
+					case "winrt80":
+						f.WriteStartElement("PropertyGroup");
+						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '11.0' ");
+						f.WriteElementString("VisualStudioVersion", "11.0");
+						f.WriteEndElement(); // PropertyGroup
+						break;
+					case "winrt81":
+						f.WriteStartElement("PropertyGroup");
+						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+						f.WriteElementString("VisualStudioVersion", "12.0");
+						f.WriteEndElement(); // PropertyGroup
+						break;
+					case "wp81_rt":
+						f.WriteStartElement("PropertyGroup");
+						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+						f.WriteElementString("VisualStudioVersion", "12.0");
+						f.WriteEndElement(); // PropertyGroup
+
+						f.WriteStartElement("PropertyGroup");
+						f.WriteAttributeString("Condition", " '$(TargetPlatformIdentifier)' == '' ");
+						f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
+						f.WriteEndElement(); // PropertyGroup
+						break;
+					case "wp81_sl":
+						break;
+				}
+
+				switch (cfg.env)
+				{
+					case "ios":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
+					case "android":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
+					case "winrt80":
+					case "winrt81":
+					case "wp81_rt":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
+					case "net45":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
+					case "wp80":
+					case "wp81_sl":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
+						f.WriteEndElement(); // Import
+
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
+				}
+			}
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_higher(
 			config_higher cfg,
 			string root, 
@@ -1804,6 +2138,21 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
+			foreach (config_tests cfg in projects.items_tests)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
+				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+				config_pcl other = projects.find_bait(cfg.pcl);
+				f.WriteLine("\t\t{0} = {0}", other.guid);
+				f.WriteLine("\tEndProjectSection");
+				f.WriteLine("EndProject");
+			}
+
 			f.WriteLine("Global");
 
 			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
@@ -1834,6 +2183,13 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
 			}
 			foreach (config_higher cfg in projects.items_higher)
+			{
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "anycpu");
+			}
+			foreach (config_tests cfg in projects.items_tests)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "anycpu");
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "anycpu");
@@ -2399,6 +2755,11 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
+		foreach (config_tests cfg in projects.items_tests)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
 		// --------------------------------
 		// generate all the project files
 
@@ -2420,6 +2781,11 @@ public static class gen
 		foreach (config_higher cfg in projects.items_higher)
 		{
 			gen_higher(cfg, root, top);
+		}
+
+		foreach (config_tests cfg in projects.items_tests)
+		{
+			gen_tests(cfg, root, top);
 		}
 
 		// --------------------------------

@@ -1,10 +1,11 @@
 
-add visual studio 2013 c++ runtime sdkreference
+test_cases.cs nuget, nunit vs mstest
+
+add visual studio 2013 c++ runtime sdkreference.  but injecting an
+SDKReference in the .targets file sort of doesn't work, and using
+a powershell tool is so inelegant.
 
 clean up TODOs in new nuspecs
-
-generate a csproj to build test_cases.cs (in a simple net45 project)
-so we can verify no build breakage against the tests.
 
 switch my env keywords to be the same as the ones nuget uses?
 
