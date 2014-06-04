@@ -20,6 +20,15 @@ using System.Text;
 using SQLitePCL;
 using SQLitePCL.Ugly;
 
+// NOTE
+//
+// If you are getting a compile error right around here, you 
+// probably need to add a reference to the test framework you
+// are using.
+//
+// And if that test framework is NUnit, you should #define USE_NUNIT
+// somewhere.
+//
 #if USE_NUNIT
 using NUnit.Framework;
 using TestInitialize = NUnit.Framework.SetUpAttribute;

@@ -2787,6 +2787,7 @@ public static class gen
 						// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
 						f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "sqlite3.dll")));
 						// TODO link
+						// TODO condition/exists ?
 						f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 						f.WriteEndElement(); // Content
 					}
