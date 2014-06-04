@@ -1,27 +1,22 @@
 
+test_cases.cs nuget, nunit vs mstest
+
+net45 pinvoke targets file should copytooutput only when on windows
+
 maybe I should have config_csproj instead of three different
 flavors of same.
 
-switch net45 from cppinterop to pinvoke so mono can use it too.
-
-maybe pinvoke versions should install sqlite3.dll?
-but this is platform-specific.  don't add sqlite3.dll
-for mac/mono, etc.
-
-or maybe the targets file for net45 could figure out the
-right thing to do
-
-test_cases.cs nuget, nunit vs mstest
-
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
 SDKReference in the .targets file sort of doesn't work, and using
-a powershell tool is so inelegant.
+a powershell tool is so inelegant.  MESSAGE.
 
 clean up TODOs in new nuspecs
 
 switch my env keywords to be the same as the ones nuget uses?
 
-nuget package: SQLitePCL.raw_bait
+nuget package: SQLitePCL.raw_bait.  probably not.  would result
+in two projects trying to write the same filename to the output
+dir?
 
 create/generate a csproj which just builds the bait, for use by
 praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
@@ -71,9 +66,6 @@ weird that they're not nuget.  and weird that there isn't
 one for regular net45.  and the distinction between the two
 flavors of WP81 is not there.  and the WP81 is pre-release.
 
-maybe sqlite3.dll should go in build/native?  
-so pinvoke could share it?
-
 why does the sqlitepcl ios platform assembly show
 no assembly info when viewed in xamarin studio?
 
@@ -98,9 +90,6 @@ winrt, wp (all of them)
 	anycpu not available
 
 nuget targets match any cpu is busted
-
-how do you get the reference to reset when the platform changes?
-or why doesn't the reference properties dialog show the new one?
 
 figure out a way to disable the mac/ios projects while
 using msbuild from the command line
