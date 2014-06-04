@@ -1,4 +1,8 @@
 
+switch my env keywords to be the same as the ones nuget uses?
+
+maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
+
 test_cases.cs nuget, nunit vs mstest
 
 net45 pinvoke targets file should copytooutput only when on windows
@@ -12,8 +16,6 @@ a powershell tool is so inelegant.  MESSAGE.
 
 clean up TODOs in new nuspecs
 
-switch my env keywords to be the same as the ones nuget uses?
-
 nuget package: SQLitePCL.raw_bait.  probably not.  would result
 in two projects trying to write the same filename to the output
 dir?
@@ -21,8 +23,6 @@ dir?
 create/generate a csproj which just builds the bait, for use by
 praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
 defined.
-
-maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
 
 annoying that an injected reference doesn't show up in the
 References list in visual studio
