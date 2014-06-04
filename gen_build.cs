@@ -2730,6 +2730,19 @@ public static class gen
 
 			foreach (config_pcl cfg in a)
 			{
+				switch (cfg.env)
+				{
+					case "winrt80":
+					case "winrt81":
+					case "wp81_rt":
+					case "wp81_sl":
+						f.WriteStartElement("Message");
+						f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
+						f.WriteAttributeString("Importance", "High");
+						f.WriteEndElement(); // Message
+						break;
+				}
+				
 				bool b_platform_condition = true;
 
 				switch (cfg.env)
@@ -2799,7 +2812,7 @@ public static class gen
 						break;
 				}
 #endif
-				
+
 				f.WriteEndElement(); // ItemGroup
 			}
 
