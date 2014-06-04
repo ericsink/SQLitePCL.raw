@@ -2907,6 +2907,16 @@ public static class gen
 
 		gen_nuspec_tests(top, root);
 
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
+		{
+			tw.WriteLine("# TODO");
+			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.raw_needy.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
+			tw.WriteLine("../../nuget pack sqlite-net-pcl.nuspec");
+			tw.WriteLine("ls *.nupkg");
+		}
 	}
 }
 
