@@ -34,7 +34,7 @@ namespace SQLitePCL
     /// </summary>
     public sealed class SQLite3Provider : ISQLite3Provider
     {
-	private const string GRIPE = "This is the bait";
+	private const string GRIPE = "Something went wrong in the build configuration.  This is the bait assembly, which is for referencing by portable libraries, and should never end up part of the app.  Reference the appropriate platform assembly instead.";
 
         public SQLite3Provider()
         {

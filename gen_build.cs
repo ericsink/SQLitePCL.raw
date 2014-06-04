@@ -2610,14 +2610,17 @@ public static class gen
 		}
 
 		string cond = "";
+		string ok = "";
 		foreach (string cpu in cpus.Keys)
 		{
 			if (cond.Length > 0)
 			{
 				cond += " AND ";
+				ok += " or ";
 			}
 
 			cond += string.Format("($(Platform.ToLower()) != '{0}')", cpu);
+			ok += cpu;
 		}
 
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
@@ -2633,7 +2636,7 @@ public static class gen
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
 			f.WriteStartElement("Error");
-			f.WriteAttributeString("Text", "Unsupported: $(Platform)");
+			f.WriteAttributeString("Text", string.Format("$(Platform) is not supported. The Platform configuration must be {0}", ok));
 			f.WriteEndElement(); // Error
 			f.WriteEndElement(); // Target
 

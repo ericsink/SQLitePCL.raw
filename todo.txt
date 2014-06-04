@@ -2,10 +2,6 @@
 maybe I should have config_csproj instead of three different
 flavors of same.
 
-fix error message on AnyCPU to be more informative
-
-fix error message thrown This is the bait
-
 switch net45 from cppinterop to pinvoke so mono can use it too.
 
 maybe pinvoke versions should install sqlite3.dll?
