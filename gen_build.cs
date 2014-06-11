@@ -2915,7 +2915,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_needy.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
-			tw.WriteLine("../../nuget pack sqlite-net-pcl.nuspec");
+			tw.WriteLine("../../nuget pack sqlite-net-pcl-raw-basic.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
 	}
