@@ -608,14 +608,14 @@ public class config_pcl : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "SQLitePCL.dll");
+		add_product(a, "SQLitePCL.raw.dll");
 		switch (env)
 		{
 			case "winrt80":
 			case "winrt81":
 			case "wp81_rt":
 			//case "wp81_sl":
-				add_product(a, "SQLitePCL.pri");
+				add_product(a, "SQLitePCL.raw.pri");
 				break;
 		}
 
@@ -1456,7 +1456,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "SQLitePCL"); // match the name in get_products()
+			f.WriteElementString("AssemblyName", "SQLitePCL.raw"); // match the name in get_products()
 
 			List<string> defines = new List<string>();
 
@@ -2768,9 +2768,9 @@ public static class gen
 				f.WriteStartElement("Reference");
 				// TODO should Include be the HintPath?
 				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
-				f.WriteAttributeString("Include", "SQLitePCL");
+				f.WriteAttributeString("Include", "SQLitePCL.raw");
 
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.dll")));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.raw.dll")));
 
 				// TODO private?
 

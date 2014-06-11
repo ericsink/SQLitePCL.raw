@@ -1,14 +1,16 @@
 
-switch my env keywords to be the same as the ones nuget uses?
+maybe I should have config_csproj instead of three different
+flavors of same.
 
-maybe change assembly name from SQLitePCL.dll to SQLitePCL.raw.dll ?
+test needy with the sqlite vsix
+
+sqlite.raw_current:  how to deal with sqlite3 build on ios?
+
+switch my env keywords to be the same as the ones nuget uses?
 
 test_cases.cs nuget, nunit vs mstest
 
 net45 pinvoke targets file should copytooutput only when on windows
-
-maybe I should have config_csproj instead of three different
-flavors of same.
 
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
 SDKReference in the .targets file sort of doesn't work, and using
