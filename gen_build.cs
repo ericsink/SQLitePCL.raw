@@ -2339,6 +2339,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
+	private const string NUSPEC_VERSION = "0.3.0-alpha";
+
 	private static void gen_nuspec_basic(string top, bool needy)
 	{
 		string id;
@@ -2367,7 +2369,7 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("version", NUSPEC_VERSION);
 			if (needy)
 			{
 				f.WriteElementString("title", "SQLitePCL.raw - no SQLite instances included");
@@ -2384,7 +2386,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("releaseNotes", "Upgrade to SQLite 3.8.5 (Windows).  Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
@@ -2523,7 +2525,7 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.ugly");
 			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
 			f.WriteElementString("authors", "Eric Sink");
@@ -2532,7 +2534,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
 			f.WriteElementString("summary", "Extension methods for SQLitePCL.raw, providing an ugly-but-usable API");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
@@ -2567,7 +2569,7 @@ public static class gen
 
 	private static void gen_nuspec_krueger(string top)
 	{
-		string id = "sqlite-net-pcl";
+		string id = "sqlite-net-pcl-raw-basic";
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2584,17 +2586,16 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "sqlite-net PCL");
-			f.WriteElementString("description", "TODO");
-			f.WriteElementString("authors", "Frank Krueger");
-			f.WriteElementString("owners", "Frank Krueger,Tim Heuer");
-			//f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("description", "sqlite-net has compile-time options to allow it to be built on SQLitePCL.raw.  This package simply contains sqlite-net built in that fashion.  It has a dependency on the SQLitePCL.raw_basic package, which is the packaging of SQLitePCL.raw which is appropriate for most use cases.");
+			f.WriteElementString("authors", "Frank Krueger,Tim Heuer");
+			f.WriteElementString("owners", "Frank Krueger,Tim Heuer,Eric Sink");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/praeclarum/sqlite-net/master/license.md");
 			f.WriteElementString("projectUrl", "https://github.com/praeclarum/sqlite-net");
-			//f.WriteElementString("releaseNotes", "TODO");
-			f.WriteElementString("summary", "TODO");
+			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
+			f.WriteElementString("summary", "This is sqlite-net built with SQLitePCL.raw as its bottom layer.");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -2645,7 +2646,7 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", "0.2.0-alpha");
+			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "Test cases for SQLitePCL.raw");
 			f.WriteElementString("description", "Create a new unit test project.  Add this NuGetPackage.  Build.");
 			f.WriteElementString("authors", "Eric Sink");
@@ -2654,7 +2655,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			//f.WriteElementString("releaseNotes", "TODO");
+			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
 			f.WriteElementString("summary", "test_cases.cs is a bunch unit tests for SQLitePCL.raw");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 

@@ -18,10 +18,6 @@ a powershell tool is so inelegant.  MESSAGE.
 
 clean up TODOs in new nuspecs
 
-nuget package: SQLitePCL.raw_bait.  probably not.  would result
-in two projects trying to write the same filename to the output
-dir?
-
 create/generate a csproj which just builds the bait, for use by
 praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
 defined.
