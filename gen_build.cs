@@ -2339,7 +2339,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.3.0-alpha";
+	private const string NUSPEC_VERSION = "0.4.0-alpha";
 
 	private static void gen_nuspec_basic(string top, bool needy)
 	{
@@ -2717,7 +2717,7 @@ public static class gen
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
 			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", "check_cpu");
+			f.WriteAttributeString("Name", string.Format("check_cpu_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
 			f.WriteStartElement("Error");
@@ -2726,7 +2726,7 @@ public static class gen
 			f.WriteEndElement(); // Target
 
 			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", "InjectReference");
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			foreach (config_pcl cfg in a)
