@@ -179,6 +179,17 @@ int64 SQLite3RuntimeProvider::sqlite3_errmsg(int64 db)
 	return (int64)::sqlite3_errmsg((sqlite3*)db);
 }
 
+int64 SQLite3RuntimeProvider::sqlite3_db_filename(int64 db, int64 att)
+{
+	return (int64)::sqlite3_db_filename((sqlite3*)db, (const char*)att);
+}
+
+int32 SQLite3RuntimeProvider::sqlite3__vfs__delete(int64 vfs, int64 pathname, int32 dirsync)
+{
+	sqlite3_vfs* pvfs = ::sqlite3_vfs_find((const char*) vfs);
+	return pvfs->xDelete(pvfs, (const char*) pathname, dirsync);
+}
+
 int64 SQLite3RuntimeProvider::sqlite3_sql(int64 stmt)
 {
 	return (int64)::sqlite3_sql((sqlite3_stmt*)stmt);

@@ -149,6 +149,12 @@ namespace SQLitePCL.Ugly
             return db;
         }
 
+	public static void vfs__delete(string vfs, string filename, int syncdir)
+	{
+	    int rc = raw.sqlite3__vfs__delete(vfs, filename, syncdir);
+	    check_ok(rc);
+	}
+
         public static int errcode(this sqlite3 db)
         {
             return raw.sqlite3_errcode(db);
@@ -162,6 +168,11 @@ namespace SQLitePCL.Ugly
         public static string errmsg(this sqlite3 db)
         {
             return raw.sqlite3_errmsg(db);
+        }
+
+        public static string db_filename(this sqlite3 db, string att)
+        {
+            return raw.sqlite3_db_filename(db, att);
         }
 
         public static void commit_hook(this sqlite3 db, delegate_commit f, object v)

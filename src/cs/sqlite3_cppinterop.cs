@@ -706,6 +706,40 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_get_autocommit(db.ToInt64());
         }
 
+	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string pathname, int syncDir)
+	{
+            GCHandle pinned_vfs = GCHandle.Alloc(util.to_utf8(vfs), GCHandleType.Pinned);
+            IntPtr ptr_vfs = pinned_vfs.AddrOfPinnedObject();
+
+            GCHandle pinned_pathname = GCHandle.Alloc(util.to_utf8(pathname), GCHandleType.Pinned);
+            IntPtr ptr_pathname = pinned_pathname.AddrOfPinnedObject();
+
+            int rc = SQLite3RuntimeProvider.sqlite3__vfs__delete(ptr_vfs.ToInt64(), ptr_pathname.ToInt64(), syncDir);
+
+	    pinned_vfs.Free();
+	    pinned_pathname.Free();
+
+	    return rc;
+	}
+
+        string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
+	{
+	    string result;
+
+	    if (att != null)
+	    {
+		    GCHandle pinned = GCHandle.Alloc(util.to_utf8(att), GCHandleType.Pinned);
+		    IntPtr ptr = pinned.AddrOfPinnedObject();
+		    result = util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_db_filename(db.ToInt64(), ptr.ToInt64())));
+		    pinned.Free();
+	    }
+	    else
+	    {
+		    result = util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_db_filename(db.ToInt64(), IntPtr.Zero.ToInt64())));
+	    }
+	    return result;
+	}
+
         string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
         {
             return util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_errmsg(db.ToInt64())));

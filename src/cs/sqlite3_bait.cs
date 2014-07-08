@@ -60,6 +60,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string pathname, int syncDir)
+	{
+	    throw new Exception(GRIPE);
+	}
+
         int ISQLite3Provider.sqlite3_exec(IntPtr db, string sql, delegate_exec func, object user_data, out string errMsg)
         {
 	    throw new Exception(GRIPE);
@@ -189,6 +194,11 @@ namespace SQLitePCL
         {
 	    throw new Exception(GRIPE);
         }
+
+        string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
+	{
+	    throw new Exception(GRIPE);
+	}
 
         string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
         {

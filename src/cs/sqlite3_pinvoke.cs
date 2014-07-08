@@ -59,6 +59,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_open_v2(util.to_utf8(filename), out db, flags, util.to_utf8(vfs));
         }
 
+    private struct sqlite3_vfs
+    {
+        public int iVersion;
+        public int szOsFile;
+        public int mxPathname;
+        public IntPtr pNext;
+        public IntPtr zName;
+        public IntPtr pAppData;
+        public IntPtr xOpen;
+        public SQLiteDeleteDelegate xDelete;
+        public IntPtr xAccess;
+        public IntPtr xFullPathname;
+        public IntPtr xDlOpen;
+        public IntPtr xDlError;
+        public IntPtr xDlSym;
+        public IntPtr xDlClose;
+        public IntPtr xRandomness;
+        public IntPtr xSleep;
+        public IntPtr xCurrentTime;
+        public IntPtr xGetLastError;
+
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
+    }
+	
+	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
+	{
+	    IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(util.to_utf8(vfs));
+	    // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
+	    sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
+	    return vstruct.xDelete(ptrVfs, util.to_utf8(filename), 1);
+	}
+
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
             return NativeMethods.sqlite3_close_v2(db);
@@ -245,6 +279,11 @@ namespace SQLitePCL
         {
             return NativeMethods.sqlite3_get_autocommit(db);
         }
+
+        string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
+	{
+            return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
+	}
 
         string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
         {
@@ -935,6 +974,9 @@ namespace SQLitePCL
             public static extern IntPtr sqlite3_errmsg(IntPtr db);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr sqlite3_db_filename(IntPtr db, byte[] att);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -989,6 +1031,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr sqlite3_vfs_find(byte[] vfs);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
             public static extern int sqlite3_open16(string fileName, out IntPtr db);

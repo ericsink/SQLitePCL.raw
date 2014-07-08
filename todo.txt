@@ -1,4 +1,6 @@
 
+we could switch the RT flavor of WP81 to use pinvoke
+
 maybe I should have config_csproj instead of three different
 flavors of same.
 

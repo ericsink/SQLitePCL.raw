@@ -188,6 +188,11 @@ namespace SQLitePCL
             return rc;
         }
 
+	static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
+	{
+		return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
+	}
+
         static public int sqlite3_close_v2(sqlite3 db)
         {
             int rc = _imp.sqlite3_close_v2(db.ptr);
@@ -270,6 +275,11 @@ namespace SQLitePCL
         static public string sqlite3_errmsg(sqlite3 db)
         {
             return _imp.sqlite3_errmsg(db.ptr);
+        }
+
+        static public string sqlite3_db_filename(sqlite3 db, string att)
+        {
+            return _imp.sqlite3_db_filename(db.ptr, att);
         }
 
         static public long sqlite3_last_insert_rowid(sqlite3 db)

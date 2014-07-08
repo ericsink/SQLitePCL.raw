@@ -87,12 +87,15 @@ namespace SQLitePCL
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
         int sqlite3_close(IntPtr db);
 
+	int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);
+
         string sqlite3_libversion();
         int sqlite3_libversion_number();
         string sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
 
+        string sqlite3_db_filename(IntPtr db, string att);
         string sqlite3_errmsg(IntPtr db);
         long sqlite3_last_insert_rowid(IntPtr db);
         int sqlite3_changes(IntPtr db);
