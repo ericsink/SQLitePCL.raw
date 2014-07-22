@@ -2720,9 +2720,9 @@ public static class gen
 			f.WriteAttributeString("Name", string.Format("check_cpu_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
-			f.WriteStartElement("Error");
+			f.WriteStartElement("Warning");
 			f.WriteAttributeString("Text", string.Format("$(Platform) is not supported. The Platform configuration must be {0}", ok));
-			f.WriteEndElement(); // Error
+			f.WriteEndElement(); // Warning
 			f.WriteEndElement(); // Target
 
 			f.WriteStartElement("Target");
