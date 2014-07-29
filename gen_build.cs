@@ -2339,7 +2339,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.4.0-alpha";
+	private const string NUSPEC_VERSION = "0.5.0";
+	private const string NUSPEC_RELEASE_NOTES = "Remove -prerelease.  Downgrade AnyCPU to a warning (pull request from Paul Betts).  Add 2 sqlite APIs needed by EF7.";
 
 	private static void gen_nuspec_basic(string top, bool needy)
 	{
@@ -2386,7 +2387,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", "Upgrade to SQLite 3.8.5 (Windows).  Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
@@ -2534,7 +2535,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "Extension methods for SQLitePCL.raw, providing an ugly-but-usable API");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
@@ -2594,7 +2595,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/praeclarum/sqlite-net/master/license.md");
 			f.WriteElementString("projectUrl", "https://github.com/praeclarum/sqlite-net");
-			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "This is sqlite-net built with SQLitePCL.raw as its bottom layer.");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
@@ -2655,7 +2656,7 @@ public static class gen
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", "Change name of assembly from SQLitePCL.dll to SQLitePCL.raw.dll.");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "test_cases.cs is a bunch unit tests for SQLitePCL.raw");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
