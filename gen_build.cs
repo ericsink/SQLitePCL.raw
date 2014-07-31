@@ -82,6 +82,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="profile78", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile259", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
+		items_pcl.Add(new config_pcl { env="profile111", cpu="anycpu" });
 	}
 
 	private static void init_tests()
@@ -95,6 +96,7 @@ public static class projects
 	private static void init_higher()
 	{
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile111", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 
 		items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
@@ -169,6 +171,8 @@ public static class projects
 				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
 			case "profile259":
 				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch";
+			case "profile111":
+				return "portable-net45+netcore45+wpa81+MonoAndroid+MonoTouch";
 			case "profile158":
 				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
 			default:
@@ -1492,6 +1496,7 @@ public static class gen
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
+				case "profile111":
 				case "profile78":
 				case "profile259":
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
@@ -1815,6 +1820,7 @@ public static class gen
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
+				case "profile111":
 				case "profile78":
 				case "profile259":
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
@@ -2062,6 +2068,7 @@ public static class gen
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
+				case "profile111":
 				case "profile78":
 				case "profile259":
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
@@ -2410,16 +2417,13 @@ public static class gen
 			// write all the bait
 
 			f.WriteComment("BEGIN bait assemblies");
-			foreach (config_pcl cfg in projects.items_pcl)
 			{
-				if (cfg.is_portable())
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f, 
-							"lib"
-							);
-				}
+				config_pcl cfg = projects.find_bait("profile111");
+				write_nuspec_file_entry(
+						cfg, 
+						f, 
+						"lib"
+						);
 			}
 			f.WriteComment("END bait assemblies");
 
@@ -2515,6 +2519,7 @@ public static class gen
 			// write all the bait
 
 			f.WriteComment("BEGIN bait assemblies");
+			// TODO we don't need ALL the bait assemblies in here
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				if (cfg.is_portable())
@@ -2642,7 +2647,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_needy");
+			f.WriteAttributeString("id", "SQLitePCL.raw_needy"); // TODO
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
