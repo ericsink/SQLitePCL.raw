@@ -128,22 +128,37 @@ public static class projects
 	private static void init_pcl_pinvoke()
 	{
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
+
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal_other", cpu="anycpu"});
 
-		//items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
 
-		//items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="x86"});
 
-		//items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x86"});
+
+		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="x86"});
+
+#if not
+		items_pcl.Add(new config_pcl { env="wp81_sl", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="wp81_sl", api="pinvoke", what="sqlite3", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="wp81_sl", api="pinvoke", what="sqlite3", cpu="x86"});
+
+		items_pcl.Add(new config_pcl { env="wp80", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="wp80", api="pinvoke", what="sqlite3", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="wp80", api="pinvoke", what="sqlite3", cpu="x86"});
+#endif
 	}
 
 	public static string get_portable_nuget_target_string(string env)
@@ -680,6 +695,18 @@ public class config_pcl : config_info
 	public string get_project_filename()
 	{
 		return string.Format("{0}.csproj", get_name());
+	}
+	
+	public string fixed_cpu()
+	{
+		if (cpu == "anycpu")
+		{
+			return "Any CPU";
+		}
+		else
+		{
+			return cpu;
+		}
 	}
 }
 
@@ -2191,38 +2218,38 @@ public static class gen
 			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
 			foreach (config_cppinterop cfg in projects.items_cppinterop)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
 			foreach (config_higher cfg in projects.items_higher)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
 			}
 			foreach (config_tests cfg in projects.items_tests)
 			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "anycpu");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "anycpu");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -2342,18 +2369,11 @@ public static class gen
 	private const string NUSPEC_VERSION = "0.5.0";
 	private const string NUSPEC_RELEASE_NOTES = "Remove -prerelease.  Downgrade AnyCPU to a warning (pull request from Paul Betts).  Add 2 sqlite APIs needed by EF7.";
 
-	private static void gen_nuspec_basic(string top, bool needy)
+	private static void gen_nuspec_needy(string top)
 	{
 		string id;
 
-		if (needy)
-		{
-			id = "SQLitePCL.raw_needy";
-		}
-		else
-		{
-			id = "SQLitePCL.raw_basic";
-		}
+		id = "SQLitePCL.raw_needy";
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2371,16 +2391,98 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			if (needy)
+			f.WriteElementString("title", "SQLitePCL.raw - without SQLite itself");
+			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'needy' in the sense that it does not contain the SQLite library itself.  To use this package, you need the actual SQLite library to be provided in some other way.");
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wpa");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			// write all the bait
+
+			f.WriteComment("BEGIN bait assemblies");
+			foreach (config_pcl cfg in projects.items_pcl)
 			{
-				f.WriteElementString("title", "SQLitePCL.raw - no SQLite instances included");
-				f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'needy' in the sense that it includes no instances of the SQLite library itself.  For iOS and Android, the mobile OS includes an instance of the SQLite library, which is probably somewhat outdated, but suitable for most applications.  For all of the Windows platforms, use of this package means that an appropriate instance of sqlite3.dll needs to be provided separately.");
+				if (cfg.is_portable())
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f, 
+							"lib"
+							);
+				}
 			}
-			else
+			f.WriteComment("END bait assemblies");
+
+			f.WriteComment("BEGIN platform assemblies");
+
+			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
+			pcl_env["ios"] = null;
+			pcl_env["android"] = null;
+			pcl_env["net45"] = null;
+			pcl_env["winrt80"] = null;
+			pcl_env["winrt81"] = null;
+			pcl_env["wp81_rt"] = null;
+			//pcl_env["wp80"] = null;
+			//pcl_env["wp81_sl"] = null;
+
+			foreach (string env in pcl_env.Keys)
 			{
-				f.WriteElementString("title", "SQLitePCL.raw - basic use cases");
-				f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'basic' in the sense that it includes the configurations that are likely to Just Work for most use cases.  Specifically, for iOS and Android, this package uses the SQLite library which is built-in to the mobile OS.  For all of the Windows platforms, this package bundles an instance of the SQLite library.");
+				write_nuspec_file_entries(f, "lib",
+						projects.find_pcls(
+							env,
+							"pinvoke",
+							"sqlite3",
+							"anycpu",
+							null
+							)
+						);
 			}
+
+
+			f.WriteComment("END platform assemblies");
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_basic(string top)
+	{
+		string id;
+
+		id = "SQLitePCL.raw_basic";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.raw - basic use cases");
+			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'basic' in the sense that it includes the configurations that are likely to Just Work for most use cases.  Specifically, for iOS and Android, this package uses the SQLite library which is built-in to the mobile OS.  For all of the Windows platforms, this package bundles an instance of the SQLite library.");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
@@ -2395,7 +2497,6 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			if (!needy)
 			{
 				f.WriteComment("BEGIN sqlite3 libraries");
 				foreach (config_sqlite3 cfg in projects.items_sqlite3)
@@ -2468,7 +2569,7 @@ public static class gen
 						),
 					"net45",
 					top,
-					needy,
+					false,
 					id
 					);
 
@@ -2492,7 +2593,7 @@ public static class gen
 							),
 						env,
 						top,
-						needy,
+						false,
 						id
 						);
 			}
@@ -2541,7 +2642,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_basic");
+			f.WriteAttributeString("id", "SQLitePCL.raw_needy");
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
@@ -2901,8 +3002,8 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_basic(top, false);
-		gen_nuspec_basic(top, true);
+		gen_nuspec_basic(top);
+		gen_nuspec_needy(top);
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_krueger(top);
