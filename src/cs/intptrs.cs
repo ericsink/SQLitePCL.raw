@@ -253,7 +253,7 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
-            raw.sqlite3_close(this);
+            raw.sqlite3_close_v2(this);
         }
 
         internal void done()
