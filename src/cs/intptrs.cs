@@ -253,6 +253,10 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
+            // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
+            // The latter is not supported on the sqlite3 library which is preinstalled
+            // with iOS.
+            
             raw.sqlite3_close(this);
         }
 
