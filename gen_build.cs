@@ -168,13 +168,13 @@ public static class projects
 		switch (env)
 		{
 			case "profile78":
-				return "portable-net45+netcore45+wp8+MonoAndroid+MonoTouch";
+				return "portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10";
 			case "profile259":
-				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch";
+				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10";
 			case "profile111":
-				return "portable-net45+netcore45+wpa81+MonoAndroid+MonoTouch";
+				return "portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10";
 			case "profile158":
-				return "portable-net45+sl5+netcore45+wp8+MonoAndroid+MonoTouch";
+				return "portable-net45+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10";
 			default:
 				throw new Exception(env);
 		}
