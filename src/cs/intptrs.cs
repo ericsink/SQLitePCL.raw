@@ -257,6 +257,12 @@ namespace SQLitePCL
             // The latter is not supported on the sqlite3 library which is preinstalled
             // with iOS.
             
+            // Note, however, that sqlite3_close() can fail.  And we are ignoring the
+            // return code, because the only thing we could do with it is to throw,
+            // which is somewhat forbidden from within Dispose().
+            //
+            // http://msdn.microsoft.com/en-us/library/bb386039.aspx
+
             raw.sqlite3_close(this);
         }
 
