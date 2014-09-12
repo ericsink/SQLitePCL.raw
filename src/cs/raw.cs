@@ -172,6 +172,41 @@ namespace SQLitePCL
         public const int SQLITE_NOTICE_RECOVER_ROLLBACK = (SQLITE_NOTICE | (2<<8));
         public const int SQLITE_WARNING_AUTOINDEX       = (SQLITE_WARNING | (1<<8));
 
+        public const int SQLITE_CREATE_INDEX          = 1;    /* Index Name      Table Name      */
+        public const int SQLITE_CREATE_TABLE          = 2;    /* Table Name      NULL            */
+        public const int SQLITE_CREATE_TEMP_INDEX     = 3;    /* Index Name      Table Name      */
+        public const int SQLITE_CREATE_TEMP_TABLE     = 4;    /* Table Name      NULL            */
+        public const int SQLITE_CREATE_TEMP_TRIGGER   = 5;    /* Trigger Name    Table Name      */
+        public const int SQLITE_CREATE_TEMP_VIEW      = 6;    /* View Name       NULL            */
+        public const int SQLITE_CREATE_TRIGGER        = 7;    /* Trigger Name    Table Name      */
+        public const int SQLITE_CREATE_VIEW           = 8;    /* View Name       NULL            */
+        public const int SQLITE_DELETE                = 9;    /* Table Name      NULL            */
+        public const int SQLITE_DROP_INDEX            = 10;   /* Index Name      Table Name      */
+        public const int SQLITE_DROP_TABLE            = 11;   /* Table Name      NULL            */
+        public const int SQLITE_DROP_TEMP_INDEX       = 12;   /* Index Name      Table Name      */
+        public const int SQLITE_DROP_TEMP_TABLE       = 13;   /* Table Name      NULL            */
+        public const int SQLITE_DROP_TEMP_TRIGGER     = 14;   /* Trigger Name    Table Name      */
+        public const int SQLITE_DROP_TEMP_VIEW        = 15;   /* View Name       NULL            */
+        public const int SQLITE_DROP_TRIGGER          = 16;   /* Trigger Name    Table Name      */
+        public const int SQLITE_DROP_VIEW             = 17;   /* View Name       NULL            */
+        public const int SQLITE_INSERT                = 18;   /* Table Name      NULL            */
+        public const int SQLITE_PRAGMA                = 19;   /* Pragma Name     1st arg or NULL */
+        public const int SQLITE_READ                  = 20;   /* Table Name      Column Name     */
+        public const int SQLITE_SELECT                = 21;   /* NULL            NULL            */
+        public const int SQLITE_TRANSACTION           = 22;   /* Operation       NULL            */
+        public const int SQLITE_UPDATE                = 23;   /* Table Name      Column Name     */
+        public const int SQLITE_ATTACH                = 24;   /* Filename        NULL            */
+        public const int SQLITE_DETACH                = 25;   /* Database Name   NULL            */
+        public const int SQLITE_ALTER_TABLE           = 26;   /* Database Name   Table Name      */
+        public const int SQLITE_REINDEX               = 27;   /* Index Name      NULL            */
+        public const int SQLITE_ANALYZE               = 28;   /* Table Name      NULL            */
+        public const int SQLITE_CREATE_VTABLE         = 29;   /* Table Name      Module Name     */
+        public const int SQLITE_DROP_VTABLE           = 30;   /* Table Name      Module Name     */
+        public const int SQLITE_FUNCTION              = 31;   /* NULL            Function Name   */
+        public const int SQLITE_SAVEPOINT             = 32;   /* Operation       Savepoint Name  */
+        public const int SQLITE_COPY                  = 0;    /* No longer used */
+        public const int SQLITE_RECURSIVE             = 33;   /* NULL            NULL            */
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
