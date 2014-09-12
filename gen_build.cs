@@ -2373,8 +2373,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.5.0";
-	private const string NUSPEC_RELEASE_NOTES = "Remove -prerelease.  Downgrade AnyCPU to a warning (pull request from Paul Betts).  Add 2 sqlite APIs needed by EF7.";
+	private const string NUSPEC_VERSION = "0.6.0";
+	private const string NUSPEC_RELEASE_NOTES = "Update to SQLite 3.8.6.  Tweak PCL profile strings for better compatibility with Xamarin.  Add overloads for sqlite3_blob_read/write allowing an offset into the byte array to be specified.  Comment in sqlite3 intptr dispose to explain why sqlite3_close_v2 isn't used.";
 
 	private static void gen_nuspec_needy(string top)
 	{
