@@ -730,6 +730,18 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
+        public static void write(this sqlite3_blob blob, byte[] b, int bOffset, int len, int offset)
+        {
+            int rc = raw.sqlite3_blob_write(blob, b, bOffset, len, offset);
+            check_ok(rc);
+        }
+
+        public static void read(this sqlite3_blob blob, byte[] b, int bOffset, int len, int offset)
+        {
+            int rc = raw.sqlite3_blob_read(blob, b, bOffset, len, offset);
+            check_ok(rc);
+        }
+
         public static int bytes(this sqlite3_blob blob)
         {
             return raw.sqlite3_blob_bytes(blob);

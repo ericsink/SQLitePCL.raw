@@ -690,6 +690,16 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_read(blob.ptr, b, n, offset);
         }
 
+        static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
+        {
+            return _imp.sqlite3_blob_write(blob.ptr, b, bOffset, n, offset);
+        }
+
+        static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
+        {
+            return _imp.sqlite3_blob_read(blob.ptr, b, bOffset, n, offset);
+        }
+
     }
 
 }

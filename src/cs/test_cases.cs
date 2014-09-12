@@ -122,6 +122,108 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_blob_read_with_byte_array_offset()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                const int len = 100;
+
+                db.exec("CREATE TABLE foo (b blob);");
+                db.exec("INSERT INTO foo (b) VALUES (zeroblob(?))", len);
+                long rowid = db.last_insert_rowid();
+
+                byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
+                Assert.AreEqual(blob.Length, len);
+
+                using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 0))
+                {
+                    int len2 = bh.bytes();
+                    Assert.AreEqual(len, len2);
+
+		    byte[] blob2 = new byte[len];
+		    for (int i=0; i<len; i++)
+		    {
+			blob2[i] = 73;
+		    }
+
+		    bh.read(blob2, 40, 20, 40);
+
+		    for (int i=0; i<40; i++)
+		    {
+		        Assert.AreEqual(blob2[i], 73);
+		    }
+
+		    for (int i=40; i<60; i++)
+		    {
+		        Assert.AreEqual(blob2[i], 0);
+		    }
+
+		    for (int i=60; i<100; i++)
+		    {
+		        Assert.AreEqual(blob2[i], 73);
+		    }
+                }
+            }
+
+        }
+
+        [TestMethod]
+        public void test_blob_write_with_byte_array_offset()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                const int len = 100;
+
+                db.exec("CREATE TABLE foo (b blob);");
+                db.exec("INSERT INTO foo (b) VALUES (zeroblob(?))", len);
+                long rowid = db.last_insert_rowid();
+
+                byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
+                Assert.AreEqual(blob.Length, len);
+
+	        for (int i=0; i<100; i++)
+	        {
+		    Assert.AreEqual(blob[i], 0);
+	        }
+
+                using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 1))
+                {
+                    int len2 = bh.bytes();
+                    Assert.AreEqual(len, len2);
+
+		    byte[] blob2 = new byte[len];
+		    for (int i=0; i<100; i++)
+		    {
+			blob2[i] = 73;
+		    }
+
+		    bh.write(blob2, 40, 20, 50);
+
+                }
+
+                byte[] blob3 = db.query_scalar<byte[]>("SELECT b FROM foo;");
+                Assert.AreEqual(blob3.Length, len);
+
+	        for (int i=0; i<50; i++)
+	        {
+		    Assert.AreEqual(blob3[i], 0);
+	        }
+
+	        for (int i=50; i<70; i++)
+	        {
+		    Assert.AreEqual(blob3[i], 73);
+	        }
+
+	        for (int i=70; i<100; i++)
+	        {
+		    Assert.AreEqual(blob3[i], 0);
+	        }
+
+            }
+
+        }
+
+        [TestMethod]
         public void test_blob_write()
         {
             using (sqlite3 db = ugly.open(":memory:"))

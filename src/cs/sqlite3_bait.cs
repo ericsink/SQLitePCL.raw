@@ -125,6 +125,16 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+	    throw new Exception(GRIPE);
+        }
+
+        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+	    throw new Exception(GRIPE);
+        }
+
         IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
         {
 	    throw new Exception(GRIPE);

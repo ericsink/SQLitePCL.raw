@@ -892,6 +892,24 @@ namespace SQLitePCL
             return rc;
         }
 
+        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+            GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
+            IntPtr ptr = pinned.AddrOfPinnedObject();
+            int rc = SQLite3RuntimeProvider.sqlite3_blob_read(blob.ToInt64(), ptr.ToInt64() + bOffset, n, offset);
+            pinned.Free();
+            return rc;
+        }
+
+        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+            GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
+            IntPtr ptr = pinned.AddrOfPinnedObject();
+            int rc = SQLite3RuntimeProvider.sqlite3_blob_write(blob.ToInt64(), ptr.ToInt64() + bOffset, n, offset);
+            pinned.Free();
+            return rc;
+        }
+
         IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
         {
             // TODO null string?

@@ -210,6 +210,24 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_write(blob, b, n, offset);
         }
 
+        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+            GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
+            IntPtr ptr = pinned.AddrOfPinnedObject();
+            int rc = NativeMethods.other_sqlite3_blob_read(blob, ptr + bOffset, n, offset);
+            pinned.Free();
+	    return rc;
+        }
+
+        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        {
+            GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
+            IntPtr ptr = pinned.AddrOfPinnedObject();
+            int rc = NativeMethods.other_sqlite3_blob_write(blob, ptr + bOffset, n, offset);
+            pinned.Free();
+	    return rc;
+        }
+
         IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
         {
             return NativeMethods.sqlite3_backup_init(destDb, util.to_utf8(destName), sourceDb, util.to_utf8(sourceName));
@@ -1311,6 +1329,12 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint="sqlite3_blob_write")]
+            public static extern int other_sqlite3_blob_write(IntPtr blob, IntPtr b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint="sqlite3_blob_read")]
+            public static extern int other_sqlite3_blob_read(IntPtr blob, IntPtr b, int n, int offset);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_blob_bytes(IntPtr blob);
