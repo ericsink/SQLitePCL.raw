@@ -124,13 +124,10 @@ Unlike SQLitePCL.raw, it is designed to make writing apps easier.  It even inclu
 and some basic support for LINQ.  
 
 SQLitePCL.raw wants to replace the bottom half of sqlite-net so that it
-can become a PCL.  This repo contains a copy of the sqlite-net 
-code which has been modified to build against this PCL.  This wants
-to become a proper fork and pull request.
-The changes
-were minimal, as sqlite-net already contains ifdefs to build against
-several different lower layers, and SQLitePCL.raw presents an API
-which is nearly identical to USE\_WP8\_NATIVE\_SQLITE.
+can become a PCL.
+
+In fact, that has happened.  Frank Krueger has released a NuGet package
+(sqlite-net-pcl) which is SQLite-net with SQLitePCL.raw underneath.
 
 ## How does this compare to the SQLite stuff in MvvmCross?
 
@@ -397,7 +394,8 @@ First of all, there are two ways to call native code from C#:
 
   2.  C++ Interop
 
-Xamarin platforms only support P/Invoke.  Windows Phone 8 only supports C++ Interop.
+Xamarin platforms only support P/Invoke.  The Silverlight flavors of 
+Windows Phone 8 only support C++ Interop.
 The other platforms support both.
 
 P/Invoke requires a platform-native shared library (such as a .dll or .so).
