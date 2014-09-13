@@ -1,4 +1,14 @@
 
+I suppose we could still put in a needy/cppinterop version
+for wp80 and wp81_sl into the _needy package.  It doesn't
+have to remain pinvoke only.
+
+consider whether maybe the sqlite3 intptr dispose should check
+the version number and call sqlite3_close_v2 when it's supposedly
+available.
+
+switch to xUnit
+
 we could switch the RT flavor of WP81 to use pinvoke
 
 maybe I should have config_csproj instead of three different
