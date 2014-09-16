@@ -490,12 +490,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
 #endif
-        static int collation_hook_bridge(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
+        static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
             collation_hook_info hi = collation_hook_info.from_ptr(p);
             return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
         }
 
+        NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
             if (_collation_hooks.ContainsKey(name))
