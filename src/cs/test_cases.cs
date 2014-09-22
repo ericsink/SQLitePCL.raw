@@ -744,6 +744,9 @@ namespace SQLitePCL.Test
                 db.exec("INSERT INTO foo (x) VALUES ('f')");
                 string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
                 Assert.AreEqual(top, "e");
+		GC.Collect();
+                string top2 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
+                Assert.AreEqual(top2, "e");
             }
         }
     }
@@ -769,6 +772,9 @@ namespace SQLitePCL.Test
                 db.create_function("cube", 1, null, cube);
                 long c = db.query_scalar<long>("SELECT cube(?);", val);
                 Assert.AreEqual(c, val * val * val);
+		GC.Collect();
+                long c2 = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.AreEqual(c2, val * val * val);
             }
         }
     }
@@ -824,6 +830,10 @@ namespace SQLitePCL.Test
                 double d = db.query_scalar<double>("SELECT my_mean(1,2,3,4,5,6,7,8);");
                 Assert.IsTrue(d >= (36 / 8));
                 Assert.IsTrue(d <= (36 / 8 + 1));
+		GC.Collect();
+                double d2 = db.query_scalar<double>("SELECT my_mean(1,2,3,4,5,6,7,8);");
+                Assert.IsTrue(d2 >= (36 / 8));
+                Assert.IsTrue(d2 <= (36 / 8 + 1));
             }
         }
     }
@@ -842,6 +852,10 @@ namespace SQLitePCL.Test
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.create_function("count_args", -1, null, count_args);
+                Assert.AreEqual(8, db.query_scalar<int>("SELECT count_args(1,2,3,4,5,6,7,8);"));
+                Assert.AreEqual(0, db.query_scalar<int>("SELECT count_args();"));
+                Assert.AreEqual(1, db.query_scalar<int>("SELECT count_args(null);"));
+		GC.Collect();
                 Assert.AreEqual(8, db.query_scalar<int>("SELECT count_args(1,2,3,4,5,6,7,8);"));
                 Assert.AreEqual(0, db.query_scalar<int>("SELECT count_args();"));
                 Assert.AreEqual(1, db.query_scalar<int>("SELECT count_args(null);"));
@@ -871,6 +885,11 @@ namespace SQLitePCL.Test
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.create_function("count_nulls", -1, null, count_nulls);
+                Assert.AreEqual(0, db.query_scalar<int>("SELECT count_nulls(1,2,3,4,5,6,7,8);"));
+                Assert.AreEqual(0, db.query_scalar<int>("SELECT count_nulls();"));
+                Assert.AreEqual(1, db.query_scalar<int>("SELECT count_nulls(null);"));
+                Assert.AreEqual(2, db.query_scalar<int>("SELECT count_nulls(1,null,3,null,5);"));
+		GC.Collect();
                 Assert.AreEqual(0, db.query_scalar<int>("SELECT count_nulls(1,2,3,4,5,6,7,8);"));
                 Assert.AreEqual(0, db.query_scalar<int>("SELECT count_nulls();"));
                 Assert.AreEqual(1, db.query_scalar<int>("SELECT count_nulls(null);"));
@@ -905,6 +924,10 @@ namespace SQLitePCL.Test
                 Assert.AreEqual(0, db.query_scalar<int>("SELECT len_as_blobs();"));
                 Assert.AreEqual(0, db.query_scalar<int>("SELECT len_as_blobs(null);"));
                 Assert.IsTrue(8 <= db.query_scalar<int>("SELECT len_as_blobs(1,2,3,4,5,6,7,8);"));
+		GC.Collect();
+                Assert.AreEqual(0, db.query_scalar<int>("SELECT len_as_blobs();"));
+                Assert.AreEqual(0, db.query_scalar<int>("SELECT len_as_blobs(null);"));
+                Assert.IsTrue(8 <= db.query_scalar<int>("SELECT len_as_blobs(1,2,3,4,5,6,7,8);"));
             }
         }
     }
@@ -930,6 +953,9 @@ namespace SQLitePCL.Test
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.create_function("my_concat", -1, null, concat);
+                Assert.AreEqual("foobar", db.query_scalar<string>("SELECT my_concat('foo', 'bar');"));
+                Assert.AreEqual("abc", db.query_scalar<string>("SELECT my_concat('a', 'b', 'c');"));
+		GC.Collect();
                 Assert.AreEqual("foobar", db.query_scalar<string>("SELECT my_concat('foo', 'bar');"));
                 Assert.AreEqual("abc", db.query_scalar<string>("SELECT my_concat('a', 'b', 'c');"));
             }
@@ -983,6 +1009,9 @@ namespace SQLitePCL.Test
                 }
                 long c = db.query_scalar<long>("SELECT sum_plus_count(x) FROM foo;");
                 Assert.AreEqual(c, (0 + 1 + 2 + 3 + 4) + 5);
+		GC.Collect();
+                long c2 = db.query_scalar<long>("SELECT sum_plus_count(x) FROM foo;");
+                Assert.AreEqual(c2, (0 + 1 + 2 + 3 + 4) + 5);
             }
         }
     }
@@ -1047,6 +1076,8 @@ namespace SQLitePCL.Test
                 db.update_hook(my_update_hook, w);
                 db.trace(my_trace_hook, w);
                 db.profile(my_profile_hook, w);
+
+		GC.Collect();
 
                 db.exec("CREATE TABLE foo (x int);");
 

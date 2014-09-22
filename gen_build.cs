@@ -2373,8 +2373,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.6.0";
-	private const string NUSPEC_RELEASE_NOTES = "Update to SQLite 3.8.6.  Tweak PCL profile strings for better compatibility with Xamarin.  Add overloads for sqlite3_blob_read/write allowing an offset into the byte array to be specified.  Comment in sqlite3 intptr dispose to explain why sqlite3_close_v2 isn't used.";
+	private const string NUSPEC_VERSION = "0.6.1";
+	private const string NUSPEC_RELEASE_NOTES = "Fix GC problem with delegates registered with sqlite as callbacks.  Thanks to zgramana.";
 
 	private static void gen_nuspec_needy(string top)
 	{

@@ -1,4 +1,6 @@
 
+Do the collation hook fix thing for config_log
+
 I suppose we could still put in a needy/cppinterop version
 for wp80 and wp81_sl into the _needy package.  It doesn't
 have to remain pinvoke only.

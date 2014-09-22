@@ -341,12 +341,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_commit))] // TODO not xplat
 #endif
-        static int commit_hook_bridge(IntPtr p)
+        static int commit_hook_bridge_impl(IntPtr p)
         {
             commit_hook_info hi = commit_hook_info.from_ptr(p);
             return hi.call();
         }
 
+	NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
             if (_commit_hook != null)
@@ -378,13 +379,14 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_scalar_function))] // TODO not xplat
 #endif
-        static void scalar_function_hook_bridge(IntPtr context, int num_args, IntPtr argsptr)
+        static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = NativeMethods.sqlite3_user_data(context);
             scalar_function_hook_info hi = scalar_function_hook_info.from_ptr(p);
             hi.call(context, num_args, argsptr);
         }
 
+	NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
         {
             string key = string.Format("{0}.{1}", nargs, name);
@@ -426,7 +428,7 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))] // TODO not xplat
 #endif
-        static void agg_function_hook_bridge_step(IntPtr context, int num_args, IntPtr argsptr)
+        static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -439,7 +441,7 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))] // TODO not xplat
 #endif
-        static void agg_function_hook_bridge_final(IntPtr context)
+        static void agg_function_hook_bridge_final_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -449,6 +451,8 @@ namespace SQLitePCL
             hi.call_final(context, agg);
         }
 
+	NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
+	NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
         int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
             string key = string.Format("{0}.{1}", nargs, name);
@@ -490,12 +494,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
 #endif
-        static int collation_hook_bridge(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
+        static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
             collation_hook_info hi = collation_hook_info.from_ptr(p);
             return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
         }
 
+	NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
             if (_collation_hooks.ContainsKey(name))
@@ -535,12 +540,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_update))] // TODO not xplat
 #endif
-        static void update_hook_bridge(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
+        static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
         }
 
+	NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
             if (_update_hook != null)
@@ -571,12 +577,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_rollback))] // TODO not xplat
 #endif
-        static void rollback_hook_bridge(IntPtr p)
+        static void rollback_hook_bridge_impl(IntPtr p)
         {
             rollback_hook_info hi = rollback_hook_info.from_ptr(p);
             hi.call();
         }
 
+	NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
         {
             if (_rollback_hook != null)
@@ -607,12 +614,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_trace))] // TODO not xplat
 #endif
-        static void trace_hook_bridge(IntPtr p, IntPtr s)
+        static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
             trace_hook_info hi = trace_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s));
         }
 
+	NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(IntPtr db, delegate_trace func, object v)
         {
             if (_trace_hook != null)
@@ -643,12 +651,13 @@ namespace SQLitePCL
 #if PLATFORM_IOS
         [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
 #endif
-        static void profile_hook_bridge(IntPtr p, IntPtr s, long elapsed)
+        static void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
         {
             profile_hook_info hi = profile_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s), elapsed);
         }
 
+	NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(IntPtr db, delegate_profile func, object v)
         {
             if (_profile_hook != null)
