@@ -98,10 +98,6 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile111", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
-
-		items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile78", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
-		items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile259", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW", "USE_NEW_REFLECTION_API"} });
-		//items_higher.Add(new config_higher { name="krueger", assemblyname="SQLite.Net", env="profile158", csfiles=new List<string>() {"..\\sqlite-net\\src\\SQLite.cs", "..\\sqlite-net\\src\\SQLiteAsync.cs"}, defines=new List<string>() {"USE_SQLITEPCL_RAW"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -2373,14 +2369,14 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.6.2";
-	private const string NUSPEC_RELEASE_NOTES = "Switch ugly and tests pkg back to reference _basic instead of _needy.  If everything works out okay in the next release, _needy will be deprecated.";
+	private const string NUSPEC_VERSION = "0.6.3-testing";
+	private const string NUSPEC_RELEASE_NOTES = "Attempted fix for integration with Universal Apps.  But these changes have the potential to break other use cases, so I'm calling this a prerelease until it is better tested.";
 
-	private static void gen_nuspec_needy(string top)
+	private static void gen_nuspec_sqlite3_itself(string top)
 	{
 		string id;
 
-		id = "SQLitePCL.raw_needy";
+		id = "sqlite3_itself";
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2397,63 +2393,59 @@ public static class gen
 			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
 
 			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.raw - without SQLite itself");
-			f.WriteElementString("description", "(NOTE: I plan to deprecate this package.  Use the SQLitePCL.raw_basic package instead.)  This NuGet package for SQLitePCL.raw is 'needy' in the sense that it does not contain the SQLite library itself.  To use this package, you need the actual SQLite library to be provided in some other way.");
-			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("version", NUSPEC_VERSION); // TODO should be sqlite version
+			f.WriteElementString("title", "sqlite3_itself");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("authors", "DRH");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			//f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
-			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			//f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wpa");
+			f.WriteElementString("summary", "This package contains only the native SQLite library.");
+			f.WriteElementString("tags", "sqlite native pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
 
-			// write all the bait
-
-			f.WriteComment("BEGIN bait assemblies");
 			{
-				config_pcl cfg = projects.find_bait("profile111");
-				write_nuspec_file_entry(
-						cfg, 
-						f, 
-						"lib"
-						);
-			}
-			f.WriteComment("END bait assemblies");
-
-			f.WriteComment("BEGIN platform assemblies");
-
-			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
-			pcl_env["ios"] = null;
-			pcl_env["android"] = null;
-			pcl_env["net45"] = null;
-			pcl_env["winrt80"] = null;
-			pcl_env["winrt81"] = null;
-			pcl_env["wp81_rt"] = null;
-			//pcl_env["wp80"] = null;
-			//pcl_env["wp81_sl"] = null;
-
-			foreach (string env in pcl_env.Keys)
-			{
-				write_nuspec_file_entries(f, "lib",
-						projects.find_pcls(
-							env,
-							"pinvoke",
-							"sqlite3",
-							"anycpu",
-							null
-							)
-						);
+				f.WriteComment("BEGIN sqlite3 libraries");
+				foreach (config_sqlite3 cfg in projects.items_sqlite3)
+				{
+					if (cfg.dll)
+					{
+						write_nuspec_file_entry(
+								cfg, 
+								f
+								);
+					}
+				}
+				f.WriteComment("END sqlite3 libraries");
 			}
 
+			Dictionary<string, string> a_env = new Dictionary<string, string>();
+			// TODO ios
+			// TODO android
+			a_env["net45"] = null;
+			a_env["winrt80"] = null;
+			a_env["winrt81"] = null;
+			a_env["wp80"] = null;
+			a_env["wp81_rt"] = null;
+			a_env["wp81_sl"] = null;
 
-			f.WriteComment("END platform assemblies");
+			foreach (string env in a_env.Keys)
+			{
+				string tname = string.Format("sqlite3_itself_{0}.targets", env);
+
+				gen_nuget_targets_sqlite3_itself(top, tname, env);
+
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", tname);
+				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
+				f.WriteEndElement(); // file
+			}
 
 			f.WriteEndElement(); // files
 
@@ -2535,58 +2527,50 @@ public static class gen
 
 			f.WriteComment("BEGIN platform assemblies");
 
-			f.WriteComment("special case, platform assemblies for ios go in the lib directory");
-			write_nuspec_file_entries(f, "lib",
-					projects.find_pcls(
-						"ios",
-						"pinvoke",
-						"sqlite3",
-						"anycpu",
-						null
-						)
-					);
+			f.WriteComment("BEGIN platform assemblies that use pinvoke");
+			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
+			pcl_env_pinvoke["ios"] = null;
+			pcl_env_pinvoke["android"] = null;
+			pcl_env_pinvoke["net45"] = null;
+			pcl_env_pinvoke["winrt80"] = null;
+			pcl_env_pinvoke["winrt81"] = null;
+			pcl_env_pinvoke["wp81_rt"] = null;
 
+			foreach (string env in pcl_env_pinvoke.Keys)
+			{
+				write_nuspec_file_entries(f, "lib",
+						projects.find_pcls(
+							env,
+							"pinvoke",
+							"sqlite3",
+							"anycpu",
+							null
+							)
+						);
 
-			f.WriteComment("special case, platform assemblies for android go in the lib directory");
-			write_nuspec_file_entries(f, "lib",
-					projects.find_pcls(
-						"android",
-						"pinvoke",
-						"sqlite3",
-						"anycpu",
-						null
-						)
-					);
+				if ("ios" == env) continue; // TODO later
+				if ("android" == env) continue; // TODO later
 
-			// all the other envs go into build
+				string tname = string.Format("{0}.targets", env);
+
+				gen_nuget_targets_sqlite3_itself(top, tname, env);
+
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", tname);
+				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
+				f.WriteEndElement(); // file
+			}
+			f.WriteComment("END platform assemblies that use pinvoke");
 
 			// TODO remove this directory first?
 			Directory.CreateDirectory(Path.Combine(top, "empty"));
+			
+			f.WriteComment("BEGIN platform assemblies that use cppinterop");
+			Dictionary<string, string> pcl_env_cppinterop = new Dictionary<string, string>();
+			pcl_env_cppinterop["wp80"] = null;
+			pcl_env_cppinterop["wp81_sl"] = null;
 
-			f.WriteComment("special case, platform assembly for net45 is pinvoke");
-			write_with_msbuild_targets_file(f, 
-					projects.find_pcls(
-						"net45",
-						"pinvoke",
-						"sqlite3",
-						null,
-						null
-						),
-					"net45",
-					top,
-					false,
-					id
-					);
-
-			Dictionary<string, string> pcl_env = new Dictionary<string, string>();
-			// special-cased above:  pcl_env["net45"] = null;
-			pcl_env["winrt80"] = null;
-			pcl_env["winrt81"] = null;
-			pcl_env["wp80"] = null;
-			pcl_env["wp81_rt"] = null;
-			pcl_env["wp81_sl"] = null;
-
-			foreach (string env in pcl_env.Keys)
+			foreach (string env in pcl_env_cppinterop.Keys)
 			{
 				write_with_msbuild_targets_file(f, 
 						projects.find_pcls(
@@ -2602,6 +2586,7 @@ public static class gen
 						id
 						);
 			}
+			f.WriteComment("END platform assemblies that use cppinterop");
 
 			f.WriteComment("END platform assemblies");
 
@@ -2674,66 +2659,6 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_krueger(string top)
-	{
-		string id = "sqlite-net-pcl-raw-basic";
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "sqlite-net PCL");
-			f.WriteElementString("description", "sqlite-net has compile-time options to allow it to be built on SQLitePCL.raw.  This package simply contains sqlite-net built in that fashion.  It has a dependency on the SQLitePCL.raw_basic package, which is the packaging of SQLitePCL.raw which is appropriate for most use cases.");
-			f.WriteElementString("authors", "Frank Krueger,Tim Heuer");
-			f.WriteElementString("owners", "Frank Krueger,Tim Heuer,Eric Sink");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			f.WriteElementString("licenseUrl", "https://raw.github.com/praeclarum/sqlite-net/master/license.md");
-			f.WriteElementString("projectUrl", "https://github.com/praeclarum/sqlite-net");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "This is sqlite-net built with SQLitePCL.raw as its bottom layer.");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteStartElement("dependencies");
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_basic");
-			f.WriteEndElement(); // dependency
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			foreach (config_higher cfg in projects.items_higher)
-			{
-				if (cfg.name == "krueger")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
-			}
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
 	private static void gen_nuspec_tests(string top, string root)
 	{
 		string id = "SQLitePCL.tests";
@@ -2784,6 +2709,92 @@ public static class gen
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuget_targets_sqlite3_itself(string top, string tname, string env)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		// TODO should we put the cpu check code here, like the original version of this function (below)?
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+
+			switch (env)
+			{
+				case "winrt80":
+				case "winrt81":
+				case "wp81_rt":
+				case "wp81_sl":
+					f.WriteStartElement("Message");
+					f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
+					f.WriteAttributeString("Importance", "High");
+					f.WriteEndElement(); // Message
+					break;
+			}
+			
+			foreach (config_sqlite3 cfg in projects.items_sqlite3)
+			{
+				if (cfg.env != (env=="net45"?"winxp":env))
+				{
+					continue;
+				}
+
+				if (!cfg.dll)
+				{
+					continue;
+				}
+
+				bool b_platform_condition = true;
+
+				switch (env)
+				{
+					case "ios":
+						b_platform_condition = false;
+						break;
+					case "android":
+						b_platform_condition = false;
+						break;
+
+					default:
+						break;
+				}
+
+				f.WriteStartElement("ItemGroup");
+				if (b_platform_condition)
+				{
+					// TODO put a condition flag here allowing this to be skipped
+					f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
+				}
+
+				f.WriteStartElement("Content");
+				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "sqlite3.dll")));
+				// TODO link
+				// TODO condition/exists ?
+				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteEndElement(); // Content
+
+				f.WriteEndElement(); // ItemGroup
+			}
+
+			f.WriteEndElement(); // Target
+
+			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
 		}
@@ -3008,10 +3019,9 @@ public static class gen
 		// --------------------------------
 
 		gen_nuspec_basic(top);
-		gen_nuspec_needy(top);
+		gen_nuspec_sqlite3_itself(top);
 
 		gen_nuspec_ugly(top);
-		gen_nuspec_krueger(top);
 
 		gen_nuspec_tests(top, root);
 
@@ -3019,10 +3029,9 @@ public static class gen
 		{
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.raw_needy.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
-			tw.WriteLine("../../nuget pack sqlite-net-pcl-raw-basic.nuspec");
+			tw.WriteLine("../../nuget pack sqlite3_itself.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
 	}
