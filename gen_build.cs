@@ -2373,8 +2373,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.6.1";
-	private const string NUSPEC_RELEASE_NOTES = "Fix GC problem with delegates registered with sqlite as callbacks.  Thanks to zgramana.";
+	private const string NUSPEC_VERSION = "0.6.2";
+	private const string NUSPEC_RELEASE_NOTES = "Switch ugly and tests pkg back to reference _basic instead of _needy.  If everything works out okay in the next release, _needy will be deprecated.";
 
 	private static void gen_nuspec_needy(string top)
 	{
@@ -2399,7 +2399,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.raw - without SQLite itself");
-			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'needy' in the sense that it does not contain the SQLite library itself.  To use this package, you need the actual SQLite library to be provided in some other way.");
+			f.WriteElementString("description", "(NOTE: I plan to deprecate this package.  Use the SQLitePCL.raw_basic package instead.)  This NuGet package for SQLitePCL.raw is 'needy' in the sense that it does not contain the SQLite library itself.  To use this package, you need the actual SQLite library to be provided in some other way.");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
@@ -2647,7 +2647,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_needy"); // TODO
+			f.WriteAttributeString("id", "SQLitePCL.raw_basic"); // TODO
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
