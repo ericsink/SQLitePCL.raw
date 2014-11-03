@@ -28,6 +28,11 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
+#if PLATFORM_IOS
+    using MonoTouch;
+#elif PLATFORM_UNIFIED
+    using ObjCRuntime;
+#endif
 
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
@@ -36,6 +41,8 @@ namespace SQLitePCL
     [Android.Runtime.Preserve(AllMembers=true)]
 #elif PLATFORM_IOS
 	[MonoTouch.Foundation.Preserve(AllMembers = true)]
+#elif PLATFORM_UNIFIED
+	[Foundation.Preserve(AllMembers = true)]
 #endif
     public sealed class SQLite3Provider : ISQLite3Provider
     {
@@ -103,8 +110,8 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_close(db);
         }
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_exec))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_exec))] // TODO not xplat
 #endif
         static int exec_hook_bridge(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
         {
@@ -338,8 +345,8 @@ namespace SQLitePCL
         
         private commit_hook_info _commit_hook;
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_commit))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_commit))] // TODO not xplat
 #endif
         static int commit_hook_bridge_impl(IntPtr p)
         {
@@ -376,8 +383,8 @@ namespace SQLitePCL
         // the keys for this dictionary are nargs.name, not just the name
         private Dictionary<string, scalar_function_hook_info> _scalar_functions = new Dictionary<string, scalar_function_hook_info>();
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_scalar_function))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_scalar_function))] // TODO not xplat
 #endif
         static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
@@ -425,8 +432,8 @@ namespace SQLitePCL
         // the keys for this dictionary are nargs.name, not just the name
         private Dictionary<string, agg_function_hook_info> _agg_functions = new Dictionary<string, agg_function_hook_info>();
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))] // TODO not xplat
 #endif
         static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
@@ -438,8 +445,8 @@ namespace SQLitePCL
             hi.call_step(context, agg, num_args, argsptr);
         }
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))] // TODO not xplat
 #endif
         static void agg_function_hook_bridge_final_impl(IntPtr context)
         {
@@ -491,8 +498,8 @@ namespace SQLitePCL
 
         private Dictionary<string, collation_hook_info> _collation_hooks = new Dictionary<string, collation_hook_info>();
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
 #endif
         static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
@@ -537,8 +544,8 @@ namespace SQLitePCL
 
         private update_hook_info _update_hook;
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_update))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_update))] // TODO not xplat
 #endif
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
@@ -574,8 +581,8 @@ namespace SQLitePCL
 
         private rollback_hook_info _rollback_hook;
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_rollback))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_rollback))] // TODO not xplat
 #endif
         static void rollback_hook_bridge_impl(IntPtr p)
         {
@@ -611,8 +618,8 @@ namespace SQLitePCL
 
         private trace_hook_info _trace_hook;
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_trace))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_trace))] // TODO not xplat
 #endif
         static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
@@ -648,8 +655,8 @@ namespace SQLitePCL
 
         private profile_hook_info _profile_hook;
 
-#if PLATFORM_IOS
-        [MonoTouch.MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
 #endif
         static void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
         {

@@ -130,6 +130,9 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal_other", cpu="anycpu"});
 
+		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="internal_other", cpu="anycpu"});
+
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
@@ -164,13 +167,13 @@ public static class projects
 		switch (env)
 		{
 			case "profile78":
-				return "portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10";
+				return "portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			case "profile259":
-				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10";
+				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			case "profile111":
-				return "portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10";
+				return "portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			case "profile158":
-				return "portable-net45+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10";
+				return "portable-net45+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			default:
 				throw new Exception(env);
 		}
@@ -546,6 +549,8 @@ public class config_pcl : config_info
 		{
 			case "ios":
 				return "MonoTouch";
+			case "unified":
+				return "Xamarin.iOS10";
 			case "android":
 				return "MonoAndroid";
 			case "net45":
@@ -717,6 +722,7 @@ public static class gen
 	private const string GUID_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 	private const string GUID_PCL = "{786C830F-07A1-408B-BD7F-6EE04809D6DB}";
 	private const string GUID_IOS = "{6BC8ED88-2882-458C-8E55-DFD12B67127B}";
+	private const string GUID_UNIFIED = "{FEACFBD2-3405-455C-9665-78FE426C6842}";
 	private const string GUID_ANDROID = "{EFBA0AD7-5A72-4C68-AF49-83D382785DCF}";
 	private const string GUID_WINRT = "{BC8A1FFA-BEE3-4634-8014-F334798102B3}";
 	private const string GUID_WP8 = "{C089C8C0-30E0-4E22-80C0-CE093F111A43}";
@@ -1449,6 +1455,9 @@ public static class gen
 					case "ios":
 						write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
 						break;
+					case "unified":
+						write_project_type_guids(f, GUID_UNIFIED, GUID_CSHARP);
+						break;
 					case "android":
 						write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
 						break;
@@ -1499,6 +1508,9 @@ public static class gen
 					break;
 				case "ios":
 					defines.Add("PLATFORM_IOS");
+					break;
+				case "unified":
+					defines.Add("PLATFORM_UNIFIED");
 					break;
 				case "android":
 					defines.Add("__MOBILE__");
@@ -1585,6 +1597,7 @@ public static class gen
 			switch (cfg.env)
 			{
 				case "ios":
+				case "unified":
 				case "android":
 				case "net45":
 					write_reference(f, "System");
@@ -1593,6 +1606,9 @@ public static class gen
 			}
 			switch (cfg.env)
 			{
+				case "unified":
+					write_reference(f, "Xamarin.iOS");
+					break;
 				case "ios":
 					write_reference(f, "monotouch");
 					break;
@@ -1684,6 +1700,11 @@ public static class gen
 
 				switch (cfg.env)
 				{
+					case "unified":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
 					case "ios":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
@@ -1774,6 +1795,9 @@ public static class gen
 				case "ios":
 					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
 					break;
+				case "unified":
+					write_project_type_guids(f, GUID_UNIFIED, GUID_CSHARP);
+					break;
 				case "android":
 					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
 					break;
@@ -1823,6 +1847,9 @@ public static class gen
 					break;
 				case "ios":
 					defines.Add("PLATFORM_IOS");
+					break;
+				case "unified":
+					defines.Add("PLATFORM_UNIFIED");
 					break;
 				case "android":
 					defines.Add("__MOBILE__");
@@ -1891,6 +1918,7 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			switch (cfg.env)
 			{
+				case "unified":
 				case "ios":
 				case "android":
 				case "net45":
@@ -1905,6 +1933,9 @@ public static class gen
 			}
 			switch (cfg.env)
 			{
+				case "unified":
+					write_reference(f, "Xamarin.iOS");
+					break;
 				case "ios":
 					write_reference(f, "monotouch");
 					break;
@@ -1971,6 +2002,11 @@ public static class gen
 
 				switch (cfg.env)
 				{
+					case "unified":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
+						f.WriteEndElement(); // Import
+						break;
 					case "ios":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
@@ -2369,8 +2405,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.6.3-testing";
-	private const string NUSPEC_RELEASE_NOTES = "Attempted fix for integration with Universal Apps.  But these changes have the potential to break other use cases, so I'm calling this a prerelease until it is better tested.";
+	private const string NUSPEC_VERSION = "0.6.4-pre1";
+	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin Unified API";
 
 	private static void gen_nuspec_sqlite3_itself(string top)
 	{
@@ -2390,7 +2426,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for the unified
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION); // TODO should be sqlite version
@@ -2473,7 +2509,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
@@ -2530,6 +2566,7 @@ public static class gen
 			f.WriteComment("BEGIN platform assemblies that use pinvoke");
 			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
 			pcl_env_pinvoke["ios"] = null;
+			pcl_env_pinvoke["unified"] = null;
 			pcl_env_pinvoke["android"] = null;
 			pcl_env_pinvoke["net45"] = null;
 			pcl_env_pinvoke["winrt80"] = null;
@@ -2548,6 +2585,7 @@ public static class gen
 							)
 						);
 
+				// unified API supports targets files
 				if ("ios" == env) continue; // TODO later
 				if ("android" == env) continue; // TODO later
 
@@ -2614,7 +2652,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
@@ -2675,7 +2713,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.1 for the WP 8.1 stuff?
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for the unified stuff
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
@@ -2763,6 +2801,7 @@ public static class gen
 
 				switch (env)
 				{
+					// TODO unified?
 					case "ios":
 						b_platform_condition = false;
 						break;
@@ -2866,6 +2905,7 @@ public static class gen
 
 				switch (cfg.env)
 				{
+					// TODO unified?
 					case "ios":
 						b_platform_condition = false;
 						break;
