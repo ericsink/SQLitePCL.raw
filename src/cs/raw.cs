@@ -708,7 +708,7 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
-            int rc = _imp.sqlite3_blob_bytes(blob.ptr);
+            int rc = _imp.sqlite3_blob_close(blob.ptr);
             blob.done();
             return rc;
         }
