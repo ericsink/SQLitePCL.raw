@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -506,6 +506,11 @@ namespace SQLitePCL
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
             return SQLite3RuntimeProvider.sqlite3_close(db.ToInt64());
+        }
+
+        void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
+        {
+            SQLite3RuntimeProvider.sqlite3_interrupt(db.ToInt64());
         }
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]

@@ -116,6 +116,11 @@ int32 SQLite3RuntimeProvider::sqlite3_close(int64 db)
 	return ::sqlite3_close((sqlite3*)db);
 }
 
+void SQLite3RuntimeProvider::sqlite3_interrupt(int64 db)
+{
+    ::sqlite3_interrupt((sqlite3*)db);
+}
+
 void SQLite3RuntimeProvider::sqlite3_free(int64 p)
 {
     ::sqlite3_free((void*) p);

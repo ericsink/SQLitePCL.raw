@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -240,6 +240,11 @@ namespace SQLitePCL
             int rc = _imp.sqlite3_close(db.ptr);
             db.done();
             return rc;
+        }
+
+        static public void sqlite3_interrupt(sqlite3 db)
+        {
+            _imp.sqlite3_interrupt(db.ptr);
         }
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
