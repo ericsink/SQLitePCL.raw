@@ -791,6 +791,43 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
+        // Passing a callback into SQLite is tricky.  See comments near commit_hook
+        // implementation in pinvoke/SQLite3Provider.cs
+
+        private progress_handler_hook_info _progress_handler_hook;
+
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
+#endif
+        static void progress_handler_hook_bridge_impl(IntPtr p)
+        {
+            progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
+            hi.call();
+        }
+
+        NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
+        void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
+        {
+            if (_progress_handler_hook != null)
+            {
+                // TODO maybe turn off the hook here, for now
+                _progress_handler_hook.free();
+                _progress_handler_hook = null;
+            }
+
+            if (func != null)
+            {
+                _progress_handler_hook = new progress_handler_hook_info(func, v);
+                NativeMethods.sqlite3_progress_handler(db, instructions, progress_handler_hook_bridge, _progress_handler_hook.ptr);
+            }
+            else
+            {
+                NativeMethods.sqlite3_progress_handler(db, instructions, null, IntPtr.Zero);
+            }
+        }
+
+        // ----------------------------------------------------------------
+
         long ISQLite3Provider.sqlite3_memory_used()
         {
             return NativeMethods.sqlite3_memory_used();
@@ -1494,6 +1531,12 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_profile(IntPtr db, callback_profile func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+            public delegate void callback_progress_handler(IntPtr puser);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern IntPtr sqlite3_progress_handler(IntPtr db, int instructions, callback_progress_handler func, IntPtr pvUser);
 
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate void callback_trace(IntPtr puser, IntPtr statement);

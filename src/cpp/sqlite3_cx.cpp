@@ -111,6 +111,11 @@ int64 SQLite3RuntimeProvider::sqlite3_profile(int64 db, int64 func, int64 v)
 	return (int64) ::sqlite3_profile((sqlite3*)db, (void(*)(void*,const char*,sqlite3_uint64)) func, (void*)v);
 }
 
+void SQLite3RuntimeProvider::sqlite3_progress_handler(int64 db, int32 instructions, int64 func, int64 v)
+{
+	::sqlite3_progress_handler((sqlite3*)db, instructions, (int(*)(void*)) func, (void*)v);
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_create_collation(int64 db, int64 name, int32 textrep, int64 v, int64 func)
 {
     return ::sqlite3_create_collation((sqlite3*)db, (const char*) name, textrep, (void*) v, (int(*)(void*,int,const void*,int,const void*)) func);

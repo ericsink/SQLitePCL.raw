@@ -48,6 +48,7 @@ namespace SQLitePCL
                     static int64 sqlite3_rollback_hook(int64 db, int64 func, int64 v);
                     static int64 sqlite3_trace(int64 db, int64 func, int64 v);
                     static int64 sqlite3_profile(int64 db, int64 func, int64 v);
+                    static void sqlite3_progress_handler(int64 db, int32 instructions, int64 func, int64 v);
                     static int64 sqlite3_update_hook(int64 db, int64 func, int64 v);
                     static int32 sqlite3_create_collation(int64 db, int64 name, int32 textrep, int64 v, int64 func);
 

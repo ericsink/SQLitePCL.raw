@@ -295,6 +295,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
+        {
+            throw new Exception(GRIPE);
+        }
+
         long ISQLite3Provider.sqlite3_memory_used()
         {
 	    throw new Exception(GRIPE);

@@ -298,6 +298,11 @@ namespace SQLitePCL
             _imp.sqlite3_profile(db.ptr, f, v);
         }
 
+        static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v)
+        {
+            _imp.sqlite3_progress_handler(db.ptr, instructions, func, v);
+        }
+
         static public void sqlite3_update_hook(sqlite3 db, delegate_update f, object v)
         {
             _imp.sqlite3_update_hook(db.ptr, f, v);

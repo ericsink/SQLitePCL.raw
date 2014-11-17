@@ -522,6 +522,43 @@ namespace SQLitePCL
             }
         }
 
+ // ----------------------------------------------------------------
+
+        // Passing a callback into SQLite is tricky.  See comments near commit_hook
+        // implementation in pinvoke/SQLite3Provider.cs
+
+        private progress_handler_hook_info _progress_handler_hook;
+
+        static private void progress_handler_hook_bridge(IntPtr p)
+        {
+            progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
+            hi.call();
+        }
+
+        [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
+        private delegate void callback_progress_handler(IntPtr p);
+
+        void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
+        {
+            if (_progress_handler_hook != null)
+            {
+                // TODO maybe turn off the hook here, for now
+                _progress_handler_hook.free();
+                _progress_handler_hook = null;
+            }
+
+            if (func != null)
+            {
+                _progress_handler_hook = new progress_handler_hook_info(func, v);
+                SQLite3RuntimeProvider.sqlite3_progress_handler(db.ToInt64(), instructions, Marshal.GetFunctionPointerForDelegate(new callback_progress_handler(progress_handler_hook_bridge)).ToInt64(), _progress_handler_hook.ptr.ToInt64());
+            }
+            else
+            {
+                SQLite3RuntimeProvider.sqlite3_progress_handler(db.ToInt64(), instructions, IntPtr.Zero.ToInt64(), IntPtr.Zero.ToInt64());
+            }
+        }
+
+
         // ----------------------------------------------------------------
 
         int ISQLite3Provider.sqlite3_close(IntPtr db)

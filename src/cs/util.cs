@@ -267,6 +267,49 @@ namespace SQLitePCL
         }
     };
 
+    internal class progress_handler_hook_info
+    {
+        private delegate_progress_handler _func;
+        private object _user_data;
+        private GCHandle _h;
+
+        internal progress_handler_hook_info(delegate_progress_handler func, object v)
+        {
+            _func = func;
+            _user_data = v;
+
+            _h = GCHandle.Alloc(this);
+        }
+
+        internal IntPtr ptr
+        {
+            get
+            {
+                return (IntPtr)_h;
+            }
+        }
+
+        internal static progress_handler_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle)p;
+            progress_handler_hook_info hi = h.Target as progress_handler_hook_info;
+            // TODO assert(hi._h == h)
+            return hi;
+        }
+
+        internal void call()
+        {
+            _func(_user_data);
+        }
+
+        internal void free()
+        {
+            _func = null;
+            _user_data = null;
+            _h.Free();
+        }
+    };
+
     internal class update_hook_info
     {
         private delegate_update _func;
