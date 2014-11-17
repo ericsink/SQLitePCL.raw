@@ -529,14 +529,14 @@ namespace SQLitePCL
 
         private progress_handler_hook_info _progress_handler_hook;
 
-        static private void progress_handler_hook_bridge(IntPtr p)
+        static private int progress_handler_hook_bridge(IntPtr p)
         {
             progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
-            hi.call();
+            return hi.call();
         }
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
-        private delegate void callback_progress_handler(IntPtr p);
+        private delegate int callback_progress_handler(IntPtr p);
 
         void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
         {

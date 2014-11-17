@@ -797,12 +797,12 @@ namespace SQLitePCL
         private progress_handler_hook_info _progress_handler_hook;
 
 #if PLATFORM_IOS || PLATFORM_UNIFIED
-        [MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_progress_handler))] // TODO not xplat
 #endif
-        static void progress_handler_hook_bridge_impl(IntPtr p)
+        static int progress_handler_hook_bridge_impl(IntPtr p)
         {
             progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
-            hi.call();
+            return hi.call();
         }
 
         NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
@@ -1533,7 +1533,7 @@ namespace SQLitePCL
             public static extern IntPtr sqlite3_profile(IntPtr db, callback_profile func, IntPtr pvUser);
 
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-            public delegate void callback_progress_handler(IntPtr puser);
+            public delegate int callback_progress_handler(IntPtr puser);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_progress_handler(IntPtr db, int instructions, callback_progress_handler func, IntPtr pvUser);

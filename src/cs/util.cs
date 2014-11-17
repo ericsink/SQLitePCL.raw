@@ -297,9 +297,9 @@ namespace SQLitePCL
             return hi;
         }
 
-        internal void call()
+        internal int call()
         {
-            _func(_user_data);
+            return _func(_user_data);
         }
 
         internal void free()
