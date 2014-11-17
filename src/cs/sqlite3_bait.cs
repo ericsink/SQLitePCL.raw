@@ -60,6 +60,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
+        {
+            throw new Exception(GRIPE);
+        }
+
 	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string pathname, int syncDir)
 	{
 	    throw new Exception(GRIPE);

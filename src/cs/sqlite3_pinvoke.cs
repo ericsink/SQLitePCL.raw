@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,6 +108,11 @@ namespace SQLitePCL
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
             return NativeMethods.sqlite3_close(db);
+        }
+
+        void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
+        {
+            NativeMethods.sqlite3_interrupt(db);
         }
 
 #if PLATFORM_IOS || PLATFORM_UNIFIED
@@ -957,6 +962,9 @@ namespace SQLitePCL
             public static extern int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void sqlite3_interrupt(IntPtr db);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_finalize(IntPtr stmt);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -1071,9 +1079,6 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
             public static extern int sqlite3_open16(string fileName, out IntPtr db);
-
-            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void sqlite3_interrupt(IntPtr db);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern long sqlite3_last_insert_rowid(IntPtr db);

@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,6 +86,8 @@ namespace SQLitePCL
         int sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs);
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
         int sqlite3_close(IntPtr db);
+
+        void sqlite3_interrupt(IntPtr db);
 
 	int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);
 
