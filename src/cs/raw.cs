@@ -317,6 +317,11 @@ namespace SQLitePCL
             return _imp.sqlite3_errmsg(db.ptr);
         }
 
+        static public int sqlite3_db_readonly(sqlite3 db, string dbName)
+        {
+            return _imp.sqlite3_db_readonly(db.ptr, dbName);
+        }
+
         static public string sqlite3_db_filename(sqlite3 db, string att)
         {
             return _imp.sqlite3_db_filename(db.ptr, att);

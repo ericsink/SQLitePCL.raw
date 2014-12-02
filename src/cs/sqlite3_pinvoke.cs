@@ -310,6 +310,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_get_autocommit(db);
         }
 
+        int ISQLite3Provider.sqlite3_db_readonly(IntPtr db, string dbName)
+        {
+            return NativeMethods.sqlite3_db_readonly(db, util.to_utf8(dbName)); 
+        }
+        
         string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
 	{
             return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
@@ -1014,6 +1019,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_errmsg(IntPtr db);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_db_readonly(IntPtr db, byte[] dbName);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_db_filename(IntPtr db, byte[] att);

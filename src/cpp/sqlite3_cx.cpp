@@ -184,6 +184,11 @@ int64 SQLite3RuntimeProvider::sqlite3_errmsg(int64 db)
 	return (int64)::sqlite3_errmsg((sqlite3*)db);
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_db_readonly(int64 db, int64 dbName)
+{
+        return (int32)::sqlite3_db_readonly((sqlite3*)db, (const char*)dbName);
+}
+
 int64 SQLite3RuntimeProvider::sqlite3_db_filename(int64 db, int64 att)
 {
 	return (int64)::sqlite3_db_filename((sqlite3*)db, (const char*)att);
