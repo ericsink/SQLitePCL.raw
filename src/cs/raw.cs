@@ -515,6 +515,28 @@ namespace SQLitePCL
             _imp.sqlite3_result_int64(context.ptr, val);
         }
 
+        static public void sqlite3_result_zeroblob(sqlite3_context context, int n)
+        {
+            _imp.sqlite3_result_zeroblob(context.ptr, n);
+        }
+
+        // TODO sqlite3_result_value
+
+        static public void sqlite3_result_error_toobig(sqlite3_context context)
+        {
+            _imp.sqlite3_result_error_toobig(context.ptr);
+        }
+
+        static public void sqlite3_result_error_nomem(sqlite3_context context)
+        {
+            _imp.sqlite3_result_error_nomem(context.ptr);
+        }
+
+        static public void sqlite3_result_error_code(sqlite3_context context, int code)
+        {
+            _imp.sqlite3_result_error_code(context.ptr, code);
+        }
+
         static public byte[] sqlite3_value_blob(sqlite3_value val)
         {
             return _imp.sqlite3_value_blob(val.ptr);

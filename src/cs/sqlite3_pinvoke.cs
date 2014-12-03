@@ -742,6 +742,28 @@ namespace SQLitePCL
             NativeMethods.sqlite3_result_blob(ctx, blob, blob.Length, new IntPtr(-1));
         }
 
+        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
+        {
+            NativeMethods.sqlite3_result_zeroblob(ctx, n);
+        }
+
+        // TODO sqlite3_result_value
+
+        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
+        {
+            NativeMethods.sqlite3_result_error_toobig(ctx);
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
+        {
+            NativeMethods.sqlite3_result_error_nomem(ctx);
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
+        {
+            NativeMethods.sqlite3_result_error_code(ctx, code);
+        }
+
         byte[] ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_value_blob(p);
@@ -1199,6 +1221,20 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void sqlite3_result_zeroblob(IntPtr context, int n);
+
+            // TODO sqlite3_result_value 
+ 
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void sqlite3_result_error_toobig(IntPtr context);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void sqlite3_result_error_nomem(IntPtr context);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void sqlite3_result_error_code(IntPtr context, int code);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
