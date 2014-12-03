@@ -101,6 +101,7 @@ namespace SQLitePCL
         string sqlite3_errmsg(IntPtr db);
         long sqlite3_last_insert_rowid(IntPtr db);
         int sqlite3_changes(IntPtr db);
+        int sqlite3_total_changes(IntPtr db);
         int sqlite3_get_autocommit(IntPtr db);
         int sqlite3_busy_timeout(IntPtr db, int ms);
 

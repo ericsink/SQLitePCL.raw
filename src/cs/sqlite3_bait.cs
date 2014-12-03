@@ -180,6 +180,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_total_changes(IntPtr db)
+        {
+            throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_extended_result_codes(IntPtr db, int onoff)
         {
 	    throw new Exception(GRIPE);

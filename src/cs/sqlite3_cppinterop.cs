@@ -701,6 +701,11 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_changes(db.ToInt64());
         }
 
+        int ISQLite3Provider.sqlite3_total_changes(IntPtr db)
+        {
+            return SQLite3RuntimeProvider.sqlite3_total_changes(db.ToInt64());
+        }
+
         int ISQLite3Provider.sqlite3_busy_timeout(IntPtr db, int ms)
         {
             return SQLite3RuntimeProvider.sqlite3_busy_timeout(db.ToInt64(), ms);
