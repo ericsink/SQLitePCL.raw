@@ -214,6 +214,44 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_compileoption_used(util.to_utf8(s));
         }
 
+        int ISQLite3Provider.sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        {
+            IntPtr datatype_ptr;
+            IntPtr collseq_ptr;
+
+            int rc = NativeMethods.sqlite3_table_column_metadata(
+                        db, util.to_utf8(dbName), util.to_utf8(tblName), util.to_utf8(colName), 
+                        out datatype_ptr, out collseq_ptr, out notNull, out primaryKey, out autoInc);
+
+            if (datatype_ptr == IntPtr.Zero)
+            {
+                dataType = null;
+            }
+            else
+            {
+                dataType = util.from_utf8(datatype_ptr);
+                if (dataType.Length == 0)
+                {
+                    dataType = null;
+                }
+            }
+
+            if (collseq_ptr == IntPtr.Zero)
+            {
+                collSeq = null;
+            }
+            else
+            {
+                collSeq = util.from_utf8(collseq_ptr);
+                if (collSeq.Length == 0)
+                {
+                    collSeq = null;
+                }
+            }         
+  
+            return rc; 
+        }
+
         int ISQLite3Provider.sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
         {
             IntPtr tail;

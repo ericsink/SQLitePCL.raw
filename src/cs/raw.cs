@@ -447,6 +447,12 @@ namespace SQLitePCL
             return _imp.sqlite3_compileoption_get(n);
         }
 
+        static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        {
+
+            return _imp.sqlite3_table_column_metadata(db.ptr, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+        }
+        
         static public string sqlite3_sql(sqlite3_stmt stmt)
         {
             return _imp.sqlite3_sql(stmt.ptr);

@@ -208,10 +208,7 @@ namespace SQLitePCL
         int sqlite3_wal_checkpoint(IntPtr db, string dbName);
         int sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-#if not
-        int sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
-
-#endif
+        int sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
 
 #if not // maybe never
 
