@@ -894,6 +894,52 @@ namespace SQLitePCL.Test
                 Assert.IsTrue(primaryKey > 0);
             }
         }
+
+        [TestMethod]
+        public void test_progress_handler()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int count = 0;
+
+                delegate_progress_handler handler = obj => 
+                    {
+                        Assert.AreEqual(obj, "user_data");
+                        count++;
+                        return 0; 
+                    };
+
+                raw.sqlite3_progress_handler(db, 1, handler, "user_data");
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    stmt.step();
+                }
+                Assert.IsTrue(count > 0);
+
+                handler = obj => 1;
+                raw.sqlite3_progress_handler(db, 1, handler, null);
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    try
+                    {
+                        stmt.step();
+                        Assert.Fail("Expected sqlite3_exception");
+                    }
+                    catch (ugly.sqlite3_exception e)
+                    {
+                        Assert.AreEqual(e.errcode, raw.SQLITE_INTERRUPT);
+                    }
+                }
+
+                // Test that assigning null to the handler removes the progress handler.
+                handler = null;
+                raw.sqlite3_progress_handler(db, 1, handler, null);
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    stmt.step();
+                }
+            }
+        }
     }
 
     [TestClass]
