@@ -416,6 +416,83 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_result_zeroblob()
+        {
+            delegate_function_scalar zeroblob_func =
+                (ctx, user_data, args) =>
+                {
+                    int size = raw.sqlite3_value_int(args[0]);
+                    raw.sqlite3_result_zeroblob(ctx, size);
+                };
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x blob);");
+                db.create_function("createblob", 1, null, zeroblob_func);
+                db.exec("INSERT INTO foo (x) VALUES(createblob(10));");
+                
+                var rowid = db.last_insert_rowid();
+                byte[] blob = db.query_scalar<byte[]>("SELECT x FROM foo WHERE rowid=" + rowid);
+                Assert.AreEqual(blob.Length, 10);
+                foreach (var b in blob)
+                {
+                    Assert.AreEqual(b, 0);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void test_result_errors()
+        {
+            int code = 10;
+            delegate_function_scalar errorcode_func = 
+                (ctx, user_data, args) => raw.sqlite3_result_error_code(ctx, code);
+
+            delegate_function_scalar toobig_func =
+                (ctx, user_data, args) => raw.sqlite3_result_error_toobig(ctx);
+
+            delegate_function_scalar nomem_func =
+                (ctx, user_data, args) => raw.sqlite3_result_error_nomem(ctx);
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("errorcode", 0, null, errorcode_func);
+                db.create_function("toobig", 0, null, toobig_func);
+                db.create_function("nomem", 0, null, nomem_func);
+
+                try
+                {
+                    db.exec("select errorcode();");
+                    Assert.Fail("expected exception");
+                } 
+                catch (ugly.sqlite3_exception e)
+                {
+                    Assert.AreEqual(e.errcode, code);
+                }
+
+                try
+                {
+                    db.exec("select toobig();");
+                    Assert.Fail("expected exception");
+                }
+                catch (ugly.sqlite3_exception e)
+                {
+                    Assert.AreEqual(e.errcode, raw.SQLITE_TOOBIG);
+                }
+
+                try
+                {
+                    db.exec("select nomem();");
+                    Assert.Fail("expected exception");
+                }
+                catch (ugly.sqlite3_exception e)
+                {
+                    Assert.AreEqual(e.errcode, raw.SQLITE_NOMEM);
+                }
+            }
+        }
+
+        [TestMethod]
         public void test_create_table_memory_db()
         {
             using (sqlite3 db = ugly.open(":memory:"))
