@@ -146,7 +146,7 @@ namespace SQLitePCL
 
         private commit_hook_info _commit_hook;
 
-        static private int commit_hook_bridge(IntPtr p)
+        static private int commit_hook_bridge_impl(IntPtr p)
         {
             commit_hook_info hi = commit_hook_info.from_ptr(p);
             return hi.call();
@@ -155,6 +155,7 @@ namespace SQLitePCL
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate int callback_commit(IntPtr p);
 
+        callback_commit commit_hook_bridge = new callback_commit(commit_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
             if (_commit_hook != null)
@@ -167,7 +168,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _commit_hook = new commit_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_commit_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_commit(commit_hook_bridge)).ToInt64(), _commit_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_commit_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(commit_hook_bridge).ToInt64(), _commit_hook.ptr.ToInt64());
             }
             else
             {
@@ -185,11 +186,13 @@ namespace SQLitePCL
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate int callback_collation(IntPtr puser, int len1, IntPtr pv1, int len2, IntPtr pv2);
 
-        static int collation_hook_bridge(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
+        static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
             collation_hook_info hi = collation_hook_info.from_ptr(p);
             return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
         }
+
+        callback_collation collation_hook_bridge = new callback_collation(collation_hook_bridge_impl);
 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
@@ -212,7 +215,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 collation_hook_info hi = new collation_hook_info(func, v);
-                rc = SQLite3RuntimeProvider.sqlite3_create_collation(db.ToInt64(), ptr.ToInt64(), 1, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_collation(collation_hook_bridge)).ToInt64() );
+                rc = SQLite3RuntimeProvider.sqlite3_create_collation(db.ToInt64(), ptr.ToInt64(), 1, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(collation_hook_bridge).ToInt64());
                 if (rc == 0)
                 {
                     _collation_hooks[name] = hi;
@@ -239,12 +242,14 @@ namespace SQLitePCL
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_scalar_function(IntPtr context, int nArgs, IntPtr argsptr);
 
-        static void scalar_function_hook_bridge(IntPtr context, int num_args, IntPtr argsptr)
+        static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = new IntPtr(SQLite3RuntimeProvider.sqlite3_user_data(context.ToInt64()));
             scalar_function_hook_info hi = scalar_function_hook_info.from_ptr(p);
             hi.call(context, num_args, argsptr);
         }
+
+        callback_scalar_function scalar_function_hook_bridge = new callback_scalar_function(scalar_function_hook_bridge_impl);
 
         int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
         {
@@ -268,7 +273,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 scalar_function_hook_info hi = new scalar_function_hook_info(func, v);
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_scalar_function(scalar_function_hook_bridge)).ToInt64(), 0, 0, 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(scalar_function_hook_bridge).ToInt64(), 0, 0, 0);
                 if (rc == 0)
                 {
                     _scalar_functions[key] = hi;
@@ -298,7 +303,7 @@ namespace SQLitePCL
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_agg_function_final(IntPtr context);
 
-        static void agg_function_hook_bridge_step(IntPtr context, int num_args, IntPtr argsptr)
+        static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = new IntPtr(SQLite3RuntimeProvider.sqlite3_aggregate_context(context.ToInt64(), 8));
             // TODO error check agg nomem
@@ -308,7 +313,7 @@ namespace SQLitePCL
             hi.call_step(context, agg, num_args, argsptr);
         }
 
-        static void agg_function_hook_bridge_final(IntPtr context)
+        static void agg_function_hook_bridge_final_impl(IntPtr context)
         {
             IntPtr agg = new IntPtr(SQLite3RuntimeProvider.sqlite3_aggregate_context(context.ToInt64(), 8));
             // TODO error check agg nomem
@@ -317,6 +322,9 @@ namespace SQLitePCL
             agg_function_hook_info hi = agg_function_hook_info.from_ptr(p);
             hi.call_final(context, agg);
         }
+
+        callback_agg_function_step agg_function_hook_bridge_step = new callback_agg_function_step(agg_function_hook_bridge_step_impl);
+        callback_agg_function_final agg_function_hook_bridge_final = new callback_agg_function_final(agg_function_hook_bridge_final_impl);
 
         int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
@@ -341,7 +349,7 @@ namespace SQLitePCL
             {
                 // TODO both func_step and func_final must be non-null
                 agg_function_hook_info hi = new agg_function_hook_info(func_step, func_final, v);
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), 0, Marshal.GetFunctionPointerForDelegate(new callback_agg_function_step(agg_function_hook_bridge_step)).ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_agg_function_final(agg_function_hook_bridge_final)).ToInt64(), 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), 0, Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_step).ToInt64(), Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_final).ToInt64(), 0);
                 if (rc == 0)
                 {
                     _agg_functions[key] = hi;
@@ -364,7 +372,7 @@ namespace SQLitePCL
 
         private rollback_hook_info _rollback_hook;
 
-        static private void rollback_hook_bridge(IntPtr p)
+        static private void rollback_hook_bridge_impl(IntPtr p)
         {
             rollback_hook_info hi = rollback_hook_info.from_ptr(p);
             hi.call();
@@ -372,6 +380,8 @@ namespace SQLitePCL
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_rollback(IntPtr p);
+
+        callback_rollback rollback_hook_bridge = new callback_rollback(rollback_hook_bridge_impl);
 
         void ISQLite3Provider.sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
         {
@@ -385,7 +395,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _rollback_hook = new rollback_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_rollback_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_rollback(rollback_hook_bridge)).ToInt64(), _rollback_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_rollback_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(rollback_hook_bridge).ToInt64(), _rollback_hook.ptr.ToInt64());
             }
             else
             {
@@ -400,7 +410,7 @@ namespace SQLitePCL
 
         private update_hook_info _update_hook;
 
-        static private void update_hook_bridge(IntPtr p, int typ, IntPtr db, IntPtr tbl, long rowid)
+        static private void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, long rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
@@ -408,6 +418,8 @@ namespace SQLitePCL
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_update(IntPtr p, int typ, IntPtr db, IntPtr tbl, long rowid);
+
+        callback_update update_hook_bridge = new callback_update(update_hook_bridge_impl);
 
         void ISQLite3Provider.sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
@@ -421,7 +433,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _update_hook = new update_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_update_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_update(update_hook_bridge)).ToInt64(), _update_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_update_hook(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(update_hook_bridge).ToInt64(), _update_hook.ptr.ToInt64());
             }
             else
             {
@@ -436,7 +448,7 @@ namespace SQLitePCL
 
         private trace_hook_info _trace_hook;
 
-        static private void trace_hook_bridge(IntPtr p, IntPtr s)
+        static private void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
             trace_hook_info hi = trace_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s));
@@ -444,6 +456,8 @@ namespace SQLitePCL
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_trace(IntPtr p, IntPtr s);
+
+        callback_trace trace_hook_bridge = new callback_trace(trace_hook_bridge_impl);
 
         void ISQLite3Provider.sqlite3_trace(IntPtr db, delegate_trace func, object v)
         {
@@ -457,7 +471,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _trace_hook = new trace_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_trace(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_trace(trace_hook_bridge)).ToInt64(), _trace_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_trace(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(trace_hook_bridge).ToInt64(), _trace_hook.ptr.ToInt64());
             }
             else
             {
@@ -472,7 +486,7 @@ namespace SQLitePCL
 
         private profile_hook_info _profile_hook;
 
-        static private void profile_hook_bridge(IntPtr p, IntPtr s, long elapsed)
+        static private void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
         {
             profile_hook_info hi = profile_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s), elapsed);
@@ -480,6 +494,8 @@ namespace SQLitePCL
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate void callback_profile(IntPtr p, IntPtr s, long elapsed);
+
+        callback_profile profile_hook_bridge = new callback_profile(profile_hook_bridge_impl);
 
         void ISQLite3Provider.sqlite3_profile(IntPtr db, delegate_profile func, object v)
         {
@@ -493,7 +509,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _profile_hook = new profile_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_profile(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(new callback_profile(profile_hook_bridge)).ToInt64(), _profile_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_profile(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(profile_hook_bridge).ToInt64(), _profile_hook.ptr.ToInt64());
             }
             else
             {
