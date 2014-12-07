@@ -529,7 +529,7 @@ namespace SQLitePCL
 
         private progress_handler_hook_info _progress_handler_hook;
 
-        static private int progress_handler_hook_bridge(IntPtr p)
+        static private int progress_handler_hook_bridge_impl(IntPtr p)
         {
             progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
             return hi.call();
@@ -537,6 +537,8 @@ namespace SQLitePCL
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate int callback_progress_handler(IntPtr p);
+
+        callback_progress_handler progress_handler_hook_bridge = new callback_progress_handler(progress_handler_hook_bridge_impl);
 
         void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
         {
@@ -550,7 +552,7 @@ namespace SQLitePCL
             if (func != null)
             {
                 _progress_handler_hook = new progress_handler_hook_info(func, v);
-                SQLite3RuntimeProvider.sqlite3_progress_handler(db.ToInt64(), instructions, Marshal.GetFunctionPointerForDelegate(new callback_progress_handler(progress_handler_hook_bridge)).ToInt64(), _progress_handler_hook.ptr.ToInt64());
+                SQLite3RuntimeProvider.sqlite3_progress_handler(db.ToInt64(), instructions, Marshal.GetFunctionPointerForDelegate(progress_handler_hook_bridge).ToInt64(), _progress_handler_hook.ptr.ToInt64());
             }
             else
             {

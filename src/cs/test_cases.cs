@@ -910,6 +910,9 @@ namespace SQLitePCL.Test
                     };
 
                 raw.sqlite3_progress_handler(db, 1, handler, "user_data");
+                
+                GC.Collect();
+
                 using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
                 {
                     stmt.step();
