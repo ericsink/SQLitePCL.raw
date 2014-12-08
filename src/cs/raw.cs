@@ -207,6 +207,10 @@ namespace SQLitePCL
         public const int SQLITE_COPY                  = 0;    /* No longer used */
         public const int SQLITE_RECURSIVE             = 33;   /* NULL            NULL            */
 
+        public const int SQLITE_CHECKPOINT_PASSIVE    = 0;
+        public const int SQLITE_CHECKPOINT_FULL       = 1;
+        public const int SQLITE_CHECKPOINT_RESTART    = 2;
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
