@@ -665,6 +665,29 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_stmt_status()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                
+                using (var stmt = db.prepare("SELECT x FROM foo"))
+                {
+                    stmt.step();
+
+                    int vmStep = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 0);
+                    Assert.IsTrue(vmStep > 0);
+                
+                    int vmStep2 = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 1);
+                    Assert.AreEqual(vmStep, vmStep2);
+                    
+                    int vmStep3 = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 0);
+                    Assert.AreEqual(0, vmStep3);
+                }
+            }
+        }
+
+        [TestMethod]
         public void test_total_changes()
         {
             using (sqlite3 db = ugly.open(":memory:"))
