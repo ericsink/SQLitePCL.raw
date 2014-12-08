@@ -345,6 +345,24 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
+        public static void wal_autocheckpoint(this sqlite3 db, int n)
+        {
+            int rc = raw.sqlite3_wal_autocheckpoint(db, n);
+            check_ok(rc);
+        }
+
+        public static void wal_checkpoint(this sqlite3 db, string dbName)
+        {
+            int rc = raw.sqlite3_wal_checkpoint(db, dbName);
+            check_ok(rc);
+        }
+
+        public static void wal_checkpoint(this sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        {
+            int rc = raw.sqlite3_wal_checkpoint_v2(db, dbName, eMode, out logSize, out framesCheckPointed);
+            check_ok(rc);
+        }
+
         public static int step(this sqlite3_stmt stmt)
         {
             int rc = raw.sqlite3_step(stmt);
