@@ -538,6 +538,20 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_db_status()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int current;
+                int highwater;
+              
+                db.db_status(raw.SQLITE_DBSTATUS_CACHE_USED, out current, out highwater, 0);
+                Assert.IsTrue(current > 0);
+                Assert.AreEqual(highwater, 0);
+            }
+        }
+
+        [TestMethod]
         public void test_create_table_explicit_close()
         {
             sqlite3 db = ugly.open(":memory:");
