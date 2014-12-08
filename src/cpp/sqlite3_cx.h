@@ -60,6 +60,8 @@ namespace SQLitePCL
 
 					static int32 sqlite3_prepare_v2(int64 db, int64 zSql, int32 nByte, int64 ppStmpt, int64 pzTail);
 
+					static int32 sqlite3_db_status(int64 db, int32 op, int64 current, int64 highest, int32 resetFlg);
+
 					static int64 sqlite3_errmsg(int64 db);
 
 					static int32 sqlite3_db_readonly(int64 db, int64 dbName);

@@ -210,6 +210,18 @@ namespace SQLitePCL
         public const int SQLITE_CHECKPOINT_PASSIVE    = 0;
         public const int SQLITE_CHECKPOINT_FULL       = 1;
         public const int SQLITE_CHECKPOINT_RESTART    = 2;
+        
+        public const int SQLITE_DBSTATUS_LOOKASIDE_USED      = 0;
+        public const int SQLITE_DBSTATUS_CACHE_USED          = 1;
+        public const int SQLITE_DBSTATUS_SCHEMA_USED         = 2;
+        public const int SQLITE_DBSTATUS_STMT_USED           = 3;
+        public const int SQLITE_DBSTATUS_LOOKASIDE_HIT       = 4;
+        public const int SQLITE_DBSTATUS_LOOKASIDE_MISS_SIZE = 5;
+        public const int SQLITE_DBSTATUS_LOOKASIDE_MISS_FULL = 6;
+        public const int SQLITE_DBSTATUS_CACHE_HIT           = 7;
+        public const int SQLITE_DBSTATUS_CACHE_MISS          = 8;
+        public const int SQLITE_DBSTATUS_CACHE_WRITE         = 9;
+        public const int SQLITE_DBSTATUS_DEFERRED_FKS        = 10;
 
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
@@ -293,6 +305,11 @@ namespace SQLitePCL
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
             return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func_step, func_final);
+        }
+
+        static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
+        {
+            return _imp.sqlite3_db_status(db.ptr, op, out current, out highest, resetFlg);
         }
 
         static public string sqlite3_libversion()
