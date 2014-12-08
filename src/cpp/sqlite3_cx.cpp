@@ -568,4 +568,37 @@ int32 SQLite3RuntimeProvider::sqlite3_clear_bindings(int64 stmHandle)
 int32 SQLite3RuntimeProvider::sqlite3_finalize(int64 stmHandle)
 {
 	return ::sqlite3_finalize((sqlite3_stmt*)stmHandle);
-}    
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_wal_autocheckpoint(int64 db, int32 n)
+{
+	return ::sqlite3_wal_autocheckpoint((sqlite3*)db, n);
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_wal_checkpoint(int64 db, int64 dbName)
+{
+	return ::sqlite3_wal_checkpoint((sqlite3*)db, (const char*)dbName);
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_wal_checkpoint_v2(int64 db, int64 dbName, int32 eMode, int64 logSize, int64 framesCheckPointed)
+{
+	int32 pnLog = 0;
+	int32 pnCkpt = 0;
+
+	int32 result = ::sqlite3_wal_checkpoint_v2((sqlite3*)db, (const char *)dbName, eMode, &pnLog, &pnCkpt);
+
+	if (logSize)
+	{
+		int64* p = (int64*)logSize;
+		*p = pnLog;
+	}
+
+	if (framesCheckPointed)
+	{
+		int64* p = (int64*)framesCheckPointed;
+		*p = pnCkpt;
+	}
+
+	return result;
+}
+    

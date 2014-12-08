@@ -185,7 +185,13 @@ namespace SQLitePCL
 
 					static int32 sqlite3_clear_bindings(int64 stmHandle);
 
-					static int32 sqlite3_finalize(int64 stmHandle);    
+					static int32 sqlite3_finalize(int64 stmHandle);
+
+					static int32 sqlite3_wal_autocheckpoint(int64 db, int32 n);
+
+					static int32 sqlite3_wal_checkpoint(int64 db, int64 dbName);
+
+					static int32 sqlite3_wal_checkpoint_v2(int64 db, int64 dbName, int32 eMode, int64 logSize, int64 framesCheckPointed);
 				};
 	}
 }
