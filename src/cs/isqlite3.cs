@@ -119,6 +119,7 @@ namespace SQLitePCL
         int sqlite3_finalize(IntPtr stmt);
         int sqlite3_reset(IntPtr stmt);
         int sqlite3_clear_bindings(IntPtr stmt);
+        int sqlite3_stmt_status(IntPtr stmt, int op, int resetFlg);
         string sqlite3_sql(IntPtr stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
         IntPtr sqlite3_next_stmt(IntPtr db, IntPtr stmt);

@@ -1314,6 +1314,11 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_clear_bindings(stm.ToInt64());
         }
 
+        int ISQLite3Provider.sqlite3_stmt_status(IntPtr stm, int op, int resetFlg)
+        {
+            return SQLite3RuntimeProvider.sqlite3_stmt_status(stm.ToInt64(), op, resetFlg);
+        }
+
         int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
             return SQLite3RuntimeProvider.sqlite3_finalize(stm.ToInt64());

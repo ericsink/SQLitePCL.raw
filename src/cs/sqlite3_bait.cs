@@ -552,6 +552,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_stmt_status(IntPtr stm, int op, int resetFlg)
+        {
+            throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
 	    throw new Exception(GRIPE);
