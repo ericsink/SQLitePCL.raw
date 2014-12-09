@@ -2408,89 +2408,6 @@ public static class gen
 	private const string NUSPEC_VERSION = "0.6.4-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin Unified API";
 
-	private static void gen_nuspec_sqlite3_itself(string top)
-	{
-		string id;
-
-		id = "sqlite3_itself";
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for the unified
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION); // TODO should be sqlite version
-			f.WriteElementString("title", "sqlite3_itself");
-			f.WriteElementString("description", "TODO");
-			f.WriteElementString("authors", "DRH");
-			f.WriteElementString("owners", "Eric Sink");
-			//f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			//f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "This package contains only the native SQLite library.");
-			f.WriteElementString("tags", "sqlite native pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			{
-				f.WriteComment("BEGIN sqlite3 libraries");
-				foreach (config_sqlite3 cfg in projects.items_sqlite3)
-				{
-					if (cfg.dll)
-					{
-						write_nuspec_file_entry(
-								cfg, 
-								f
-								);
-					}
-				}
-				f.WriteComment("END sqlite3 libraries");
-			}
-
-			Dictionary<string, string> a_env = new Dictionary<string, string>();
-			// TODO ios
-			// TODO android
-			a_env["net45"] = null;
-			a_env["winrt80"] = null;
-			a_env["winrt81"] = null;
-			a_env["wp80"] = null;
-			a_env["wp81_rt"] = null;
-			a_env["wp81_sl"] = null;
-
-			foreach (string env in a_env.Keys)
-			{
-				string tname = string.Format("sqlite3_itself_{0}.targets", env);
-
-				gen_nuget_targets_sqlite3_itself(top, tname, env);
-
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", tname);
-				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
-				f.WriteEndElement(); // file
-			}
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
 	private static void gen_nuspec_basic(string top)
 	{
 		string id;
@@ -2509,7 +2426,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+			f.WriteAttributeString("minClientVersion", "2.8.3");
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
@@ -2591,7 +2508,7 @@ public static class gen
 
 				string tname = string.Format("{0}.targets", env);
 
-				gen_nuget_targets_sqlite3_itself(top, tname, env);
+				//gen_nuget_targets_sqlite3_itself(top, tname, env);
 
 				f.WriteStartElement("file");
 				f.WriteAttributeString("src", tname);
@@ -2752,6 +2669,7 @@ public static class gen
 		}
 	}
 
+#if not
 	private static void gen_nuget_targets_sqlite3_itself(string top, string tname, string env)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2838,6 +2756,7 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
+#endif
 
 	private static void gen_nuget_targets(string top, string tname, bool needy, List<config_pcl> a)
 	{
@@ -3059,7 +2978,6 @@ public static class gen
 		// --------------------------------
 
 		gen_nuspec_basic(top);
-		gen_nuspec_sqlite3_itself(top);
 
 		gen_nuspec_ugly(top);
 
@@ -3071,7 +2989,6 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
-			tw.WriteLine("../../nuget pack sqlite3_itself.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
 	}
