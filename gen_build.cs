@@ -87,10 +87,11 @@ public static class projects
 
 	private static void init_tests()
 	{
-		// TODO it is not confirmed that any other env besides winrt80 will work here.
+		// TODO it is not confirmed that any other environments will work here.
 		// for now that's fine.
 
 		items_tests.Add(new config_tests { env="winrt80", pcl="profile78" });
+		items_tests.Add(new config_tests { env="net45", pcl="profile78" });
 	}
 
 	private static void init_higher()
@@ -727,6 +728,7 @@ public static class gen
 	private const string GUID_WINRT = "{BC8A1FFA-BEE3-4634-8014-F334798102B3}";
 	private const string GUID_WP8 = "{C089C8C0-30E0-4E22-80C0-CE093F111A43}";
 	private const string GUID_WP81RT = "{76F1466A-8B6D-4E39-A767-685A06062A39}";
+	private const string GUID_TEST = "{3AC096D0-A1C2-E12C-1390-A8335801FDAB}";
 
 	private static void write_reference(XmlWriter f, string s)
 	{
@@ -1748,6 +1750,7 @@ public static class gen
 
 	// TODO the following function works when cfg.env is winrt80.  it might
 	// not work for any other configuration.  for now, that's fine.
+	// or net45
 	private static void gen_tests(config_tests cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -1814,6 +1817,9 @@ public static class gen
 				case "wp81_sl":
 					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 					break;
+				case "net45":
+					write_project_type_guids(f, GUID_TEST, GUID_CSHARP);
+					break;
 			}
 
 			f.WriteStartElement("Configuration");
@@ -1872,6 +1878,8 @@ public static class gen
 				case "net45":
 					f.WriteElementString("ProductVersion", "12.0.0");
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					f.WriteElementString("ReferencePath", "$(ProgramFiles)\\Common Files\\microsoft shared\\VSTT\\$(VisualStudioVersion)\\UITestExtensionPackages");
+					f.WriteElementString("TestProjectType", "UnitTest");
 					break;
 				case "wp80":
 					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
@@ -1921,9 +1929,11 @@ public static class gen
 				case "unified":
 				case "ios":
 				case "android":
+					break;
 				case "net45":
 					write_reference(f, "System");
 					write_reference(f, "System.Core");
+					write_reference(f, "Microsoft.VisualStudio.QualityTools.UnitTestFramework");
 					break;
 				case "winrt80":
 					f.WriteStartElement("SDKReference");
@@ -1951,8 +1961,24 @@ public static class gen
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteStartElement("ProjectReference");
+			if (cfg.env == "winrt80")
 			{
 				config_pcl other = projects.find_bait(cfg.pcl);
+				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			else if (cfg.env == "net45")
+			{
+				var a = projects.find_pcls(
+					"net45",
+					"cppinterop",
+					"sqlite3",
+					"x86",
+					"dynamic"
+					);
+				config_pcl other = a[0];
 				f.WriteAttributeString("Include", other.get_project_filename());
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
@@ -2025,6 +2051,11 @@ public static class gen
 						f.WriteEndElement(); // Import
 						break;
 					case "net45":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(VSToolsPath)\\TeamTest\\Microsoft.TestTools.targets");
+						f.WriteAttributeString("Condition", "Exists('$(VSToolsPath)\\TeamTest\\Microsoft.TestTools.targets')");
+						f.WriteEndElement(); // Import
+
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
 						f.WriteEndElement(); // Import
@@ -2405,8 +2436,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.6.4-pre1";
-	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin Unified API";
+	private const string NUSPEC_VERSION = "0.7.0";
+	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin.iOS Unified API.  Also several more sqlite3 API calls supported thanks to @bordoley.";
 
 	private static void gen_nuspec_basic(string top)
 	{
