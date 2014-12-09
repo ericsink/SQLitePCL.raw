@@ -262,7 +262,12 @@ int64 SQLite3RuntimeProvider::sqlite3_errstr(int32 rc)
 
 int32 SQLite3RuntimeProvider::sqlite3_changes(int64 db)
 {
-	return (int64)::sqlite3_changes((sqlite3*)db);
+	return (int32)::sqlite3_changes((sqlite3*)db);
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_total_changes(int64 db)
+{
+        return (int32)::sqlite3_total_changes((sqlite3*)db);
 }
 
 int32 SQLite3RuntimeProvider::sqlite3_busy_timeout(int64 db, int32 ms)

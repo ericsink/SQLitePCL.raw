@@ -537,12 +537,24 @@ namespace SQLitePCL.Test
         {
             using (sqlite3 db = ugly.open(":memory:"))
             {
+                Assert.AreEqual(raw.sqlite3_total_changes(db), 0);
+                Assert.AreEqual(db.changes(), 0);
+
                 db.exec("CREATE TABLE foo (x int);");
+                Assert.AreEqual(raw.sqlite3_total_changes(db), 0);
+                Assert.AreEqual(db.changes(), 0);
+
                 db.exec("INSERT INTO foo (x) VALUES (1);");
+                Assert.AreEqual(raw.sqlite3_total_changes(db), 1);
                 Assert.AreEqual(db.changes(), 1);
+                
                 db.exec("INSERT INTO foo (x) VALUES (2);");
                 db.exec("INSERT INTO foo (x) VALUES (3);");
+                Assert.AreEqual(raw.sqlite3_total_changes(db), 3);
+                Assert.AreEqual(db.changes(), 1);
+
                 db.exec("UPDATE foo SET x=5;");
+                Assert.AreEqual(raw.sqlite3_total_changes(db), 6);
                 Assert.AreEqual(db.changes(), 3);
             }
         }

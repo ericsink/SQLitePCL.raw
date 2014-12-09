@@ -74,6 +74,8 @@ namespace SQLitePCL
 
 					static int32 sqlite3_changes(int64 db);
 
+                                        static int32 sqlite3_total_changes(int64 db);
+
 					static int32 sqlite3_errcode(int64 db);
 
 					static int32 sqlite3_extended_errcode(int64 db);

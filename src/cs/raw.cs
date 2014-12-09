@@ -332,6 +332,11 @@ namespace SQLitePCL
             return _imp.sqlite3_changes(db.ptr);
         }
 
+        static public int sqlite3_total_changes(sqlite3 db)
+        {
+            return _imp.sqlite3_total_changes(db.ptr);
+        }
+
         static public int sqlite3_get_autocommit(sqlite3 db)
         {
             return _imp.sqlite3_get_autocommit(db.ptr);

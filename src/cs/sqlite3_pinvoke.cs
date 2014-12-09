@@ -280,6 +280,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_changes(db);
         }
 
+        int ISQLite3Provider.sqlite3_total_changes(IntPtr db)
+        {
+            return NativeMethods.sqlite3_total_changes(db);
+        }
+
         int ISQLite3Provider.sqlite3_extended_result_codes(IntPtr db, int onoff)
         {
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
@@ -1085,6 +1090,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_changes(IntPtr db);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_total_changes(IntPtr db);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern long sqlite3_memory_used();
