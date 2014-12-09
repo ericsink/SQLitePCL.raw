@@ -240,6 +240,11 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_changes(db);
         }
 
+        public static int total_changes(this sqlite3 db)
+        {
+            return raw.sqlite3_total_changes(db);
+        }
+
         public static void busy_timeout(this sqlite3 db, int ms)
         {
             int rc = raw.sqlite3_busy_timeout(db, ms);
