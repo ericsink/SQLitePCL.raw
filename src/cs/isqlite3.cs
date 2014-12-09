@@ -87,6 +87,8 @@ namespace SQLitePCL
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
         int sqlite3_close(IntPtr db);
 
+        int sqlite3_enable_shared_cache(int enable);
+
         void sqlite3_interrupt(IntPtr db);
 
 	int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);

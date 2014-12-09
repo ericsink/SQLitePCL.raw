@@ -81,6 +81,11 @@ int32 SQLite3RuntimeProvider::sqlite3_close_v2(int64 db)
 	return ::sqlite3_close_v2((sqlite3*)db);
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_enable_shared_cache(int32 enable)
+{
+	return ::sqlite3_enable_shared_cache(enable);
+}
+
 int64 SQLite3RuntimeProvider::sqlite3_commit_hook(int64 db, int64 func, int64 v)
 {
 	return (int64) ::sqlite3_commit_hook((sqlite3*)db, (int(*)(void*)) func, (void*)v);

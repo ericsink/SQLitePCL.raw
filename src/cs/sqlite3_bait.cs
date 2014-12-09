@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,11 @@ namespace SQLitePCL
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
 	    throw new Exception(GRIPE);
+        }
+
+        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
+        {
+            throw new Exception(GRIPE);
         }
 
         void ISQLite3Provider.sqlite3_interrupt(IntPtr db)

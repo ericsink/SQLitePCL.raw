@@ -138,6 +138,11 @@ namespace SQLitePCL
         {
             return SQLite3RuntimeProvider.sqlite3_close_v2(db.ToInt64());
         }
+
+        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
+        {
+            return SQLite3RuntimeProvider.sqlite3_enable_shared_cache(enable);
+        }
         
         // ----------------------------------------------------------------
 

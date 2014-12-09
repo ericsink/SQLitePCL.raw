@@ -40,6 +40,8 @@ namespace SQLitePCL
 					static int32 sqlite3_close_v2(int64 db);
 					static int32 sqlite3_close(int64 db);
 
+					static int32 sqlite3_enable_shared_cache(int32 enable);
+
                     static void sqlite3_interrupt(int64 db);
 
                     static int64 sqlite3_commit_hook(int64 db, int64 func, int64 v);

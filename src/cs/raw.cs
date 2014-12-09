@@ -222,8 +222,7 @@ namespace SQLitePCL
             db = new sqlite3(p);
             return rc;
         }
-
-	static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
+        static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
 	{
 		return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
 	}
@@ -240,6 +239,11 @@ namespace SQLitePCL
             int rc = _imp.sqlite3_close(db.ptr);
             db.done();
             return rc;
+        }
+
+        static public int sqlite3_enable_shared_cache(int enable)
+        {
+            return _imp.sqlite3_enable_shared_cache(enable);
         }
 
         static public void sqlite3_interrupt(sqlite3 db)
