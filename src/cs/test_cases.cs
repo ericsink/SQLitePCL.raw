@@ -302,6 +302,16 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_enable_shared_cache()
+        {
+            int result = raw.sqlite3_enable_shared_cache(1);
+            Assert.AreEqual(result, raw.SQLITE_OK);
+
+            result = raw.sqlite3_enable_shared_cache(0);
+            Assert.AreEqual(result, raw.SQLITE_OK);
+        }
+
+        [TestMethod]
         public void test_sqlite3_memory()
         {
             long memory_used = raw.sqlite3_memory_used();
