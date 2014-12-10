@@ -2539,7 +2539,7 @@ public static class gen
 
 				string tname = string.Format("{0}.targets", env);
 
-				//gen_nuget_targets_sqlite3_itself(top, tname, env);
+				gen_nuget_targets_pinvoke_anycpu(top, tname, env);
 
 				f.WriteStartElement("file");
 				f.WriteAttributeString("src", tname);
@@ -2700,8 +2700,7 @@ public static class gen
 		}
 	}
 
-#if not
-	private static void gen_nuget_targets_sqlite3_itself(string top, string tname, string env)
+	private static void gen_nuget_targets_pinvoke_anycpu(string top, string tname, string env)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2787,7 +2786,6 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
-#endif
 
 	private static void gen_nuget_targets(string top, string tname, bool needy, List<config_pcl> a)
 	{
