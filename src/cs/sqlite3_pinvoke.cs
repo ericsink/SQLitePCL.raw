@@ -963,6 +963,52 @@ namespace SQLitePCL
 		private const string SQLITE_DLL = "sqlite3";
 #elif PINVOKE_FROM_SQLITE3_DLL
 		private const string SQLITE_DLL = "sqlite3.dll";
+#elif PINVOKE_SQLITE3_WITH_LOADLIBRARY
+		private const string SQLITE_DLL = "sqlite3";
+        // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+        // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+        // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
+
+        private const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
+        [DllImport("kernel32")]
+        private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+
+        private static bool TryLoadFromDirectory(string dllName, string baseDirectory)
+        {
+            Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
+            Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
+            Debug.Assert(Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
+
+            // TODO arm
+            var architecture = IntPtr.Size == 4
+                ? "x86"
+                : "x64";
+
+            var dllPath = Path.Combine(baseDirectory, architecture, dllName);
+            if (!File.Exists(dllPath))
+                return false;
+
+            var ptr = IntPtr.Zero;
+            try
+            {
+                ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(ex.ToString());
+            }
+
+            return ptr != IntPtr.Zero;
+        }
+
+        static NativeMethods()
+        {
+            var currentAssembly = typeof(NativeLibraryLoader).GetTypeInfo().Assembly;
+            if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+                return;
+            Debug.Fail("sqlite3.dll was not loaded.");
+        }
 #endif
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
