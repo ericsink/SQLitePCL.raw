@@ -748,6 +748,25 @@ namespace SQLitePCL
 	    return rc;
 	}
 
+        int ISQLite3Provider.sqlite3_db_readonly(IntPtr db, string dbName)
+        {
+            int result;            
+
+            if (dbName != null)
+            {
+                GCHandle pinned = GCHandle.Alloc(util.to_utf8(dbName), GCHandleType.Pinned);
+                IntPtr ptr = pinned.AddrOfPinnedObject();
+                result = SQLite3RuntimeProvider.sqlite3_db_readonly(db.ToInt64(), ptr.ToInt64());
+                pinned.Free();
+            }
+            else
+            {
+                result = SQLite3RuntimeProvider.sqlite3_db_readonly(db.ToInt64(), IntPtr.Zero.ToInt64());
+            }
+
+            return result;
+        }
+
         string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
 	{
 	    string result;

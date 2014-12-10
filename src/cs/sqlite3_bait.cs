@@ -215,6 +215,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_db_readonly(IntPtr db, string dbName)
+        {
+            throw new Exception(GRIPE);
+        }
+        
         string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
 	{
 	    throw new Exception(GRIPE);

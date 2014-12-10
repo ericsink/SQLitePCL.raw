@@ -262,6 +262,22 @@ namespace SQLitePCL.Test
                 }
             }
         }
+        
+        [TestMethod]
+        public void test_db_readonly()
+        {
+            using (sqlite3 db = ugly.open_v2(":memory:", raw.SQLITE_OPEN_READONLY, null))
+            {
+                int result = raw.sqlite3_db_readonly(db, "main");
+                Assert.IsTrue(result > 0);
+            }
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int result = raw.sqlite3_db_readonly(db, "main");
+                Assert.AreEqual(result, 0);
+            }
+        }
 
         [TestMethod]
         public void test_get_autocommit()

@@ -60,6 +60,8 @@ namespace SQLitePCL
 
 					static int64 sqlite3_errmsg(int64 db);
 
+					static int32 sqlite3_db_readonly(int64 db, int64 dbName);
+					
 					static int64 sqlite3_db_filename(int64 db, int64 att);
 
 					static int32 sqlite3__vfs__delete(int64 vfs, int64 pathname, int32 dirsync);
