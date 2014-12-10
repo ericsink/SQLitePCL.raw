@@ -692,6 +692,27 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_memory_highwater(resetFlag);
         }
 
+        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        {
+            int buf_current = 0;
+            GCHandle buf_current_pinned = GCHandle.Alloc(buf_current, GCHandleType.Pinned);
+            IntPtr buf_current_ptr = buf_current_pinned.AddrOfPinnedObject();
+
+            int buf_highwater = 0;
+            GCHandle buf_highwater_pinned = GCHandle.Alloc(buf_highwater, GCHandleType.Pinned);
+            IntPtr buf_highwater_ptr = buf_highwater_pinned.AddrOfPinnedObject();
+
+            int result = SQLite3RuntimeProvider.sqlite3_status(op, buf_current_ptr.ToInt64(), buf_highwater_ptr.ToInt64(), resetFlag);
+
+            current = Marshal.ReadInt32(buf_current_ptr);
+            buf_current_pinned.Free();
+
+            highwater = Marshal.ReadInt32(buf_highwater_ptr);
+            buf_highwater_pinned.Free();
+
+            return result;
+        }
+
         string ISQLite3Provider.sqlite3_sourceid()
         {
             return util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_sourceid()));

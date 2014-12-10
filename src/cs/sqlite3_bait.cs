@@ -295,6 +295,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        {
+	    throw new Exception(GRIPE);
+        }
+
         string ISQLite3Provider.sqlite3_sourceid()
         {
 	    throw new Exception(GRIPE);

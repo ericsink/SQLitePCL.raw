@@ -342,6 +342,20 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_sqlite3_status()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int current;
+                int highwater;
+                ugly.sqlite3_status(raw.SQLITE_STATUS_MEMORY_USED, out current, out highwater, 0);
+
+                Assert.IsTrue(current > 0);
+                Assert.IsTrue(highwater > 0);
+            }
+	}
+
+        [TestMethod]
         public void test_backup()
         {
             using (sqlite3 db = ugly.open(":memory:"))

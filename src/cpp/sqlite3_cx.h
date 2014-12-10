@@ -101,6 +101,8 @@ namespace SQLitePCL
 					static int64 sqlite3_memory_used();
 					static int64 sqlite3_memory_highwater(int32 resetFlag);
 
+					static int32 sqlite3_status(int32 op,  int64 current, int64 highwater, int32 resetFlag);
+
                     static void sqlite3_free(int64 p);
 
                     static int32 sqlite3_blob_open(int64 db, int64 sdb, int64 table, int64 col, int64 rowid, int32 flags, int64 pblob);

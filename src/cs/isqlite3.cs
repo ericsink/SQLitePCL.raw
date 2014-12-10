@@ -98,6 +98,7 @@ namespace SQLitePCL
         string sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
+        int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
         int sqlite3_db_readonly(IntPtr db, string dbName);
         string sqlite3_db_filename(IntPtr db, string att);

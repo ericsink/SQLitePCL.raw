@@ -230,6 +230,28 @@ int64 SQLite3RuntimeProvider::sqlite3_memory_highwater(int32 resetFlag)
 	return (int64)::sqlite3_memory_highwater(resetFlag);
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_status(int32 op, int64 current, int64 highwater, int32 resetFlag)
+{
+	int32 pCurrent; 
+        int32 pHighwater;
+
+	int32 result = ::sqlite3_status(op, &pCurrent, &pHighwater, resetFlag);
+
+	if (current)
+	{
+		int64* p = (int64*) current;
+		*p = pCurrent;
+	} 
+
+	if (highwater)
+	{
+		int64* p = (int64*) highwater;
+		*p = pHighwater;
+	}
+
+	return result;
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_libversion_number(void)
 {
 	return (int32)::sqlite3_libversion_number();
