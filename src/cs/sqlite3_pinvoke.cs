@@ -28,6 +28,9 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
+#if PINVOKE_SQLITE3_WITH_LOADLIBRARY
+    using System.Reflection;
+#endif
 #if PLATFORM_IOS
     using MonoTouch;
 #elif PLATFORM_UNIFIED
@@ -960,11 +963,12 @@ namespace SQLitePCL
 #if PINVOKE_FROM_INTERNAL
         private const string SQLITE_DLL = "__Internal";
 #elif PINVOKE_FROM_SQLITE3
-		private const string SQLITE_DLL = "sqlite3";
+        private const string SQLITE_DLL = "sqlite3";
 #elif PINVOKE_FROM_SQLITE3_DLL
-		private const string SQLITE_DLL = "sqlite3.dll";
+        private const string SQLITE_DLL = "sqlite3.dll";
 #elif PINVOKE_SQLITE3_WITH_LOADLIBRARY
-		private const string SQLITE_DLL = "sqlite3";
+        private const string SQLITE_DLL = "sqlite3";
+
         // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
         // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
@@ -976,18 +980,20 @@ namespace SQLitePCL
 
         private static bool TryLoadFromDirectory(string dllName, string baseDirectory)
         {
-            Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
-            Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
-            Debug.Assert(Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
+            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
+            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
+            System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
             // TODO arm
             var architecture = IntPtr.Size == 4
                 ? "x86"
                 : "x64";
 
-            var dllPath = Path.Combine(baseDirectory, architecture, dllName);
-            if (!File.Exists(dllPath))
+            var dllPath = System.IO.Path.Combine(baseDirectory, architecture, dllName);
+            if (!System.IO.File.Exists(dllPath))
+	    {
                 return false;
+	    }
 
             var ptr = IntPtr.Zero;
             try
@@ -996,7 +1002,7 @@ namespace SQLitePCL
             }
             catch (Exception ex)
             {
-                Debug.Fail(ex.ToString());
+                System.Diagnostics.Debug.Fail(ex.ToString());
             }
 
             return ptr != IntPtr.Zero;
@@ -1004,10 +1010,12 @@ namespace SQLitePCL
 
         static NativeMethods()
         {
-            var currentAssembly = typeof(NativeLibraryLoader).GetTypeInfo().Assembly;
+            var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
             if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+	    {
                 return;
-            Debug.Fail("sqlite3.dll was not loaded.");
+	    }
+            System.Diagnostics.Debug.Fail("sqlite3.dll was not loaded.");
         }
 #endif
 
