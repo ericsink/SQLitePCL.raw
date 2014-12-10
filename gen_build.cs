@@ -2533,9 +2533,9 @@ public static class gen
 							)
 						);
 
-				// unified API supports targets files
-				if ("ios" == env) continue; // TODO later
-				if ("android" == env) continue; // TODO later
+				if ("ios" == env) continue; // Xamarin.iOS classic can't do .targets files
+				if ("unified" == env) continue; // TODO fix this to handle bundled sqlite
+				if ("android" == env) continue; // TODO fix this to handle bundled sqlite
 
 				string tname = string.Format("{0}.targets", env);
 
@@ -2706,8 +2706,6 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		// TODO should we put the cpu check code here, like the original version of this function (below)?
-
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
@@ -2733,6 +2731,7 @@ public static class gen
 					break;
 			}
 			
+			f.WriteStartElement("ItemGroup");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
 				if (cfg.env != (env=="net45"?"winxp":env))
@@ -2745,39 +2744,17 @@ public static class gen
 					continue;
 				}
 
-				bool b_platform_condition = true;
-
-				switch (env)
-				{
-					// TODO unified?
-					case "ios":
-						b_platform_condition = false;
-						break;
-					case "android":
-						b_platform_condition = false;
-						break;
-
-					default:
-						break;
-				}
-
-				f.WriteStartElement("ItemGroup");
-				if (b_platform_condition)
-				{
-					// TODO put a condition flag here allowing this to be skipped
-					f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
-				}
+				// TODO for net45, handle more than just windows.  deal with mono on mac and linux
 
 				f.WriteStartElement("Content");
 				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
 				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "sqlite3.dll")));
-				// TODO link
 				// TODO condition/exists ?
+				f.WriteElementString("Link", string.Format("{0}\\sqlite3.dll", cfg.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 				f.WriteEndElement(); // Content
-
-				f.WriteEndElement(); // ItemGroup
 			}
+			f.WriteEndElement(); // ItemGroup
 
 			f.WriteEndElement(); // Target
 
