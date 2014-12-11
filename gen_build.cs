@@ -1580,7 +1580,34 @@ public static class gen
 						break;
 					case "sqlite3":
 					default:
-						defines.Add("PINVOKE_FROM_SQLITE3");
+						if (cfg.cpu == "anycpu") {
+							switch (cfg.env)
+							{
+#if not
+// TODO I wish these would work.  They don't.  We can't build
+// sqlite3.dll without a dependency on the VC++ runtime, which
+// for RT platforms is only available as an extenson SDK, which
+// refuses to build with AnyCPU.
+								case "winrt80":
+								case "winrt81":
+									defines.Add("PINVOKE_ANYCPU_WINRT");
+									break;
+								case "wp81_rt":
+									defines.Add("PINVOKE_ANYCPU_WP8");
+									break;
+#endif
+								case "net45":
+									defines.Add("PINVOKE_ANYCPU_NET45");
+									break;
+								default:
+                                                                        // TODO are there any situations where this will work? 
+									defines.Add("PINVOKE_FROM_SQLITE3");
+									break;
+							}
+						}
+						else {
+							defines.Add("PINVOKE_FROM_SQLITE3");
+						}
 						break;
 				}
 			}

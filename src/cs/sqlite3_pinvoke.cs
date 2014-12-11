@@ -28,7 +28,7 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
-#if PINVOKE_SQLITE3_WITH_LOADLIBRARY
+#if PINVOKE_ANYCPU_NET45
     using System.Reflection;
 #endif
 #if PLATFORM_IOS
@@ -36,6 +36,154 @@ namespace SQLitePCL
 #elif PLATFORM_UNIFIED
     using ObjCRuntime;
 #endif
+
+    // http://sviluppomobile.blogspot.com/2012/12/detect-cpu-architecture-on-windows-8.html
+
+    public enum ProcessorFeature : uint
+    {
+        _3DNOW_INSTRUCTIONS_AVAILABLE = 7,
+        CHANNELS_ENABLED = 16,
+        COMPARE_EXCHANGE_DOUBLE = 2,
+        COMPARE_EXCHANGE128 = 14,
+        COMPARE64_EXCHANGE128 = 15,
+        FLOATING_POINT_EMULATED = 1,
+        FLOATING_POINT_PRECISION_ERRATA = 0,
+        MMX_INSTRUCTIONS_AVAILABLE = 3,
+        NX_ENABLED = 12,
+        PAE_ENABLED = 9,
+        RDTSC_INSTRUCTION_AVAILABLE = 8,
+        SECOND_LEVEL_ADDRESS_TRANSLATION = 20,
+        SSE3_INSTRUCTIONS_AVAILABLE = 13,
+        VIRT_FIRMWARE_ENABLED = 21,
+        XMMI_INSTRUCTIONS_AVAILABLE = 6,
+        XMMI64_INSTRUCTIONS_AVAILABLE = 10,
+        XSAVE_ENABLED = 17
+    }
+    public enum ProcessorArchitecture : ushort
+    {
+        INTEL = 0,
+        MIPS = 1,
+        ALPHA = 2,
+        PPC = 3,
+        SHX = 4,
+        ARM = 5,
+        IA64 = 6,
+        ALPHA64 = 7,
+        MSIL = 8,
+        AMD64 = 9,
+        IA32_ON_WIN64 = 10,
+        UNKNOWN = 0xFFFF
+    }
+    public enum ProcessorType : uint
+    {
+        INTEL_386 = 386,
+        INTEL_486 = 486,
+        INTEL_PENTIUM = 586,
+        INTEL_IA64 = 2200,
+        AMD_X8664 = 8664,
+        MIPS_R4000 = 4000,    // incl R4101 & R3910 for Windows CE
+        ALPHA_21064 = 21064,
+        PPC_601 = 601,
+        PPC_603 = 603,
+        PPC_604 = 604,
+        PPC_620 = 620,
+        HITACHI_SH3 = 10003,   // Windows CE
+        HITACHI_SH3E = 10004,   // Windows CE
+        HITACHI_SH4 = 10005, // Windows CE
+        MOTOROLA_821 = 821,    // Windows CE
+        SHx_SH3 = 103,    // Windows CE
+        SHx_SH4 = 104,     // Windows CE
+        STRONGARM = 2577,    // Windows CE - 0xA11
+        ARM720 = 1824,    // Windows CE - 0x720
+        ARM820 = 2080,   // Windows CE - 0x820
+        ARM920 = 2336,    // Windows CE - 0x920
+        ARM_7TDMI = 70001,   // Windows CE
+        OPTIL = 0x494f,  // MSIL
+        UNKNOWN = 0xFFFF
+    }
+    public class SystemInfo
+    {
+        public ProcessorArchitecture ProcessorArchitecture;
+        public ushort ProcessorArchitectureId;
+        public ProcessorType ProcessorType;
+        public uint ProcessorTypeId;
+        public uint NumberOfProcessors;
+        public ushort ProcessorLevel;
+        public ushort ProcessorRevision;
+        public uint AllocationGranularity;
+    };
+    public class CPU
+    {
+     
+        [StructLayout(LayoutKind.Sequential)]
+        struct _SYSTEM_INFO
+        {
+            public ushort wProcessorArchitecture;
+            public ushort wReserved;
+            public uint dwPageSize;
+            public IntPtr lpMinimumApplicationAddress;
+            public IntPtr lpMaximumApplicationAddress;
+            public UIntPtr dwActiveProcessorMask;
+            public uint dwNumberOfProcessors;
+            public uint dwProcessorType;
+            public uint dwAllocationGranularity;
+            public ushort wProcessorLevel;
+            public ushort wProcessorRevision;
+        };
+
+        [DllImport("kernel32.dll")]
+        static extern void GetNativeSystemInfo(ref _SYSTEM_INFO lpSystemInfo);
+
+        [DllImport("kernel32.dll")]
+        static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
+
+
+        static _SYSTEM_INFO sysInfo;
+        static SystemInfo sInfo;
+
+        public static bool IsProcessorFeaturePresent(ProcessorFeature feature)
+        {
+            return IsProcessorFeaturePresent((uint)feature);
+        }
+
+        public static SystemInfo NativeInfo
+        {
+            get
+            {
+                if (sInfo==null)
+                {
+                    sysInfo = new _SYSTEM_INFO();
+                    GetNativeSystemInfo(ref sysInfo);
+                    sInfo = new SystemInfo()
+                    {
+                        ProcessorTypeId = sysInfo.dwProcessorType,
+                        ProcessorArchitectureId = sysInfo.wProcessorArchitecture,
+                        ProcessorLevel = sysInfo.wProcessorLevel,
+                        ProcessorRevision= sysInfo.wProcessorRevision,
+                        NumberOfProcessors = sysInfo.dwNumberOfProcessors,
+                        AllocationGranularity = sysInfo.dwAllocationGranularity,
+                        ProcessorArchitecture = Enum.IsDefined(typeof(ProcessorArchitecture), sysInfo.wProcessorArchitecture) ? (ProcessorArchitecture)sysInfo.wProcessorArchitecture : ProcessorArchitecture.UNKNOWN,
+                        ProcessorType = Enum.IsDefined(typeof(ProcessorType), sysInfo.dwProcessorType) ? (ProcessorType)sysInfo.dwProcessorType : ProcessorType.UNKNOWN
+                    };
+                }
+                return sInfo;
+            }
+        }
+
+	public static string get_architecture()
+	{
+	    var info = CPU.NativeInfo;
+	    if (info.ProcessorArchitecture == ProcessorArchitecture.ARM)
+	    {
+		return "arm";
+	    }
+	    else
+	    {
+		if (IntPtr.Size == 4) return "x86";
+		else return "x64";
+	    }
+	}
+    }
 
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
@@ -966,8 +1114,64 @@ namespace SQLitePCL
         private const string SQLITE_DLL = "sqlite3";
 #elif PINVOKE_FROM_SQLITE3_DLL
         private const string SQLITE_DLL = "sqlite3.dll";
-#elif PINVOKE_SQLITE3_WITH_LOADLIBRARY
+#elif PINVOKE_ANYCPU_WP8
         private const string SQLITE_DLL = "sqlite3";
+
+        // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+        // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+        // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
+
+        [DllImport("PhoneAppModelHost")]
+        private static extern IntPtr LoadPackagedLibrary(string lpFileName, int nothing);
+
+        private static bool TryLoad()
+        {
+            string architecture = CPU.get_architecture();
+            var dllPath = System.IO.Path.Combine(architecture, "sqlite3.dll");
+            var ptr = LoadPackagedLibrary(dllPath, 0);
+
+            return ptr != IntPtr.Zero;
+        }
+
+        static NativeMethods()
+        {
+            if (TryLoad())
+	    {
+                return;
+	    }
+            throw new Exception("sqlite3.dll was not loaded.");
+        }
+#elif PINVOKE_ANYCPU_WINRT
+        private const string SQLITE_DLL = "sqlite3";
+
+        // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+        // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+        // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
+
+        [DllImport("kernel32")]
+        private static extern IntPtr LoadPackagedLibrary(string lpFileName, int nothing);
+
+        private static bool TryLoad()
+        {
+            string architecture = CPU.get_architecture();
+            var dllPath = System.IO.Path.Combine(architecture, "sqlite3.dll");
+            var ptr = LoadPackagedLibrary(dllPath, 0);
+
+            return ptr != IntPtr.Zero;
+        }
+
+        static NativeMethods()
+        {
+            if (TryLoad())
+	    {
+                return;
+	    }
+            throw new Exception("sqlite3.dll was not loaded.");
+        }
+#elif PINVOKE_ANYCPU_NET45
+        private const string SQLITE_DLL = "sqlite3";
+
+	// TODO can the code below be adapted to cope with Mono on Mac or Linux?
 
         // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
@@ -984,7 +1188,6 @@ namespace SQLitePCL
             System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
             System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
-            // TODO arm
             var architecture = IntPtr.Size == 4
                 ? "x86"
                 : "x64";
@@ -995,16 +1198,7 @@ namespace SQLitePCL
                 return false;
 	    }
 
-            var ptr = IntPtr.Zero;
-            try
-            {
-                ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.Fail(ex.ToString());
-            }
-
+            var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
             return ptr != IntPtr.Zero;
         }
 
@@ -1015,7 +1209,7 @@ namespace SQLitePCL
 	    {
                 return;
 	    }
-            System.Diagnostics.Debug.Fail("sqlite3.dll was not loaded.");
+            throw new Exception("sqlite3.dll was not loaded.");
         }
 #endif
 
