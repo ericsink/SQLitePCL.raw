@@ -2566,7 +2566,14 @@ public static class gen
 
 				string tname = string.Format("{0}.targets", env);
 
+				if (env == "net45")
+				{
 				gen_nuget_targets_pinvoke_anycpu(top, tname, env);
+				}
+				else
+				{
+					gen_nuget_targets_sqlite3_itself(top, tname, env);
+				}
 
 				f.WriteStartElement("file");
 				f.WriteAttributeString("src", tname);
@@ -2722,6 +2729,93 @@ public static class gen
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuget_targets_sqlite3_itself(string top, string tname, string env)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		// TODO should we put the cpu check code here, like the original version of this function (below)?
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+
+			switch (env)
+			{
+				case "winrt80":
+				case "winrt81":
+				case "wp81_rt":
+				case "wp81_sl":
+					f.WriteStartElement("Message");
+					f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
+					f.WriteAttributeString("Importance", "High");
+					f.WriteEndElement(); // Message
+					break;
+			}
+			
+			foreach (config_sqlite3 cfg in projects.items_sqlite3)
+			{
+				if (cfg.env != (env=="net45"?"winxp":env))
+				{
+					continue;
+				}
+
+				if (!cfg.dll)
+				{
+					continue;
+				}
+
+				bool b_platform_condition = true;
+
+				switch (env)
+				{
+					// TODO unified?
+					case "ios":
+						b_platform_condition = false;
+						break;
+					case "android":
+						b_platform_condition = false;
+						break;
+
+					default:
+						break;
+				}
+
+				f.WriteStartElement("ItemGroup");
+				if (b_platform_condition)
+				{
+					// TODO put a condition flag here allowing this to be skipped
+					f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
+				}
+
+				f.WriteStartElement("Content");
+				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "sqlite3.dll")));
+				// TODO link
+				// TODO condition/exists ?
+				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteEndElement(); // Content
+
+				f.WriteEndElement(); // ItemGroup
+			}
+
+			f.WriteEndElement(); // Target
+
+			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
 		}
