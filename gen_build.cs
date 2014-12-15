@@ -2464,7 +2464,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.7.0";
-	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin.iOS Unified API.  Also several more sqlite3 API calls supported thanks to @bordoley.";
+	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin.iOS Unified API.  Also some bug fixes and several more sqlite3 API calls supported thanks to @bordoley.";
 
 	private static void gen_nuspec_basic(string top)
 	{
@@ -2484,7 +2484,7 @@ public static class gen
 			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
 
 			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.8.3");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
