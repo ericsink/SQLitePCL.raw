@@ -975,8 +975,6 @@ namespace SQLitePCL
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
         // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
 
-        private const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
-
         [DllImport("kernel32")]
         private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
@@ -996,18 +994,23 @@ namespace SQLitePCL
                 return false;
 	    }
 
+	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
             var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
             return ptr != IntPtr.Zero;
         }
 
         static NativeMethods()
         {
-            var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
-            if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+	    if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
 	    {
-                return;
+		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
+		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+		    {
+			return;
+		    }
+		    throw new Exception("sqlite3.dll was not loaded.");
 	    }
-            throw new Exception("sqlite3.dll was not loaded.");
         }
 #endif
 

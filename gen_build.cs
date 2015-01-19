@@ -2463,8 +2463,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.7.0";
-	private const string NUSPEC_RELEASE_NOTES = "Compatibility with Xamarin.iOS Unified API.  Also some bug fixes and several more sqlite3 API calls supported thanks to @bordoley.";
+	private const string NUSPEC_VERSION = "0.7.1";
+	private const string NUSPEC_RELEASE_NOTES = "Fix for OSX";
 
 	private static void gen_nuspec_basic(string top)
 	{
@@ -2853,6 +2853,7 @@ public static class gen
 			}
 			
 			f.WriteStartElement("ItemGroup");
+			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
 				if (cfg.env != (env=="net45"?"winxp":env))
