@@ -2490,8 +2490,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.7.1";
-	private const string NUSPEC_RELEASE_NOTES = "Fix for OSX";
+	private const string NUSPEC_VERSION = "0.7.2";
+	private const string NUSPEC_RELEASE_NOTES = "Bug fixes. Optional use of bundled sqlite3 lib for iOS Unified.";
 
 	private static void gen_nuspec_basic(string top)
 	{

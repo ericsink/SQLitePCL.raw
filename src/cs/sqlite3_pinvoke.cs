@@ -23,6 +23,20 @@
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
+#if PINVOKE_FROM_INTERNAL
+
+// TODO the attribute below currently only works with iOS Unified
+[assembly: ObjCRuntime.LinkWith(
+        "sqlite3.a",
+        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
+        ForceLoad=true,
+        LinkerFlags="",
+        Frameworks=""
+        )
+        ]
+
+#endif
+
 namespace SQLitePCL
 {
     using System;
@@ -35,26 +49,6 @@ namespace SQLitePCL
     using MonoTouch;
 #elif PLATFORM_UNIFIED
     using ObjCRuntime;
-#endif
-
-#if PINVOKE_FROM_INTERNAL
-
-#if __UNIFIED__
-using ObjCRuntime;
-#else
-using MonoTouch.ObjCRuntime;
-#endif
-
-[assembly: LinkWith(
-        "sqlite3.a",
-        LinkTarget = LinkTarget.Simulator | LinkTarget.ArmV7 | LinkTarget.ArmV7s,
-        ForceLoad=true,
-        LinkerFlags="",
-        Frameworks=""
-        )
-        ]
-
-~
 #endif
 
     /// <summary>
