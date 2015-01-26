@@ -2528,12 +2528,8 @@ public static class gen
 	private const string NUSPEC_VERSION = "0.7.2";
 	private const string NUSPEC_RELEASE_NOTES = "Bug fixes. Optional use of packaged sqlite3 lib for iOS Unified.";
 
-	private static void gen_nuspec_basic(string top)
+	private static void gen_nuspec_basic(string top, string id)
 	{
-		string id;
-
-		id = "SQLitePCL.raw_basic";
-
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
@@ -2550,11 +2546,11 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.raw - basic use cases");
-			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw is 'basic' in the sense that it includes the configurations that are likely to Just Work for most use cases.  Specifically, for iOS and Android, this package uses the SQLite library which is built-in to the mobile OS.  For all of the Windows platforms, this package bundles an instance of the SQLite library.");
+			f.WriteElementString("title", "SQLitePCL.raw");
+			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw includes the configurations that are likely to Just Work for most use cases.  Specifically, for iOS and Android, this package uses the SQLite library which is built-in to the mobile OS.  For all of the Windows platforms, this package bundles an instance of the SQLite library.");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
@@ -2774,7 +2770,7 @@ public static class gen
 			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
@@ -2784,7 +2780,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_basic"); // TODO
+			f.WriteAttributeString("id", "SQLitePCL.raw_basic"); // TODO change to SQLitePCL.raw (without _basic)
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
@@ -2835,7 +2831,7 @@ public static class gen
 			f.WriteElementString("description", "Create a new unit test project.  Add this NuGetPackage.  Build.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
@@ -3293,15 +3289,22 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_basic(top);
+		gen_nuspec_basic(top, "SQLitePCL.raw_basic");
+		gen_nuspec_basic(top, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
 
 		gen_nuspec_tests(top, root);
 
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
+		{
+			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
+		}
+
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
 			tw.WriteLine("# TODO");
+			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
