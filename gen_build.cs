@@ -1759,6 +1759,7 @@ public static class gen
                         if (cfg.what == "packaged_sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
+			    // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
                             f.WriteElementString("Link", "packaged_sqlite3.a");
