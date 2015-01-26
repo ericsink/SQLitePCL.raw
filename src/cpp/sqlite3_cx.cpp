@@ -435,6 +435,28 @@ void SQLite3RuntimeProvider::sqlite3_result_blob(int64 ctx, int64 val, int32 len
 	return ::sqlite3_result_blob((sqlite3_context*)ctx, (void*) val, length, (void(*)(void*))destructor);
 }
 
+void SQLite3RuntimeProvider::sqlite3_result_zeroblob(int64 ctx, int32 n)
+{
+    ::sqlite3_result_zeroblob((sqlite3_context*) ctx, n);
+}
+
+// TODO sqlite3_result_value
+
+void SQLite3RuntimeProvider::sqlite3_result_error_toobig(int64 ctx)
+{
+    ::sqlite3_result_error_toobig((sqlite3_context*)ctx);
+}
+
+void SQLite3RuntimeProvider::sqlite3_result_error_nomem(int64 ctx)
+{
+    ::sqlite3_result_error_nomem((sqlite3_context*)ctx);
+}
+
+void SQLite3RuntimeProvider::sqlite3_result_error_code(int64 ctx, int32 code)
+{
+    ::sqlite3_result_error_code((sqlite3_context*)ctx, code);
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_value_int(int64 v)
 {
     return ::sqlite3_value_int((sqlite3_value*) v);

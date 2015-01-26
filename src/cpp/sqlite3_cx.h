@@ -125,6 +125,10 @@ namespace SQLitePCL
 					static void sqlite3_result_null(int64 ctx);
 					static void sqlite3_result_error(int64 ctx, int64 val, int32 length);
 					static void sqlite3_result_blob(int64 ctx, int64 val, int32 length, int64 destructor);
+					static void sqlite3_result_zeroblob(int64 ctx, int32 n);
+					static void sqlite3_result_error_toobig(int64 ctx);
+					static void sqlite3_result_error_nomem(int64 ctx);
+					static void sqlite3_result_error_code(int64 ctx, int code); 
 
                     static int32 sqlite3_value_int(int64 v);
                     static int32 sqlite3_value_type(int64 v);

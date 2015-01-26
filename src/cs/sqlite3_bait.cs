@@ -335,6 +335,28 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
+        {
+            throw new Exception(GRIPE);
+        }
+
+        // TODO sqlite3_result_value
+
+        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
+        {
+            throw new Exception(GRIPE); 
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
+        {
+            throw new Exception(GRIPE); 
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
+        {
+            throw new Exception(GRIPE); 
+        }
+
         byte[] ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
 	    throw new Exception(GRIPE);

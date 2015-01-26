@@ -180,11 +180,11 @@ namespace SQLitePCL
         void sqlite3_result_int64(IntPtr context, long val);
         void sqlite3_result_null(IntPtr context);
         void sqlite3_result_text(IntPtr context, string val);
-        // TODO sqlite3_result_zeroblob
+        void sqlite3_result_zeroblob(IntPtr context, int n);
         // TODO sqlite3_result_value
-        // TODO sqlite3_result_error_toobig
-        // TODO sqlite3_result_error_nomem
-        // TODO sqlite3_result_error_code
+        void sqlite3_result_error_toobig(IntPtr context);
+        void sqlite3_result_error_nomem(IntPtr context);
+        void sqlite3_result_error_code(IntPtr context, int code);
 
         byte[] sqlite3_value_blob(IntPtr p);
         int sqlite3_value_bytes(IntPtr p);

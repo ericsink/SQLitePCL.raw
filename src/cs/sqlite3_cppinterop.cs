@@ -840,6 +840,28 @@ namespace SQLitePCL
             pinned.Free();
         }
 
+        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
+        {
+            SQLite3RuntimeProvider.sqlite3_result_zeroblob(ctx.ToInt64(), n);
+        }
+
+        // TODO sqlite3_result_value
+
+        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
+        {
+            SQLite3RuntimeProvider.sqlite3_result_error_toobig(ctx.ToInt64());
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
+        {
+            SQLite3RuntimeProvider.sqlite3_result_error_nomem(ctx.ToInt64());
+        }
+
+        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
+        {
+            SQLite3RuntimeProvider.sqlite3_result_error_code(ctx.ToInt64(), code);
+        }
+
         byte[] ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = new IntPtr(SQLite3RuntimeProvider.sqlite3_value_blob(p.ToInt64()));
