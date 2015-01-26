@@ -207,6 +207,10 @@ namespace SQLitePCL
         public const int SQLITE_COPY                  = 0;    /* No longer used */
         public const int SQLITE_RECURSIVE             = 33;   /* NULL            NULL            */
 
+        public const int SQLITE_CHECKPOINT_PASSIVE    = 0;
+        public const int SQLITE_CHECKPOINT_FULL       = 1;
+        public const int SQLITE_CHECKPOINT_RESTART    = 2;
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
@@ -754,7 +758,20 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_read(blob.ptr, b, bOffset, n, offset);
         }
 
-    }
+        static public int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
+        {
+            return _imp.sqlite3_wal_autocheckpoint(db.ptr, n);
+        }
 
+        static public int sqlite3_wal_checkpoint(sqlite3 db, string dbName)
+        {
+            return _imp.sqlite3_wal_checkpoint(db.ptr, dbName);
+        }
+
+        static public int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        {
+            return _imp.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
+        }
+    }
 }
 

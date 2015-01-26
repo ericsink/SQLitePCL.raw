@@ -1170,5 +1170,47 @@ namespace SQLitePCL
         {
             return SQLite3RuntimeProvider.sqlite3_finalize(stm.ToInt64());
         }
+
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(IntPtr db, int n)
+        {
+            return SQLite3RuntimeProvider.sqlite3_wal_autocheckpoint(db.ToInt64(), n);
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint(IntPtr db, string dbName)
+        {
+            // TODO null string?
+            GCHandle db_name_ptr_pinned = GCHandle.Alloc(util.to_utf8(dbName), GCHandleType.Pinned);
+            IntPtr db_name_ptr = db_name_ptr_pinned.AddrOfPinnedObject();
+            int result = SQLite3RuntimeProvider.sqlite3_wal_checkpoint(db.ToInt64(), db_name_ptr.ToInt64());
+            db_name_ptr_pinned.Free();
+            return result;
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        {
+            // TODO null string?
+            GCHandle db_name_ptr_pinned = GCHandle.Alloc(util.to_utf8(dbName), GCHandleType.Pinned);
+            IntPtr db_name_ptr = db_name_ptr_pinned.AddrOfPinnedObject();
+
+            int buf_log_size = 0;
+            GCHandle buf_log_size_pinned = GCHandle.Alloc(buf_log_size, GCHandleType.Pinned);
+            IntPtr buf_log_size_ptr = buf_log_size_pinned.AddrOfPinnedObject();
+            
+            int buf_frames_check_pointed = 0;
+            GCHandle buf_frames_check_pointed_pinned = GCHandle.Alloc(buf_frames_check_pointed, GCHandleType.Pinned);
+            IntPtr buf_frames_check_pointed_ptr = buf_frames_check_pointed_pinned.AddrOfPinnedObject();
+
+            int result = SQLite3RuntimeProvider.sqlite3_wal_checkpoint_v2(db.ToInt64(), db_name_ptr.ToInt64(), eMode, buf_log_size_ptr.ToInt64(), buf_frames_check_pointed_ptr.ToInt64());
+
+            framesCheckPointed = Marshal.ReadInt32(buf_frames_check_pointed_ptr);
+            buf_frames_check_pointed_pinned.Free();
+
+            logSize = Marshal.ReadInt32(buf_log_size_ptr);
+            buf_log_size_pinned.Free();
+
+            db_name_ptr_pinned.Free();
+
+            return result;
+        }
     }
 }

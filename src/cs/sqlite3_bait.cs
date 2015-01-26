@@ -520,5 +520,19 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(IntPtr db, int n)
+        {
+            throw new Exception(GRIPE);
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint(IntPtr db, string dbName)
+        {
+            throw new Exception(GRIPE);
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        {
+            throw new Exception(GRIPE);
+        }
     }
 }

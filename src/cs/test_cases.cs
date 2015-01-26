@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using SQLitePCL;
 using SQLitePCL.Ugly;
@@ -648,6 +649,46 @@ namespace SQLitePCL.Test
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void test_wal()
+        {
+            var tmpFile = Path.GetTempFileName();
+            using (sqlite3 db = ugly.open(tmpFile))
+            {
+                db.exec("PRAGMA journal_mode=WAL;");
+
+                // CREATE TABLE results in 2 frames check pointed and increaseses the log size by 2
+                // so manually do a checkpoint to reset the counters thus testing both
+                // sqlite3_wal_checkpoint and sqlite3_wal_checkpoint_v2.
+                db.exec("CREATE TABLE foo (x int);");
+                db.wal_checkpoint("main");
+                
+                db.exec("INSERT INTO foo (x) VALUES (1);");
+                db.exec("INSERT INTO foo (x) VALUES (2);");
+
+                int logSize;
+                int framesCheckPointed;
+                db.wal_checkpoint("main", raw.SQLITE_CHECKPOINT_FULL, out logSize, out framesCheckPointed);
+
+                Assert.AreEqual(2, logSize);
+                Assert.AreEqual(2, framesCheckPointed);
+
+                // Set autocheckpoint to 1 so that regardless of the number of 
+                // commits, explicit checkpoints only checkpoint the last update.
+                db.wal_autocheckpoint(1);
+
+                db.exec("INSERT INTO foo (x) VALUES (3);");
+                db.exec("INSERT INTO foo (x) VALUES (4);");
+                db.exec("INSERT INTO foo (x) VALUES (5);");
+                db.wal_checkpoint("main", raw.SQLITE_CHECKPOINT_PASSIVE, out logSize, out framesCheckPointed);
+
+                Assert.AreEqual(1, logSize);
+                Assert.AreEqual(1, framesCheckPointed);
+            }
+
+            ugly.vfs__delete(null, tmpFile, 1);
         }
     }
 

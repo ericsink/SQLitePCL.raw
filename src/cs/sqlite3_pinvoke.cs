@@ -977,6 +977,21 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_finalize(stm);
         }
 
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(IntPtr db, int n)
+        {
+            return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint(IntPtr db, string dbName)
+        {
+            return NativeMethods.sqlite3_wal_checkpoint(db, util.to_utf8(dbName));
+        }
+
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        {
+            return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
+        }
+
         private static class NativeMethods
         {
 #if PINVOKE_FROM_INTERNAL
@@ -1451,6 +1466,15 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_blob_close(IntPtr blob);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_wal_autocheckpoint(IntPtr db, int n);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_wal_checkpoint(IntPtr db, byte[] dbName);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_wal_checkpoint_v2(IntPtr db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
 #if NETFX_CORE
             [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_win32_set_directory", CallingConvention=CallingConvention.Cdecl, CharSet=CharSet.Unicode)]
