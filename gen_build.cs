@@ -1760,8 +1760,8 @@ public static class gen
                         {
                             f.WriteStartElement("ItemGroup");
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\lib\\ios\\sqlite3.a"));
-                            f.WriteElementString("Link", "sqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
+                            f.WriteElementString("Link", "packaged_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
@@ -1780,7 +1780,29 @@ public static class gen
 
 						if (cfg.what == "packaged_sqlite3")
 						{
-							// TODO resource
+                            f.WriteStartElement("ItemGroup");
+
+                            f.WriteStartElement("EmbeddedNativeLibrary");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\x86\\packaged_sqlite3.so");
+                            f.WriteElementString("CopyToOutputDirectory", "Always");
+                            f.WriteElementString("Link", "x86\\packaged_sqlite3.so");
+                            f.WriteEndElement(); // EmbeddedNativeLibrary
+
+                            f.WriteStartElement("EmbeddedNativeLibrary");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi\\packaged_sqlite3.so");
+                            f.WriteElementString("CopyToOutputDirectory", "Always");
+                            f.WriteElementString("Link", "armeabi\\packaged_sqlite3.so");
+                            f.WriteEndElement(); // EmbeddedNativeLibrary
+
+                            f.WriteStartElement("EmbeddedNativeLibrary");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi-v7a\\packaged_sqlite3.so");
+                            f.WriteElementString("CopyToOutputDirectory", "Always");
+                            f.WriteElementString("Link", "armeabi-v7a\\packaged_sqlite3.so");
+                            f.WriteEndElement(); // EmbeddedNativeLibrary
+
+                            // TODO need arm64
+
+                            f.WriteEndElement(); // ItemGroup
 						}
 						break;
 					case "winrt80":

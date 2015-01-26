@@ -22,11 +22,11 @@ mkdir -p ./obj/ios/x86_64
 mkdir -p ./obj/ios/armv7
 mkdir -p ./obj/ios/armv7s
 mkdir -p ./obj/ios/arm64
-mkdir -p ./lib/ios
+mkdir -p ./libs/ios
 
 mkdir -p ./obj/mac/i386
 mkdir -p ./obj/mac/x86_64
-mkdir -p ./lib/mac
+mkdir -p ./libs/mac
 
 if [ -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.1.sdk ]; then
 	IOS_SIM_ROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.1.sdk
@@ -53,7 +53,7 @@ Z_CFLAGS="-O -DNDEBUG -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_ENABLE_FTS3_PAREN
 xcrun clang $Z_CODEC_ARGS -arch i386 $Z_CFLAGS -c -o ./obj/mac/i386/sqlite3.c.o $Z_SQLDIR/sqlite3.c
 xcrun clang $Z_CODEC_ARGS -arch x86_64 $Z_CFLAGS -c -o ./obj/mac/x86_64/sqlite3.c.o $Z_SQLDIR/sqlite3.c
 
-libtool -static -o ./lib/mac/sqlite3.a \
+libtool -static -o ./libs/mac/packaged_sqlite3.a \
 	./obj/mac/i386/sqlite3.c.o \
 	./obj/mac/x86_64/sqlite3.c.o
 
@@ -63,7 +63,7 @@ xcrun clang $Z_CODEC_ARGS -arch arm64 -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./
 xcrun clang $Z_CODEC_ARGS -arch armv7 -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./obj/ios/armv7/sqlite3.c.o $Z_SQLDIR/sqlite3.c
 xcrun clang $Z_CODEC_ARGS -arch armv7s -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./obj/ios/armv7s/sqlite3.c.o $Z_SQLDIR/sqlite3.c
 
-libtool -static -o ./lib/ios/sqlite3.a \
+libtool -static -o ./libs/ios/packaged_sqlite3.a \
 	./obj/ios/i386/sqlite3.c.o \
 	./obj/ios/x86_64/sqlite3.c.o \
 	./obj/ios/armv7/sqlite3.c.o \
