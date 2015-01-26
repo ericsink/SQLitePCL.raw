@@ -127,6 +127,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_close(db);
         }
 
+        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
+        {
+            return NativeMethods.sqlite3_enable_shared_cache(enable);
+        }
+
         void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
         {
             NativeMethods.sqlite3_interrupt(db);
@@ -1035,6 +1040,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_enable_shared_cache(int enable);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern void sqlite3_interrupt(IntPtr db);
