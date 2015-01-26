@@ -1,5 +1,5 @@
 /*
-   Copyright 2014 Zumero, LLC
+   Copyright 2014-2015 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -142,12 +142,12 @@ public static class projects
 	private static void init_pcl_pinvoke()
 	{
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		//items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal", cpu="anycpu"}); // TODO may not work because no .targets file
 
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="internal", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
@@ -1590,8 +1590,15 @@ public static class gen
 			{
 				switch (cfg.what)
 				{
-					case "internal":
-						defines.Add("PINVOKE_FROM_INTERNAL");
+					case "packaged_sqlite3":
+						if (cfg.env == "android")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
+						}
+						else if (cfg.env == "unified")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL");
+						}
 						break;
 					case "sqlite3":
 					default:
@@ -1749,7 +1756,7 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-                        if (cfg.what == "internal")
+                        if (cfg.what == "packaged_sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
                             f.WriteStartElement("ManifestResourceWithNoCulture");
@@ -1764,12 +1771,17 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-                        // TODO no internal sqlite3 here because iOS classic doesn't do targets files
+                        // TODO no packaged_sqlite3 here because iOS classic doesn't do targets files
 						break;
 					case "android":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
 						f.WriteEndElement(); // Import
+
+						if (cfg.what == "packaged_sqlite3")
+						{
+							// TODO resource
+						}
 						break;
 					case "winrt80":
 					case "winrt81":
@@ -2491,7 +2503,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.7.2";
-	private const string NUSPEC_RELEASE_NOTES = "Bug fixes. Optional use of bundled sqlite3 lib for iOS Unified.";
+	private const string NUSPEC_RELEASE_NOTES = "Bug fixes. Optional use of packaged sqlite3 lib for iOS Unified.";
 
 	private static void gen_nuspec_basic(string top)
 	{
@@ -2567,8 +2579,8 @@ public static class gen
 
 			f.WriteComment("BEGIN platform assemblies that use pinvoke in build dir");
 
-            {
                 // --------------------------------
+            {
                 var a = projects.find_pcls(
                     "unified",
                     "pinvoke",
@@ -2591,7 +2603,7 @@ public static class gen
 		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified")));
 		f.WriteEndElement(); // file
 
-                gen_nuget_targets_unified(top, tname, a);
+                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
 
                 f.WriteStartElement("file");
                 f.WriteAttributeString("src", tname);
@@ -2599,11 +2611,14 @@ public static class gen
                 f.WriteEndElement(); // file
             }
 
+	    // TODO do android here like unified just above
+
 			f.WriteComment("END platform assemblies that use pinvoke in build dir");
 
 			f.WriteComment("BEGIN platform assemblies that use pinvoke");
 			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
 			pcl_env_pinvoke["ios"] = null;
+			// not unified here
 			pcl_env_pinvoke["android"] = null;
 			pcl_env_pinvoke["net45"] = null;
 			pcl_env_pinvoke["winrt80"] = null;
@@ -2623,8 +2638,8 @@ public static class gen
 						);
 
 				if ("ios" == env) continue; // Xamarin.iOS classic can't do .targets files
-				if ("unified" == env) continue; // TODO fix this to handle bundled sqlite
-				if ("android" == env) continue; // TODO fix this to handle bundled sqlite
+				if ("unified" == env) continue; // TODO fix this to handle packaged sqlite
+				if ("android" == env) continue; // TODO fix this to handle packaged sqlite
 
 				string tname = string.Format("{0}.targets", env);
 
@@ -2948,7 +2963,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_unified(string top, string tname, List<config_pcl> a)
+	private static void gen_nuget_targets_android_or_unified_packaged_sqlite3(string top, string tname, List<config_pcl> a)
     {
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2970,13 +2985,14 @@ public static class gen
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				f.WriteStartElement("ItemGroup");
-                if (cfg.what == "internal")
+				// TODO sqlcipher here too
+                if (cfg.what == "packaged_sqlite3")
                 {
-                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'internal' "));
+                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'packaged_sqlite3' "));
                 }
                 else
                 {
-                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'internal' "));
+                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'packaged_sqlite3' "));
                 }
 
 				f.WriteStartElement("Reference");
