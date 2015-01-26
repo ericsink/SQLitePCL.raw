@@ -144,10 +144,10 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal_other", cpu="anycpu"});
+		//items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal", cpu="anycpu"}); // TODO may not work because no .targets file
 
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="internal_other", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="internal", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
@@ -1590,7 +1590,7 @@ public static class gen
 			{
 				switch (cfg.what)
 				{
-					case "internal_other":
+					case "internal":
 						defines.Add("PINVOKE_FROM_INTERNAL");
 						break;
 					case "sqlite3":
@@ -1748,11 +1748,23 @@ public static class gen
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
 						f.WriteEndElement(); // Import
+
+                        if (cfg.what == "internal")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "sqlite3\\lib\\ios\\sqlite3.a"));
+                            f.WriteElementString("Link", "sqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
 						break;
 					case "ios":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 						f.WriteEndElement(); // Import
+
+                        // TODO no internal sqlite3 here because iOS classic doesn't do targets files
 						break;
 					case "android":
 						f.WriteStartElement("Import");
@@ -2553,10 +2565,36 @@ public static class gen
 
 			f.WriteComment("BEGIN platform assemblies");
 
+			f.WriteComment("BEGIN platform assemblies that use pinvoke in build dir");
+
+            {
+                // --------------------------------
+                var a = projects.find_pcls(
+                    "unified",
+                    "pinvoke",
+                    null,
+                    "anycpu",
+                    null
+                    );
+                write_nuspec_file_entries(f, "build",
+                        a
+                        );
+
+                string tname = string.Format("{0}.targets", "unified");
+
+                gen_nuget_targets_unified(top, tname, a);
+
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", tname);
+                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("unified"), id));
+                f.WriteEndElement(); // file
+            }
+
+			f.WriteComment("END platform assemblies that use pinvoke in build dir");
+
 			f.WriteComment("BEGIN platform assemblies that use pinvoke");
 			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
 			pcl_env_pinvoke["ios"] = null;
-			pcl_env_pinvoke["unified"] = null;
 			pcl_env_pinvoke["android"] = null;
 			pcl_env_pinvoke["net45"] = null;
 			pcl_env_pinvoke["winrt80"] = null;
@@ -2583,7 +2621,7 @@ public static class gen
 
 				if (env == "net45")
 				{
-				gen_nuget_targets_pinvoke_anycpu(top, tname, env);
+                    gen_nuget_targets_pinvoke_anycpu(top, tname, env);
 				}
 				else
 				{
@@ -2892,6 +2930,61 @@ public static class gen
 				f.WriteEndElement(); // Content
 			}
 			f.WriteEndElement(); // ItemGroup
+
+			f.WriteEndElement(); // Target
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuget_targets_unified(string top, string tname, List<config_pcl> a)
+    {
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+
+			foreach (config_pcl cfg in a)
+			{
+				f.WriteComment(string.Format("{0}", cfg.get_name()));
+				f.WriteStartElement("ItemGroup");
+                if (cfg.what == "internal")
+                {
+                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'internal' "));
+                }
+                else
+                {
+                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'internal' "));
+                }
+
+				f.WriteStartElement("Reference");
+				// TODO should Include be the HintPath?
+				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
+				f.WriteAttributeString("Include", "SQLitePCL.raw");
+
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.raw.dll")));
+
+				// TODO private?
+
+				// TODO name?
+
+				f.WriteEndElement(); // Reference
+
+				f.WriteEndElement(); // ItemGroup
+			}
 
 			f.WriteEndElement(); // Target
 

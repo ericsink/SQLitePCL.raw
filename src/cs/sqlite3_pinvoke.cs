@@ -37,6 +37,26 @@ namespace SQLitePCL
     using ObjCRuntime;
 #endif
 
+#if PINVOKE_FROM_INTERNAL
+
+#if __UNIFIED__
+using ObjCRuntime;
+#else
+using MonoTouch.ObjCRuntime;
+#endif
+
+[assembly: LinkWith(
+        "sqlite3.a",
+        LinkTarget = LinkTarget.Simulator | LinkTarget.ArmV7 | LinkTarget.ArmV7s,
+        ForceLoad=true,
+        LinkerFlags="",
+        Frameworks=""
+        )
+        ]
+
+~
+#endif
+
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
     /// </summary>
