@@ -657,7 +657,7 @@ namespace SQLitePCL.Test
             string tmpFile;
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
+                tmpFile = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
             }
             using (sqlite3 db = ugly.open(tmpFile))
             {
