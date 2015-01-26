@@ -654,7 +654,11 @@ namespace SQLitePCL.Test
         [TestMethod]
         public void test_wal()
         {
-            var tmpFile = Path.GetTempFileName();
+            string tmpFile;
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
+            }
             using (sqlite3 db = ugly.open(tmpFile))
             {
                 db.exec("PRAGMA journal_mode=WAL;");
