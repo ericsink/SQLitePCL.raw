@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2014 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_backup : IDisposable
     {
+        private bool _disposed = false;
         private IntPtr _p;
 
         internal sqlite3_backup(IntPtr p)
@@ -46,7 +47,13 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             raw.sqlite3_backup_finish(this);
+            _disposed = true;
         }
 
         internal void done()
@@ -147,6 +154,7 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_blob : IDisposable
     {
+        private bool _disposed = false;
         private IntPtr _p;
 
         internal sqlite3_blob(IntPtr p)
@@ -162,7 +170,13 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             raw.sqlite3_blob_close(this);
+            _disposed = true;
         }
 
         internal void done()
@@ -182,6 +196,7 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_stmt : IDisposable
     {
+        private bool _disposed = false;
         private IntPtr _p;
         private sqlite3 _db;
 
@@ -200,7 +215,13 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             raw.sqlite3_finalize(this);
+            _disposed = true;
         }
 
         internal void done()
@@ -237,6 +258,7 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3 : IDisposable
     {
+        private bool _disposed = false;
         private IntPtr _p;
         private Dictionary<IntPtr, sqlite3_stmt> _stmts = new Dictionary<IntPtr, sqlite3_stmt>();
 
@@ -253,6 +275,11 @@ namespace SQLitePCL
 
         protected virtual void Dispose(bool both)
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
             // The latter is not supported on the sqlite3 library which is preinstalled
             // with iOS.
@@ -264,6 +291,7 @@ namespace SQLitePCL
             // http://msdn.microsoft.com/en-us/library/bb386039.aspx
 
             raw.sqlite3_close(this);
+            _disposed = true;
         }
 
         internal void done()
