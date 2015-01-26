@@ -1753,7 +1753,7 @@ public static class gen
                         {
                             f.WriteStartElement("ItemGroup");
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "sqlite3\\lib\\ios\\sqlite3.a"));
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\lib\\ios\\sqlite3.a"));
                             f.WriteElementString("Link", "sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
