@@ -1783,19 +1783,19 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
 
                             f.WriteStartElement("EmbeddedNativeLibrary");
-                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\x86\\packaged_sqlite3.so");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\x86\\packaged_sqlite3.so"));
                             f.WriteElementString("CopyToOutputDirectory", "Always");
                             f.WriteElementString("Link", "x86\\packaged_sqlite3.so");
                             f.WriteEndElement(); // EmbeddedNativeLibrary
 
                             f.WriteStartElement("EmbeddedNativeLibrary");
-                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi\\packaged_sqlite3.so");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi\\packaged_sqlite3.so"));
                             f.WriteElementString("CopyToOutputDirectory", "Always");
                             f.WriteElementString("Link", "armeabi\\packaged_sqlite3.so");
                             f.WriteEndElement(); // EmbeddedNativeLibrary
 
                             f.WriteStartElement("EmbeddedNativeLibrary");
-                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi-v7a\\packaged_sqlite3.so");
+                            f.WriteAttributeString("Include", Path.Combine(root, "android\\libs\\armeabi-v7a\\packaged_sqlite3.so"));
                             f.WriteElementString("CopyToOutputDirectory", "Always");
                             f.WriteElementString("Link", "armeabi-v7a\\packaged_sqlite3.so");
                             f.WriteEndElement(); // EmbeddedNativeLibrary
@@ -2633,6 +2633,38 @@ public static class gen
                 f.WriteEndElement(); // file
             }
 
+                // --------------------------------
+            {
+                var a = projects.find_pcls(
+                    "android",
+                    "pinvoke",
+                    null,
+                    "anycpu",
+                    null
+                    );
+                write_nuspec_file_entries(f, "build",
+                        a
+                        );
+
+                string tname = string.Format("{0}.targets", "android");
+
+		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
+
+		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("android")));
+
+		f.WriteStartElement("file");
+		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("android")));
+		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("android")));
+		f.WriteEndElement(); // file
+
+                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
+
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", tname);
+                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("android"), id));
+                f.WriteEndElement(); // file
+            }
+
 	    // TODO do android here like unified just above
 
 			f.WriteComment("END platform assemblies that use pinvoke in build dir");
@@ -2640,8 +2672,8 @@ public static class gen
 			f.WriteComment("BEGIN platform assemblies that use pinvoke");
 			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
 			pcl_env_pinvoke["ios"] = null;
-			// not unified here
-			pcl_env_pinvoke["android"] = null;
+			// not here: pcl_env_pinvoke["android"] = null;
+			// not here: pcl_env_pinvoke["unified"] = null;
 			pcl_env_pinvoke["net45"] = null;
 			pcl_env_pinvoke["winrt80"] = null;
 			pcl_env_pinvoke["winrt81"] = null;
