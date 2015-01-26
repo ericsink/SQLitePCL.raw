@@ -2582,6 +2582,15 @@ public static class gen
 
                 string tname = string.Format("{0}.targets", "unified");
 
+		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
+
+		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("unified")));
+
+		f.WriteStartElement("file");
+		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("unified")));
+		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified")));
+		f.WriteEndElement(); // file
+
                 gen_nuget_targets_unified(top, tname, a);
 
                 f.WriteStartElement("file");
