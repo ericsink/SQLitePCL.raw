@@ -143,11 +143,13 @@ public static class projects
 	{
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
+		//items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
+		//items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
@@ -1597,7 +1599,17 @@ public static class gen
 						}
 						else if (cfg.env == "unified")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
+						}
+						break;
+					case "packaged_sqlcipher":
+						if (cfg.env == "android")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
+						}
+						else if (cfg.env == "unified")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
 						}
 						break;
 					case "sqlite3":
@@ -1759,12 +1771,24 @@ public static class gen
                         if (cfg.what == "packaged_sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
-			    // TODO warning says this is deprecated
+                            // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
                             f.WriteElementString("Link", "packaged_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
+                        }
+                        if (cfg.what == "packaged_sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
+                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+
+                            // TODO libcrypto
                         }
 						break;
 					case "ios":
@@ -1827,6 +1851,14 @@ public static class gen
 
                             f.WriteEndElement(); // ItemGroup
 						}
+
+						if (cfg.what == "packaged_sqlcipher")
+						{
+                            f.WriteStartElement("ItemGroup");
+                            // TODO
+                            f.WriteEndElement(); // ItemGroup
+                        }
+
 						break;
 					case "winrt80":
 					case "winrt81":
@@ -3058,14 +3090,17 @@ public static class gen
 			{
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				f.WriteStartElement("ItemGroup");
-				// TODO sqlcipher here too
                 if (cfg.what == "packaged_sqlite3")
                 {
                     f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'packaged_sqlite3' "));
                 }
+                else if (cfg.what == "packaged_sqlcipher")
+                {
+                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'packaged_sqlcipher' "));
+                }
                 else
                 {
-                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'packaged_sqlite3' "));
+                    f.WriteAttributeString("Condition", string.Format(" ('$(UseSQLiteFrom.ToLower())' != 'packaged_sqlite3') AND ('$(UseSQLiteFrom.ToLower())' != 'packaged_sqlcipher') "));
                 }
 
 				f.WriteStartElement("Reference");

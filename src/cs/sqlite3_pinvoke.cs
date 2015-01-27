@@ -23,7 +23,7 @@
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
-#if PINVOKE_FROM_INTERNAL
+#if PINVOKE_FROM_INTERNAL_SQLITE3
 
 // TODO the attribute below currently only works with iOS Unified
 [assembly: ObjCRuntime.LinkWith(
@@ -34,6 +34,22 @@
         Frameworks=""
         )
         ]
+
+#endif
+
+#if PINVOKE_FROM_INTERNAL_SQLCIPHER
+
+// TODO the attribute below currently only works with iOS Unified
+[assembly: ObjCRuntime.LinkWith(
+        "packaged_sqlcipher.a",
+        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
+        ForceLoad=true,
+        LinkerFlags="",
+        Frameworks=""
+        )
+        ]
+
+// TODO libcrypto
 
 #endif
 
@@ -1016,12 +1032,16 @@ namespace SQLitePCL
 
         private static class NativeMethods
         {
-#if PINVOKE_FROM_INTERNAL
+#if PINVOKE_FROM_INTERNAL_SQLITE3
+        private const string SQLITE_DLL = "__Internal";
+#elif PINVOKE_FROM_INTERNAL_SQLCIPHER
         private const string SQLITE_DLL = "__Internal";
 #elif PINVOKE_FROM_SQLITE3
         private const string SQLITE_DLL = "sqlite3";
 #elif PINVOKE_FROM_PACKAGED_SQLITE3
         private const string SQLITE_DLL = "packaged_sqlite3";
+#elif PINVOKE_FROM_PACKAGED_SQLCIPHER
+        private const string SQLITE_DLL = "packaged_sqlcipher";
 #elif PINVOKE_FROM_SQLITE3_DLL
         private const string SQLITE_DLL = "sqlite3.dll";
 #elif PINVOKE_ANYCPU_NET45
