@@ -1781,14 +1781,20 @@ public static class gen
                         if (cfg.what == "packaged_sqlcipher")
                         {
                             f.WriteStartElement("ItemGroup");
+
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
                             f.WriteElementString("Link", "packaged_sqlcipher.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
 
-                            // TODO libcrypto
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
+                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
                         }
 						break;
 					case "ios":

@@ -40,6 +40,7 @@
 #if PINVOKE_FROM_INTERNAL_SQLCIPHER
 
 // TODO the attribute below currently only works with iOS Unified
+
 [assembly: ObjCRuntime.LinkWith(
         "packaged_sqlcipher.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
@@ -49,7 +50,14 @@
         )
         ]
 
-// TODO libcrypto
+[assembly: ObjCRuntime.LinkWith(
+        "libcrypto.a",
+        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
+        ForceLoad=true,
+        LinkerFlags="",
+        Frameworks=""
+        )
+        ]
 
 #endif
 
