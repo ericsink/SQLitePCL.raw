@@ -31,6 +31,11 @@ fi
 OPENSSL_VERSION="openssl-1.0.1l"
 DEVELOPER=`xcode-select -print-path`
 
+# TODO
+#EXCLUDES=" no-idea no-camellia no-ec "
+
+# TODO make build_crypto, but then make install messes it up
+
 buildMac()
 {
     ARCH=$1
@@ -45,7 +50,7 @@ buildMac()
 
     pushd . > /dev/null
     cd "${OPENSSL_VERSION}"
-    ./Configure ${TARGET} --openssldir="/tmp/${OPENSSL_VERSION}-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-${ARCH}.log"
+    ./Configure ${TARGET} ${EXCLUDES} --openssldir="/tmp/${OPENSSL_VERSION}-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-${ARCH}.log"
     make >> "/tmp/${OPENSSL_VERSION}-${ARCH}.log" 2>&1
     make install >> "/tmp/${OPENSSL_VERSION}-${ARCH}.log" 2>&1
     make clean >> "/tmp/${OPENSSL_VERSION}-${ARCH}.log" 2>&1
@@ -75,9 +80,9 @@ buildIOS()
     echo "Building ${OPENSSL_VERSION} for ${PLATFORM} ${SDK_VERSION} ${ARCH}"
 
     if [[ "${ARCH}" == "x86_64" ]]; then
-        ./Configure darwin64-x86_64-cc --openssldir="/tmp/${OPENSSL_VERSION}-iOS-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-iOS-${ARCH}.log"
+        ./Configure darwin64-x86_64-cc ${EXCLUDES} --openssldir="/tmp/${OPENSSL_VERSION}-iOS-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-iOS-${ARCH}.log"
     else
-        ./Configure iphoneos-cross --openssldir="/tmp/${OPENSSL_VERSION}-iOS-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-iOS-${ARCH}.log"
+        ./Configure iphoneos-cross ${EXCLUDES} --openssldir="/tmp/${OPENSSL_VERSION}-iOS-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-iOS-${ARCH}.log"
     fi
     # add -isysroot to CC=
     sed -ie "s!^CFLAG=!CFLAG=-isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK} -miphoneos-version-min=${SDK_VERSION} !" "Makefile"
