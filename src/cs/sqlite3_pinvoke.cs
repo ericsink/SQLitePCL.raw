@@ -758,6 +758,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
+        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        {
+            return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
+        }
+
         string ISQLite3Provider.sqlite3_sourceid()
         {
             return util.from_utf8(NativeMethods.sqlite3_sourceid());
@@ -1245,6 +1250,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern long sqlite3_memory_highwater(int resetFlag);
+            
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_shutdown();

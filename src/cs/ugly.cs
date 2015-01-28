@@ -149,6 +149,12 @@ namespace SQLitePCL.Ugly
             return db;
         }
 
+        public static void sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        {
+            int rc = raw.sqlite3_status(op, out current, out highwater, resetFlag);
+            check_ok(rc);
+        }
+
 	public static void vfs__delete(string vfs, string filename, int syncdir)
 	{
 	    int rc = raw.sqlite3__vfs__delete(vfs, filename, syncdir);

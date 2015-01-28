@@ -211,6 +211,17 @@ namespace SQLitePCL
         public const int SQLITE_CHECKPOINT_FULL       = 1;
         public const int SQLITE_CHECKPOINT_RESTART    = 2;
 
+        public const int SQLITE_STATUS_MEMORY_USED        = 0;
+        public const int SQLITE_STATUS_PAGECACHE_USED     = 1;
+        public const int SQLITE_STATUS_PAGECACHE_OVERFLOW = 2;
+        public const int SQLITE_STATUS_SCRATCH_USED       = 3;
+        public const int SQLITE_STATUS_SCRATCH_OVERFLOW   = 4;
+        public const int SQLITE_STATUS_MALLOC_SIZE        = 5;
+        public const int SQLITE_STATUS_PARSER_STACK       = 6;
+        public const int SQLITE_STATUS_PAGECACHE_SIZE     = 7;
+        public const int SQLITE_STATUS_SCRATCH_SIZE       = 8;
+        public const int SQLITE_STATUS_MALLOC_COUNT       = 9;
+        
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
@@ -318,6 +329,11 @@ namespace SQLitePCL
         static public long sqlite3_memory_highwater(int resetFlag)
         {
             return _imp.sqlite3_memory_highwater(resetFlag);
+        }
+
+        static public int sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        {
+            return _imp.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
         static public string sqlite3_errmsg(sqlite3 db)
