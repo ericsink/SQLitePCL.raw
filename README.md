@@ -129,7 +129,7 @@ can become a PCL.
 In fact, that has happened.  Frank Krueger has released a NuGet package
 (sqlite-net-pcl) which is SQLite-net with SQLitePCL.raw underneath.
 
-## How does this compare SQLitePCL.pretty?
+## How does this compare to SQLitePCL.pretty?
 [SQLitePCL.pretty](https://github.com/bordoley/SQLitePCL.pretty) is a SQLite API wrapper built on top of 
 SQLitePCL.raw. It is designed to make interacting with the SQLite API easier, exposing the full feature
 set of SQLite in an idiomatic and *pretty* C# API.
