@@ -31,7 +31,8 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_backup : IDisposable
     {
-        private IntPtr _p;
+        private readonly IntPtr _p;
+	private bool _disposed = false;
 
         internal sqlite3_backup(IntPtr p)
         {
@@ -40,18 +41,17 @@ namespace SQLitePCL
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool both)
-        {
+            if (_disposed)
+	    {
+		    return;
+	    }
             raw.sqlite3_backup_finish(this);
+	    _disposed = true;
         }
 
-        internal void done()
+        internal void set_already_disposed()
         {
-            _p = IntPtr.Zero;
+	    _disposed = true;
         }
 
         internal IntPtr ptr
@@ -147,7 +147,8 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_blob : IDisposable
     {
-        private IntPtr _p;
+        private readonly IntPtr _p;
+	private bool _disposed = false;
 
         internal sqlite3_blob(IntPtr p)
         {
@@ -156,18 +157,17 @@ namespace SQLitePCL
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool both)
-        {
+            if (_disposed)
+	    {
+		    return;
+	    }
             raw.sqlite3_blob_close(this);
+	    _disposed = true;
         }
 
-        internal void done()
+        internal void set_already_disposed()
         {
-            _p = IntPtr.Zero;
+	    _disposed = true;
         }
 
         internal IntPtr ptr
@@ -182,8 +182,9 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_stmt : IDisposable
     {
-        private IntPtr _p;
-        private sqlite3 _db;
+        private readonly IntPtr _p;
+	private bool _disposed = false;
+        private readonly sqlite3 _db;
 
         internal sqlite3_stmt(IntPtr p, sqlite3 db)
         {
@@ -194,20 +195,19 @@ namespace SQLitePCL
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool both)
-        {
+            if (_disposed)
+	    {
+		    return;
+	    }
             raw.sqlite3_finalize(this);
+            _db.remove_stmt(this);
+	    _disposed = true;
         }
 
-        internal void done()
+        internal void set_already_disposed()
         {
             _db.remove_stmt(this);
-            _p = IntPtr.Zero;
-            _db = null;
+	    _disposed = true;
         }
 
         internal IntPtr ptr
@@ -237,7 +237,8 @@ namespace SQLitePCL
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3 : IDisposable
     {
-        private IntPtr _p;
+        private readonly IntPtr _p;
+	private bool _disposed = false;
         private Dictionary<IntPtr, sqlite3_stmt> _stmts = new Dictionary<IntPtr, sqlite3_stmt>();
 
         internal sqlite3(IntPtr p)
@@ -247,12 +248,10 @@ namespace SQLitePCL
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool both)
-        {
+            if (_disposed)
+	    {
+		    return;
+	    }
             // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
             // The latter is not supported on the sqlite3 library which is preinstalled
             // with iOS.
@@ -264,11 +263,12 @@ namespace SQLitePCL
             // http://msdn.microsoft.com/en-us/library/bb386039.aspx
 
             raw.sqlite3_close(this);
+	    _disposed = true;
         }
 
-        internal void done()
+        internal void set_already_disposed()
         {
-            _p = IntPtr.Zero;
+	    _disposed = true;
         }
 
         internal IntPtr ptr

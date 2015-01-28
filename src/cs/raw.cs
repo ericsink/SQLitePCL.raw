@@ -257,14 +257,14 @@ namespace SQLitePCL
         static public int sqlite3_close_v2(sqlite3 db)
         {
             int rc = _imp.sqlite3_close_v2(db.ptr);
-            db.done();
+            db.set_already_disposed();
             return rc;
         }
 
         static public int sqlite3_close(sqlite3 db)
         {
             int rc = _imp.sqlite3_close(db.ptr);
-            db.done();
+            db.set_already_disposed();
             return rc;
         }
 
@@ -451,7 +451,7 @@ namespace SQLitePCL
         static public int sqlite3_finalize(sqlite3_stmt stmt)
         {
             int rc = _imp.sqlite3_finalize(stmt.ptr);
-            stmt.done();
+            stmt.set_already_disposed();
             return rc;
         }
 
@@ -763,7 +763,7 @@ namespace SQLitePCL
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
             int rc = _imp.sqlite3_backup_finish(backup.ptr);
-            backup.done();
+            backup.set_already_disposed();
             return rc;
         }
 
@@ -793,7 +793,7 @@ namespace SQLitePCL
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
             int rc = _imp.sqlite3_blob_close(blob.ptr);
-            blob.done();
+            blob.set_already_disposed();
             return rc;
         }
 
