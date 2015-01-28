@@ -162,6 +162,51 @@ int64 SQLite3RuntimeProvider::sqlite3_compileoption_get(int32 n)
     return (int64) ::sqlite3_compileoption_get(n);
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_table_column_metadata(int64 db, int64 dbName, int64 tableName, int64 columnName, int64 dataType, int64 collSeq, int64 notNull, int64 primaryKey, int64 autoInc)
+{
+	const char* pzDataType = nullptr;
+	const char* pzCollSeq = nullptr;
+	int32 pNotNull = 0;
+	int32 pPrimaryKey = 0;
+	int32 pAutoinc = 0;
+
+	int32 result = ::sqlite3_table_column_metadata(
+		((sqlite3 *) db), ((const char *) dbName), ((const char *) tableName), ((const char *) columnName), 
+		&pzDataType, &pzCollSeq, &pNotNull, &pPrimaryKey, &pAutoinc);
+
+	if (dataType)
+	{
+		int64* p = (int64*)dataType;
+		*p = (int64)pzDataType;
+	}
+
+	if (collSeq)
+	{
+		int64* p = (int64*)collSeq;
+		*p = (int64)pzCollSeq;
+	}
+
+	if (notNull)
+	{
+		int64* p = (int64*)notNull;
+		*p = pNotNull;
+	}
+
+	if (primaryKey)
+	{
+		int64* p = (int64*)primaryKey;
+		*p = pPrimaryKey;
+	}
+
+	if (autoInc)
+	{
+		int64* p = (int64*)autoInc;
+		*p = pAutoinc;
+	}
+
+	return result;
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_prepare_v2(int64 db, int64 zSql, int32 nByte, int64 ppStmpt, int64 ppTail)
 {
 	sqlite3_stmt* sqlite3_stmt = nullptr;

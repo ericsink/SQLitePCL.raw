@@ -95,6 +95,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        {
+            throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
         {
 	    throw new Exception(GRIPE);

@@ -603,6 +603,90 @@ namespace SQLitePCL
             return rc;
         }
 
+        int ISQLite3Provider.sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        {
+            // TODO null string?
+            GCHandle db_name_pinned = GCHandle.Alloc(util.to_utf8(dbName), GCHandleType.Pinned);
+            IntPtr db_name_ptr = db_name_pinned.AddrOfPinnedObject();
+
+            // TODO null string?
+            GCHandle tbl_name_pinned = GCHandle.Alloc(util.to_utf8(tblName), GCHandleType.Pinned);
+            IntPtr tbl_name_ptr = tbl_name_pinned.AddrOfPinnedObject();
+
+            // TODO null string?
+            GCHandle col_name_pinned = GCHandle.Alloc(util.to_utf8(colName), GCHandleType.Pinned);
+            IntPtr col_name_ptr = col_name_pinned.AddrOfPinnedObject();
+
+            byte[] buf_data_type = new byte[8];
+            GCHandle buf_data_type_pinned = GCHandle.Alloc(buf_data_type, GCHandleType.Pinned);
+            IntPtr buf_data_type_ptr = buf_data_type_pinned.AddrOfPinnedObject();
+
+            byte[] buf_coll_seq = new byte[8];
+            GCHandle buf_coll_seq_pinned = GCHandle.Alloc(buf_coll_seq, GCHandleType.Pinned);
+            IntPtr buf_coll_seq_ptr = buf_coll_seq_pinned.AddrOfPinnedObject();
+
+            int buf_not_null = 0;
+            GCHandle buf_not_null_pinned = GCHandle.Alloc(buf_not_null, GCHandleType.Pinned);
+            IntPtr buf_not_null_ptr = buf_not_null_pinned.AddrOfPinnedObject();
+
+            int buf_primary_key = 0;
+            GCHandle buf_primary_key_pinned = GCHandle.Alloc(buf_primary_key, GCHandleType.Pinned);
+            IntPtr buf_primary_key_ptr = buf_primary_key_pinned.AddrOfPinnedObject();
+
+            int buf_auto_inc = 0;
+            GCHandle buf_auto_inc_pinned = GCHandle.Alloc(buf_auto_inc, GCHandleType.Pinned);
+            IntPtr buf_auto_inc_ptr = buf_auto_inc_pinned.AddrOfPinnedObject();
+
+            int rc = SQLite3RuntimeProvider.sqlite3_table_column_metadata(
+                        db.ToInt64(), db_name_ptr.ToInt64(), tbl_name_ptr.ToInt64(), col_name_ptr.ToInt64(),
+                        buf_data_type_ptr.ToInt64(), buf_coll_seq_ptr.ToInt64(), buf_not_null_ptr.ToInt64(), buf_primary_key_ptr.ToInt64(), buf_auto_inc_ptr.ToInt64());  
+
+            col_name_pinned.Free();
+            tbl_name_pinned.Free();
+            db_name_pinned.Free();
+
+            long dataTypePtr = Marshal.ReadInt64(buf_data_type_ptr);
+            if (dataTypePtr == 0)
+            {
+                dataType = null;
+            }
+            else
+            {
+                dataType = util.from_utf8(new IntPtr(dataTypePtr));
+                if (dataType.Length == 0)
+                {
+                    dataType = null;
+                }
+            }
+            buf_data_type_pinned.Free();
+
+            long collSeqPtr = Marshal.ReadInt64(buf_coll_seq_ptr);
+            if (collSeqPtr == 0)
+            {
+                collSeq = null;
+            }
+            else
+            {
+                collSeq = util.from_utf8(new IntPtr(collSeqPtr));
+                if (collSeq.Length == 0)
+                {
+                    collSeq = null;
+                }
+            }
+            buf_coll_seq_pinned.Free();
+
+            notNull = Marshal.ReadInt32(buf_not_null_ptr);
+            buf_not_null_pinned.Free();
+
+            primaryKey = Marshal.ReadInt32(buf_primary_key_ptr);
+            buf_primary_key_pinned.Free();
+
+            autoInc = Marshal.ReadInt32(buf_auto_inc_ptr);
+            buf_auto_inc_pinned.Free();
+
+            return rc;
+        }
+
         int ISQLite3Provider.sqlite3_complete(string sql)
         {
             // TODO null string?

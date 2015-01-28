@@ -864,6 +864,36 @@ namespace SQLitePCL.Test
                 }
             }
         }
+
+        [TestMethod]
+        public void test_table_column_metadata()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                // out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc
+                db.exec("CREATE TABLE foo (rowid integer primary key asc autoincrement, x int not null);");
+
+                string dataType;
+                string collSeq;
+                int notNull;
+                int primaryKey;
+                int autoInc;
+
+                raw.sqlite3_table_column_metadata(db, "main", "foo", "x", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+                Assert.AreEqual(dataType, "int");
+                Assert.AreEqual(collSeq, "BINARY");
+                Assert.IsTrue(notNull > 0);
+                Assert.AreEqual(primaryKey, 0);
+                Assert.AreEqual(autoInc, 0);
+
+                raw.sqlite3_table_column_metadata(db, "main", "foo", "rowid", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+                Assert.AreEqual(dataType, "integer");
+                Assert.AreEqual(collSeq, "BINARY");
+                Assert.AreEqual(notNull, 0);
+                Assert.IsTrue(primaryKey > 0);
+                Assert.IsTrue(primaryKey > 0);
+            }
+        }
     }
 
     [TestClass]

@@ -56,6 +56,8 @@ namespace SQLitePCL
                     static int32 sqlite3_compileoption_used(int64 s);
                     static int64 sqlite3_compileoption_get(int32 n);
 
+                    static int32 sqlite3_table_column_metadata(int64 db, int64 dbName, int64 tableName, int64 columnName, int64 dataType, int64 collSeq, int64 notNull, int64 primaryKey, int64 autoInc);
+
                     static int32 sqlite3_complete(int64 sql);
 
 					static int32 sqlite3_prepare_v2(int64 db, int64 zSql, int32 nByte, int64 ppStmpt, int64 pzTail);
