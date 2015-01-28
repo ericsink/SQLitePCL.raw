@@ -1425,46 +1425,48 @@ public static class gen
     private static void write_android_native_libs(string root, XmlWriter f, string which)
     {
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\x86\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\x86_64\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86_64\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\armeabi\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\armeabi-v7a\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\packaged_{0}.so", which)));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("arm64-v8a\\packaged_{0}.so", which));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+#if not
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi-v7a\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\arm64-v8a\\packaged_{0}.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\packaged_{0}.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\mips\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\libs\\mips64\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\packaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips64\\packaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
+#endif
 
     }
 

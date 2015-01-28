@@ -105,15 +105,8 @@ rm -rf "/tmp/${OPENSSL_VERSION}-*.log"
 
 rm -rf "${OPENSSL_VERSION}"
 
-if [ ! -e ${OPENSSL_VERSION}.tar.gz ]; then
-    echo "Downloading ${OPENSSL_VERSION}.tar.gz"
-    curl -O http://www.openssl.org/source/${OPENSSL_VERSION}.tar.gz
-else
-    echo "Using ${OPENSSL_VERSION}.tar.gz"
-fi
-
 echo "Unpacking openssl"
-tar xfz "${OPENSSL_VERSION}.tar.gz"
+tar xfz "../tarballs/${OPENSSL_VERSION}.tar.gz"
 
 buildMac "i386"
 buildMac "x86_64"
