@@ -410,9 +410,10 @@ namespace SQLitePCL
         }
         
         string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
-	{
-            return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
-	}
+        {
+            string retval = util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
+            return retval.Length == 0 ? null : retval; 
+        }
 
         string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
         {

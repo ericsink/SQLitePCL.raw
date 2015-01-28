@@ -408,20 +408,38 @@ namespace SQLitePCL.Test
         public void test_create_table_file()
         {
 	    string name;
+            string filename;
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
             }
-	    string filename;
+            
             using (sqlite3 db = ugly.open(name))
 	    {
                 db.exec("CREATE TABLE foo (x int);");
 		filename = db.db_filename("main");
 	    }
 
-	    // TODO verify the filename is what we expect
-
 	    ugly.vfs__delete(null, filename, 1);
+        }
+
+        [TestMethod]
+        public void test_db_filename()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                string filename = db.db_filename("main");
+                Assert.IsNull(filename);
+            }
+            var tempFile = Path.GetTempFileName();
+            using (sqlite3 db = ugly.open(tempFile))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                string filename = db.db_filename("main"); 
+                Assert.AreEqual(tempFile, filename);
+            }
+            File.Delete(tempFile);
         }
 
         [TestMethod]

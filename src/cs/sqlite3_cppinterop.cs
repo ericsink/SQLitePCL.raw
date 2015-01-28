@@ -913,7 +913,7 @@ namespace SQLitePCL
 	    {
 		    result = util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_db_filename(db.ToInt64(), IntPtr.Zero.ToInt64())));
 	    }
-	    return result;
+            return result.Length == 0 ? null : result;
 	}
 
         string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
