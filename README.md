@@ -134,7 +134,8 @@ In fact, that has happened.  Frank Krueger has released a NuGet package
 SQLitePCL.raw. It is designed to make interacting with the SQLite API easier, exposing the full feature
 set of SQLite in an idiomatic and *pretty* C# API.
 
-Interesting features include the ability to iterate through query result sets using LINQ, support for binary streaming of data in and out of SQLite using .NET streams, and a powerful async API built on the RX framework. 
+Interesting features include the ability to iterate through query result sets using LINQ, support for binary
+streaming of data in and out of SQLite using .NET streams, and a powerful async API built on the RX framework. 
 
 ## How does this compare to the SQLite stuff in MvvmCross?
 
