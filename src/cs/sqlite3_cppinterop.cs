@@ -652,6 +652,27 @@ namespace SQLitePCL
             return result;
         }
 
+        int ISQLite3Provider.sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg)
+        {
+            int buf_current = 0;
+            GCHandle buf_current_pinned = GCHandle.Alloc(buf_current, GCHandleType.Pinned);
+            IntPtr buf_current_ptr = buf_current_pinned.AddrOfPinnedObject();
+
+            int buf_highest = 0;
+            GCHandle buf_highest_pinned = GCHandle.Alloc(buf_highest, GCHandleType.Pinned);
+            IntPtr buf_highest_ptr = buf_highest_pinned.AddrOfPinnedObject();
+
+            int result = SQLite3RuntimeProvider.sqlite3_db_status(db.ToInt64(), op, buf_current_ptr.ToInt64(), buf_highest_ptr.ToInt64(), resetFlg);
+
+            current = Marshal.ReadInt32(buf_current_ptr);
+            buf_current_pinned.Free();
+
+            highest = Marshal.ReadInt32(buf_highest_ptr);
+            buf_highest_pinned.Free();
+
+            return result;
+        }
+
         string ISQLite3Provider.sqlite3_sql(IntPtr stmt)
         {
             return util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_sql(stmt.ToInt64())));

@@ -233,6 +233,11 @@ namespace SQLitePCL
             return rc;
         }
 
+        int ISQLite3Provider.sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg)
+        {
+            return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
+        }
+
         string ISQLite3Provider.sqlite3_sql(IntPtr stmt)
         {
             return util.from_utf8(NativeMethods.sqlite3_sql(stmt));
@@ -1179,6 +1184,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_prepare_v2(IntPtr db, byte[] pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_complete(byte[] pSql);

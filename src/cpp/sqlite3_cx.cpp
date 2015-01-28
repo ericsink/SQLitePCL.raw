@@ -184,6 +184,28 @@ int32 SQLite3RuntimeProvider::sqlite3_prepare_v2(int64 db, int64 zSql, int32 nBy
 	return result;
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_db_status(int64 db, int32 op, int64 current, int64 highest, int32 resetFlg)
+{
+    int32 pCur = 0; 
+    int32 pHiwtr = 0;
+
+    int32 result = ::sqlite3_db_status((sqlite3*) db, op, &pCur, &pHiwtr, resetFlg);
+
+    if (current)
+    {
+        int64* p = (int64*) current;
+        *p = pCur;
+    }
+
+    if (resetFlg)
+    {
+        int64* p = (int64*) highest;
+        *p = pHiwtr;
+    }
+
+    return result;
+}
+
 int64 SQLite3RuntimeProvider::sqlite3_errmsg(int64 db)
 {
 	return (int64)::sqlite3_errmsg((sqlite3*)db);

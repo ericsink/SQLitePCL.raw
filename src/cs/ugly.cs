@@ -236,6 +236,12 @@ namespace SQLitePCL.Ugly
             return stmt;
         }
 
+        public static void db_status(this sqlite3 db, int op, out int current, out int highest, int resetFlg)
+        {    
+            int rc = raw.sqlite3_db_status(db, op, out current, out highest, resetFlg);
+            check_ok(db, rc);
+        }
+
         public static long last_insert_rowid(this sqlite3 db)
         {
             return raw.sqlite3_last_insert_rowid(db);
