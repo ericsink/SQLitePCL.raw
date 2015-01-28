@@ -31,7 +31,7 @@ of a platform assembly.
 
 The following platforms are currently supported:
 
- * .NET 4.5 on Windows
+ * .NET 4.5 on Windows or Mac OS X
 
  * Windows Phone 8
 
@@ -39,7 +39,7 @@ The following platforms are currently supported:
 
  * WinRT
 
- * Xamarin.iOS
+ * Xamarin.iOS, both Classic and Unified
 
  * Xamarin.Android
 
@@ -48,12 +48,11 @@ for reasons explained later in this README.
 
 ## Is this available in NuGet?
 
-Sort of.  A pre-release NuGet package is available.  I have a few
-more things to polish before I market it as a regular package.
+Yes.  See SQLitePCL.raw\_basic
 
 ## Is this available in the Xamarin Component Store?
 
-Not quite yet.  It probably will be soon.  I'm polishing a few more things first.
+No.
 
 ## What is the state of this code?  Is it completely done?
 
@@ -63,7 +62,8 @@ The code itself is in pretty good shape.
 There are some more tests I want to write.  There are some platform configurations
 I still want to support.
 
-Look in todo.txt for an informal working list of tasks pending.
+Look in todo.txt for an informal working list of tasks pending.  This file is not
+always kept terribly current.  :-)
 
 ## How do I build this?
 
@@ -127,15 +127,25 @@ SQLitePCL.raw wants to replace the bottom half of sqlite-net so that it
 can become a PCL.
 
 In fact, that has happened.  Frank Krueger has released a NuGet package
-(sqlite-net-pcl) which is SQLite-net with SQLitePCL.raw underneath.
+(sqlite-net-pcl) which is SQLite-net with SQLitePCL.raw underneath:
+
+[https://www.nuget.org/packages/sqlite-net-pcl/](https://www.nuget.org/packages/sqlite-net-pcl/)
+
+When people ask me to recommend a friendlier SQLite wrapper, sqlite-net is the
+one that I usually recommend.
 
 ## How does this compare to SQLitePCL.pretty?
-[SQLitePCL.pretty](https://github.com/bordoley/SQLitePCL.pretty) is a SQLite API wrapper built on top of 
-SQLitePCL.raw. It is designed to make interacting with the SQLite API easier, exposing the full feature
+[SQLitePCL.pretty](https://github.com/bordoley/SQLitePCL.pretty) is another friendly SQLite API wrapper.
+It is built on top of SQLitePCL.raw, and its name resembles my SQLitePCL.Ugly wrapper (described below), but I am not
+the developer, and I'm afraid I have no actual experience using it.  SQLitePCL.pretty is developed by @bordoley, who has also been a contributor of several fine pull requests to SQLitePCL.raw itself.
+
+@bordoley's own description of SQLitePCL.pretty:
+
+"It is designed to make interacting with the SQLite API easier, exposing the full feature
 set of SQLite in an idiomatic and *pretty* C# API.
 
 Interesting features include the ability to iterate through query result sets using LINQ, support for binary
-streaming of data in and out of SQLite using .NET streams, and a powerful async API built on the RX framework. 
+streaming of data in and out of SQLite using .NET streams, and a powerful async API built on the RX framework."
 
 ## How does this compare to the SQLite stuff in MvvmCross?
 
@@ -457,7 +467,8 @@ On other platforms, make sure you are including exactly one instance of the SQLi
 
 ## Is this compatible with SQLCipher?
 
-Yes.  But I want to make that use case painless, and I haven't decided how to do that yet.
-It's a slippery slope with no obvious place to stop.  If I slide all the way
-to the bottom of the hill, I'll be providing platform assemblies that include SQLCipher.
+Yes.  Sort of.
+
+An upcoming release will make the SQLCipher use case easier.
+
 
