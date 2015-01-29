@@ -2591,7 +2591,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.7.2";
+	private const string NUSPEC_VERSION = "0.7.2-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "Bug fixes.  More missing API calls added.  Optional use of packaged_sqlite3 lib for Android and iOS Unified.  Updated to SQLite 3.8.8.1.";
 
 	private static void gen_nuspec_basic(string top, string id)
