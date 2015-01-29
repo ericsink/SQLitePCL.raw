@@ -47,6 +47,25 @@ rm -rf "openssl-${OPENSSL_VERSION}"
 rm -rf ${INSTALL_DIR}/ssl/man
 
 
+export PATH="$ORIGPATH:$(pwd)/bin/arm-linux-androideabi-4.6/bin"
+INSTALL_DIR="`pwd`/installed/armeabi-v7a"
+
+export AR=arm-linux-androideabi-ar
+export CC=arm-linux-androideabi-gcc
+export RANLIB=arm-linux-androideabi-ranlib
+
+rm -rf "openssl-${OPENSSL_VERSION}"
+tar xfz "${TARBALLS}/openssl-${OPENSSL_VERSION}.tar.gz"
+pushd .
+cd "openssl-${OPENSSL_VERSION}"
+./Configure android-armv7 --prefix="${INSTALL_DIR}"
+make
+make install
+popd
+rm -rf "openssl-${OPENSSL_VERSION}"
+rm -rf ${INSTALL_DIR}/ssl/man
+
+
 export PATH="$ORIGPATH:$(pwd)/bin/aarch64-linux-android-4.9/bin"
 INSTALL_DIR="`pwd`/installed/arm64-v8a"
 

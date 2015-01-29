@@ -92,8 +92,8 @@ extern "C" {
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/Users/eric/dev/SQLitePCL.raw/android/sqlcipher/installed/arm/lib/engines"
-#define OPENSSLDIR "/Users/eric/dev/SQLitePCL.raw/android/sqlcipher/installed/arm/ssl"
+#define ENGINESDIR "/Users/eric/dev/SQLitePCL.raw/android/sqlcipher/installed/armeabi/lib/engines"
+#define OPENSSLDIR "/Users/eric/dev/SQLitePCL.raw/android/sqlcipher/installed/armeabi/ssl"
 #endif
 #endif
 
