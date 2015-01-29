@@ -2131,7 +2131,7 @@ public static class gen
 					"cppinterop",
 					"sqlite3",
 					"x86",
-					"dynamic"
+					"static"
 					);
 				config_pcl other = a[0];
 				f.WriteAttributeString("Include", other.get_project_filename());
