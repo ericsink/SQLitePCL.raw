@@ -1448,13 +1448,11 @@ public static class gen
         f.WriteElementString("Link", string.Format("arm64-v8a\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
-        if (which == "sqlite3") {
         f.WriteStartElement("EmbeddedNativeLibrary");
         f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi-v7a\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
-        }
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
