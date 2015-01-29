@@ -1,77 +1,34 @@
 
-Do the collation hook fix thing for config_log
+consider nuget support for net40
 
-I suppose we could still put in a needy/cppinterop version
-for wp80 and wp81_sl into the _needy package.  It doesn't
-have to remain pinvoke only.
+Do the collation hook fix thing for config_log
 
 consider whether maybe the sqlite3 intptr dispose should check
 the version number and call sqlite3_close_v2 when it's supposedly
 available.
 
-switch to xUnit
-
-we could switch the RT flavor of WP81 to use pinvoke
+switch to xUnit?
 
 maybe I should have config_csproj instead of three different
 flavors of same.
 
-test needy with the sqlite vsix
-
-sqlite.raw_current:  how to deal with sqlite3 build on ios?
+fix the appropriate Windows platforms to support UseSQLiteFrom
+set to "elsewhere", which will instruct it not to install a sqlite
+lib.
 
 switch my env keywords to be the same as the ones nuget uses?
 
 test_cases.cs nuget, nunit vs mstest
 
-net45 pinvoke targets file should copytooutput only when on windows
-
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
 SDKReference in the .targets file sort of doesn't work, and using
 a powershell tool is so inelegant.  MESSAGE.
-
-clean up TODOs in new nuspecs
-
-create/generate a csproj which just builds the bait, for use by
-praeclarum/timheuer in building sqlite-net with USE_SQLITEPCL_RAW
-defined.
 
 annoying that an injected reference doesn't show up in the
 References list in visual studio
 
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
-
-nuspecs:
-	basic
-		ios in lib
-		android in lib
-		all others in build/targets, bundle current
-	needy
-		ios in lib
-		android in lib
-		all others in build/targets, bundle nothing
-	kitchen_sink
-		everything in build
-		no references added
-		basically just a zip file
-	bundle_current
-		ios in lib
-		android in lib
-		all others in build/targets, bundle current
-
-nuget package which has no sqlite libraries in it:
-	ios -- system
-	android -- system
-	winrt -- vs gallery
-	wp8 -- vs gallery
-	wp81 -- vs gallery?
-	net45 -- SOL
-
-nuget package which bundles current sqlite for every plat:
-	ios -- __internal, resource (build on mac)
-	android -- resource (build somewhere)
-	all others -- c++/cx (static?  or dynamic?)
 
 should we use the sqlite sdks in the vs gallery instead?
 weird that they're not nuget.  and weird that there isn't
@@ -80,31 +37,6 @@ flavors of WP81 is not there.  and the WP81 is pre-release.
 
 why does the sqlitepcl ios platform assembly show
 no assembly info when viewed in xamarin studio?
-
-android
-	currently only one platform assembly
-	always match?  no condition?
-	move to the lib directory?
-	anycpu.  no platform condition.
-
-ios
-	no platform condition.
-	always want the pinvoke_sqlite3 option.
-	
-net45
-	cppinterop_sqlite3_dynamic
-	platform matching works: x64 and x86
-	anycpu not available
-
-winrt, wp (all of them)
-	cppinterop_sqlite3_dynamic
-	platform matching works: arm and x86
-	anycpu not available
-
-nuget targets match any cpu is busted
-
-figure out a way to disable the mac/ios projects while
-using msbuild from the command line
 
 for the cppinterop dll build, why does winrt80 generate .exp
 and .lib?
@@ -115,29 +47,17 @@ auto-generate the test projects as well?
 
 do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
-do we need separate platform assemblies for older versions of .NET,
-like 4.0 ?
-
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
 auto-generate this.
 
 need at least one test project for each platform assembly.  
 
-add tests that use actual named sqlite database files, not just
-:memory: and temp dbs.
-
 add an NUnit project on Windows/Net45, so that build breakage
 with NUnit can be detected when making changes on windows.
 should reference NUnit as a nuget package
 
-special build for desktop Mono?  or does net45 cover that?
-
 sqlite3.Mac?  or use platform-installed sqlite on MacOS?
-
-separate build of iOS version with a bundled SQLite __Internal ?
-would need to build sqlite3 for iOS so we can embed it in the resource
-for __Internal.  MonoDevelop Makefile integration?
 
 docs on all the methods in raw, especially where the params
 differ from the C API
@@ -145,25 +65,13 @@ differ from the C API
 question about whether we are statically linking the C library
 or not, for the mixed mode assembly.
 
-for the windows pinvoke projects, we need to be building sqlite3 native dlls
-
-Xamarin.Android, pinvoke my_sqlite3, with sqlite3 lib in resource
-
 i hate the way all the tests show up in visual studio, 5 tests with
 the same name, no way to distinguish between the platform versions
 of each test.
 
 fix those weird compiler warnings on iOS and Android ?
 
-sqlcipher?
-
 note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
-
-looks like profile 259 is the new 78
-
-hmmm.  note that one axis of configuration we are not varying is
-the compile options for sqlite itself.  we always build with FTS
-and with ENABLE_COLUMN_METADATA, and nothing else
 
 ----------------
 
@@ -184,7 +92,6 @@ sqlite3_db_config
 sqlite3_db_filename
 sqlite3_db_mutex
 sqlite3_db_readonly
-sqlite3_db_status
 
 sqlite3_get_auxdata
 sqlite3_set_auxdata
@@ -196,10 +103,6 @@ sqlite3_progress_handler
 sqlite3_randomness
 
 sqlite3_soft_heap_limit64
-
-sqlite3_status
-
-sqlite3_stmt_status
 
 sqlite3_wal_autocheckpoint
 sqlite3_wal_checkpoint
