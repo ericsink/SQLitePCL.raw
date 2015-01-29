@@ -1425,44 +1425,44 @@ public static class gen
     private static void write_android_native_libs(string root, XmlWriter f, string which)
     {
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86_64\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("arm64-v8a\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi-v7a\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\packaged_{0}.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\libpackaged_{0}.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips64\\libpackaged_{0}.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
