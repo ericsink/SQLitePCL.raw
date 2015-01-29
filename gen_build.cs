@@ -1853,10 +1853,6 @@ public static class gen
                         // TODO no packaged_sqlite3 here because iOS classic doesn't do targets files
 						break;
 					case "android":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
-						f.WriteEndElement(); // Import
-
 						if (cfg.what == "packaged_sqlite3")
 						{
                             f.WriteStartElement("ItemGroup");
@@ -1870,6 +1866,10 @@ public static class gen
                             write_android_native_libs(root, f, "sqlcipher");
                             f.WriteEndElement(); // ItemGroup
                         }
+
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
+						f.WriteEndElement(); // Import
 
 						break;
 					case "winrt80":
