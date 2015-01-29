@@ -665,6 +665,29 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_stmt_status()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                
+                using (var stmt = db.prepare("SELECT x FROM foo"))
+                {
+                    stmt.step();
+
+                    int vmStep = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 0);
+                    Assert.IsTrue(vmStep > 0);
+                
+                    int vmStep2 = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 1);
+                    Assert.AreEqual(vmStep, vmStep2);
+                    
+                    int vmStep3 = raw.sqlite3_stmt_status(stmt, raw.SQLITE_STMTSTATUS_VM_STEP, 0);
+                    Assert.AreEqual(0, vmStep3);
+                }
+            }
+        }
+
+        [TestMethod]
         public void test_total_changes()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -892,6 +915,55 @@ namespace SQLitePCL.Test
                 Assert.AreEqual(notNull, 0);
                 Assert.IsTrue(primaryKey > 0);
                 Assert.IsTrue(primaryKey > 0);
+            }
+        }
+
+        [TestMethod]
+        public void test_progress_handler()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int count = 0;
+
+                delegate_progress_handler handler = obj => 
+                    {
+                        Assert.AreEqual(obj, "user_data");
+                        count++;
+                        return 0; 
+                    };
+
+                raw.sqlite3_progress_handler(db, 1, handler, "user_data");
+                
+                GC.Collect();
+
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    stmt.step();
+                }
+                Assert.IsTrue(count > 0);
+
+                handler = obj => 1;
+                raw.sqlite3_progress_handler(db, 1, handler, null);
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    try
+                    {
+                        stmt.step();
+                        Assert.Fail("Expected sqlite3_exception");
+                    }
+                    catch (ugly.sqlite3_exception e)
+                    {
+                        Assert.AreEqual(e.errcode, raw.SQLITE_INTERRUPT);
+                    }
+                }
+
+                // Test that assigning null to the handler removes the progress handler.
+                handler = null;
+                raw.sqlite3_progress_handler(db, 1, handler, null);
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    stmt.step();
+                }
             }
         }
     }
