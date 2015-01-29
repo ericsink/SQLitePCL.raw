@@ -234,6 +234,11 @@ namespace SQLitePCL
         public const int SQLITE_STATUS_SCRATCH_SIZE       = 8;
         public const int SQLITE_STATUS_MALLOC_COUNT       = 9;
         
+        public const int SQLITE_STMTSTATUS_FULLSCAN_STEP = 1;
+        public const int SQLITE_STMTSTATUS_SORT          = 2;
+        public const int SQLITE_STMTSTATUS_AUTOINDEX     = 3;
+        public const int SQLITE_STMTSTATUS_VM_STEP       = 4;
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
@@ -468,6 +473,11 @@ namespace SQLitePCL
         static public int sqlite3_clear_bindings(sqlite3_stmt stmt)
         {
             return _imp.sqlite3_clear_bindings(stmt.ptr);
+        }
+
+        public static int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg)
+        {
+            return _imp.sqlite3_stmt_status(stmt.ptr, op, resetFlg);
         }
 
         static public int sqlite3_complete(string sql)

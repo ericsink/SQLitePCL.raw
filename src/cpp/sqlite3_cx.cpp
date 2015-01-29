@@ -696,6 +696,11 @@ int32 SQLite3RuntimeProvider::sqlite3_clear_bindings(int64 stmHandle)
 	return ::sqlite3_clear_bindings((sqlite3_stmt*)stmHandle);
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_stmt_status(int64 stmHandle, int32 op, int32 resetFlg)
+{
+	return ::sqlite3_stmt_status((sqlite3_stmt*)stmHandle, op, resetFlg);
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_finalize(int64 stmHandle)
 {
 	return ::sqlite3_finalize((sqlite3_stmt*)stmHandle);

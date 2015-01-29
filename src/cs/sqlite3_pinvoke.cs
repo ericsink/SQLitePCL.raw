@@ -1103,6 +1103,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_clear_bindings(stm);
         }
 
+        int ISQLite3Provider.sqlite3_stmt_status(IntPtr stm, int op, int resetFlg)
+        {
+            return NativeMethods.sqlite3_stmt_status(stm, op, resetFlg);
+        }
+
         int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
             return NativeMethods.sqlite3_finalize(stm);
@@ -1205,6 +1210,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_clear_bindings(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_stmt_status(IntPtr stm, int op, int resetFlg);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_bind_parameter_name(IntPtr stmt, int index);
