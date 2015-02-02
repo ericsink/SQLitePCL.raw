@@ -396,6 +396,29 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_bernt()
+        {
+            using (sqlite3 db = ugly.open(""))
+            {
+                db.exec("CREATE TABLE places_dat (resource_handle TEXT PRIMARY KEY, data BLOB) WITHOUT ROWID;");
+                byte[] buf1 = db.query_scalar<byte[]>("SELECT randomblob(16);");
+		db.exec("INSERT INTO places_dat VALUES (?,?)", "foo", buf1);
+                Assert.AreEqual(1, db.changes());
+		int c1 = db.query_scalar<int>("SELECT COUNT(*) FROM places_dat WHERE resource_handle='foo';");
+	        Assert.AreEqual(1, c1);
+		byte[] buf2 = new byte[2];
+		buf2[0] = 42;
+		buf2[1] = 73;
+		db.exec("UPDATE places_dat SET data=? WHERE resource_handle=?;", buf2, "foo");
+                Assert.AreEqual(1, db.changes());
+                byte[] buf3 = db.query_scalar<byte[]>("SELECT data FROM places_dat WHERE resource_handle='foo';");
+		Assert.AreEqual(2, buf3.Length);
+		Assert.AreEqual(buf2[0], buf3[0]);
+		Assert.AreEqual(buf2[1], buf3[1]);
+            }
+        }
+
+        [TestMethod]
         public void test_create_table_temp_db()
         {
             using (sqlite3 db = ugly.open(""))
