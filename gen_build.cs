@@ -147,6 +147,7 @@ public static class projects
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
@@ -2701,6 +2702,7 @@ public static class gen
 			f.WriteComment("BEGIN platform assemblies that use pinvoke in build dir");
 
                 // --------------------------------
+#if not // too big
             {
                 f.WriteComment("special case packaged_sqlite3 for ios classic.  no targets file.");
 
@@ -2716,6 +2718,26 @@ public static class gen
                         );
 
             }
+#endif
+
+                // --------------------------------
+#if not // too big
+            {
+                f.WriteComment("special case packaged_sqlcipher for ios classic.  no targets file.");
+
+                var a = projects.find_pcls(
+                    "ios",
+                    "pinvoke",
+                    "packaged_sqlcipher",
+                    "anycpu",
+                    null
+                    );
+                write_nuspec_file_entries(f, "build",
+                        a
+                        );
+
+            }
+#endif
 
                 // --------------------------------
             {
