@@ -146,6 +146,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
@@ -2666,6 +2667,23 @@ public static class gen
 
                 // --------------------------------
             {
+                f.WriteComment("special case packaged_sqlite3 for ios classic.  no targets file.");
+
+                var a = projects.find_pcls(
+                    "ios",
+                    "pinvoke",
+                    "packaged_sqlite3",
+                    "anycpu",
+                    null
+                    );
+                write_nuspec_file_entries(f, "build",
+                        a
+                        );
+
+            }
+
+                // --------------------------------
+            {
                 var a = projects.find_pcls(
                     "unified",
                     "pinvoke",
@@ -2727,8 +2745,6 @@ public static class gen
                 f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("android"), id));
                 f.WriteEndElement(); // file
             }
-
-	    // TODO do android here like unified just above
 
 			f.WriteComment("END platform assemblies that use pinvoke in build dir");
 
