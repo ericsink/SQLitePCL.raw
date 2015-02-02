@@ -25,7 +25,8 @@
 
 #if PINVOKE_FROM_INTERNAL_SQLITE3
 
-// TODO the attribute below currently only works with iOS Unified
+#if PLATFORM_UNIFIED
+
 [assembly: ObjCRuntime.LinkWith(
         "packaged_sqlite3.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
@@ -34,6 +35,16 @@
         Frameworks=""
         )
         ]
+#else
+[assembly: MonoTouch.ObjCRuntime.LinkWith(
+        "packaged_sqlite3.a",
+        LinkTarget = MonoTouch.ObjCRuntime.LinkTarget.Simulator | MonoTouch.ObjCRuntime.LinkTarget.Simulator64 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7s | MonoTouch.ObjCRuntime.LinkTarget.Arm64,
+        ForceLoad=true,
+        LinkerFlags="",
+        Frameworks=""
+        )
+        ]
+#endif
 
 #endif
 

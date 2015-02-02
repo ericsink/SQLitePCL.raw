@@ -1650,6 +1650,10 @@ public static class gen
 						{
 							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
 						}
+						else if (cfg.env == "ios")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
+						}
 						break;
 					case "packaged_sqlcipher":
 						if (cfg.env == "android")
@@ -1657,6 +1661,10 @@ public static class gen
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
 						else if (cfg.env == "unified")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
+						}
+						else if (cfg.env == "ios")
 						{
 							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
 						}
@@ -1851,7 +1859,34 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-                        // TODO no packaged_sqlite3 here because iOS classic doesn't do targets files
+                        if (cfg.what == "packaged_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
+                            f.WriteElementString("Link", "packaged_sqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+                        if (cfg.what == "packaged_sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
+                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
+                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
 						break;
 					case "android":
 						if (cfg.what == "packaged_sqlite3")
