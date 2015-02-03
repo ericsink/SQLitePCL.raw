@@ -639,5 +639,48 @@ namespace SQLitePCL
 
     };
 
+    internal class authorizer_hook_info
+    {
+        private delegate_authorizer _func;
+        private object _user_data;
+        private GCHandle _h;
+
+        internal authorizer_hook_info(delegate_authorizer func, object v)
+        {
+            _func = func;
+            _user_data = v;
+
+            _h = GCHandle.Alloc(this);
+        }
+
+        internal IntPtr ptr
+        {
+            get
+            {
+                return (IntPtr)_h;
+            }
+        }
+
+        internal static authorizer_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle)p;
+            authorizer_hook_info hi = h.Target as authorizer_hook_info;
+            // TODO assert(hi._h == h)
+            return hi;
+        }
+
+        internal int call(int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view)
+        {
+            return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
+        }
+
+        internal void free()
+        {
+            _func = null;
+            _user_data = null;
+            _h.Free();
+        }
+    };
+
 }
 

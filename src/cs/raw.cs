@@ -848,6 +848,11 @@ namespace SQLitePCL
         {
             return _imp.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
         }
+
+        static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
+        {
+            return _imp.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
+        }
     }
 }
 

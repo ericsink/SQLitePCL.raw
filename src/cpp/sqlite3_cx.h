@@ -211,6 +211,8 @@ namespace SQLitePCL
 					static int32 sqlite3_wal_checkpoint_v2(int64 db, int64 dbName, int32 eMode, int64 logSize, int64 framesCheckPointed);
 
 					static int32 sqlite3_stmt_status(int64 stmHandle, int32 op, int32 resetFlg);
+	
+					static int32 sqlite3_set_authorizer(int64 db, int64 func, int64 v);
 
 				};
 	}

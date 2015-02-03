@@ -857,6 +857,45 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
+        // ----------------------------------------------------------------
+
+        // Passing a callback into SQLite is tricky.  See comments near commit_hook
+        // implementation in pinvoke/SQLite3Provider.cs
+
+        private authorizer_hook_info _authorizer_hook;
+
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_authorizer))] // TODO not xplat
+#endif
+        static int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
+        {
+            authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
+            return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
+        }
+
+        NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
+        int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
+        {
+            if (_authorizer_hook != null)
+            {
+                // TODO maybe turn off the hook here, for now
+                _authorizer_hook.free();
+                _authorizer_hook = null;
+            }
+
+            if (func != null)
+            {
+                _authorizer_hook = new authorizer_hook_info(func, v);
+                return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, _authorizer_hook.ptr);
+            }
+            else
+            {
+                return NativeMethods.sqlite3_set_authorizer(db, null, IntPtr.Zero);
+            }
+        }
+
+        // ----------------------------------------------------------------
+
         long ISQLite3Provider.sqlite3_memory_used()
         {
             return NativeMethods.sqlite3_memory_used();
@@ -1572,6 +1611,9 @@ namespace SQLitePCL
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
             public delegate int callback_progress_handler(IntPtr puser);
 
+            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+            public delegate int callback_authorizer(IntPtr puser, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
+
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_progress_handler(IntPtr db, int instructions, callback_progress_handler func, IntPtr pvUser);
 
@@ -1674,6 +1716,8 @@ namespace SQLitePCL
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_wal_checkpoint_v2(IntPtr db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_set_authorizer(IntPtr db, callback_authorizer cb, IntPtr pvUser);
 #if NETFX_CORE
             [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_win32_set_directory", CallingConvention=CallingConvention.Cdecl, CharSet=CharSet.Unicode)]
             public static extern int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
