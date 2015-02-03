@@ -888,6 +888,9 @@ namespace SQLitePCL.Test
 
                 raw.sqlite3_set_authorizer(db, authorizer, data);
                 db.exec("CREATE TABLE foo (x int);");
+
+                GC.Collect();
+
                 db.exec("SELECT * FROM foo;");
                 db.exec("CREATE VIEW TEST_VIEW AS SELECT * FROM foo;");
 
