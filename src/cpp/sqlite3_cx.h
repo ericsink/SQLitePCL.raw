@@ -42,6 +42,8 @@ namespace SQLitePCL
 
 					static int32 sqlite3_enable_shared_cache(int32 enable);
 
+					static int32 sqlite3_limit(int64 db, int32 id, int32 newVal);
+
                     static void sqlite3_interrupt(int64 db);
 
                     static int64 sqlite3_commit_hook(int64 db, int64 func, int64 v);

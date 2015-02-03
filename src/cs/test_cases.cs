@@ -329,6 +329,26 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_limit()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                raw.sqlite3_limit(db, raw.SQLITE_LIMIT_SQL_LENGTH, 10);
+
+                db.exec("SELECT 1;");
+                try
+                {
+                    db.exec("SELECT 200000;");
+                    Assert.Fail();
+                }
+                catch (ugly.sqlite3_exception e)
+                {
+                    Assert.AreEqual(e.errcode, raw.SQLITE_TOOBIG);
+                }
+            }
+        }
+
+        [TestMethod]
         public void test_sqlite3_memory()
         {
             long memory_used = raw.sqlite3_memory_used();
