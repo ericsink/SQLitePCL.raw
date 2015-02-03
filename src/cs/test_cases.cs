@@ -858,8 +858,6 @@ namespace SQLitePCL.Test
                         {
                             Assert.AreEqual(data, user_data);
 
-                            // FIXME: I have no clue why this is returning SQLITE_INSERT.
-                            // Assert.AreEqual(action_code, raw.SQLITE_CREATE_TABLE);
                             switch (action_code)
                             {
                                 // When creating a table an insert is first done.
@@ -893,7 +891,6 @@ namespace SQLitePCL.Test
 
                 db.exec("SELECT * FROM foo;");
                 db.exec("CREATE VIEW TEST_VIEW AS SELECT * FROM foo;");
-
 
                 delegate_authorizer view_authorizer =
                     (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
