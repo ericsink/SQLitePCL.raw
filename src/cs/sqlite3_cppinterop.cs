@@ -567,14 +567,14 @@ namespace SQLitePCL
 
         private authorizer_hook_info _authorizer_hook;
 
-        static private int authorizer_hook_bridge_impl(IntPtr p)
+        static private int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
-            return hi.call();
+            return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
         }
 
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
-        private delegate int callback_authorizer(IntPtr p);
+        private delegate int callback_authorizer(IntPtr puser, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
 
         callback_authorizer authorizer_hook_bridge = new callback_authorizer(authorizer_hook_bridge_impl);
 
