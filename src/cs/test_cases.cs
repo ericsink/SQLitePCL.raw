@@ -856,13 +856,80 @@ namespace SQLitePCL.Test
                 delegate_authorizer authorizer =
                     (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
                         {
+                            Assert.AreEqual(data, user_data);
 
-                            return 1;
+                            // FIXME: I have no clue why this is returning SQLITE_INSERT.
+                            // Assert.AreEqual(action_code, raw.SQLITE_CREATE_TABLE);
+                            switch (action_code)
+                            {
+                                // When creating a table an insert is first done.
+                                case raw.SQLITE_INSERT:
+                                    Assert.AreEqual(param0, "sqlite_master");
+                                    Assert.IsNull(param1);
+                                    Assert.AreEqual(dbName, "main");
+                                    Assert.IsNull(inner_most_trigger_or_view);
+                                    break;
+                                case raw.SQLITE_CREATE_TABLE:
+                                    Assert.AreEqual(param0, "foo");
+                                    Assert.IsNull(param1);
+                                    Assert.AreEqual(dbName, "main");
+                                    Assert.IsNull(inner_most_trigger_or_view);
+                                    break;  
+                                case raw.SQLITE_READ:
+                                    Assert.IsNotNull(param0);
+                                    Assert.IsNotNull(param1);
+                                    Assert.AreEqual(dbName, "main");
+                                    Assert.IsNull(inner_most_trigger_or_view);
+                                    break;  
+                            }
+
+                            return raw.SQLITE_OK;
                         };
 
                 raw.sqlite3_set_authorizer(db, authorizer, data);
-
                 db.exec("CREATE TABLE foo (x int);");
+                db.exec("SELECT * FROM foo;");
+                db.exec("CREATE VIEW TEST_VIEW AS SELECT * FROM foo;");
+
+
+                delegate_authorizer view_authorizer =
+                    (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
+                        {
+                            switch (action_code)
+                            {
+                                case raw.SQLITE_READ:
+                                    Assert.IsNotNull(param0);
+                                    Assert.IsNotNull(param1);
+                                    Assert.AreEqual(dbName, "main");
+
+                                    // A Hack. Goal is to prove that inner_most_trigger_or_view is not null when it is returned in the callback
+                                    if (param0 == "foo") { Assert.IsNotNull(inner_most_trigger_or_view); }
+                                    break;  
+                            }
+
+                            return raw.SQLITE_OK;
+                        };
+
+                raw.sqlite3_set_authorizer(db, view_authorizer, data);
+                db.exec("SELECT * FROM TEST_VIEW;");
+
+                delegate_authorizer denied_authorizer =
+                    (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
+                        {
+                            return raw.SQLITE_DENY;
+                        };
+
+                raw.sqlite3_set_authorizer(db, denied_authorizer, data);
+               
+                try
+                {
+                    db.exec("SELECT * FROM TEST_VIEW;");
+                    Assert.Fail();
+                }
+                catch (ugly.sqlite3_exception e)
+                {
+                    Assert.AreEqual(e.errcode, raw.SQLITE_AUTH);
+                }
             }
         }
     }

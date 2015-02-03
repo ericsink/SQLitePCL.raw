@@ -239,6 +239,10 @@ namespace SQLitePCL
         public const int SQLITE_STMTSTATUS_AUTOINDEX     = 3;
         public const int SQLITE_STMTSTATUS_VM_STEP       = 4;
 
+        // Authorizer Return Codes
+        public const int SQLITE_DENY   = 1;   /* Abort the SQL statement with an error */
+        public const int SQLITE_IGNORE = 2;   /* Don't allow access, but don't generate an error */
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
