@@ -57,7 +57,11 @@ libtool -static -o ./libs/mac/packaged_$Z_SQL.a \
 	./$Z_SQL/obj/mac/i386/sqlite3.c.o \
 	./$Z_SQL/obj/mac/x86_64/sqlite3.c.o
 
-lipo -arch i386 ./$Z_SQL/obj/mac/i386/sqlite3.c.o -arch x86_64 ./$Z_SQL/obj/mac/x86_64/sqlite3.c.o -create -o ./libs/mac/libpackaged_sqlite3.dylib
+if [ "$Z_SQLCIPHER" == "1" ]; then
+    echo "TODO sqlcipher dylib"
+else
+    xcrun clang -dynamiclib $Z_CODEC_ARGS -arch i386 -arch x86_64 $Z_CFLAGS -o ./libs/mac/libpackaged_sqlite3.dylib ../$Z_SQL/sqlite3.c
+fi
 
 xcrun clang $Z_CODEC_ARGS -arch i386 -isysroot $IOS_SIM_ROOT $Z_CFLAGS -c -o ./$Z_SQL/obj/ios/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun clang $Z_CODEC_ARGS -arch x86_64 -isysroot $IOS_SIM_ROOT $Z_CFLAGS -c -o ./$Z_SQL/obj/ios/x86_64/sqlite3.c.o ../$Z_SQL/sqlite3.c
