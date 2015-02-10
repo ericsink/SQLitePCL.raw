@@ -156,6 +156,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
+		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="arm"});
@@ -1647,6 +1648,10 @@ public static class gen
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
 						}
+                        else if (cfg.env == "net45")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
+						}
 						else if (cfg.env == "unified")
 						{
 							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
@@ -1658,6 +1663,10 @@ public static class gen
 						break;
 					case "packaged_sqlcipher":
 						if (cfg.env == "android")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
+						}
+                        else if (cfg.env == "net45")
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
@@ -2598,7 +2607,7 @@ public static class gen
 		}
 	}
 
-	private static void write_with_msbuild_targets_file(XmlWriter f, List<config_pcl> a, string env, string top, bool needy, string id)
+	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_pcl> a, string env, string top, bool needy, string id)
 	{
 		f.WriteComment(string.Format("platform assemblies for {0}", env));
 
@@ -2620,7 +2629,7 @@ public static class gen
 		f.WriteComment("msbuild .targets file to inject reference for the right cpu");
 
 		string tname = string.Format("{0}_{1}.targets", needy?"needy":"basic", env);
-		gen_nuget_targets(top, tname, needy, a);
+		gen_nuget_targets_cppinterop(top, tname, needy, a);
 
 		f.WriteStartElement("file");
 		f.WriteAttributeString("src", tname);
@@ -2628,10 +2637,10 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.7.2-pre1";
-	private const string NUSPEC_RELEASE_NOTES = "Bug fixes.  More missing API calls added.  Optional use of packaged_sqlite3 lib for Android and iOS Unified.  Updated to SQLite 3.8.8.1.";
+	private const string NUSPEC_VERSION = "0.7.2-pre2";
+	private const string NUSPEC_RELEASE_NOTES = "packaged_sqlite3 for Mac.";
 
-	private static void gen_nuspec_basic(string top, string id)
+	private static void gen_nuspec_basic(string top, string root, string id)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2677,6 +2686,13 @@ public static class gen
 								);
 					}
 				}
+
+				f.WriteComment("special case Mac packaged_sqlite3 dylib");
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", Path.Combine(root, "apple\\libs\\mac\\libpackaged_sqlite3.dylib"));
+                f.WriteAttributeString("target", "build\\native\\sqlite3_dynamic\\mac");
+                f.WriteEndElement(); // file
+
 				f.WriteComment("END sqlite3 libraries");
 			}
 
@@ -2738,6 +2754,40 @@ public static class gen
 
             }
 #endif
+
+                // --------------------------------
+            {
+                var a = projects.find_pcls(
+                    "net45",
+                    "pinvoke",
+                    "packaged_sqlite3",
+                    "anycpu",
+                    null
+                    );
+                write_nuspec_file_entries(f, "build",
+                        a
+                        );
+
+#if not // TODO a targets file here would be helpful for Xam studio mac stuff.  but then all of net45 needs to move from lib to build.
+                string tname = string.Format("{0}.targets", "unified");
+
+		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
+
+		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("unified")));
+
+		f.WriteStartElement("file");
+		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("unified")));
+		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified")));
+		f.WriteEndElement(); // file
+
+                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
+
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", tname);
+                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("unified"), id));
+                f.WriteEndElement(); // file
+#endif
+            }
 
                 // --------------------------------
             {
@@ -2835,6 +2885,7 @@ public static class gen
 
 				if (env == "net45")
 				{
+                    // TODO verify that this targets file works when its pcl is in lib and not build
                     gen_nuget_targets_pinvoke_anycpu(top, tname, env);
 				}
 				else
@@ -2859,7 +2910,7 @@ public static class gen
 
 			foreach (string env in pcl_env_cppinterop.Keys)
 			{
-				write_with_msbuild_targets_file(f, 
+				write_cppinterop_with_targets_file(f, 
 						projects.find_pcls(
 							env,
 							"cppinterop",
@@ -3212,7 +3263,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets(string top, string tname, bool needy, List<config_pcl> a)
+	private static void gen_nuget_targets_cppinterop(string top, string tname, bool needy, List<config_pcl> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3431,8 +3482,8 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_basic(top, "SQLitePCL.raw_basic");
-		gen_nuspec_basic(top, "SQLitePCL.raw");
+		gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
+		gen_nuspec_basic(top, root, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
 
