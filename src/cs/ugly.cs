@@ -601,14 +601,14 @@ namespace SQLitePCL.Ugly
                     || (typeof(sbyte) == t) 
                     )
             {
-                return Convert.ChangeType(stmt.column_int(index), t);
+                return Convert.ChangeType(stmt.column_int(index), t, null);
             }
             else if (
                        (typeof(double) == t) 
                     || (typeof(float) == t) 
                     )
             {
-                return Convert.ChangeType(stmt.column_double(index), t);
+                return Convert.ChangeType(stmt.column_double(index), t, null);
             }
             else if (typeof(DateTime) == t) 
             {
@@ -620,11 +620,11 @@ namespace SQLitePCL.Ugly
                     || (typeof(UInt32) == t) 
                     )
             {
-                return Convert.ChangeType(stmt.column_int64(index), t);
+                return Convert.ChangeType(stmt.column_int64(index), t, null);
             }
             else if (typeof(decimal) == t) 
             {
-                return (decimal)Convert.ChangeType(stmt.column_double(index), t);
+                return (decimal)Convert.ChangeType(stmt.column_double(index), t, null);
             }
             else if (typeof(byte[]) == t) 
             {
@@ -644,7 +644,7 @@ namespace SQLitePCL.Ugly
             {
                 string colname = stmt.column_name(i);
 
-                var prop = typ.GetTypeInfo().GetDeclaredProperty(colname);
+                var prop = typ.GetProperty(colname);
                 if (
                         (null != prop)
                         && prop.CanWrite
@@ -699,7 +699,7 @@ namespace SQLitePCL.Ugly
                             || (typeof(UInt32) == t) 
                             )
                     {
-                        stmt.bind_int64(ndx, (long) (Convert.ChangeType(a[i], typeof(long))));
+                        stmt.bind_int64(ndx, (long) (Convert.ChangeType(a[i], typeof(long), null)));
                     }
                     else if (
                                (typeof(double) == t) 
@@ -707,7 +707,7 @@ namespace SQLitePCL.Ugly
                             || (typeof(decimal) == t) 
                             )
                     {
-                        stmt.bind_double(ndx, (double) (Convert.ChangeType(a[i], typeof(double))));
+                        stmt.bind_double(ndx, (double) (Convert.ChangeType(a[i], typeof(double), null)));
                     }
                     else if (typeof(DateTime) == t) 
                     {
