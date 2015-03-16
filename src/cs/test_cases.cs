@@ -1062,6 +1062,45 @@ namespace SQLitePCL.Test
                 Assert.AreEqual(top2, "e");
             }
         }
+
+	private static void setup(sqlite3 db)
+	{
+                db.exec("CREATE TABLE foo (x text COLLATE e2a);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+	}
+
+        [TestMethod]
+        public void test_collation_2()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_collation("e2a", null, my_collation);
+		setup(db);
+                Assert.AreEqual("e", db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+		        GC.Collect();
+                Assert.AreEqual("e", db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+                GC.Collect();
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+                    GC.Collect();
+                    db2.create_collation("e2a", null, my_collation);
+                    GC.Collect();
+                    Assert.AreEqual("e", db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+                    GC.Collect();
+                    setup(db2);
+                    GC.Collect();
+                    Assert.AreEqual("e", db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+                    GC.Collect();
+                    Assert.AreEqual("e", db2.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+                }
+                GC.Collect();
+                Assert.AreEqual("e", db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;"));
+            }
+        }
     }
 
     [TestClass]
