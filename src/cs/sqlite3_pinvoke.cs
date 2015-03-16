@@ -1209,7 +1209,11 @@ namespace SQLitePCL
         {
 	    if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
 	    {
+#if OLD_REFLECTION
+		    var currentAssembly = typeof(NativeMethods).Assembly;
+#else
 		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
+#endif
 		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
 		    {
 			return;
