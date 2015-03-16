@@ -114,6 +114,7 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile111", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -158,6 +159,8 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
+		items_pcl.Add(new config_pcl { env="net40", api="pinvoke", what="sqlite3", cpu="anycpu"});
+
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="winrt80", api="pinvoke", what="sqlite3", cpu="x64"});
@@ -183,8 +186,21 @@ public static class projects
 #endif
 	}
 
+    public static string cs_env_to_cpp_env(string env)
+    {
+		if (env == "net45" || env == "net40")
+		{
+			return "winxp";
+		}
+		else
+		{
+			return env;
+		}
+    }
+
 	public static string get_portable_nuget_target_string(string env)
 	{
+        // TODO put net40 in here somewhere
 		switch (env)
 		{
 			case "profile78":
@@ -381,7 +397,7 @@ public class config_cppinterop : config_info
 
 	public config_sqlite3 get_sqlite3_item()
 	{
-		config_sqlite3 other = projects.find_sqlite3(env=="net45"?"winxp":env, cpu, dll);
+		config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_cpp_env(env), cpu, dll);
 		if (other == null)
 		{
 			throw new Exception(get_name());
@@ -447,14 +463,7 @@ public class config_cppinterop : config_info
 
 	private string sqlite3_env()
 	{
-		if (env == "net45")
-		{
-			return "winxp";
-		}
-		else
-		{
-			return env;
-		}
+        return projects.cs_env_to_cpp_env(env);
 	}
 }
 
@@ -540,7 +549,7 @@ public class config_pcl : config_info
 
 		if (is_pinvoke())
 		{
-			config_sqlite3 other = projects.find_sqlite3(env=="net45"?"winxp":env, cpu, true);
+			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_cpp_env(env), cpu, true);
 			return other;
 		}
 
@@ -576,6 +585,8 @@ public class config_pcl : config_info
 				return "MonoAndroid";
 			case "net45":
 				return "net45";
+			case "net40":
+				return "net40";
 			case "wp80":
 				return "wp8";
 			case "wp81_sl":
@@ -1604,6 +1615,11 @@ public static class gen
 					f.WriteElementString("ProductVersion", "12.0.0");
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
 					break;
+				case "net40":
+					f.WriteElementString("ProductVersion", "12.0.0");
+					defines.Add("OLD_REFLECTION");
+					f.WriteElementString("TargetFrameworkVersion", "v4.0");
+					break;
 				case "wp80":
 					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
 					f.WriteElementString("TargetFrameworkVersion", "v8.0");
@@ -1652,6 +1668,10 @@ public static class gen
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
 						}
+                        else if (cfg.env == "net40")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
+						}
 						else if (cfg.env == "unified")
 						{
 							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
@@ -1667,6 +1687,10 @@ public static class gen
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
                         else if (cfg.env == "net45")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
+						}
+                        else if (cfg.env == "net40")
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
@@ -1700,6 +1724,9 @@ public static class gen
 								case "net45":
 									defines.Add("PINVOKE_ANYCPU_NET45");
 									break;
+								case "net40":
+									defines.Add("PINVOKE_ANYCPU_NET45"); // okay for net40
+									break;
 								default:
                                                                         // TODO are there any situations where this will work? 
 									defines.Add("PINVOKE_FROM_SQLITE3");
@@ -1730,6 +1757,7 @@ public static class gen
 				case "unified":
 				case "android":
 				case "net45":
+				case "net40":
 					write_reference(f, "System");
 					write_reference(f, "System.Core");
 					break;
@@ -1925,6 +1953,7 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
 						f.WriteEndElement(); // Import
 						break;
+					case "net40":
 					case "net45":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
@@ -2861,6 +2890,7 @@ public static class gen
 			// not here: pcl_env_pinvoke["android"] = null;
 			// not here: pcl_env_pinvoke["unified"] = null;
 			pcl_env_pinvoke["net45"] = null;
+			pcl_env_pinvoke["net40"] = null;
 			pcl_env_pinvoke["winrt80"] = null;
 			pcl_env_pinvoke["winrt81"] = null;
 			pcl_env_pinvoke["wp81_rt"] = null;
@@ -2883,7 +2913,7 @@ public static class gen
 
 				string tname = string.Format("{0}.targets", env);
 
-				if (env == "net45")
+				if (env == "net45" || env == "net40")
 				{
                     // TODO verify that this targets file works when its pcl is in lib and not build
                     gen_nuget_targets_pinvoke_anycpu(top, tname, env);
@@ -3087,7 +3117,7 @@ public static class gen
 			
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				if (cfg.env != (env=="net45"?"winxp":env))
+				if (cfg.env != projects.cs_env_to_cpp_env(env))
 				{
 					continue;
 				}
@@ -3174,7 +3204,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				if (cfg.env != (env=="net45"?"winxp":env))
+				if (cfg.env != projects.cs_env_to_cpp_env(env))
 				{
 					continue;
 				}
