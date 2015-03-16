@@ -97,6 +97,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="profile78", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile259", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
+		items_pcl.Add(new config_pcl { env="profile136", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile111", cpu="anycpu" });
 	}
 
@@ -115,6 +116,7 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile111", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -211,6 +213,8 @@ public static class projects
 				return "portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			case "profile158":
 				return "portable-net45+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
+			case "profile136":
+				return "portable-net40+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
 			default:
 				throw new Exception(env);
 		}
@@ -1579,6 +1583,7 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "profile136":
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
@@ -2073,6 +2078,7 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "profile136":
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
@@ -2358,6 +2364,7 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "profile136":
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
