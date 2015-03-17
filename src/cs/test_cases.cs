@@ -1124,6 +1124,68 @@ namespace SQLitePCL.Test
             }
         }
 
+	private static void setup2(sqlite3 db)
+	{
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+	}
+
+        [TestMethod]
+        public void test_collation_4()
+        {
+		string res1,res2,res3;
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+		    setup2(db);
+                    db.create_collation("col", null, (o,p1,p2) => string.Compare(p1,p2));
+			res1 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+		    
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+		    setup2(db2);
+                    db2.create_collation("col", null, (o,p1,p2) => string.Compare(p2,p1));
+			res2 = db2.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+                }
+			res3 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+            }
+                Assert.AreEqual(res1,res3);
+        }
+
+        private static int my_collation_1(object v, string s1, string s2)
+        {
+		return string.Compare(s1,s2);
+        }
+
+        private static int my_collation_2(object v, string s1, string s2)
+        {
+		return string.Compare(s2,s1);
+        }
+
+        [TestMethod]
+        public void test_collation_5()
+        {
+		string res1,res2,res3;
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+		    setup2(db);
+                    db.create_collation("col", null, my_collation_1);
+			res1 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+		    
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+		    setup2(db2);
+                    db2.create_collation("col", null, my_collation_2);
+			res2 = db2.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+                }
+			res3 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
+            }
+                Assert.AreEqual(res1,res3);
+        }
+
     }
 
     [TestClass]
