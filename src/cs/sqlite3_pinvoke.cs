@@ -172,11 +172,13 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
+		hooks.removeHooksFor(db);
             return NativeMethods.sqlite3_close_v2(db);
         }
 
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
+		hooks.removeHooksFor(db);
             return NativeMethods.sqlite3_close(db);
         }
 
@@ -629,8 +631,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        private Dictionary<string, collation_hook_info> _collation_hooks = new Dictionary<string, collation_hook_info>();
-
 #if PLATFORM_IOS || PLATFORM_UNIFIED
         [MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
 #endif
@@ -643,6 +643,7 @@ namespace SQLitePCL
 	NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
+		var _collation_hooks = hooks.getCollationHooksForDb(db);
             if (_collation_hooks.ContainsKey(name))
             {
                 collation_hook_info hi = _collation_hooks[name];

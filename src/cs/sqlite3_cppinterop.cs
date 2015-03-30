@@ -186,8 +186,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        private Dictionary<string, collation_hook_info> _collation_hooks = new Dictionary<string, collation_hook_info>();
-
         [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
         private delegate int callback_collation(IntPtr puser, int len1, IntPtr pv1, int len2, IntPtr pv2);
 
@@ -201,6 +199,7 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
+		var _collation_hooks = hooks.getCollationHooksForDb(db);
             if (_collation_hooks.ContainsKey(name))
             {
                 collation_hook_info hi = _collation_hooks[name];
@@ -565,6 +564,7 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
+		hooks.removeHooksFor(db);
             return SQLite3RuntimeProvider.sqlite3_close(db.ToInt64());
         }
 

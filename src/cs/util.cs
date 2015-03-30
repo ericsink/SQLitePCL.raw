@@ -28,6 +28,62 @@ namespace SQLitePCL
     using System;
     using System.Runtime.InteropServices;
     using System.Text;
+    using System.Collections.Generic;
+
+    internal static class hooks
+    {
+	    private class info
+	    {
+		    public Dictionary<string, collation_hook_info> collation = new Dictionary<string, collation_hook_info>();
+
+		    public void free()
+		    {
+			foreach (var h in collation.Values) h.free();
+		    }
+	    }
+
+        private static Dictionary<IntPtr,info> _hooks_by_db = new Dictionary<IntPtr,info>();
+
+	private static info getOrCreateForDb(IntPtr db)
+	{
+		info i;
+		lock (_hooks_by_db)
+		{
+			if (!_hooks_by_db.TryGetValue(db, out i))
+			{
+				i = new info();
+				_hooks_by_db[db] = i;
+			}
+		}
+		return i;
+	}
+
+	internal static Dictionary<string, collation_hook_info> getCollationHooksForDb(IntPtr db)
+	{
+		info i = getOrCreateForDb(db);
+		return i.collation;
+	}
+
+	internal static void removeHooksFor(IntPtr db)
+	{
+		info i;
+		lock (_hooks_by_db)
+		{
+			if (_hooks_by_db.TryGetValue(db, out i))
+			{
+				_hooks_by_db.Remove(db);
+			}
+			else
+			{
+				i = null;
+			}
+		}
+		if (i != null)
+		{
+			i.free();
+		}
+	}
+    }
 
     internal class util
     {
