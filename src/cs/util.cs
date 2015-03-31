@@ -32,19 +32,35 @@ namespace SQLitePCL
 
     internal static class hooks
     {
-	    private class info
+	    internal class info
 	    {
-		    public Dictionary<string, collation_hook_info> collation = new Dictionary<string, collation_hook_info>();
+			public Dictionary<string, collation_hook_info> collation = new Dictionary<string, collation_hook_info>();
+			public Dictionary<string, scalar_function_hook_info> scalar = new Dictionary<string, scalar_function_hook_info>();
+			public Dictionary<string, agg_function_hook_info> agg = new Dictionary<string, agg_function_hook_info>();
+			public update_hook_info update;
+			public rollback_hook_info rollback;
+			public commit_hook_info commit;
+			public trace_hook_info trace;
+			public progress_handler_hook_info progress;
+			public profile_hook_info profile;
 
 		    public void free()
 		    {
 			foreach (var h in collation.Values) h.free();
+			foreach (var h in scalar.Values) h.free();
+			foreach (var h in agg.Values) h.free();
+			if (update!=null) update.free();
+			if (rollback!=null) rollback.free();
+			if (commit!=null) commit.free();
+			if (trace!=null) trace.free();
+			if (progress!=null) progress.free();
+			if (profile!=null) profile.free();
 		    }
 	    }
 
         private static Dictionary<IntPtr,info> _hooks_by_db = new Dictionary<IntPtr,info>();
 
-	private static info getOrCreateForDb(IntPtr db)
+	internal static info getOrCreateFor(IntPtr db)
 	{
 		info i;
 		lock (_hooks_by_db)
@@ -58,13 +74,7 @@ namespace SQLitePCL
 		return i;
 	}
 
-	internal static Dictionary<string, collation_hook_info> getCollationHooksForDb(IntPtr db)
-	{
-		info i = getOrCreateForDb(db);
-		return i.collation;
-	}
-
-	internal static void removeHooksFor(IntPtr db)
+	internal static void removeFor(IntPtr db)
 	{
 		info i;
 		lock (_hooks_by_db)
