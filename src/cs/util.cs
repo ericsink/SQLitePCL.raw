@@ -34,6 +34,12 @@ namespace SQLitePCL
     {
 	    internal class info
 	    {
+		    // TODO note that sqlite function names can be case-insensitive.  but we're using
+		    // a dictionary with a string key to keep track of them.  this has the potential
+		    // to cause problems.  fixing it with a case-insensitive string comparer is not
+		    // correct here, since the .NET notion of case-insensitivity is different (more
+		    // complete) than SQLite's notion.
+
 			public Dictionary<string, collation_hook_info> collation = new Dictionary<string, collation_hook_info>();
 			public Dictionary<string, scalar_function_hook_info> scalar = new Dictionary<string, scalar_function_hook_info>();
 			public Dictionary<string, agg_function_hook_info> agg = new Dictionary<string, agg_function_hook_info>();

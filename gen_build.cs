@@ -2673,8 +2673,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.0-pre1";
-	private const string NUSPEC_RELEASE_NOTES = "support for net40";
+	private const string NUSPEC_VERSION = "0.8.0-pre2";
+	private const string NUSPEC_RELEASE_NOTES = "fix problems with hook functions needing to be managed on a per-connection basis";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
