@@ -2673,7 +2673,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.0-pre2";
+	private const string NUSPEC_VERSION = "0.8.0-pre3";
 	private const string NUSPEC_RELEASE_NOTES = "fix problems with hook functions needing to be managed on a per-connection basis";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3539,6 +3539,15 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
 			tw.WriteLine("ls *.nupkg");
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
+		{
+			tw.WriteLine("# TODO");
+			tw.WriteLine("ls *.nupkg");
+			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.tests.{0}.nupkg", NUSPEC_VERSION);
 		}
 	}
 }
