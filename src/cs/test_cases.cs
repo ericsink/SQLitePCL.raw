@@ -1497,6 +1497,22 @@ namespace SQLitePCL.Test
         }
 
         [TestMethod]
+        public void test_rollback_hook_on_close_db()
+	{
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                work w = new work();
+
+                db.rollback_hook(my_rollback_hook, w);
+
+		GC.Collect();
+
+                db.exec("BEGIN TRANSACTION;");
+                db.exec("CREATE TABLE foo (x int);");
+            }
+        }
+
+        [TestMethod]
         public void test_hooks()
         {
             using (sqlite3 db = ugly.open(":memory:"))
