@@ -3007,7 +3007,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw_basic"); // TODO change to SQLitePCL.raw (without _basic)
+			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
