@@ -172,14 +172,16 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
+            var rc = NativeMethods.sqlite3_close_v2(db);
 		hooks.removeFor(db);
-            return NativeMethods.sqlite3_close_v2(db);
+		return rc;
         }
 
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
+            var rc = NativeMethods.sqlite3_close(db);
 		hooks.removeFor(db);
-            return NativeMethods.sqlite3_close(db);
+		return rc;
         }
 
         int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)

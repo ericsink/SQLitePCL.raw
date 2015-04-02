@@ -558,8 +558,9 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
+            var rc = SQLite3RuntimeProvider.sqlite3_close(db.ToInt64());
 		hooks.removeFor(db);
-            return SQLite3RuntimeProvider.sqlite3_close(db.ToInt64());
+		return rc;
         }
 
         void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
