@@ -52,6 +52,13 @@ for reasons explained later in this README.
 
 Yes.  The package ID is SQLitePCL.raw
 
+## There's another NuGet package called SQLitePCL.raw\_basic.  What is it??
+
+That's the old package ID.  With the 0.8.0 release, I transitioned to
+just 'SQLitePCL.raw' as the package ID (without the \_basic suffix).
+Eventually I may stop publishing updates to the old ID.  For now, the
+package gets published under both IDs and they are identical.
+
 ## Is this available in the Xamarin Component Store?
 
 No.
@@ -80,7 +87,7 @@ need the Xamarin stuff installed.  And the relevant Android SDK(s).
 ## Which PCL profile is supported?
 
 The build system contains projects to build the PCL with profile 78, 
-profile 158, and profile 259.  Others might work as well, but those are the ones I 
+profile 136, profile 158, and profile 259.  Others might work as well, but those are the ones I 
 have tried.
 
 The test suites are configured to use the profile 78 version in most places, but
@@ -401,7 +408,7 @@ SQLite 3.7.11 or older.
 In practice, these issues are commonly handled by avoiding the use of new-ish
 SQLite functions.  Alternatively, you can bundle a recent version of SQLite
 into your mobile app rather than using the build that is preinstalled on the
-platform.
+platform.  (See below for how to get SQLitePCL.raw to do this for you.)
 
 ## Why do some of the platforms have multiple platform assemblies?
 
@@ -432,7 +439,7 @@ Reasons to do this include:
 
   2.  They're on WinRT or something else that doesn't bundle SQLite at all.
 
-  3.  They need a custom SQLite, built with compile options customized for their situation.
+  3.  They need a custom SQLite, built with compile options customized for their situation.  A common case here is wanting to use the FTS (full text search) feature of SQLite.
 
   4.  They are substituting SQLCipher as their implementation of SQLite.
 
@@ -467,10 +474,35 @@ On iOS/Android, you have two choices:
 
 On other platforms, make sure you are including exactly one instance of the SQLite library.
 
-## Is this compatible with SQLCipher?
+## How can I use SQLitePCL.raw with a recent version of the sqlite3 lib on iOS/Android?
 
-Yes.  Sort of.
+Don't even ask this question until you read the previous three questions above
+and understand the risks.
 
-An upcoming release will make the SQLCipher use case easier.
+## OK, I understand the risks.  How do I do this?
 
+As of SQLitePCL.raw 0.8.0, you can use a bundled/recent version of sqlite3
+by setting an MSBuild property in your project file.  The name of the
+property is "UseSQLiteFrom", and if you set this property value to
+"packaged\_sqlite3" then SQLitePCL.raw will choose an assembly with a
+bundled copy of the native sqlite3 library instead of referencing the
+one built-in to iOS/Android.
+
+    <UseSQLiteFrom>packaged\_sqlite3</UseSQLiteFrom>
+
+This feature does not work for iOS Classic (but iOS Unified, the new 64-bit stuff
+you should be using anyway, works fine).
+
+## For those native sqlite3 libraries built-in to SQLitePCL.raw: How were they compiled?
+
+    SQLITE_DEFAULT_FOREIGN_KEYS=1
+    SQLITE_ENABLE_FTS4
+    SQLITE_ENABLE_FTS3_PARENTHESIS
+    SQLITE_ENABLE_COLUMN_METADATA
+
+## Is SQLitePCL.raw compatible with SQLCipher?
+
+    <UseSQLiteFrom>packaged\_sqlcipher</UseSQLiteFrom>
+
+This only works on iOS Unified and Android.
 
