@@ -2673,8 +2673,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.0-pre3";
-	private const string NUSPEC_RELEASE_NOTES = "fix problems with hook functions needing to be managed on a per-connection basis";
+	private const string NUSPEC_VERSION = "0.8.0";
+	private const string NUSPEC_RELEASE_NOTES = "Fix several problems with hook functions and multiple SQLite connections and threads.  Add support for .NET 4.0.  Added msbuild-controlled option to use a bundled SQLite3 library for non-Windows platforms.  Started transition toward removing _basic from the nuget pkg id, resulting in one version of the SQLitePCL.raw pkg to cover all use cases.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2695,7 +2695,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.raw");
-			f.WriteElementString("description", "This NuGet package for SQLitePCL.raw includes the configurations that are likely to Just Work for most use cases.  Specifically, for iOS and Android, this package uses the SQLite library which is built-in to the mobile OS.  For all of the Windows platforms, this package bundles an instance of the SQLite library.");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  For now, the package exists under both IDs and they are identical.  Eventually the old ID may stop getting updates.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");

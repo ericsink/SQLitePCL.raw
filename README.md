@@ -33,6 +33,8 @@ The following platforms are currently supported:
 
  * .NET 4.5 on Windows or Mac OS X
 
+ * .NET 4.0 on Windows or Mac OS X
+
  * Windows Phone 8
 
  * Windows Phone 8.1, both SL and RT flavors
@@ -48,7 +50,7 @@ for reasons explained later in this README.
 
 ## Is this available in NuGet?
 
-Yes.  See SQLitePCL.raw\_basic
+Yes.  The package ID is SQLitePCL.raw
 
 ## Is this available in the Xamarin Component Store?
 
@@ -82,7 +84,7 @@ profile 158, and profile 259.  Others might work as well, but those are the ones
 have tried.
 
 The test suites are configured to use the profile 78 version in most places, but
-profile 259 for Windows Phone 8.1..
+profile 259 for Windows Phone 8.1.
 
 The main reason to keep profile 158 is because MvvmCross is using it.  If they
 end up switching to the new reflection APIs and profile 259, then 158 won't be
