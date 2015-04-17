@@ -644,7 +644,7 @@ namespace SQLitePCL.Ugly
             {
                 string colname = stmt.column_name(i);
 
-                var prop = typ.GetTypeInfo().GetDeclaredProperty(colname);
+                var prop = typ.GetProperty(colname);
                 if (
                         (null != prop)
                         && prop.CanWrite
