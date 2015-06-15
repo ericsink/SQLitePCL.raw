@@ -1233,7 +1233,8 @@ namespace SQLitePCL
 #else
 		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
 #endif
-		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+        var directory = AppDomain.CurrentDomain.BaseDirectory ?? System.Environment.CurrentDirectory;
+		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(directory).LocalPath))
 		    {
 			return;
 		    }

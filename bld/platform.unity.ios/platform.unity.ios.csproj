@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1F97ED56-DA26-4802-8EBE-1D052814F920}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>platform.unity.ios</RootNamespace>
+    <AssemblyName>SQLitePCL.raw</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Debug\bin\unity\ios</OutputPath>
+    <DefineConstants>DEBUG;PLATFORM_UNIFIED;PINVOKE_FROM_SQLITE3;OLD_REFLECTION;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\Release\bin\unity\ios</OutputPath>
+    <DefineConstants>PLATFORM_UNIFIED;PINVOKE_FROM_SQLITE3;OLD_REFLECTION;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\..\Applications\Unity\Unity.app\Contents\Frameworks\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\cs\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\cs\intptrs.cs">
+      <Link>intptrs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\cs\isqlite3.cs">
+      <Link>isqlite3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\cs\raw.cs">
+      <Link>raw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\cs\sqlite3_pinvoke.cs">
+      <Link>sqlite3_pinvoke.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\cs\util.cs">
+      <Link>util.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
