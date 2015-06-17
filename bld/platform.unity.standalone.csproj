@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ProjectGuid>{0E3578A2-D15E-4183-8F0F-638EC8D437B8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">anycpu</Platform>
+    <DefaultLanguage>en-us</DefaultLanguage>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SQLitePCL</RootNamespace>
+    <AssemblyName>SQLitePCL.raw</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'debug|anycpu' ">
+    <OutputPath>debug\bin\unity\anycpu\</OutputPath>
+    <IntermediateOutputPath>debug\obj\pcl\net45\pinvoke_sqlite3\anycpu\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;PINVOKE_ANYCPU_NET45;OLD_REFLECTION;</DefineConstants>
+    <DebugSymbols>True</DebugSymbols>
+    <Optimize>False</Optimize>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'release|anycpu' ">
+    <OutputPath>release\bin\unity\anycpu\</OutputPath>
+    <IntermediateOutputPath>release\obj\pcl\net45\pinvoke_sqlite3\anycpu\</IntermediateOutputPath>
+    <DefineConstants>PINVOKE_ANYCPU_NET45;OLD_REFLECTION;</DefineConstants>
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\cs\AssemblyInfo.cs" />
+    <Compile Include="..\src\cs\raw.cs" />
+    <Compile Include="..\src\cs\intptrs.cs" />
+    <Compile Include="..\src\cs\isqlite3.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\cs\sqlite3_pinvoke.cs" />
+    <Compile Include="..\src\cs\util.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -22,6 +22,9 @@
 // THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABLITY OR NON-INFRINGEMENT.
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
+#if PLATFORM_UNIFIED
+using AOT;
+#endif
 
 #if PINVOKE_FROM_INTERNAL_SQLITE3
 
@@ -101,18 +104,18 @@ namespace SQLitePCL
 #if PLATFORM_IOS
     using MonoTouch;
 #elif PLATFORM_UNIFIED
-    using ObjCRuntime;
+    //using ObjCRuntime;
 #endif
 
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
     /// </summary>
 #if __ANDROID__
-    [Android.Runtime.Preserve(AllMembers=true)]
+   // [Android.Runtime.Preserve(AllMembers=true)]
 #elif PLATFORM_IOS
 	[MonoTouch.Foundation.Preserve(AllMembers = true)]
 #elif PLATFORM_UNIFIED
-	[Foundation.Preserve(AllMembers = true)]
+	//[Foundation.Preserve(AllMembers = true)]
 #endif
     public sealed class SQLite3Provider : ISQLite3Provider
     {
@@ -125,6 +128,16 @@ namespace SQLitePCL
 			NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
 #endif
         }
+
+#if PINVOKE_ANYCPU_NET45
+        [DllImport("kernel32")]
+        public static extern bool SetDllDirectory(string lpPathName);
+#else
+        public static bool SetDllDirectory(string lpPathName)
+        {
+            return true;
+        }
+#endif
 
         int ISQLite3Provider.sqlite3_open(string filename, out IntPtr db)
         {
@@ -158,7 +171,9 @@ namespace SQLitePCL
         public IntPtr xGetLastError;
 
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
+            [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
         public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
     }
 	
@@ -348,7 +363,7 @@ namespace SQLitePCL
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.other_sqlite3_blob_read(blob, ptr + bOffset, n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -357,7 +372,7 @@ namespace SQLitePCL
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.other_sqlite3_blob_write(blob, ptr + bOffset, n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -1149,6 +1164,7 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
+            
             return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
         }
 
@@ -1160,6 +1176,8 @@ namespace SQLitePCL
         private const string SQLITE_DLL = "__Internal";
 #elif PINVOKE_FROM_SQLITE3
         private const string SQLITE_DLL = "sqlite3";
+#elif PINVOKE_FROM_SQLITE3_SO
+        private const string SQLITE_DLL = "sqlite";
 #elif PINVOKE_FROM_PACKAGED_SQLITE3
         private const string SQLITE_DLL = "packaged_sqlite3";
 #elif PINVOKE_FROM_PACKAGED_SQLCIPHER
@@ -1178,25 +1196,31 @@ namespace SQLitePCL
         [DllImport("kernel32")]
         private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
+        
+        
+
         private static bool TryLoadFromDirectory(string dllName, string baseDirectory)
         {
-            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
-            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
+            const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+            System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(dllName), "dllName is null or empty.");
+            System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(baseDirectory), "baseDirectory is null or empty.");
             System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
             var architecture = IntPtr.Size == 4
                 ? "x86"
                 : "x64";
 
-            var dllPath = System.IO.Path.Combine(baseDirectory, architecture, dllName);
-            if (!System.IO.File.Exists(dllPath))
-	    {
-                return false;
-	    }
+            var dllPath = System.IO.Path.Combine(baseDirectory, System.IO.Path.Combine(architecture, dllName));
+            bool found = System.IO.File.Exists(dllPath);
+            IntPtr ptr;
+            if (found)
+	        {
+                ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+                return ptr != IntPtr.Zero;
+	        }
 
-	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
-
-            var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+            //Fallback to global search (or search with altered path)
+            ptr = LoadLibraryEx("sqlite3.dll", IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
             return ptr != IntPtr.Zero;
         }
 
@@ -1209,7 +1233,8 @@ namespace SQLitePCL
 #else
 		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
 #endif
-		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+        var directory = AppDomain.CurrentDomain.BaseDirectory ?? System.Environment.CurrentDirectory;
+		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(directory).LocalPath))
 		    {
 			return;
 		    }
@@ -1523,64 +1548,88 @@ namespace SQLitePCL
             [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_config_int(int op, int val);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
 
             [DllImport(SQLITE_DLL, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_config_log(int op, callback_log func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_agg_function_final(IntPtr context);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_scalar_function(IntPtr context, int nArgs, IntPtr argsptr);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_agg_function_step(IntPtr context, int nArgs, IntPtr argsptr);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_destroy(IntPtr p);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_create_function_v2(IntPtr db, byte[] strName, int nArgs, int nType, IntPtr pvUser, callback_scalar_function func, callback_agg_function_step fstep, callback_agg_function_final ffinal, callback_destroy fdestroy);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate int callback_collation(IntPtr puser, int len1, IntPtr pv1, int len2, IntPtr pv2);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_create_collation(IntPtr db, byte[] strName, int nType, IntPtr pvUser, callback_collation func);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_update(IntPtr p, int typ, IntPtr db, IntPtr tbl, long rowid);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_update_hook(IntPtr db, callback_update func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate int callback_commit(IntPtr puser);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_commit_hook(IntPtr db, callback_commit func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_profile(IntPtr puser, IntPtr statement, long elapsed);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_profile(IntPtr db, callback_profile func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate int callback_progress_handler(IntPtr puser);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_progress_handler(IntPtr db, int instructions, callback_progress_handler func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_trace(IntPtr puser, IntPtr statement);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_trace(IntPtr db, callback_trace func, IntPtr pvUser);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate void callback_rollback(IntPtr puser);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -1598,7 +1647,9 @@ namespace SQLitePCL
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_stmt_readonly(IntPtr stmt);
 
+#if !PLATFORM_UNIFIED && !PLATFORM_IOS
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+#endif
             public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
