@@ -239,6 +239,10 @@ namespace SQLitePCL
         public const int SQLITE_STMTSTATUS_AUTOINDEX     = 3;
         public const int SQLITE_STMTSTATUS_VM_STEP       = 4;
 
+        // Authorizer Return Codes
+        public const int SQLITE_DENY   = 1;   /* Abort the SQL statement with an error */
+        public const int SQLITE_IGNORE = 2;   /* Don't allow access, but don't generate an error */
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
@@ -847,6 +851,11 @@ namespace SQLitePCL
         static public int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
             return _imp.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
+        }
+
+        static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
+        {
+            return _imp.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
         }
     }
 }

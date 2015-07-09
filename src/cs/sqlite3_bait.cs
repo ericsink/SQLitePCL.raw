@@ -581,5 +581,10 @@ namespace SQLitePCL
         {
             throw new Exception(GRIPE);
         }
+
+        int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
+        {
+            throw new Exception(GRIPE);
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace SQLitePCL
 {
     using System;
 
+    public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
     public delegate void delegate_trace(object user_data, string statement);
@@ -215,6 +216,8 @@ namespace SQLitePCL
         int sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed);
 
         int sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
+
+        int sqlite3_set_authorizer(IntPtr db, delegate_authorizer authorizer, object user_data);
 
 #if not // maybe never
 

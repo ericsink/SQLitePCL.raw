@@ -737,4 +737,8 @@ int32 SQLite3RuntimeProvider::sqlite3_wal_checkpoint_v2(int64 db, int64 dbName, 
 
 	return result;
 }
-    
+
+int32 SQLite3RuntimeProvider::sqlite3_set_authorizer(int64 db, int64 func, int64 v)
+{
+	return ::sqlite3_set_authorizer((sqlite3*)db, (int(*)(void*,int,const char*,const char*,const char*,const char*)) func, (void*)v); 
+}    
