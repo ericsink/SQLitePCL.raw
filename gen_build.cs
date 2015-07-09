@@ -156,9 +156,11 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
+#if UNIFIED_MAC // TODO fix the build for this stuff
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
+#endif
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
