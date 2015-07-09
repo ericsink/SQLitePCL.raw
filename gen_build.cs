@@ -156,11 +156,9 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
-#if UNIFIED_MAC // TODO fix the build for this stuff
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
-#endif
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
@@ -2621,6 +2619,8 @@ public static class gen
 			}
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
+				if (cfg.env == "unified_mac") continue;
+
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
@@ -2756,7 +2756,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.1";
-	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Updates to README.";
+	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Add support for Xamarin.Mac.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
