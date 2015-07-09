@@ -179,6 +179,11 @@ Mono.Data.Sqlite is an ADO.NET-style SQLite wrapper which is built into Mono and
 platform.  It shares a common ancestry with System.Data.SQLite, as both began as forks from
 the same code.
 
+## How does this compare to Microsoft.Data.Sqlite?
+
+[Microsoft.Data.Sqlite](https://github.com/aspnet/Microsoft.Data.Sqlite) is an 
+ADO.NET-style SQLite wrapper which is part of the ASP.NET 5 / EF7 effort at Microsoft.
+
 ## How does this compare to SQLitePCL?
 
 [SQLitePCL](https://sqlitepcl.codeplex.com/) is a SQLite Portable Class Library released on Codeplex by MS Open Tech.
@@ -505,4 +510,28 @@ you should be using anyway, works fine).
     <UseSQLiteFrom>packaged\_sqlcipher</UseSQLiteFrom>
 
 This only works on iOS Unified and Android.
+
+## What is the difference between the nuget package "SQLitePCL.raw\_basic" and "SQLitePCL.raw" ?
+
+They are identical.
+
+I am transitioning the name of the package to just "SQLitePCL.raw" removing the \_basic suffix.
+Eventually I may deprecate the old name.
+
+## On WinRT-ish platforms, why do I get "Unable to load DLL 'sqlite3': The specified module could not be found." ?
+
+When using any of the RT flavored forms of Windows (Windows Store, Metro, WP81, etc) you must add a
+reference to the Visual C++ runtime extension SDK.
+
+## Why do I get "Unhandled managed exception: Could not load file or assembly 'SQLitePCL.raw' or one of its dependencies."
+
+Are you using Microsoft.Bcl.Build?  Its .targets file does some black magic
+which has caused incompatibilities with other packages, including
+SQLitePCL.raw.
+
+I'm looking for a fix.  For a disappointing short-term workaround, you can just
+manually add a reference to the proper SQLitePCL.raw.dll within your packages
+directory.  The incompatibility only affects the ability for the .targets file
+to add the reference.
+
 
