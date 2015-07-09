@@ -2755,8 +2755,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.0";
-	private const string NUSPEC_RELEASE_NOTES = "Fix several problems with hook functions and multiple SQLite connections and threads.  Add support for .NET 4.0.  Added msbuild-controlled option to use a bundled SQLite3 library for non-Windows platforms.  Started transition toward removing _basic from the nuget pkg id, resulting in one version of the SQLitePCL.raw pkg to cover all use cases.";
+	private const string NUSPEC_VERSION = "0.8.1";
+	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Updates to README.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
