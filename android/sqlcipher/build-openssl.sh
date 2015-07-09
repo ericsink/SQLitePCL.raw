@@ -10,7 +10,7 @@ export PATH="$ORIGPATH:$(pwd)/bin/x86-4.6/bin"
 
 # Setup paths to stuff we need
 
-OPENSSL_VERSION="1.0.1l"
+OPENSSL_VERSION="1.0.1p"
 INSTALL_DIR="`pwd`/installed/x86"
 
 export AR=i686-linux-android-ar

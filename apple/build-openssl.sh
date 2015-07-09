@@ -28,7 +28,7 @@ else
     SDK_VERSION=$1
 fi
 
-OPENSSL_VERSION="openssl-1.0.1l"
+OPENSSL_VERSION="openssl-1.0.1p"
 DEVELOPER=`xcode-select -print-path`
 
 # TODO
