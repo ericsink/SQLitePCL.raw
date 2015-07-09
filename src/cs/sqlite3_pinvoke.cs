@@ -857,8 +857,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        private authorizer_hook_info _authorizer_hook;
-
 #if PLATFORM_IOS || PLATFORM_UNIFIED
         [MonoPInvokeCallback (typeof(NativeMethods.callback_authorizer))] // TODO not xplat
 #endif
@@ -871,17 +869,17 @@ namespace SQLitePCL
         NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
-            if (_authorizer_hook != null)
+            if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
-                _authorizer_hook.free();
-                _authorizer_hook = null;
+                info.authorizer.free();
+                info.authorizer = null;
             }
 
             if (func != null)
             {
-                _authorizer_hook = new authorizer_hook_info(func, v);
-                return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, _authorizer_hook.ptr);
+                info.authorizer = new authorizer_hook_info(func, v);
+                return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, info.authorizer.ptr);
             }
             else
             {

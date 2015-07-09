@@ -49,6 +49,7 @@ namespace SQLitePCL
 			public trace_hook_info trace;
 			public progress_handler_hook_info progress;
 			public profile_hook_info profile;
+            public authorizer_hook_info authorizer;
 
 		    public void free()
 		    {
@@ -61,6 +62,7 @@ namespace SQLitePCL
 			if (trace!=null) trace.free();
 			if (progress!=null) progress.free();
 			if (profile!=null) profile.free();
+			if (authorizer!=null) authorizer.free();
 		    }
 	    }
 

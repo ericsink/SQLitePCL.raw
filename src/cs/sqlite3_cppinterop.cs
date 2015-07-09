@@ -558,8 +558,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        private authorizer_hook_info _authorizer_hook;
-
         static private int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
@@ -573,17 +571,18 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
-            if (_authorizer_hook != null)
+		var info = hooks.getOrCreateFor(db);
+            if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
-                _authorizer_hook.free();
-                _authorizer_hook = null;
+                info.authorizer.free();
+                info.authorizer = null;
             }
 
             if (func != null)
             {
-                _authorizer_hook = new authorizer_hook_info(func, v);
-                return SQLite3RuntimeProvider.sqlite3_set_authorizer(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(authorizer_hook_bridge).ToInt64(), _authorizer_hook.ptr.ToInt64());
+                info.authorizer = new authorizer_hook_info(func, v);
+                return SQLite3RuntimeProvider.sqlite3_set_authorizer(db.ToInt64(), Marshal.GetFunctionPointerForDelegate(authorizer_hook_bridge).ToInt64(), info.authorizer.ptr.ToInt64());
             }
             else
             {
