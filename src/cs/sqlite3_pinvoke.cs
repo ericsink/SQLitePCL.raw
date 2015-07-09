@@ -869,6 +869,7 @@ namespace SQLitePCL
         NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
+		var info = hooks.getOrCreateFor(db);
             if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
