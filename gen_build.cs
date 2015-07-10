@@ -3649,6 +3649,16 @@ public static class gen
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 		}
 
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build_mac.sh")))
+		{
+			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_packaged_sqlcipher.anycpu.csproj");
+			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_packaged_sqlite3.anycpu.csproj");
+			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_sqlite3.anycpu.csproj");
+            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_sqlite3 ../apple/libs/mac");
+            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_packaged_sqlite3 ../apple/libs/mac");
+            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_packaged_sqlcipher ../apple/libs/mac");
+		}
+
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
 			tw.WriteLine("# TODO");
