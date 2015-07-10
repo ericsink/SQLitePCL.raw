@@ -1251,7 +1251,11 @@ namespace SQLitePCL
 		    {
 			return;
 		    }
-		    throw new Exception("sqlite3.dll was not loaded.");
+		    // experimental change:
+		    // don't error here.  just proceed and allow the pinvoke
+		    // stuff to look for the sqlite3 DLL in the PATH as it
+		    // normally would.
+		    //throw new Exception("sqlite3.dll was not loaded.");
 	    }
         }
 #endif
