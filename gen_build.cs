@@ -1651,6 +1651,7 @@ public static class gen
 					f.WriteElementString("ThrowErrorsInValidation", "true");
 					defines.Add("WINDOWS_PHONE");
 					defines.Add("SILVERLIGHT");
+					defines.Add("NO_CONCURRENTDICTIONARY");
 					f.WriteElementString("NoStdLib", "true");
 					f.WriteElementString("NoConfig", "true");
 					break;
@@ -1671,6 +1672,7 @@ public static class gen
 					f.WriteElementString("ThrowErrorsInValidation", "true");
 					defines.Add("WINDOWS_PHONE");
 					defines.Add("SILVERLIGHT");
+					defines.Add("NO_CONCURRENTDICTIONARY");
 					f.WriteElementString("NoStdLib", "true");
 					f.WriteElementString("NoConfig", "true");
 					break;
@@ -2755,8 +2757,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.1";
-	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Add support for Xamarin.Mac.";
+	private const string NUSPEC_VERSION = "0.8.1-pre2";
+	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Add support for Xamarin.Mac.  Keep track of hooks with a ConcurrentDictionary where possible.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{

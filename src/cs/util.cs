@@ -66,12 +66,18 @@ namespace SQLitePCL
 		    }
 	    }
 
+#if NO_CONCURRENTDICTIONARY
         private static Dictionary<IntPtr,info> _hooks_by_db = new Dictionary<IntPtr,info>();
+#else
+        private static System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info> _hooks_by_db = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info>();
+#endif
 
 	internal static info getOrCreateFor(IntPtr db)
 	{
 		info i;
+#if NO_CONCURRENTDICTIONARY
 		lock (_hooks_by_db)
+#endif
 		{
 			if (!_hooks_by_db.TryGetValue(db, out i))
 			{
@@ -84,6 +90,7 @@ namespace SQLitePCL
 
 	internal static void removeFor(IntPtr db)
 	{
+#if NO_CONCURRENTDICTIONARY
 		info i;
 		lock (_hooks_by_db)
 		{
@@ -100,6 +107,13 @@ namespace SQLitePCL
 		{
 			i.free();
 		}
+#else
+			info i;
+			if (_hooks_by_db.TryRemove(db, out i))
+			{
+				i.free();
+			}
+#endif
 	}
     }
 
