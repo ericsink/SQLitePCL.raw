@@ -77,7 +77,6 @@ namespace SQLitePCL
 		info i;
 #if NO_CONCURRENTDICTIONARY
 		lock (_hooks_by_db)
-#endif
 		{
 			if (!_hooks_by_db.TryGetValue(db, out i))
 			{
@@ -85,13 +84,16 @@ namespace SQLitePCL
 				_hooks_by_db[db] = i;
 			}
 		}
-		return i;
+#else
+                i = _hooks_by_db.GetOrAdd(db, (unused) => new info());
+#endif
+                return i;
 	}
 
 	internal static void removeFor(IntPtr db)
 	{
-#if NO_CONCURRENTDICTIONARY
 		info i;
+#if NO_CONCURRENTDICTIONARY
 		lock (_hooks_by_db)
 		{
 			if (_hooks_by_db.TryGetValue(db, out i))
@@ -108,11 +110,10 @@ namespace SQLitePCL
 			i.free();
 		}
 #else
-			info i;
-			if (_hooks_by_db.TryRemove(db, out i))
-			{
-				i.free();
-			}
+                if (_hooks_by_db.TryRemove(db, out i))
+                {
+	            i.free();
+                }
 #endif
 	}
     }
