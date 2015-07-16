@@ -2757,7 +2757,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.1-pre2";
+	private const string NUSPEC_VERSION = "0.8.1";
 	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.10.2.  Update OpenSSL libcrypto to 1.0.1p.  Add set_authorizer feature.  Add support for Xamarin.Mac.  Keep track of hooks with a ConcurrentDictionary where possible.  On Windows, when dynamic DLL load fails, fallback to normal approach.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
