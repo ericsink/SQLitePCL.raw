@@ -161,6 +161,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		// TODO items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu", strongname=true});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
@@ -546,6 +547,7 @@ public class config_pcl : config_info
 	public string cpu;
 	public string guid;
 	public bool dll; // TODO should be string linkage, so it can be null for cases where it is not used
+	public bool strongname;
 
 	public config_sqlite3 get_sqlite3_item()
 	{
@@ -643,7 +645,13 @@ public class config_pcl : config_info
 			}
 			else
 			{
-				return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat(), cpu);
+				if (strongname) 
+				{
+					return string.Format("build\\strongname\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat(), cpu);
+				} else 
+				{
+					return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat(), cpu);
+				}
 			}
 		}
 		else if ("lib" == where)
@@ -721,6 +729,10 @@ public class config_pcl : config_info
 		{
 			return string.Format("{0}\\{1}", AREA, env);
 		}
+		else if (strongname)
+		{
+			return string.Format("{0}\\strongname\\{1}\\{2}\\{3}", AREA, env, nat(), cpu);
+		}
 		else
 		{
 			return string.Format("{0}\\{1}\\{2}\\{3}", AREA, env, nat(), cpu);
@@ -732,6 +744,10 @@ public class config_pcl : config_info
 		if (is_portable())
 		{
 			return string.Format("portable.{0}", env);
+		}
+		else if (strongname)
+		{
+			return string.Format("platform.strongname.{0}.{1}.{2}", env, nat(), cpu);
 		}
 		else
 		{
@@ -874,6 +890,12 @@ public static class gen
 		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
 		f.WriteElementString("Optimize", debug ? "false" : "true");
 		f.WriteElementString("DebugType", debug ? "full" : "none");
+
+		if (!debug && cfg.strongname)
+		{
+			f.WriteElementString("SignAssembly", "true");
+			f.WriteElementString("AssemblyOriginatorKeyFile", "strongname.snk");
+		}
 
 		f.WriteEndElement(); // PropertyGroup
 	}
@@ -3646,6 +3668,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
+			tw.WriteLine("cp ../strongname.snk .");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 		}
 
@@ -3661,6 +3684,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
+			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
