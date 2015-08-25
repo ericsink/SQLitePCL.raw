@@ -79,10 +79,20 @@ always kept terribly current.  :-)
 For all practical purposes, it's impossible.  :-)
 
 But if you're dying to try it, look at gen\_build.cs.  It's a script which
-generates the build system.  I build everything on Windows.  The script
+generates the build system.  The main build happens on Windows.  The script
 will expect you to have Visual Studio 2012 *and* Visual Studio 2013, 
 the latter with Update 2 installed for the Phone 8.1 stuff.  You also
 need the Xamarin stuff installed.  And the relevant Android SDK(s).
+
+The Mac stuff has to build, er, on a Mac.  gen\_build.exe will generate
+a build\_mac.sh file which needs to be run on a Mac.  The resulting 
+assemblies are actually committed to the repository so the main build
+process can use them.  Run apple/libs/mac/cp\_mac.ps1 to copy the
+necessary files over to the bld directory.
+
+Builds for sqlite and sqlcipher for Mac, iOS, and Android also happen
+on a Mac.  See the sh files in the apple directory.  On Android,
+run ndk-build in android/sqlite3.
 
 ## Which PCL profile is supported?
 

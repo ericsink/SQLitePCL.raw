@@ -2757,7 +2757,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.2";
+	private const string NUSPEC_VERSION = "0.8.3";
 	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.11.1";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3661,6 +3661,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
+			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
