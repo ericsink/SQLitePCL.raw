@@ -26,7 +26,7 @@
 namespace SQLitePCL
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
 
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_backup : IDisposable
@@ -238,8 +238,8 @@ namespace SQLitePCL
     public class sqlite3 : IDisposable
     {
         private readonly IntPtr _p;
-	private bool _disposed = false;
-        private Dictionary<IntPtr, sqlite3_stmt> _stmts = new Dictionary<IntPtr, sqlite3_stmt>();
+        private bool _disposed = false;
+        private readonly ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = new ConcurrentDictionary<IntPtr, sqlite3_stmt>();
 
         internal sqlite3(IntPtr p)
         {
@@ -249,9 +249,9 @@ namespace SQLitePCL
         public void Dispose()
         {
             if (_disposed)
-	    {
-		    return;
-	    }
+            {
+                return;
+            }
             // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
             // The latter is not supported on the sqlite3 library which is preinstalled
             // with iOS.
@@ -263,12 +263,12 @@ namespace SQLitePCL
             // http://msdn.microsoft.com/en-us/library/bb386039.aspx
 
             raw.sqlite3_close(this);
-	    _disposed = true;
+	       _disposed = true;
         }
 
         internal void set_already_disposed()
         {
-	    _disposed = true;
+	       _disposed = true;
         }
 
         internal IntPtr ptr
@@ -281,6 +281,9 @@ namespace SQLitePCL
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
+            if (!raw.enable_library_support_for_sqlite3_next_stmt)
+                return;
+
             _stmts[stmt.ptr] = stmt;
         }
 
@@ -291,7 +294,11 @@ namespace SQLitePCL
 
         internal void remove_stmt(sqlite3_stmt s)
         {
-            _stmts.Remove(s.ptr);
+            if (!raw.enable_library_support_for_sqlite3_next_stmt)
+                return;
+
+            sqlite3_stmt stmt;
+            _stmts.TryRemove(s.ptr, out stmt);
         }
     }
 
