@@ -31,6 +31,8 @@ namespace SQLitePCL
     {
         private static ISQLite3Provider _imp = new SQLite3Provider();
 
+        public static bool enable_library_support_for_sqlite3_next_stmt = true;
+
         public const int SQLITE_UTF8                = 1;
         public const int SQLITE_UTF16LE             = 2;
         public const int SQLITE_UTF16BE             = 3;
