@@ -53,21 +53,21 @@
 #if PLATFORM_UNIFIED
 [assembly: ObjCRuntime.LinkWith(
         "packaged_sqlcipher.a",
-        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
+        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
-        Frameworks=""
+        Frameworks="Security"
         )
         ]
 
-[assembly: ObjCRuntime.LinkWith(
+/*[assembly: ObjCRuntime.LinkWith(
         "libcrypto.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
         Frameworks=""
         )
-        ]
+        ]*/
 #else
 [assembly: MonoTouch.ObjCRuntime.LinkWith(
         "packaged_sqlcipher.a",
@@ -348,7 +348,7 @@ namespace SQLitePCL
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.other_sqlite3_blob_read(blob, ptr + bOffset, n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -357,7 +357,7 @@ namespace SQLitePCL
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.other_sqlite3_blob_write(blob, ptr + bOffset, n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -1205,9 +1205,11 @@ namespace SQLitePCL
 #elif PINVOKE_FROM_SQLITE3_DLL
         private const string SQLITE_DLL = "sqlite3.dll";
 #elif PINVOKE_ANYCPU_NET45
-        private const string SQLITE_DLL = "sqlite3";
+            private const string SQLITE_DLL = "sqlite3";
+#endif
 
-	// TODO can the code below be adapted to cope with Mono on Mac or Linux?
+#if PINVOKE_ANYCPU_NET45 || PINVOKE_FROM_PACKAGED_SQLCIPHER
+        // TODO can the code below be adapted to cope with Mono on Mac or Linux?
 
         // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
@@ -1218,15 +1220,15 @@ namespace SQLitePCL
 
         private static bool TryLoadFromDirectory(string dllName, string baseDirectory)
         {
-            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
-            System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
+            System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(dllName), "dllName is null or empty.");
+            System.Diagnostics.Debug.Assert(!string.IsNullOrEmpty(baseDirectory), "baseDirectory is null or empty.");
             System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
             var architecture = IntPtr.Size == 4
                 ? "x86"
                 : "x64";
 
-            var dllPath = System.IO.Path.Combine(baseDirectory, architecture, dllName);
+            var dllPath = System.IO.Path.Combine(System.IO.Path.Combine(baseDirectory, architecture), dllName);
             if (!System.IO.File.Exists(dllPath))
 	    {
                 return false;
@@ -1247,7 +1249,7 @@ namespace SQLitePCL
 #else
 		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
 #endif
-		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
+		    if (TryLoadFromDirectory(SQLITE_DLL + ".dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
 		    {
 			return;
 		    }
