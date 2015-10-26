@@ -1774,6 +1774,7 @@ public static class gen
 			if (cfg.is_portable())
 			{
 				f.WriteElementString("TargetFrameworkProfile", cfg.env);
+				defines.Add("NO_CONCURRENTDICTIONARY");
 			}
 
 			f.WriteEndElement(); // PropertyGroup

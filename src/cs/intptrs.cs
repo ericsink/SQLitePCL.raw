@@ -26,7 +26,6 @@
 namespace SQLitePCL
 {
     using System;
-    using System.Collections.Generic;
 
     // typed wrapper for an IntPtr.  still opaque.
     public class sqlite3_backup : IDisposable
@@ -239,7 +238,11 @@ namespace SQLitePCL
     {
         private readonly IntPtr _p;
 	private bool _disposed = false;
-        private Dictionary<IntPtr, sqlite3_stmt> _stmts = new Dictionary<IntPtr, sqlite3_stmt>();
+#if NO_CONCURRENTDICTIONARY
+        private System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt> _stmts = new System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt>();
+#else
+        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+#endif
 
         internal sqlite3(IntPtr p)
         {
@@ -291,7 +294,12 @@ namespace SQLitePCL
 
         internal void remove_stmt(sqlite3_stmt s)
         {
+#if NO_CONCURRENTDICTIONARY
             _stmts.Remove(s.ptr);
+#else
+		sqlite3_stmt stmt;
+            _stmts.TryRemove(s.ptr, out stmt);
+#endif
         }
     }
 
