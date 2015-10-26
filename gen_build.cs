@@ -3308,8 +3308,9 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
+			var guid = Guid.NewGuid().ToString();
 			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			switch (env)
@@ -3353,6 +3354,11 @@ public static class gen
 
 			f.WriteEndElement(); // Target
 
+			f.WriteStartElement("PropertyGroup");
+			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
+					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
+			f.WriteEndElement(); // PropertyGroup
+
 			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
@@ -3373,8 +3379,9 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
+			var guid = Guid.NewGuid().ToString();
 			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			foreach (config_pcl cfg in a)
@@ -3411,6 +3418,11 @@ public static class gen
 			}
 
 			f.WriteEndElement(); // Target
+
+			f.WriteStartElement("PropertyGroup");
+			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
+					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
+			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteEndElement(); // Project
 
