@@ -2759,7 +2759,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.3";
-	private const string NUSPEC_RELEASE_NOTES = "Update SQLite to 3.8.11.1";
+	private const string NUSPEC_RELEASE_NOTES = "Workaround for BCL issues";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
