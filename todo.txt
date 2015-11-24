@@ -1,4 +1,17 @@
 
+for building sqlite on Windows, 
+switch to the makefile.msc from the sqlite sources?
+
+remove the Xamarin.Mac variant which bundles SQLite?
+Doesn't work, due to limitations of the Xamarin.Mac?
+is this fixed in Xamarin 4?
+
+----
+
+clean out the rest of this file
+
+----
+
 consider nuget support for net40
 
 Do the collation hook fix thing for config_log
