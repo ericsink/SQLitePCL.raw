@@ -2759,8 +2759,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.3";
-	private const string NUSPEC_RELEASE_NOTES = "Workaround for BCL issues";
+	private const string NUSPEC_VERSION = "0.8.4";
+	private const string NUSPEC_RELEASE_NOTES = "Update to SQLite 3.9.2";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
