@@ -1057,6 +1057,7 @@ public static class gen
 			//write_cpp_define(f, "SQLITE_TEMP_STORE=whatever");
 			write_cpp_define(f, "SQLITE_DEFAULT_FOREIGN_KEYS=1");
 			//write_cpp_define(f, "SQLITE_ENABLE_RTREE");
+			write_cpp_define(f, "SQLITE_ENABLE_JSON1");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS4");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS3_PARENTHESIS");
 			write_cpp_define(f, "SQLITE_ENABLE_COLUMN_METADATA");
