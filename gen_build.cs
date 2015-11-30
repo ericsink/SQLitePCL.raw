@@ -2759,8 +2759,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.4";
-	private const string NUSPEC_RELEASE_NOTES = "Update to SQLite 3.9.2";
+	private const string NUSPEC_VERSION = "0.8.5-pre1";
+	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3228,6 +3228,7 @@ public static class gen
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+            f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'elsewhere' "));
 
 			switch (env)
 			{
