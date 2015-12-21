@@ -181,6 +181,11 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x86"});
 
+		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="x64"});
+		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="x86"});
+
 		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="x86"});
@@ -607,6 +612,8 @@ public class config_pcl : config_info
 				return "wp81";
 			case "wp81_rt":
 				return "wpa81";
+			case "uwp":
+				return "uap10.0";
 			case "winrt80":
 				return "netcore45";
 			case "winrt81":
@@ -680,6 +687,7 @@ public class config_pcl : config_info
 			case "winrt80":
 			case "winrt81":
 			case "wp81_rt":
+			//case "uwp":
 			//case "wp81_sl":
 				add_product(a, "SQLitePCL.raw.pri");
 				break;
@@ -775,6 +783,7 @@ public static class gen
 	private const string GUID_WP8 = "{C089C8C0-30E0-4E22-80C0-CE093F111A43}";
 	private const string GUID_WP81RT = "{76F1466A-8B6D-4E39-A767-685A06062A39}";
 	private const string GUID_TEST = "{3AC096D0-A1C2-E12C-1390-A8335801FDAB}";
+	private const string GUID_UWP = "{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A}";
 
 	private static void write_reference(XmlWriter f, string s)
 	{
@@ -1527,6 +1536,9 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			switch (cfg.env)
 			{
+				case "uwp":
+					f.WriteAttributeString("ToolsVersion", "14.0");
+					break;
 				case "winrt81":
 				case "wp81_rt":
 				case "wp81_sl":
@@ -1587,6 +1599,9 @@ public static class gen
 					case "wp81_sl":
 						write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 						break;
+					case "uwp":
+						write_project_type_guids(f, GUID_UWP, GUID_CSHARP);
+						break;
 				}
 			}
 
@@ -1643,6 +1658,13 @@ public static class gen
 					//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					// TargetFrameworkVersion?
 					defines.Add("NETFX_CORE");
+					break;
+				case "uwp":
+					f.WriteElementString("TargetPlatformVersion", "10.0");
+					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
+					f.WriteElementString("TargetFrameworkVersion", null);
+					//defines.Add("NETFX_CORE");
+					// TODO defines?
 					break;
 				case "winrt81":
 					f.WriteElementString("TargetPlatformVersion", "8.1");
@@ -1895,6 +1917,12 @@ public static class gen
 						f.WriteElementString("VisualStudioVersion", "12.0");
 						f.WriteEndElement(); // PropertyGroup
 						break;
+					case "uwp":
+						f.WriteStartElement("PropertyGroup");
+						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+						f.WriteElementString("VisualStudioVersion", "14.0");
+						f.WriteEndElement(); // PropertyGroup
+						break;
 					case "wp81_rt":
 						f.WriteStartElement("PropertyGroup");
 						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
@@ -2037,6 +2065,7 @@ public static class gen
 					case "winrt80":
 					case "winrt81":
 					case "wp81_rt":
+					case "uwp":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
 						f.WriteEndElement(); // Import
@@ -2776,8 +2805,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.5-pre1";
-	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms";
+	private const string NUSPEC_VERSION = "0.8.5-pre2";
+	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms.  Support UWP and Visual Studio 2015.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3037,6 +3066,7 @@ public static class gen
 			pcl_env_pinvoke["winrt80"] = null;
 			pcl_env_pinvoke["winrt81"] = null;
 			pcl_env_pinvoke["wp81_rt"] = null;
+			pcl_env_pinvoke["uwp"] = null;
 
 			foreach (string env in pcl_env_pinvoke.Keys)
 			{
