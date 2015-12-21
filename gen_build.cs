@@ -59,6 +59,10 @@ public static class projects
 		items_sqlite3.Add(new config_sqlite3 { env="winrt81", cpu="x64", dll=dyn });
 		items_sqlite3.Add(new config_sqlite3 { env="winrt81", cpu="x86", dll=dyn });
 
+		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="x86", dll=dyn });
+
 		items_sqlite3.Add(new config_sqlite3 { env="wp80", cpu="arm", dll=dyn });
 		items_sqlite3.Add(new config_sqlite3 { env="wp80", cpu="x86", dll=dyn });
 
@@ -929,6 +933,14 @@ public static class gen
 					f.WriteElementString("WindowsAppContainer", "true");
 					f.WriteElementString("AppContainerApplication", "true");
 					break;
+				case "uwp":
+					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
+					f.WriteElementString("ApplicationType", "Windows Store");
+					f.WriteElementString("AppContainerApplication", "true");
+					f.WriteElementString("ApplicationTypeRevision", "10.0");
+					f.WriteElementString("WindowsTargetPlatformMinVersion", "10.0.10240.0");
+					f.WriteElementString("WindowsTargetPlatformVersion", "10.0.10586.0");
+					break;
 				case "wp80":
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					break;
@@ -974,6 +986,9 @@ public static class gen
 				case "winrt81":
 					f.WriteElementString("PlatformToolset", "v120");
 					break;
+				case "uwp":
+					f.WriteElementString("PlatformToolset", "v140");
+					break;
 				case "wp80":
 					f.WriteElementString("PlatformToolset", "v110_wp80");
 					break;
@@ -996,6 +1011,7 @@ public static class gen
 				case "wp80":
 				case "wp81_rt":
 				case "wp81_sl":
+				case "uwp":
 					f.WriteStartElement("ItemDefinitionGroup");
 					f.WriteStartElement("ClCompile");
 					write_cpp_define(f, "SQLITE_OS_WINRT");
@@ -1014,6 +1030,7 @@ public static class gen
 				case "wp80":
 				case "wp81_rt":
 				case "wp81_sl":
+				case "uwp":
 					f.WriteStartElement("ItemDefinitionGroup");
 					f.WriteStartElement("ClCompile");
 					write_cpp_define(f, "SQLITE_WIN32_FILEMAPPING_API=1");
