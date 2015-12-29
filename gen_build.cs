@@ -181,10 +181,12 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="winrt81", api="pinvoke", what="sqlite3", cpu="x86"});
 
+#if not
 		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="uwp", api="pinvoke", what="sqlite3", cpu="x86"});
+#endif
 
 		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="wp81_rt", api="pinvoke", what="sqlite3", cpu="arm"});
@@ -2806,7 +2808,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.5-pre2";
-	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms.  Support UWP and Visual Studio 2015.";
+	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms.  Fix SDKReference for sqlite3.dll.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3066,7 +3068,7 @@ public static class gen
 			pcl_env_pinvoke["winrt80"] = null;
 			pcl_env_pinvoke["winrt81"] = null;
 			pcl_env_pinvoke["wp81_rt"] = null;
-			pcl_env_pinvoke["uwp"] = null;
+			// TODO pcl_env_pinvoke["uwp"] = null;
 
 			foreach (string env in pcl_env_pinvoke.Keys)
 			{
@@ -3272,24 +3274,31 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
+			switch (env)
+			{
+				case "winrt80":
+					f.WriteStartElement("ItemGroup");
+					f.WriteStartElement("SDKReference");
+					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=11.0");
+					f.WriteEndElement(); // SDKReference
+					f.WriteEndElement(); // ItemGroup
+					break;
+				case "winrt81":
+				case "wp81_rt":
+				case "wp81_sl":
+					f.WriteStartElement("ItemGroup");
+					f.WriteStartElement("SDKReference");
+					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=12.0");
+					f.WriteEndElement(); // SDKReference
+					f.WriteEndElement(); // ItemGroup
+					break;
+			}
+
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
             f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'elsewhere' "));
 
-			switch (env)
-			{
-				case "winrt80":
-				case "winrt81":
-				case "wp81_rt":
-				case "wp81_sl":
-					f.WriteStartElement("Message");
-					f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
-					f.WriteAttributeString("Importance", "High");
-					f.WriteEndElement(); // Message
-					break;
-			}
-			
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
 				if (cfg.env != projects.cs_env_to_cpp_env(env))
