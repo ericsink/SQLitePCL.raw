@@ -75,22 +75,8 @@ public static class projects
 
 	private static void init_cppinterop(bool dyn)
 	{
-		items_cppinterop.Add(new config_cppinterop { env="net45", cpu="x64", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="net45", cpu="x86", dll=dyn });
-
-		items_cppinterop.Add(new config_cppinterop { env="winrt80", cpu="arm", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="winrt80", cpu="x64", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="winrt80", cpu="x86", dll=dyn });
-
-		items_cppinterop.Add(new config_cppinterop { env="winrt81", cpu="arm", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="winrt81", cpu="x64", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="winrt81", cpu="x86", dll=dyn });
-
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm", dll=dyn });
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86", dll=dyn });
-
-		items_cppinterop.Add(new config_cppinterop { env="wp81_rt", cpu="arm", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="wp81_rt", cpu="x86", dll=dyn });
 
 		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="arm", dll=dyn });
 		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="x86", dll=dyn });
@@ -125,22 +111,8 @@ public static class projects
 
 	private static void init_pcl_cppinterop(bool dyn)
 	{
-		items_pcl.Add(new config_pcl { env="net45", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
-		items_pcl.Add(new config_pcl { env="net45", api="cppinterop", what="sqlite3", cpu="x64", dll=dyn});
-
-		items_pcl.Add(new config_pcl { env="winrt80", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
-		items_pcl.Add(new config_pcl { env="winrt80", api="cppinterop", what="sqlite3", cpu="x64", dll=dyn});
-		items_pcl.Add(new config_pcl { env="winrt80", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
-
-		items_pcl.Add(new config_pcl { env="winrt81", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
-		items_pcl.Add(new config_pcl { env="winrt81", api="cppinterop", what="sqlite3", cpu="x64", dll=dyn});
-		items_pcl.Add(new config_pcl { env="winrt81", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
-
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
-
-		items_pcl.Add(new config_pcl { env="wp81_rt", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
-		items_pcl.Add(new config_pcl { env="wp81_rt", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
 
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
@@ -438,13 +410,13 @@ public class config_cppinterop : config_info
 				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 
-			case "winrt80":
-			case "winrt81":
-			case "wp81_rt":
 			case "wp81_sl":
 				add_product(a, "SQLitePCL.cppinterop.pri");
 				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
+
+			default:
+				throw new Exception("cppinterop invalid env");
 		}
 	}
 
@@ -1159,14 +1131,14 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			switch (cfg.env)
 			{
-				case "winrt81":
-				case "wp81_rt":
+				case "wp80":
+					f.WriteAttributeString("ToolsVersion", "4.0");
+					break;
 				case "wp81_sl":
 					f.WriteAttributeString("ToolsVersion", "12.0");
 					break;
 				default:
-					f.WriteAttributeString("ToolsVersion", "4.0");
-					break;
+					throw new Exception("invalid cppinterop env");
 			}
 			f.WriteAttributeString("DefaultTargets", "Build");
 
@@ -1194,36 +1166,9 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "net45":
-					f.WriteElementString("Keyword", "ManagedCProj");
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					break;
-				case "winrt80":
-					f.WriteElementString("Keyword", "Win32Proj");
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					f.WriteElementString("WindowsAppContainer", "true");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Store");
-					f.WriteElementString("ApplicationTypeRevision", "8.0");
-					break;
-				case "winrt81":
-					f.WriteElementString("Keyword", "Win32Proj");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("WindowsAppContainer", "true");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Store");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
 				case "wp80":
 					f.WriteElementString("WinMDAssembly", "true");
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					break;
-				case "wp81_rt":
-					f.WriteElementString("Keyword", "Win32Proj");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
 					break;
 				case "wp81_sl":
 					f.WriteElementString("Keyword", "Win32Proj");
@@ -1245,21 +1190,8 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "net45":
-					f.WriteElementString("PlatformToolset", "v110");
-					f.WriteElementString("CLRSupport", "true");
-					break;
-				case "winrt80":
-					f.WriteElementString("PlatformToolset", "v110");
-					break;
-				case "winrt81":
-					f.WriteElementString("PlatformToolset", "v120");
-					break;
 				case "wp80":
 					f.WriteElementString("PlatformToolset", "v110_wp80");
-					break;
-				case "wp81_rt":
-					f.WriteElementString("PlatformToolset", "v120_wp81");
 					break;
 				case "wp81_sl":
 					f.WriteElementString("PlatformToolset", "v120");
@@ -1270,36 +1202,6 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "net45":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "NEED_TYPEDEFS");
-					write_cpp_define(f, "WIN32");
-					f.WriteEndElement(); // ClCompile
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				case "winrt80":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteElementString("AdditionalUsingDirectories", "$(WindowsSDK_WindowsMetaData);$(AdditionalUsingDirectories)");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
-					f.WriteElementString("AdditionalDependencies", "runtimeobject.lib;%(AdditionalDependencies)");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				case "winrt81":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteElementString("AdditionalUsingDirectories", "$(WindowsSDK_WindowsMetaData);$(AdditionalUsingDirectories)");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
-					f.WriteElementString("AdditionalDependencies", "runtimeobject.lib;%(AdditionalDependencies)");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
 				case "wp80":
 					f.WriteStartElement("ItemDefinitionGroup");
 					f.WriteStartElement("ClCompile");
@@ -1311,15 +1213,6 @@ public static class gen
 					f.WriteElementString("GenerateWindowsMetadata", "true");
 					f.WriteElementString("IgnoreSpecificDefaultLibraries", "ole32.lib;%(IgnoreSpecificDefaultLibraries)");
 					f.WriteElementString("AdditionalDependencies", "WindowsPhoneCore.lib;runtimeobject.lib;PhoneAppModelHost.lib;%(AdditionalDependencies)");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				case "wp81_rt":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
 					f.WriteEndElement(); // Link
 					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
@@ -1406,19 +1299,6 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "winrt80":
-					break;
-				case "winrt81":
-					break;
-				case "wp81_rt":
-					break;
-				case "net45":
-					f.WriteStartElement("ItemGroup");
-					f.WriteStartElement("Reference");
-					f.WriteAttributeString("Include", "System");
-					f.WriteEndElement(); // Reference
-					f.WriteEndElement(); // ItemGroup
-					break;
 				case "wp80":
 					f.WriteStartElement("ItemGroup");
 					f.WriteStartElement("Reference");
@@ -1453,14 +1333,6 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "winrt80":
-					break;
-				case "winrt81":
-					break;
-				case "wp81_rt":
-					break;
-				case "net45":
-					break;
 				case "wp80":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsPhone\\v$(TargetPlatformVersion)\\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets");
@@ -2336,7 +2208,7 @@ public static class gen
 			{
 				var a = projects.find_pcls(
 					"net45",
-					"cppinterop",
+					"pinvoke",
 					"sqlite3",
 					"x86",
 					"static"
@@ -2807,8 +2679,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.5-pre2";
-	private const string NUSPEC_RELEASE_NOTES = "Support UseSQLiteFrom=elsewhere for WinRT-ish platforms.  Fix SDKReference for sqlite3.dll.";
+	private const string NUSPEC_VERSION = "0.8.5-pre3";
+	private const string NUSPEC_RELEASE_NOTES = "netcore452";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3540,9 +3412,6 @@ public static class gen
 			{
 				switch (cfg.env)
 				{
-					case "winrt80":
-					case "winrt81":
-					case "wp81_rt":
 					case "wp81_sl":
 						f.WriteStartElement("Message");
 						f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
