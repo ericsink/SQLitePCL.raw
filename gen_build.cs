@@ -48,29 +48,26 @@ public static class projects
 
 	private static void init_sqlite3(bool dyn)
 	{
-		items_sqlite3.Add(new config_sqlite3 { env="winxp", cpu="x86", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="winxp", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x64", dll=dyn });
 
-		items_sqlite3.Add(new config_sqlite3 { env="winrt80", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="winrt80", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="winrt80", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x86", dll=dyn });
 
-		items_sqlite3.Add(new config_sqlite3 { env="winrt81", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="winrt81", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="winrt81", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x86", dll=dyn });
 
-		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="uwp", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x86", dll=dyn });
 
-		items_sqlite3.Add(new config_sqlite3 { env="wp80", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="wp80", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="x86", dll=dyn });
 
-		items_sqlite3.Add(new config_sqlite3 { env="wp81_rt", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="wp81_rt", cpu="x86", dll=dyn });
-
-		items_sqlite3.Add(new config_sqlite3 { env="wp81_sl", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { env="wp81_sl", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="arm", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="x86", dll=dyn });
 	}
 
 	private static void init_cppinterop(bool dyn)
@@ -175,16 +172,28 @@ public static class projects
 #endif
 	}
 
-    public static string cs_env_to_cpp_env(string env)
+    public static string cs_env_to_toolset(string env)
     {
-		if (env == "net45" || env == "net40")
-		{
-			return "winxp";
-		}
-		else
-		{
-			return env;
-		}
+	    switch (env) {
+		case "net45":
+			return "v110_xp";
+		case "net40":
+			return "v110_xp";
+		case "wp80":
+			return "v110_wp80";
+		case "wp81_sl":
+			return "v120";
+		case "wp81_rt":
+			return "v120_wp81";
+		case "uwp":
+			return "v140";
+		case "winrt80":
+			return "v110";
+		case "winrt81":
+			return "v120";
+		default:
+			throw new Exception(env);
+	    }
     }
 
 	public static string get_portable_nuget_target_string(string env)
@@ -207,12 +216,12 @@ public static class projects
 		}
 	}
 
-	public static config_sqlite3 find_sqlite3(string env, string cpu, bool dll)
+	public static config_sqlite3 find_sqlite3(string toolset, string cpu, bool dll)
 	{
 		foreach (config_sqlite3 cfg in projects.items_sqlite3)
 		{
 			if (
-					(cfg.env == env)
+					(cfg.toolset == toolset)
 					&& (cfg.cpu == cpu)
 					&& (cfg.dll == dll)
 			   )
@@ -322,7 +331,7 @@ public interface config_info
 
 public class config_sqlite3 : config_info
 {
-	public string env;
+	public string toolset;
 	public string cpu;
 	public string guid;
 	public bool dll = false;
@@ -353,12 +362,12 @@ public class config_sqlite3 : config_info
 
 	public string get_dest_subpath()
 	{
-		return string.Format("{0}\\{1}\\{2}", area(), env, cpu);
+		return string.Format("{0}\\{1}\\{2}", area(), toolset, cpu);
 	}
 
 	public string get_name()
 	{
-		return string.Format("{0}.{1}.{2}", area(), env, cpu);
+		return string.Format("{0}.{1}.{2}", area(), toolset, cpu);
 	}
 
 	public string get_project_filename()
@@ -388,7 +397,8 @@ public class config_cppinterop : config_info
 
 	public config_sqlite3 get_sqlite3_item()
 	{
-		config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_cpp_env(env), cpu, dll);
+		string toolset = projects.cs_env_to_toolset(env);
+		config_sqlite3 other = projects.find_sqlite3(toolset, cpu, dll);
 		if (other == null)
 		{
 			throw new Exception(get_name());
@@ -452,9 +462,9 @@ public class config_cppinterop : config_info
 		}
 	}
 
-	private string sqlite3_env()
+	private string sqlite3_toolset()
 	{
-        return projects.cs_env_to_cpp_env(env);
+        return projects.cs_env_to_toolset(env);
 	}
 }
 
@@ -540,7 +550,7 @@ public class config_pcl : config_info
 
 		if (is_pinvoke())
 		{
-			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_cpp_env(env), cpu, true);
+			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_toolset(env), cpu, true);
 			return other;
 		}
 
@@ -902,21 +912,28 @@ public static class gen
 			f.WriteElementString("Keyword", "Win32Proj");
 			f.WriteElementString("DefaultLanguage", "en-us");
 
-			switch (cfg.env)
+			switch (cfg.toolset)
 			{
-				case "winxp":
+				case "v110_xp":
 					break;
-				case "winrt80":
+				case "v110":
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					f.WriteElementString("WindowsAppContainer", "true");
 					f.WriteElementString("AppContainerApplication", "true");
 					break;
-				case "winrt81":
+				case "v120":
 					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
 					f.WriteElementString("WindowsAppContainer", "true");
 					f.WriteElementString("AppContainerApplication", "true");
 					break;
-				case "uwp":
+				case "wp81_sl":
+					// TODO what to do with this?
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("AppContainerApplication", "true");
+					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
+					f.WriteElementString("ApplicationTypeRevision", "8.1");
+					break;
+				case "v140":
 					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
 					f.WriteElementString("ApplicationType", "Windows Store");
 					f.WriteElementString("AppContainerApplication", "true");
@@ -924,21 +941,17 @@ public static class gen
 					f.WriteElementString("WindowsTargetPlatformMinVersion", "10.0.10240.0");
 					f.WriteElementString("WindowsTargetPlatformVersion", "10.0.10586.0");
 					break;
-				case "wp80":
+				case "v110_wp80":
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					break;
-				case "wp81_rt":
+				case "v120_wp81":
 					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
 					f.WriteElementString("AppContainerApplication", "true");
 					f.WriteElementString("ApplicationType", "Windows Phone");
 					f.WriteElementString("ApplicationTypeRevision", "8.1");
 					break;
-				case "wp81_sl":
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
+				default:
+					throw new Exception("unknown toolset");
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -958,69 +971,34 @@ public static class gen
 			}
 			f.WriteElementString("TargetName", "sqlite3");
 
-			switch (cfg.env)
-			{
-				case "winxp":
-					f.WriteElementString("PlatformToolset", "v110_xp");
-					break;
-				case "winrt80":
-					f.WriteElementString("PlatformToolset", "v110");
-					break;
-				case "winrt81":
-					f.WriteElementString("PlatformToolset", "v120");
-					break;
-				case "uwp":
-					f.WriteElementString("PlatformToolset", "v140");
-					break;
-				case "wp80":
-					f.WriteElementString("PlatformToolset", "v110_wp80");
-					break;
-				case "wp81_rt":
-					f.WriteElementString("PlatformToolset", "v120_wp81");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("PlatformToolset", "v120");
-					break;
-			}
+			f.WriteElementString("PlatformToolset", cfg.toolset);
 
 			f.WriteEndElement(); // PropertyGroup
 
-			switch (cfg.env)
+			switch (cfg.toolset)
 			{
-				case "winxp":
+				case "v110_xp":
 					break;
-				case "winrt80":
-				case "winrt81":
-				case "wp80":
-				case "wp81_rt":
-				case "wp81_sl":
-				case "uwp":
+				case "v110":
+				case "v120":
+				case "v110_wp80":
+				case "v120_wp81":
+				case "v140":
 					f.WriteStartElement("ItemDefinitionGroup");
 					f.WriteStartElement("ClCompile");
 					write_cpp_define(f, "SQLITE_OS_WINRT");
 					f.WriteEndElement(); // ClCompile
 					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
+				default:
+					throw new Exception("unknown toolset");
 			}
 
-			switch (cfg.env)
-			{
-				case "winxp":
-					break;
-				case "winrt80":
-				case "winrt81":
-					break;
-				case "wp80":
-				case "wp81_rt":
-				case "wp81_sl":
-				case "uwp":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "SQLITE_WIN32_FILEMAPPING_API=1");
-					f.WriteEndElement(); // ClCompile
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-			}
+			f.WriteStartElement("ItemDefinitionGroup");
+			f.WriteStartElement("ClCompile");
+			write_cpp_define(f, "SQLITE_WIN32_FILEMAPPING_API=1");
+			f.WriteEndElement(); // ClCompile
+			f.WriteEndElement(); // ItemDefinitionGroup
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Debug' "));
@@ -2649,7 +2627,7 @@ public static class gen
 		}
 	}
 
-	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_pcl> a, string env, string top, bool needy, string id)
+	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_pcl> a, string env, string top, string id)
 	{
 		f.WriteComment(string.Format("platform assemblies for {0}", env));
 
@@ -2670,8 +2648,8 @@ public static class gen
 
 		f.WriteComment("msbuild .targets file to inject reference for the right cpu");
 
-		string tname = string.Format("{0}_{1}.targets", needy?"needy":"basic", env);
-		gen_nuget_targets_cppinterop(top, tname, needy, a);
+		string tname = string.Format("{0}.targets", env);
+		gen_nuget_targets_cppinterop(top, tname, a);
 
 		f.WriteStartElement("file");
 		f.WriteAttributeString("src", tname);
@@ -2998,7 +2976,6 @@ public static class gen
 							),
 						env,
 						top,
-						false,
 						id
 						);
 			}
@@ -3173,7 +3150,7 @@ public static class gen
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				if (cfg.env != projects.cs_env_to_cpp_env(env))
+				if (cfg.toolset != projects.cs_env_to_toolset(env))
 				{
 					continue;
 				}
@@ -3261,7 +3238,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				if (cfg.env != projects.cs_env_to_cpp_env(env))
+				if (cfg.toolset != projects.cs_env_to_toolset(env))
 				{
 					continue;
 				}
@@ -3361,7 +3338,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_cppinterop(string top, string tname, bool needy, List<config_pcl> a)
+	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_pcl> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3456,7 +3433,6 @@ public static class gen
 
 				f.WriteEndElement(); // Reference
 
-				if (!needy)
 				{
 					config_sqlite3 other = cfg.get_sqlite3_item();
 					if (other != null)
