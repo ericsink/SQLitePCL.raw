@@ -103,7 +103,7 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -2437,7 +2437,10 @@ public static class gen
 					break;
 			}
 
-			f.WriteElementString("TargetFrameworkProfile", cfg.env);
+			if (cfg.is_portable()) 
+			{
+				f.WriteElementString("TargetFrameworkProfile", cfg.env);
+			}
 
 			f.WriteEndElement(); // PropertyGroup
 
@@ -2462,6 +2465,17 @@ public static class gen
 			}
 			f.WriteEndElement(); // ProjectReference
 			f.WriteEndElement(); // ItemGroup
+
+			if (cfg.is_portable()) 
+			{
+			}
+			else 
+			{
+				f.WriteStartElement("ItemGroup");
+				write_reference(f, "System");
+				write_reference(f, "System.Core");
+				f.WriteEndElement(); // ItemGroup
+			}
 
 			if (cfg.is_portable()) 
 			{
