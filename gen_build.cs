@@ -103,6 +103,7 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 	}
 
 	private static void init_pcl_cppinterop(bool dyn)
@@ -507,9 +508,21 @@ public class config_higher : config_info
 		a.Add(Path.Combine(get_dest_subpath(), s));
 	}
 
+	public bool is_portable()
+	{
+		return env.StartsWith("profile");
+	}
+
 	public string get_nuget_target_path()
 	{
-		return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		if (is_portable())
+		{
+			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else
+		{
+			return string.Format("lib\\{0}\\", config_pcl.get_nuget_framework_name(env));
+		}
 	}
 
 	public void get_products(List<string> a)
@@ -2410,6 +2423,9 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "net35":
+					f.WriteElementString("TargetFrameworkVersion", "v3.5");
+					break;
 				case "profile136":
 				case "profile158":
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
@@ -2447,9 +2463,18 @@ public static class gen
 			f.WriteEndElement(); // ProjectReference
 			f.WriteEndElement(); // ItemGroup
 
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
-			f.WriteEndElement(); // Import
+			if (cfg.is_portable()) 
+			{
+				f.WriteStartElement("Import");
+				f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
+				f.WriteEndElement(); // Import
+			} 
+			else
+			{
+				f.WriteStartElement("Import");
+				f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
+				f.WriteEndElement(); // Import
+			}
 
 			f.WriteEndElement(); // Project
 
@@ -3607,7 +3632,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
-			tw.WriteLine("../nuget restore sqlitepcl.sln");
+			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 		}
 
