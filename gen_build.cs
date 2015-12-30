@@ -319,6 +319,17 @@ public interface config_info
 	string get_dest_subpath();
 }
 
+public static class config_info_ext
+{
+	public static string get_project_path(this config_info cfg, string top)
+	{
+		string subdir = Path.Combine(Path.Combine(top, cfg.get_name()));
+		Directory.CreateDirectory(subdir);
+		string proj = Path.Combine(subdir, cfg.get_project_filename());
+		return proj;
+	}
+}
+
 public class config_sqlite3 : config_info
 {
 	public string toolset;
@@ -794,14 +805,14 @@ public static class gen
 		f.WriteElementString("ProjectTypeGuids", string.Format("{0};{1}", s1, s2));
 	}
 
-	private static void write_section(string dest_subpath, XmlWriter f, bool debug, List<string> defines)
+	private static void write_section(string top, string dest_subpath, XmlWriter f, bool debug, List<string> defines)
 	{
 		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == '{0}' ", name));
 
-		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}\\", name, dest_subpath));
-		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}\\", name, dest_subpath));
+		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, dest_subpath)));
+		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, dest_subpath)));
 
 		string defs;
 		if (debug)
@@ -833,14 +844,14 @@ public static class gen
 		f.WriteEndElement(); // PropertyGroup
 	}
 
-	private static void write_section(config_pcl cfg, XmlWriter f, bool debug, List<string> defines)
+	private static void write_section(string top, config_pcl cfg, XmlWriter f, bool debug, List<string> defines)
 	{
 		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
 
-		f.WriteElementString("OutputPath", string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath()));
-		f.WriteElementString("IntermediateOutputPath", string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath()));
+		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath())));
+		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath())));
 
 		string defs;
 		if (debug)
@@ -871,7 +882,8 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1005,8 +1017,8 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath()));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath()));
+			f.WriteElementString("OutDir", Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath())));
+			f.WriteElementString("IntDir", Path.Combine(top, string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath())));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -1091,7 +1103,8 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1211,8 +1224,8 @@ public static class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath()));
-			f.WriteElementString("IntDir", string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath()));
+			f.WriteElementString("OutDir", Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath())));
+			f.WriteElementString("IntDir", Path.Combine(top, string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath())));
 			write_cpp_includepath(f, root, "sqlite3\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
@@ -1228,7 +1241,8 @@ public static class gen
 			f.WriteStartElement("Link");
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			f.WriteElementString("AdditionalDependencies", string.Format("$(Configuration)\\bin\\{0}\\sqlite3.lib;%(AdditionalDependencies)", cfg.get_sqlite3_item().get_dest_subpath()));
+			string sqlite3_item_path = Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\sqlite3.lib", cfg.get_sqlite3_item().get_dest_subpath()));
+			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
@@ -1370,7 +1384,8 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -1654,8 +1669,8 @@ public static class gen
 
 			f.WriteEndElement(); // PropertyGroup
 
-			write_section(cfg, f, true, defines);
-			write_section(cfg, f, false, defines);
+			write_section(top, cfg, f, true, defines);
+			write_section(top, cfg, f, false, defines);
 
 			f.WriteStartElement("ItemGroup");
 			switch (cfg.env)
@@ -1721,7 +1736,7 @@ public static class gen
 				f.WriteStartElement("ProjectReference");
 				{
 					config_cppinterop other = cfg.get_cppinterop_item();
-					f.WriteAttributeString("Include", other.get_project_filename());
+					f.WriteAttributeString("Include", other.get_project_path(top));
 					f.WriteElementString("Project", other.guid);
 					f.WriteElementString("Name", other.get_name());
 					//f.WriteElementString("Private", "true");
@@ -1938,7 +1953,8 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -2111,8 +2127,8 @@ public static class gen
 
 			f.WriteEndElement(); // PropertyGroup
 
-			write_section(cfg.get_dest_subpath(), f, true, defines);
-			write_section(cfg.get_dest_subpath(), f, false, defines);
+			write_section(top, cfg.get_dest_subpath(), f, true, defines);
+			write_section(top, cfg.get_dest_subpath(), f, false, defines);
 
 			f.WriteStartElement("ItemGroup");
 			switch (cfg.env)
@@ -2159,7 +2175,7 @@ public static class gen
 			if (cfg.env == "win8")
 			{
 				config_pcl other = projects.find_bait(cfg.pcl);
-				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
 				//f.WriteElementString("Private", "true");
@@ -2174,7 +2190,7 @@ public static class gen
 					"static"
 					);
 				config_pcl other = a[0];
-				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
 				//f.WriteElementString("Private", "true");
@@ -2183,7 +2199,7 @@ public static class gen
 			f.WriteStartElement("ProjectReference");
 			{
 				config_higher other = projects.find_ugly(cfg.pcl);
-				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
 				//f.WriteElementString("Private", "true");
@@ -2289,7 +2305,8 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, cfg.get_project_filename()), settings))
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
@@ -2343,8 +2360,8 @@ public static class gen
 
 			f.WriteEndElement(); // PropertyGroup
 
-			write_section(cfg.get_dest_subpath(), f, true, cfg.defines);
-			write_section(cfg.get_dest_subpath(), f, false, cfg.defines);
+			write_section(top, cfg.get_dest_subpath(), f, true, cfg.defines);
+			write_section(top, cfg.get_dest_subpath(), f, false, cfg.defines);
 
 			f.WriteStartElement("ItemGroup");
 			foreach (string csfile in cfg.csfiles)
@@ -2357,7 +2374,7 @@ public static class gen
 			f.WriteStartElement("ProjectReference");
 			{
 				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteAttributeString("Include", other.get_project_filename());
+				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
 				//f.WriteElementString("Private", "true");
@@ -2406,7 +2423,7 @@ public static class gen
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CPP,
 						cfg.get_name(),
 						cfg.get_project_filename(),
@@ -2417,7 +2434,7 @@ public static class gen
 
 			foreach (config_cppinterop cfg in projects.items_cppinterop)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CPP,
 						cfg.get_name(),
 						cfg.get_project_filename(),
@@ -2433,7 +2450,7 @@ public static class gen
 
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CSHARP,
 						cfg.get_name(),
 						cfg.get_project_filename(),
@@ -2451,7 +2468,7 @@ public static class gen
 
 			foreach (config_higher cfg in projects.items_higher)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CSHARP,
 						cfg.get_name(),
 						cfg.get_project_filename(),
@@ -2466,7 +2483,7 @@ public static class gen
 
 			foreach (config_tests cfg in projects.items_tests)
 			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CSHARP,
 						cfg.get_name(),
 						cfg.get_project_filename(),
@@ -3445,8 +3462,8 @@ public static class gen
 	{
 		projects.init();
 
-		string root = ".."; // assumes that gen_build.exe is being run from the root directory of the project
-		string top = "bld";
+		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
+		string top = Path.Combine(root, "bld");
 
 		// --------------------------------
 		// create the build directory
