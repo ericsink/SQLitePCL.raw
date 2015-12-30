@@ -149,12 +149,10 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x86"});
 
-#if not
 		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="x86"});
-#endif
 
 		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="arm"});
@@ -321,13 +319,20 @@ public interface config_info
 
 public static class config_info_ext
 {
-	public static string get_project_path(this config_info cfg, string top)
+	public static string get_project_subdir(this config_info cfg, string top)
 	{
 		string subdir = Path.Combine(Path.Combine(top, cfg.get_name()));
 		Directory.CreateDirectory(subdir);
+		return subdir;
+	}
+
+	public static string get_project_path(this config_info cfg, string top)
+	{
+		string subdir = cfg.get_project_subdir(top);
 		string proj = Path.Combine(subdir, cfg.get_project_filename());
 		return proj;
 	}
+
 }
 
 public class config_sqlite3 : config_info
@@ -572,6 +577,17 @@ public class config_pcl : config_info
 			}
 		}
 		throw new Exception(get_name());
+	}
+
+	public bool needs_project_dot_json()
+	{
+		switch (env)
+		{
+			case "uap10":
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	public static string get_nuget_framework_name(string env)
@@ -1769,7 +1785,7 @@ public static class gen
 						break;
 					case "uap10":
 						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '14.0' ");
 						f.WriteElementString("VisualStudioVersion", "14.0");
 						f.WriteEndElement(); // PropertyGroup
 						break;
@@ -1942,6 +1958,30 @@ public static class gen
 			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
+		}
+
+		if (cfg.needs_project_dot_json())
+		{
+			string subdir = cfg.get_project_subdir(top);
+			using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
+			{
+				tw.WriteLine("{");
+				tw.WriteLine("    \"dependencies\" : {");
+				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\"");
+				tw.WriteLine("    },");
+				tw.WriteLine("    \"frameworks\" : {");
+				tw.WriteLine("         \"uap10.0\": {}");
+				tw.WriteLine("    },");
+				tw.WriteLine("    \"runtimes\" : {");
+				tw.WriteLine("         \"win10-arm\": {},");
+				tw.WriteLine("         \"win10-arm-aot\": {},");
+				tw.WriteLine("         \"win10-x86\": {},");
+				tw.WriteLine("         \"win10-x86-aot\": {},");
+				tw.WriteLine("         \"win10-x64\": {},");
+				tw.WriteLine("         \"win10-x64-aot\": {}");
+				tw.WriteLine("    }");
+				tw.WriteLine("}");
+			}
 		}
 	}
 
