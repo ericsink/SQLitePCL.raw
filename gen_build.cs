@@ -139,6 +139,8 @@ public static class projects
 
 		items_pcl.Add(new config_pcl { env="net40", api="pinvoke", what="sqlite3", cpu="anycpu"});
 
+		items_pcl.Add(new config_pcl { env="net35", api="pinvoke", what="sqlite3", cpu="anycpu"});
+
 		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="x64"});
@@ -166,6 +168,8 @@ public static class projects
 		case "net45":
 			return "v110_xp";
 		case "net40":
+			return "v110_xp";
+		case "net35":
 			return "v110_xp";
 		case "wp80":
 			return "v110_wp80";
@@ -607,6 +611,8 @@ public class config_pcl : config_info
 				return "net45";
 			case "net40":
 				return "net40";
+			case "net35":
+				return "net35";
 			case "wp80":
 				return "wp8";
 			case "wp81_sl":
@@ -1556,6 +1562,12 @@ public static class gen
 					defines.Add("OLD_REFLECTION");
 					f.WriteElementString("TargetFrameworkVersion", "v4.0");
 					break;
+				case "net35":
+					f.WriteElementString("ProductVersion", "12.0.0");
+					defines.Add("OLD_REFLECTION");
+					defines.Add("NO_CONCURRENTDICTIONARY");
+					f.WriteElementString("TargetFrameworkVersion", "v3.5");
+					break;
 				case "wp80":
 					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
 					f.WriteElementString("TargetFrameworkVersion", "v8.0");
@@ -1610,6 +1622,10 @@ public static class gen
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
 						}
+                        else if (cfg.env == "net35")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
+						}
 						else if (cfg.env == "unified_ios")
 						{
 							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
@@ -1633,6 +1649,10 @@ public static class gen
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
                         else if (cfg.env == "net40")
+						{
+							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
+						}
+                        else if (cfg.env == "net35")
 						{
 							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
 						}
@@ -1663,6 +1683,9 @@ public static class gen
 									break;
 								case "net40":
 									defines.Add("PINVOKE_ANYCPU_NET45"); // okay for net40
+									break;
+								case "net35":
+									defines.Add("PINVOKE_ANYCPU_NET45"); // okay for net35
 									break;
 								default:
                                                                         // TODO are there any situations where this will work? 
@@ -1697,6 +1720,7 @@ public static class gen
 				case "android":
 				case "net45":
 				case "net40":
+				case "net35":
 					write_reference(f, "System");
 					write_reference(f, "System.Core");
 					break;
@@ -1936,8 +1960,9 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
 						f.WriteEndElement(); // Import
 						break;
-					case "net40":
 					case "net45":
+					case "net40":
+					case "net35":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
 						f.WriteEndElement(); // Import
@@ -2954,6 +2979,7 @@ public static class gen
 			// not here: pcl_env_pinvoke["unified_mac"] = null;
 			pcl_env_pinvoke["net45"] = null;
 			pcl_env_pinvoke["net40"] = null;
+			pcl_env_pinvoke["net35"] = null;
 			pcl_env_pinvoke["win8"] = null;
 			pcl_env_pinvoke["win81"] = null;
 			pcl_env_pinvoke["wpa81"] = null;
@@ -2978,7 +3004,7 @@ public static class gen
 
 				string tname = string.Format("{0}.targets", env);
 
-				if (env == "net45" || env == "net40")
+				if (env == "net45" || env == "net40" || env == "net35")
 				{
                     // TODO verify that this targets file works when its pcl is in lib and not build
                     gen_nuget_targets_pinvoke_anycpu(top, tname, env);
@@ -3581,6 +3607,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
+			tw.WriteLine("../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 		}
 
