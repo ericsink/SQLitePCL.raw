@@ -2793,6 +2793,30 @@ public static class gen
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
+			f.WriteStartElement("dependencies");
+
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "uap10");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Runtime");
+			f.WriteAttributeString("version", "4.0.10");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Collections");
+			f.WriteAttributeString("version", "4.0.10");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Threading");
+			f.WriteAttributeString("version", "4.0.10");
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
@@ -3130,6 +3154,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
@@ -3191,6 +3216,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.ugly");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 			f.WriteEndElement(); // dependencies
 
