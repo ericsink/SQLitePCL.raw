@@ -152,10 +152,10 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x64"});
 		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x86"});
 
-		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="x64"});
-		items_pcl.Add(new config_pcl { env="uap10", api="pinvoke", what="sqlite3", cpu="x86"});
+		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="x64"});
+		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="x86"});
 
 		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="arm"});
@@ -178,7 +178,7 @@ public static class projects
 			return "v120";
 		case "wpa81":
 			return "v120_wp81";
-		case "uap10":
+		case "uap10.0":
 			return "v140";
 		case "win8":
 			return "v110";
@@ -600,7 +600,7 @@ public class config_pcl : config_info
 	{
 		switch (env)
 		{
-			case "uap10":
+			case "uap10.0":
 				return true;
 			default:
 				return false;
@@ -632,8 +632,8 @@ public class config_pcl : config_info
 				return "wp81";
 			case "wpa81":
 				return "wpa81";
-			case "uap10":
-				return "uap10";
+			case "uap10.0":
+				return "uap10.0";
 			case "win8":
 				return "win8";
 			case "win81":
@@ -707,7 +707,7 @@ public class config_pcl : config_info
 			case "win8":
 			case "win81":
 			case "wpa81":
-			//case "uap10":
+			// TODO? case "uap10.0":
 			//case "wp81_sl":
 				add_product(a, "SQLitePCL.raw.pri");
 				break;
@@ -1428,7 +1428,7 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			switch (cfg.env)
 			{
-				case "uap10":
+				case "uap10.0":
 					f.WriteAttributeString("ToolsVersion", "14.0");
 					break;
 				case "win81":
@@ -1491,7 +1491,7 @@ public static class gen
 					case "wp81_sl":
 						write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 						break;
-					case "uap10":
+					case "uap10.0":
 						write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
 						break;
 				}
@@ -1557,7 +1557,7 @@ public static class gen
 					f.WriteElementString("TargetFrameworkVersion", null);
 					defines.Add("NETFX_CORE");
 					break;
-				case "uap10":
+				case "uap10.0":
 					f.WriteElementString("TargetPlatformIdentifier", "UAP");
 					f.WriteElementString("TargetPlatformVersion", "10.0.10240.0");
 					f.WriteElementString("TargetPlatformMinVersion", "10.0.10240.0");
@@ -1820,7 +1820,7 @@ public static class gen
 						f.WriteElementString("VisualStudioVersion", "12.0");
 						f.WriteEndElement(); // PropertyGroup
 						break;
-					case "uap10":
+					case "uap10.0":
 						f.WriteStartElement("PropertyGroup");
 						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '14.0' ");
 						f.WriteElementString("VisualStudioVersion", "14.0");
@@ -1968,7 +1968,7 @@ public static class gen
 					case "win8":
 					case "win81":
 					case "wpa81":
-					case "uap10":
+					case "uap10.0":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
 						f.WriteEndElement(); // Import
@@ -2762,7 +2762,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.5-pre3";
-	private const string NUSPEC_RELEASE_NOTES = "uap10";
+	private const string NUSPEC_RELEASE_NOTES = "uap10.0";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2798,7 +2798,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "uap10");
+			f.WriteAttributeString("targetFramework", "uap10.0");
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Runtime");
@@ -3049,7 +3049,7 @@ public static class gen
 			pcl_env_pinvoke["win8"] = null;
 			pcl_env_pinvoke["win81"] = null;
 			pcl_env_pinvoke["wpa81"] = null;
-			pcl_env_pinvoke["uap10"] = null;
+			pcl_env_pinvoke["uap10.0"] = null;
 
 			foreach (string env in pcl_env_pinvoke.Keys)
 			{
@@ -3274,7 +3274,7 @@ public static class gen
 					f.WriteEndElement(); // SDKReference
 					f.WriteEndElement(); // ItemGroup
 					break;
-				case "uap10":
+				case "uap10.0":
 #if not // TODO
 					f.WriteStartElement("ItemGroup");
 					f.WriteStartElement("SDKReference");
