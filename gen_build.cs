@@ -2005,7 +2005,8 @@ public static class gen
 			{
 				tw.WriteLine("{");
 				tw.WriteLine("    \"dependencies\" : {");
-				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\"");
+				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\",");
+				tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"1.4.2\"");
 				tw.WriteLine("    },");
 				tw.WriteLine("    \"frameworks\" : {");
 				tw.WriteLine("         \"uap10.0\": {}");
@@ -2761,7 +2762,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.5-pre3";
-	private const string NUSPEC_RELEASE_NOTES = "netcore452";
+	private const string NUSPEC_RELEASE_NOTES = "uap10";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2793,6 +2794,7 @@ public static class gen
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
+#if not
 			f.WriteStartElement("dependencies");
 
 			f.WriteStartElement("group");
@@ -2816,6 +2818,7 @@ public static class gen
 			f.WriteEndElement(); // group
 
 			f.WriteEndElement(); // dependencies
+#endif
 
 			f.WriteEndElement(); // metadata
 
@@ -3270,6 +3273,15 @@ public static class gen
 					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=12.0");
 					f.WriteEndElement(); // SDKReference
 					f.WriteEndElement(); // ItemGroup
+					break;
+				case "uap10":
+#if not // TODO
+					f.WriteStartElement("ItemGroup");
+					f.WriteStartElement("SDKReference");
+					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=14.0");
+					f.WriteEndElement(); // SDKReference
+					f.WriteEndElement(); // ItemGroup
+#endif
 					break;
 			}
 
