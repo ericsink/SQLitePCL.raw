@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2015 Zumero, LLC
+   Copyright 2014-2016 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -133,9 +133,14 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
+		// the net45/anycpu build is special.  it figures out cpu arch at runtime
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
+
+		// TODO do we need the cpu-specific builds of net45 here?
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
+
+	       	// TODO is this used?
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="net40", api="pinvoke", what="sqlite3", cpu="anycpu"});
@@ -191,7 +196,6 @@ public static class projects
 
 	public static string get_portable_nuget_target_string(string env)
 	{
-        // TODO put net40 in here somewhere
 		switch (env)
 		{
 			case "profile78":
@@ -609,7 +613,7 @@ public class config_pcl : config_info
 
 	public static string get_nuget_framework_name(string env)
 	{
-		// TODO maybe I should just use these names?
+		// TODO maybe I should just use the TFM names?
 		switch (env)
 		{
 			case "ios":
@@ -707,8 +711,7 @@ public class config_pcl : config_info
 			case "win8":
 			case "win81":
 			case "wpa81":
-			// TODO? case "uap10.0":
-			//case "wp81_sl":
+			case "uap10.0":
 				add_product(a, "SQLitePCL.raw.pri");
 				break;
 		}
@@ -963,13 +966,6 @@ public static class gen
 					f.WriteElementString("WindowsAppContainer", "true");
 					f.WriteElementString("AppContainerApplication", "true");
 					break;
-				case "wp81_sl":
-					// TODO what to do with this?
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
 				case "v140":
 					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
 					f.WriteElementString("ApplicationType", "Windows Store");
@@ -1073,6 +1069,7 @@ public static class gen
 			write_cpp_define(f, "SQLITE_DEFAULT_FOREIGN_KEYS=1");
 			//write_cpp_define(f, "SQLITE_ENABLE_RTREE");
 			write_cpp_define(f, "SQLITE_ENABLE_JSON1");
+			// TODO FTS5?
 			write_cpp_define(f, "SQLITE_ENABLE_FTS4");
 			write_cpp_define(f, "SQLITE_ENABLE_FTS3_PARENTHESIS");
 			write_cpp_define(f, "SQLITE_ENABLE_COLUMN_METADATA");
@@ -1687,10 +1684,10 @@ public static class gen
 						if (cfg.cpu == "anycpu") {
 							switch (cfg.env)
 							{
-// TODO I wish we could do anycpu for winrt plats.  We can't build
-// sqlite3.dll without a dependency on the VC++ runtime, which
-// for RT platforms is only available as an extenson SDK, which
-// refuses to build with AnyCPU.
+								// TODO I wish we could do anycpu for winrt plats.  We can't build
+								// sqlite3.dll without a dependency on the VC++ runtime, which
+								// for RT platforms is only available as an extenson SDK, which
+								// refuses to build with AnyCPU.
 								case "net45":
 									defines.Add("PINVOKE_ANYCPU_NET45");
 									break;
@@ -2514,6 +2511,7 @@ public static class gen
 	{
 		using (StreamWriter f = new StreamWriter(Path.Combine(top, "sqlitepcl.sln")))
 		{
+			// TODO change to VS 2015
 			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
 			f.WriteLine("# Visual Studio 2013");
 			f.WriteLine("VisualStudioVersion = 12.0");
@@ -2762,7 +2760,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.8.5-pre3";
-	private const string NUSPEC_RELEASE_NOTES = "uap10.0";
+	private const string NUSPEC_RELEASE_NOTES = "Add support for uap10.0.  And net35.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2783,42 +2781,16 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.raw");
-			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  For now, the package exists under both IDs and they are identical.  Eventually the old ID may stop getting updates.)");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  The old ID is getting no updates after 0.8.4.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-#if not
-			f.WriteStartElement("dependencies");
-
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "uap10.0");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Runtime");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Collections");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Threading");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			f.WriteEndElement(); // dependencies
-#endif
 
 			f.WriteEndElement(); // metadata
 
@@ -3072,7 +3044,6 @@ public static class gen
 
 				if (env == "net45" || env == "net40" || env == "net35")
 				{
-                    // TODO verify that this targets file works when its pcl is in lib and not build
                     gen_nuget_targets_pinvoke_anycpu(top, tname, env);
 				}
 				else
@@ -3146,7 +3117,7 @@ public static class gen
 			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
@@ -3208,7 +3179,7 @@ public static class gen
 			f.WriteElementString("description", "Create a new unit test project.  Add this NuGetPackage.  Build.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2015 Zumero, LLC");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
@@ -3275,7 +3246,7 @@ public static class gen
 					f.WriteEndElement(); // ItemGroup
 					break;
 				case "uap10.0":
-#if not // TODO
+#if not // TODO do we need this?  we should, but testing says we don't.
 					f.WriteStartElement("ItemGroup");
 					f.WriteStartElement("SDKReference");
 					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=14.0");
@@ -3675,12 +3646,12 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
+		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
 
-		gen_nuspec_tests(top, root);
+		//gen_nuspec_tests(top, root);
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
@@ -3703,9 +3674,9 @@ public static class gen
 			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
+			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
+			//tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
@@ -3713,9 +3684,9 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
+			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.tests.{0}.nupkg", NUSPEC_VERSION);
+			//tw.WriteLine("../../nuget push SQLitePCL.tests.{0}.nupkg", NUSPEC_VERSION);
 		}
 	}
 }
