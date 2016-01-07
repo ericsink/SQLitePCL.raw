@@ -136,6 +136,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_open_v2(util.to_utf8(filename), out db, flags, util.to_utf8(vfs));
         }
 
+    #pragma warning disable 649
     private struct sqlite3_vfs
     {
         public int iVersion;
@@ -161,6 +162,7 @@ namespace SQLitePCL
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
     }
+    #pragma warning restore 649
 	
 	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
 	{
