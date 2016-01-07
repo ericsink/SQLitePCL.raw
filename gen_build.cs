@@ -2002,8 +2002,8 @@ public static class gen
 			{
 				tw.WriteLine("{");
 				tw.WriteLine("    \"dependencies\" : {");
-				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\",");
-				tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"1.4.2\"");
+				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\"");
+				//tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"1.4.2\"");
 				tw.WriteLine("    },");
 				tw.WriteLine("    \"frameworks\" : {");
 				tw.WriteLine("         \"uap10.0\": {}");
@@ -2759,7 +2759,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.5-pre3";
+	private const string NUSPEC_VERSION = "0.8.5-pre4";
 	private const string NUSPEC_RELEASE_NOTES = "Add support for uap10.0.  And net35.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -2781,7 +2781,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.raw");
-			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  The old ID is getting no updates after 0.8.4.)");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3646,7 +3646,7 @@ public static class gen
 
 		// --------------------------------
 
-		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
+		gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
@@ -3657,6 +3657,8 @@ public static class gen
 		{
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
+			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke_sqlite3.anycpu/platform.uap10.0.pinvoke_sqlite3.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke_sqlite3/anycpu/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke_sqlite3.anycpu/platform.uap10.0.pinvoke_sqlite3.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke_sqlite3/anycpu/SQLitePCL.raw.dll");
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build_mac.sh")))
@@ -3674,7 +3676,7 @@ public static class gen
 			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			//tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
 			tw.WriteLine("ls *.nupkg");
@@ -3684,7 +3686,7 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
-			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			//tw.WriteLine("../../nuget push SQLitePCL.tests.{0}.nupkg", NUSPEC_VERSION);
 		}
