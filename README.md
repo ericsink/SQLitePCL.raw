@@ -2,13 +2,27 @@
 # SQLitePCL.raw
 
 SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw)
-access to SQLite.
+access to SQLite. License:  Apache License v2.
 
-## Is this open source?
+## QuickStart
 
-Yes.  Apache License v2.
+Add the SQLitePCL.raw NuGet package to your platform projects (iOS, Android, Windows, etc) and to your PCL projects as needed. 
 
-## What is a Portable Class Library (PCL)?
+On some platforms, you can select the version of SQLite to use by adding an MSBuild property like the following to your project file:
+
+    <UseSQLiteFrom>packaged_sqlite3</UseSQLiteFrom>
+
+or
+
+    <UseSQLiteFrom>packaged_sqlcipher</UseSQLiteFrom>
+
+If UseSQLiteFrom is missing, SQLitePCL.raw will use the SQLite library included by the device OS, if available (iOS and Android have this, for example). 
+
+Note that on some platforms the SQLitePCL.raw NuGet package does not include an assembly in the NuGet "lib" directory, but rather, uses an msbuild 
+"targets" file, which, at build time, adds a reference depending on the UseSQLiteFrom 
+property you set in your project file.
+
+## Portable Class Library (PCL)
 
 A Portable Class Library is not merely a class library which happens to avoid using
 things that are not portable.  The PCL concept also includes tooling support.
@@ -16,7 +30,7 @@ You can tell the compiler which .NET targets you want to support (a profile)
 and then it will complain at you if you try to use something that wouldn't
 work.
 
-## Which flavor of PCL is this?
+####Which flavor of PCL is this?
 
 See [my blog entry](http://www.ericsink.com/entries/pcl_bait_and_switch.html) about the two different ways of doing PCLs.
 
@@ -24,7 +38,7 @@ SQLitePCL.raw uses the Bait and Switch approach.  It provides a portable assembl
 which can be referenced by projects that are libraries.  When building an executable or app,
 reference the appropriate platform-specific alternative.
 
-## Which platform assemblies are provided in this library?
+#### Which platform assemblies are provided in this library?
 
 In the pcl subdirectory, each csproj with a name of the form SQLitePCL.platform.\* contains an implementation
 of a platform assembly.
@@ -78,21 +92,41 @@ always kept terribly current.  :-)
 
 For all practical purposes, it's impossible.  :-)
 
-But if you're dying to try it, look at gen\_build.cs.  It's a script which
-generates the build system.  The main build happens on Windows.  The script
-will expect you to have Visual Studio 2012 *and* Visual Studio 2013, 
-the latter with Update 2 installed for the Phone 8.1 stuff.  You also
-need the Xamarin stuff installed.  And the relevant Android SDK(s).
+gen\_build.cs is a C# script which generates a solution with all the project configurations in the bld folder, along with other files for the build system.
 
-The Mac stuff has to build, er, on a Mac.  gen\_build.exe will generate
-a build\_mac.sh file which needs to be run on a Mac.  The resulting 
-assemblies are actually committed to the repository so the main build
+On my build machine, I have Visual Studio 2012 *and* Visual Studio 2013 (update 2) *and* Visual Studio 2015 and Xamarin Android + iOS and  
+the relevant Android SDK(s).
+
+build\_mac.sh builds the iOS libraries and has to be run on the mac.
+The resulting assemblies are actually committed to the repository so the main build
 process can use them.  Run apple/libs/mac/cp\_mac.ps1 to copy the
 necessary files over to the bld directory.
 
 Builds for sqlite and sqlcipher for Mac, iOS, and Android also happen
-on a Mac.  See the sh files in the apple directory.  On Android,
+on a Mac.  See the sh files in the apple directory.  For Android,
 run ndk-build in android/sqlite3.
+
+## Versions
+
+You can check the version of SQLite being used by your app with this code:
+
+    //Display the version of SQLite used
+    //using SQLitePCL;
+    sqlite3 db;
+    raw.sqlite3_open(":memory:", out db);
+    sqlite3_stmt stmt;
+    raw.sqlite3_prepare_v2(db, "select sqlite_version()", out stmt);
+    raw.sqlite3_step(stmt);
+    raw.sqlite3_column_type(stmt, 0);
+    var version = raw.sqlite3_column_text(stmt, 0);
+    Console.WriteLine("SQLITE version " + version);
+    raw.sqlite3_finalize(stmt);
+    stmt.Dispose();
+    db.Dispose();
+
+For information:  
+iOS 9.2 is shipped with sqlite 3.8.10.2  
+iOS 8.4 is shipped with sqlite 3.8.5  
 
 ## Which PCL profile is supported?
 

@@ -1461,6 +1461,9 @@ public static class gen
 			}
 			else
 			{
+                // TODO it's weird that in the block below we apparently do
+                // not write a project type guid for csharp when the
+                // env is net45, for example.
 				switch (cfg.env)
 				{
 					case "ios":
@@ -2400,7 +2403,14 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
-			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
+			if (cfg.is_portable()) 
+            {
+                write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
+            }
+            else
+            {
+                write_project_type_guids(f, GUID_CSHARP);
+            }
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
