@@ -2769,7 +2769,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.5-pre4";
+	private const string NUSPEC_VERSION = "0.8.5";
 	private const string NUSPEC_RELEASE_NOTES = "Add support for uap10.0.  And net35.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
