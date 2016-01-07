@@ -6,10 +6,9 @@ access to SQLite. License:  Apache License v2.
 
 ## QuickStart
 
-Add the nuget to your platform projects (ios, android, wp). 
-Optionally add it to your PCL projects where you need to call sqlite methods.  
+Add the SQLitePCL.raw NuGet package to your platform projects (iOS, Android, Windows, etc) and to your PCL projects as needed. 
 
-Select the version of SQLite to use by adding this line to your solution file :
+On some platforms, you can select the version of SQLite to use by adding an MSBuild property like the following to your project file:
 
     <UseSQLiteFrom>packaged_sqlite3</UseSQLiteFrom>
 
@@ -17,14 +16,11 @@ or
 
     <UseSQLiteFrom>packaged_sqlcipher</UseSQLiteFrom>
 
-If UseSQLiteFrom is missing, SQLitePCL.raw will use the sqlite library included by the device OS. 
-The version of SQLite used will differ from device and OS versions, and will depend on the target device.
-This is not what you should use.
+If UseSQLiteFrom is missing, SQLitePCL.raw will use the SQLite library included by the device OS, if available (iOS and Android have this, for example). 
 
-Note that the SQLitePCL.raw nuget does not add any reference to your project files. 
-Instead it adds a "target" which, on build, adds a reference depending on the UseSQLiteFrom 
+Note that on some platforms the SQLitePCL.raw NuGet package does not include an assembly in the NuGet "lib" directory, but rather, uses an msbuild 
+"targets" file, which, at build time, adds a reference depending on the UseSQLiteFrom 
 property you set in your project file.
-
 
 ## Portable Class Library (PCL)
 
@@ -96,16 +92,14 @@ always kept terribly current.  :-)
 
 For all practical purposes, it's impossible.  :-)
 
-gen_build.cs is a c# cs-script which generates a solution with all the project configurations in the bld folder, along with other files for the build system.
-Download cs-script here: https://csscriptsource.codeplex.com/
+gen\_build.cs is a C# script which generates a solution with all the project configurations in the bld folder, along with other files for the build system.
 
-The script will expect you to have Visual Studio 2012 *and* Visual Studio 2013, 
-the latter with Update 2 installed for the Phone 8.1 stuff.  You also
-needs Xamarin Android+iOS installed.  And the relevant Android SDK(s).
+On my build machine, I have Visual Studio 2012 *and* Visual Studio 2013 (update 2) *and* Visual Studio 2015 and Xamarin Android + iOS and  
+the relevant Android SDK(s).
 
-build_mac.sh builds the ios libraries and has to be run on the mac.
+build\_mac.sh builds the iOS libraries and has to be run on the mac.
 The resulting assemblies are actually committed to the repository so the main build
-process can use them.  Run apple/libs/mac/cp_mac.ps1 to copy the
+process can use them.  Run apple/libs/mac/cp\_mac.ps1 to copy the
 necessary files over to the bld directory.
 
 Builds for sqlite and sqlcipher for Mac, iOS, and Android also happen
@@ -114,13 +108,7 @@ run ndk-build in android/sqlite3.
 
 ## Versions
 
-There are 3 versions of this library:  
-
-**pinvoke_sqlite3**: uses sqlite installed on the target device. The sqlite version changes by OS version.  
-**pinvoke_packaged_sqlite3**: uses our compiled version of sqlite3.  
-**pinvoke_packaged_sqlcipher**: uses our compiled version of sqlcipher.  
-
-You can check the version used by your app using this code:
+You can check the version of SQLite being used by your app with this code:
 
     //Display the version of SQLite used
     //using SQLitePCL;
@@ -139,7 +127,6 @@ You can check the version used by your app using this code:
 For information:  
 iOS 9.2 is shipped with sqlite 3.8.10.2  
 iOS 8.4 is shipped with sqlite 3.8.5  
-
 
 ## Which PCL profile is supported?
 
