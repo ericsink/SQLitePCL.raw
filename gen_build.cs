@@ -2769,8 +2769,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.5";
-	private const string NUSPEC_RELEASE_NOTES = "Add support for uap10.0.  And net35.";
+	private const string NUSPEC_VERSION = "0.8.6";
+	private const string NUSPEC_RELEASE_NOTES = "Fix recently introduced bug (error with win8 class library anycpu)";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3241,6 +3241,7 @@ public static class gen
 			{
 				case "win8":
 					f.WriteStartElement("ItemGroup");
+					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
 					f.WriteStartElement("SDKReference");
 					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=11.0");
 					f.WriteEndElement(); // SDKReference
@@ -3250,6 +3251,7 @@ public static class gen
 				case "wpa81":
 				case "wp81_sl":
 					f.WriteStartElement("ItemGroup");
+					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
 					f.WriteStartElement("SDKReference");
 					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=12.0");
 					f.WriteEndElement(); // SDKReference
