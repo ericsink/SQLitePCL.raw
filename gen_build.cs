@@ -1783,6 +1783,16 @@ public static class gen
 				f.WriteEndElement(); // ItemGroup
 			}
 
+			switch (cfg.env)
+			{
+				case "unified_ios":
+				case "ios":
+					f.WriteStartElement("ItemGroup");
+					write_cs_compile(f, root, "src\\cs\\ios_native.cs");
+					f.WriteEndElement(); // ItemGroup
+					break;
+			}
+
 			if (cfg.is_cppinterop())
 			{
 				f.WriteStartElement("ItemGroup");
@@ -2769,8 +2779,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.8.6";
-	private const string NUSPEC_RELEASE_NOTES = "Fix recently introduced bug (error with win8 class library anycpu)";
+	private const string NUSPEC_VERSION = "0.9.0-pre1";
+	private const string NUSPEC_RELEASE_NOTES = "sep";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
