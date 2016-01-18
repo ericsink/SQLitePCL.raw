@@ -1127,9 +1127,7 @@ namespace SQLitePCL
 
         private static class NativeMethods
         {
-#if PINVOKE_FROM_INTERNAL_SQLITE3
-        private const string SQLITE_DLL = "__Internal";
-#elif PINVOKE_FROM_INTERNAL_SQLCIPHER
+#if PINVOKE_FROM_INTERNAL
         private const string SQLITE_DLL = "__Internal";
 #elif PINVOKE_FROM_SQLITE3
         private const string SQLITE_DLL = "sqlite3";

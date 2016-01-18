@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#if PINVOKE_FROM_INTERNAL_SQLITE3
+#if PACKAGED_SQLITE3
 
 #if PLATFORM_UNIFIED
 
@@ -39,7 +39,7 @@
 
 #endif
 
-#if PINVOKE_FROM_INTERNAL_SQLCIPHER
+#if PACKAGED_SQLCIPHER
 
 #if PLATFORM_UNIFIED
 [assembly: ObjCRuntime.LinkWith(
@@ -81,3 +81,9 @@
 
 #endif
 
+	public class foo
+{
+	public static void init_silly()
+	{
+	}
+}

@@ -29,6 +29,7 @@ public static class projects
 	public static List<config_pcl> items_pcl = new List<config_pcl>();
 	public static List<config_higher> items_higher = new List<config_higher>();
 	public static List<config_tests> items_tests = new List<config_tests>();
+	public static List<config_xamarin_native> items_xamarin_native = new List<config_xamarin_native>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -40,6 +41,7 @@ public static class projects
 		init_cppinterop(true);
 		init_pcl_bait();
 		init_pcl_pinvoke();
+		init_xamarin_native();
 		init_pcl_cppinterop(false);
 		init_pcl_cppinterop(true);
 		init_higher();
@@ -115,6 +117,18 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
 	}
 
+	private static void init_xamarin_native()
+	{
+		items_xamarin_native.Add(new config_xamarin_native { env="ios", what="packaged_sqlite3" });
+		items_xamarin_native.Add(new config_xamarin_native { env="ios", what="packaged_sqlcipher" });
+
+		items_xamarin_native.Add(new config_xamarin_native { env="unified_ios", what="packaged_sqlite3" });
+		items_xamarin_native.Add(new config_xamarin_native { env="unified_ios", what="packaged_sqlcipher" });
+
+		items_xamarin_native.Add(new config_xamarin_native { env="android", what="packaged_sqlite3" });
+		items_xamarin_native.Add(new config_xamarin_native { env="android", what="packaged_sqlcipher" });
+	}
+
 	private static void init_pcl_pinvoke()
 	{
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
@@ -122,10 +136,12 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		//items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
+		//items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="internal", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
 
@@ -558,6 +574,64 @@ public class config_tests : config_info
 
 }
 
+public class config_xamarin_native : config_info
+{
+	public string env;
+	public string what;
+	public string guid;
+
+	public static string get_nuget_framework_name(string env)
+	{
+		// TODO maybe I should just use the TFM names?
+		switch (env)
+		{
+			case "ios":
+				return "MonoTouch";
+			case "unified_ios":
+				return "Xamarin.iOS10";
+			case "unified_mac":
+				return "Xamarin.Mac20";
+			case "android":
+				return "MonoAndroid";
+			default:
+				throw new Exception(env);
+		}
+	}
+					
+	public string get_nuget_target_path(string where)
+	{
+		return string.Format("lib\\{0}\\", get_nuget_framework_name(env));
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, "z_sqlite.dll");
+	}
+
+	private const string AREA = "xamarin_native";
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}\\{2}", AREA, env, what);
+	}
+
+	public string get_name()
+	{
+		return string.Format("xamarin_native.{0}.{1}", env, what);
+	}
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", get_name());
+	}
+	
+}
+
 public class config_pcl : config_info
 {
 	public string env;
@@ -887,6 +961,38 @@ public static class gen
 		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
+
+		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath())));
+		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath())));
+
+		string defs;
+		if (debug)
+		{
+			defs = "DEBUG;";
+		}
+		else
+		{
+			defs = "";
+		}
+		foreach (string d in defines)
+		{
+			defs += d;
+			defs += ";";
+		}
+		f.WriteElementString("DefineConstants", defs);
+
+		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
+		f.WriteElementString("Optimize", debug ? "false" : "true");
+		f.WriteElementString("DebugType", debug ? "full" : "none");
+
+		f.WriteEndElement(); // PropertyGroup
+	}
+
+	private static void write_section(string top, config_xamarin_native cfg, XmlWriter f, bool debug, List<string> defines)
+	{
+		string name = debug ? "debug" : "release";
+		f.WriteStartElement("PropertyGroup");
+		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == '{0}' ", name));
 
 		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath())));
 		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath())));
@@ -1410,6 +1516,269 @@ public static class gen
 
     }
 
+	private static void gen_xamarin_native(config_xamarin_native cfg, string root, string top)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+			f.WriteAttributeString("DefaultTargets", "Build");
+
+			// TODO is this actually needed?
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
+			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
+			f.WriteEndElement(); // Import
+
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("ProjectGuid", cfg.guid);
+			switch (cfg.env)
+			{
+				case "ios":
+					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
+					break;
+				case "unified_ios":
+					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
+					break;
+				case "unified_mac":
+					write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
+					break;
+				case "android":
+					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
+					break;
+				default:
+					throw new Exception(cfg.env);
+			}
+
+			f.WriteStartElement("Configuration");
+			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
+
+			f.WriteString("Debug");
+
+			f.WriteEndElement(); // Configuration
+
+			if (cfg.env == "unified_mac") {
+				f.WriteElementString ("TargetFrameworkVersion", "v2.0");
+				f.WriteElementString ("TargetFrameworkIdentifier", "Xamarin.Mac");
+			}
+
+			f.WriteElementString("SchemaVersion", "2.0");
+			f.WriteElementString("Platform", "AnyCPU");
+			f.WriteElementString("DefaultLanguage", "en-us");
+			//f.WriteElementString("FileAlignment", "512");
+			f.WriteElementString("WarningLevel", "4");
+			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+			f.WriteElementString("OutputType", "Library");
+			f.WriteElementString("RootNamespace", "SQLitePCL");
+			f.WriteElementString("AssemblyName", "z_sqlite"); // match the name in get_products()
+
+			List<string> defines = new List<string>();
+
+			switch (cfg.env)
+			{
+				case "ios":
+					defines.Add("PLATFORM_IOS");
+					break;
+				case "unified_ios":
+				case "unified_mac":
+					defines.Add("PLATFORM_UNIFIED");
+					break;
+				case "android":
+					defines.Add("__MOBILE__");
+					defines.Add("__ANDROID__");
+					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
+					break;
+			}
+
+			switch (cfg.what)
+			{
+				case "packaged_sqlite3":
+					defines.Add("PACKAGED_SQLITE3");
+					break;
+				case "packaged_sqlcipher":
+					defines.Add("PACKAGED_SQLCIPHER");
+					break;
+				default:
+					throw new Exception(cfg.what);
+			}
+
+			f.WriteEndElement(); // PropertyGroup
+
+			write_section(top, cfg, f, true, defines);
+			write_section(top, cfg, f, false, defines);
+
+			f.WriteStartElement("ItemGroup");
+			write_reference(f, "System");
+			write_reference(f, "System.Core");
+			switch (cfg.env)
+			{
+				case "unified_ios":
+					write_reference(f, "Xamarin.iOS");
+					break;
+				case "unified_mac":
+					write_reference(f, "Xamarin.Mac");
+					break;
+				case "ios":
+					write_reference(f, "monotouch");
+					break;
+				case "android":
+					write_reference(f, "Mono.Android");
+					break;
+			}
+			f.WriteEndElement(); // ItemGroup
+
+			switch (cfg.env)
+			{
+				case "unified_ios":
+				case "ios":
+					f.WriteStartElement("ItemGroup");
+					write_cs_compile(f, root, "src\\cs\\ios_native.cs");
+					f.WriteEndElement(); // ItemGroup
+					break;
+			}
+
+			switch (cfg.env)
+			{
+				case "unified_ios":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+                        if (cfg.what == "packaged_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
+                            f.WriteElementString("Link", "packaged_sqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+                        if (cfg.what == "packaged_sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
+                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
+                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
+					break;
+				case "unified_mac":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+						if (cfg.what == "packaged_sqlite3")
+						{
+							f.WriteStartElement("ItemGroup");
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlite3.a"));
+							f.WriteElementString("Link", "packaged_sqlite3.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
+							f.WriteEndElement(); // ItemGroup
+						}
+						if (cfg.what == "packaged_sqlcipher")
+						{
+							f.WriteStartElement("ItemGroup");
+
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlcipher.a"));
+							f.WriteElementString("Link", "packaged_sqlcipher.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\libcrypto.a"));
+							f.WriteElementString("Link", "libcrypto.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+							f.WriteEndElement(); // ItemGroup
+						}
+						break;
+					case "ios":
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
+						f.WriteEndElement(); // Import
+
+                        if (cfg.what == "packaged_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
+                            f.WriteElementString("Link", "packaged_sqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+                        if (cfg.what == "packaged_sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
+                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
+                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
+						break;
+					case "android":
+						if (cfg.what == "packaged_sqlite3")
+						{
+                            f.WriteStartElement("ItemGroup");
+                            write_android_native_libs(root, f, "sqlite3");
+                            f.WriteEndElement(); // ItemGroup
+						}
+
+						if (cfg.what == "packaged_sqlcipher")
+						{
+                            f.WriteStartElement("ItemGroup");
+                            write_android_native_libs(root, f, "sqlcipher");
+                            f.WriteEndElement(); // ItemGroup
+                        }
+
+						f.WriteStartElement("Import");
+						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
+						f.WriteEndElement(); // Import
+
+						break;
+				}
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+
+	}
+
 	private static void gen_pcl(config_pcl cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -1622,6 +1991,20 @@ public static class gen
 			{
 				switch (cfg.what)
 				{
+					case "internal":
+						if (cfg.env == "unified_ios")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL");
+						}
+						else if (cfg.env == "unified_mac")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL");
+						}
+						else if (cfg.env == "ios")
+						{
+							defines.Add("PINVOKE_FROM_INTERNAL");
+						}
+						break;
 					case "packaged_sqlite3":
 						if (cfg.env == "android")
 						{
@@ -1641,15 +2024,18 @@ public static class gen
 						}
 						else if (cfg.env == "unified_ios")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLITE3");
 						}
 						else if (cfg.env == "unified_mac")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLITE3");
 						}
 						else if (cfg.env == "ios")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLITE3");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLITE3");
 						}
 						break;
 					case "packaged_sqlcipher":
@@ -1671,15 +2057,18 @@ public static class gen
 						}
 						else if (cfg.env == "unified_ios")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLCIPHER");
 						}
 						else if (cfg.env == "unified_mac")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLCIPHER");
 						}
 						else if (cfg.env == "ios")
 						{
-							defines.Add("PINVOKE_FROM_INTERNAL_SQLCIPHER");
+							defines.Add("PINVOKE_FROM_INTERNAL");
+							defines.Add("PACKAGED_SQLCIPHER");
 						}
 						break;
 					case "sqlite3":
@@ -2543,6 +2932,7 @@ public static class gen
 			string folder_cppinterop = write_folder(f, "cppinterop");
 			string folder_platforms = write_folder(f, "platforms");
 			string folder_portable = write_folder(f, "portable");
+			string folder_xamarin_native = write_folder(f, "xamarin_native");
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
@@ -2586,6 +2976,17 @@ public static class gen
 					f.WriteLine("\t\t{0} = {0}", other.guid);
 					f.WriteLine("\tEndProjectSection");
 				}
+				f.WriteLine("EndProject");
+			}
+
+			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
 				f.WriteLine("EndProject");
 			}
 
@@ -2650,6 +3051,15 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
+			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			{
+				if (cfg.env == "unified_mac") continue;
+
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
+			}
 			foreach (config_higher cfg in projects.items_higher)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
@@ -2689,6 +3099,10 @@ public static class gen
 				{
 					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
 				}
+			}
+			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			{
+				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_xamarin_native);
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -3624,6 +4038,11 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
+		foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
 		foreach (config_higher cfg in projects.items_higher)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -3650,6 +4069,11 @@ public static class gen
 		foreach (config_pcl cfg in projects.items_pcl)
 		{
 			gen_pcl(cfg, root, top);
+		}
+
+		foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+		{
+			gen_xamarin_native(cfg, root, top);
 		}
 
 		foreach (config_higher cfg in projects.items_higher)
