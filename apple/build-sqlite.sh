@@ -22,11 +22,11 @@ mkdir -p ./$Z_SQL/obj/ios/x86_64
 mkdir -p ./$Z_SQL/obj/ios/armv7
 mkdir -p ./$Z_SQL/obj/ios/armv7s
 mkdir -p ./$Z_SQL/obj/ios/arm64
-mkdir -p ./libs/ios
+mkdir -p ./libs/ios/$Z_SQL
 
 mkdir -p ./$Z_SQL/obj/mac/i386
 mkdir -p ./$Z_SQL/obj/mac/x86_64
-mkdir -p ./libs/mac
+mkdir -p ./libs/mac/$Z_SQL
 
 if [ -d /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.1.sdk ]; then
 	IOS_SIM_ROOT=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator8.1.sdk
@@ -53,14 +53,14 @@ Z_CFLAGS="-O -DNDEBUG -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_ENABLE_FTS3_PAREN
 xcrun clang $Z_CODEC_ARGS -arch i386 $Z_CFLAGS -c -o ./$Z_SQL/obj/mac/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun clang $Z_CODEC_ARGS -arch x86_64 $Z_CFLAGS -c -o ./$Z_SQL/obj/mac/x86_64/sqlite3.c.o ../$Z_SQL/sqlite3.c
 
-libtool -static -o ./libs/mac/packaged_$Z_SQL.a \
+libtool -static -o ./libs/mac/$Z_SQL/esqlite3.a \
 	./$Z_SQL/obj/mac/i386/sqlite3.c.o \
 	./$Z_SQL/obj/mac/x86_64/sqlite3.c.o
 
 if [ "$Z_SQLCIPHER" == "1" ]; then
-    echo "TODO sqlcipher dylib"
+    xcrun clang -dynamiclib $Z_CODEC_ARGS -arch i386 -arch x86_64 $Z_CFLAGS -o ./libs/mac/$Z_SQL/libesqlite3.dylib ../$Z_SQL/sqlite3.c ./libs/mac/libcrypto.a
 else
-    xcrun clang -dynamiclib $Z_CODEC_ARGS -arch i386 -arch x86_64 $Z_CFLAGS -o ./libs/mac/libpackaged_sqlite3.dylib ../$Z_SQL/sqlite3.c
+    xcrun clang -dynamiclib $Z_CODEC_ARGS -arch i386 -arch x86_64 $Z_CFLAGS -o ./libs/mac/$Z_SQL/libesqlite3.dylib ../$Z_SQL/sqlite3.c
 fi
 
 xcrun clang $Z_CODEC_ARGS -arch i386 -isysroot $IOS_SIM_ROOT $Z_CFLAGS -c -o ./$Z_SQL/obj/ios/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
@@ -69,12 +69,31 @@ xcrun clang $Z_CODEC_ARGS -arch arm64 -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./
 xcrun clang $Z_CODEC_ARGS -arch armv7 -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./$Z_SQL/obj/ios/armv7/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun clang $Z_CODEC_ARGS -arch armv7s -isysroot $IOS_SDK_ROOT $Z_CFLAGS -c -o ./$Z_SQL/obj/ios/armv7s/sqlite3.c.o ../$Z_SQL/sqlite3.c
 
-libtool -static -o ./libs/ios/packaged_$Z_SQL.a \
+libtool -static -o ./libs/ios/$Z_SQL/esqlite3.a \
 	./$Z_SQL/obj/ios/i386/sqlite3.c.o \
 	./$Z_SQL/obj/ios/x86_64/sqlite3.c.o \
 	./$Z_SQL/obj/ios/armv7/sqlite3.c.o \
 	./$Z_SQL/obj/ios/armv7s/sqlite3.c.o \
 	./$Z_SQL/obj/ios/arm64/sqlite3.c.o
+
+if [ "$Z_SQLCIPHER" == "1" ]; then
+xcrun lipo \
+	./$Z_SQL/obj/ios/i386/sqlite3.c.o \
+	./$Z_SQL/obj/ios/x86_64/sqlite3.c.o \
+	./$Z_SQL/obj/ios/armv7/sqlite3.c.o \
+	./$Z_SQL/obj/ios/armv7s/sqlite3.c.o \
+	./$Z_SQL/obj/ios/arm64/sqlite3.c.o \
+    ./libs/ios/libcrypto.a \
+    -create -output ./libs/ios/$Z_SQL/esqlite3.dylib
+else
+xcrun lipo \
+	./$Z_SQL/obj/ios/i386/sqlite3.c.o \
+	./$Z_SQL/obj/ios/x86_64/sqlite3.c.o \
+	./$Z_SQL/obj/ios/armv7/sqlite3.c.o \
+	./$Z_SQL/obj/ios/armv7s/sqlite3.c.o \
+	./$Z_SQL/obj/ios/arm64/sqlite3.c.o \
+    -create -output ./libs/ios/$Z_SQL/esqlite3.dylib
+fi
 
 echo ----------------------------------------------------------------
 echo build-sqlite.sh done
