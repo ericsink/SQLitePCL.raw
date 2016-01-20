@@ -1,18 +1,22 @@
 
-for building sqlite on Windows, 
-switch to the makefile.msc from the sqlite sources?
+do we need two sets of sqlite3 projects?  one set for
+e, and the other set for the SL cppinterop stuff?
 
-remove the Xamarin.Mac variant which bundles SQLite?
-Doesn't work, due to limitations of the Xamarin.Mac?
-is this fixed in Xamarin 4?
+cppinterop is only for SL-flavored WP8.  it does not
+support e.
+
+all the custom sqlite builds need to end up called
+esqlite3.  except maybe the ones for SL-flavored WP8?
+
+need a dylib build for ios
+
+need e nuget packages
 
 ----
 
 clean out the rest of this file
 
 ----
-
-consider nuget support for net40
 
 Do the collation hook fix thing for config_log
 
@@ -21,13 +25,6 @@ the version number and call sqlite3_close_v2 when it's supposedly
 available.
 
 switch to xUnit?
-
-maybe I should have config_csproj instead of three different
-flavors of same.
-
-fix the appropriate Windows platforms to support UseSQLiteFrom
-set to "elsewhere", which will instruct it not to install a sqlite
-lib.
 
 switch my env keywords to be the same as the ones nuget uses?
 
@@ -43,22 +40,12 @@ References list in visual studio
 error if configuration is not release or debug
 but configuration in xamarin.ios is actually stuff like iPhone, etc
 
-should we use the sqlite sdks in the vs gallery instead?
-weird that they're not nuget.  and weird that there isn't
-one for regular net45.  and the distinction between the two
-flavors of WP81 is not there.  and the WP81 is pre-release.
-
 why does the sqlitepcl ios platform assembly show
 no assembly info when viewed in xamarin studio?
-
-for the cppinterop dll build, why does winrt80 generate .exp
-and .lib?
 
 Win32 in the sln file
 
 auto-generate the test projects as well?
-
-do we need separate platform assemblies for .NET 4.5 vs 4.5.1 ?
 
 docs: need a complete list, in tabular form, of the platform
 assemblies and an explanation of the use cases for each one.
@@ -74,17 +61,6 @@ sqlite3.Mac?  or use platform-installed sqlite on MacOS?
 
 docs on all the methods in raw, especially where the params
 differ from the C API
-
-question about whether we are statically linking the C library
-or not, for the mixed mode assembly.
-
-i hate the way all the tests show up in visual studio, 5 tests with
-the same name, no way to distinguish between the platform versions
-of each test.
-
-fix those weird compiler warnings on iOS and Android ?
-
-note that SQLitePCL.Ugly only builds with the "new" reflection APIs.
 
 ----------------
 

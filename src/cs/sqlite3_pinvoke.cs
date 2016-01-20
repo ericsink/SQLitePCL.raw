@@ -28,9 +28,6 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
-#if PINVOKE_ANYCPU_NET45
-    using System.Reflection;
-#endif
 #if PLATFORM_IOS
     using MonoTouch;
 #elif PLATFORM_UNIFIED
@@ -38,7 +35,7 @@ namespace SQLitePCL
 #endif
 
     /// <summary>
-    /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
+    /// Implements the <see cref="ISQLite3Provider"/> interface
     /// </summary>
 #if __ANDROID__
     [Android.Runtime.Preserve(AllMembers=true)]
@@ -47,15 +44,21 @@ namespace SQLitePCL
 #elif PLATFORM_UNIFIED
 	[Foundation.Preserve(AllMembers = true)]
 #endif
-    public sealed class SQLite3Provider : ISQLite3Provider
+    public sealed class SQLite3Provider_REPLACE_WITH_DLL_NAME : ISQLite3Provider
     {
-        public SQLite3Provider()
+	    // this file is intended to be compiled only after
+	    // an automatic search-and-replace has been done.
+	    //
+	    // TODO it would be nice to make this file error
+	    // at compile time when the replace has not been performed.
+
+        public SQLite3Provider_REPLACE_WITH_DLL_NAME()
         {
 #if NETFX_CORE
             // FYI, the wp8 code does this same thing except using PRAGMAs
 
-			NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
-			NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+		NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
+		NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
 #endif
         }
 
@@ -1127,32 +1130,28 @@ namespace SQLitePCL
 
         private static class NativeMethods
         {
-#if PINVOKE_FROM_INTERNAL
-        private const string SQLITE_DLL = "__Internal";
-#elif PINVOKE_FROM_SQLITE3
-        private const string SQLITE_DLL = "sqlite3";
-#elif PINVOKE_FROM_PACKAGED_SQLITE3
-        private const string SQLITE_DLL = "packaged_sqlite3";
-#elif PINVOKE_FROM_PACKAGED_SQLCIPHER
-        private const string SQLITE_DLL = "packaged_sqlcipher";
-#elif PINVOKE_FROM_SQLITE3_DLL
-        private const string SQLITE_DLL = "sqlite3.dll";
-#elif PINVOKE_ANYCPU_NET45
-        private const string SQLITE_DLL = "sqlite3";
+        private const string SQLITE_DLL = "REPLACE_WITH_DLL_NAME";
 
-	// TODO can the code below be adapted to cope with Mono on Mac or Linux?
+#if PRELOAD_FROM_ARCH_DIRECTORY
+	// TODO on which Windows platforms is LoadLibraryEx available?
+
+        [DllImport("kernel32")]
+        private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
         // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
         // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
 
-        [DllImport("kernel32")]
-        private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
-        private static bool TryLoadFromDirectory(string dllName, string baseDirectory)
+        private static bool TryLoadFromArchDirectory()
         {
-            //System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(dllName), "dllName is null or empty.");
-            //System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(baseDirectory), "baseDirectory is null or empty.");
+	    var dllName = string.Format("{0}.dll", SQLITE_DLL);
+
+		string baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
+		if baseDirectory == null 
+		{
+			return false;
+		}
             System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
             var architecture = IntPtr.Size == 4
@@ -1170,28 +1169,18 @@ namespace SQLitePCL
             var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
             return ptr != IntPtr.Zero;
         }
+#endif
 
         static NativeMethods()
         {
-	    if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
+#if PRELOAD_FROM_ARCH_DIRECTORY
+	    if (TryLoadFromArchDirectory())
 	    {
-#if OLD_REFLECTION
-		    var currentAssembly = typeof(NativeMethods).Assembly;
-#else
-		    var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
-#endif
-		    if (TryLoadFromDirectory("sqlite3.dll", new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath))
-		    {
-			return;
-		    }
-		    // experimental change:
-		    // don't error here.  just proceed and allow the pinvoke
-		    // stuff to look for the sqlite3 DLL in the PATH as it
-		    // normally would.
-		    //throw new Exception("sqlite3.dll was not loaded.");
+		return;
 	    }
-        }
 #endif
+
+        }
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_close(IntPtr db);

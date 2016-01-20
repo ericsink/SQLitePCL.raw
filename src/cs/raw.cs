@@ -29,7 +29,33 @@ namespace SQLitePCL
 
     public static class raw
     {
-        private static ISQLite3Provider _imp = new SQLite3Provider();
+        private static ISQLite3Provider _imp;
+
+	static raw()
+	{
+#if USE_PROVIDER_BAIT
+		_imp = new SQLite3Provider_bait();
+		return;
+#elif USE_PROVIDER_CPPINTEROP
+		_imp = new SQLite3Provider_cppinterop();
+		return;
+#elif USE_PROVIDER_PINVOKE
+		try
+		{
+			// note the 'e'
+			// we are trying to load the custom SQLite build,
+			// if one is present.
+			ISQLite3Provider imp = new SQLite3Provider_esqlite3();
+			var version = imp.sqlite3_libversion_number();
+			_imp = imp;
+			return;
+		}
+		catch {
+		}
+		_imp = new SQLite3Provider_sqlite3();
+#endif
+
+	}
 
         public const int SQLITE_UTF8                = 1;
         public const int SQLITE_UTF16LE             = 2;

@@ -35,50 +35,47 @@ public static class projects
 	//
 	public static void init()
 	{
-		init_sqlite3(false);
-		init_sqlite3(true);
-		init_cppinterop(false);
-		init_cppinterop(true);
+		init_sqlite3();
+		init_cppinterop();
 		init_pcl_bait();
 		init_pcl_pinvoke();
 		init_xamarin_native();
-		init_pcl_cppinterop(false);
-		init_pcl_cppinterop(true);
+		init_pcl_cppinterop();
 		init_higher();
 		init_tests();
 	}
 
-	private static void init_sqlite3(bool dyn)
+	private static void init_sqlite3()
 	{
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x86", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x64", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x86" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x64" });
 
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="arm" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x64" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x86" });
 
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="arm" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x64" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x86" });
 
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x64", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="arm" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x64" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x86" });
 
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="arm" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="x86" });
 
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="arm", dll=dyn });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="x86", dll=dyn });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="arm" });
+		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="x86" });
 	}
 
-	private static void init_cppinterop(bool dyn)
+	private static void init_cppinterop()
 	{
-		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86", dll=dyn });
+		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm"});
+		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86"});
 
-		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="arm", dll=dyn });
-		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="x86", dll=dyn });
+		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="arm"});
+		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="x86"});
 	}
 
 	private static void init_pcl_bait()
@@ -108,13 +105,13 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 	}
 
-	private static void init_pcl_cppinterop(bool dyn)
+	private static void init_pcl_cppinterop()
 	{
-		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
-		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
+		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="x86"});
 
-		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", what="sqlite3", cpu="arm", dll=dyn});
-		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", what="sqlite3", cpu="x86", dll=dyn});
+		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="arm"});
+		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="x86"});
 	}
 
 	private static void init_xamarin_native()
@@ -131,57 +128,17 @@ public static class projects
 
 	private static void init_pcl_pinvoke()
 	{
-		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="android", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		//items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="internal", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		//items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="internal", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke", what="packaged_sqlcipher", cpu="anycpu"});
-
-		// the net45/anycpu build is special.  it figures out cpu arch at runtime
-		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="anycpu"});
-
-		// TODO do we need the cpu-specific builds of net45 here?
-		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x86"});
-		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="sqlite3", cpu="x64"});
-
-	       	// TODO is this used?
-		items_pcl.Add(new config_pcl { env="net45", api="pinvoke", what="packaged_sqlite3", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="net40", api="pinvoke", what="sqlite3", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="net35", api="pinvoke", what="sqlite3", cpu="anycpu"});
-
-		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="x64"});
-		items_pcl.Add(new config_pcl { env="win8", api="pinvoke", what="sqlite3", cpu="x86"});
-
-		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x64"});
-		items_pcl.Add(new config_pcl { env="win81", api="pinvoke", what="sqlite3", cpu="x86"});
-
-		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="x64"});
-		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke", what="sqlite3", cpu="x86"});
-
-		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="anycpu"});
-		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke", what="sqlite3", cpu="x86"});
-
+		items_pcl.Add(new config_pcl { env="android", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="ios", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="net45", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="net40", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="net35", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="win8", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="win81", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke"});
 	}
 
     public static string cs_env_to_toolset(string env)
@@ -229,14 +186,13 @@ public static class projects
 		}
 	}
 
-	public static config_sqlite3 find_sqlite3(string toolset, string cpu, bool dll)
+	public static config_sqlite3 find_sqlite3(string toolset, string cpu)
 	{
 		foreach (config_sqlite3 cfg in projects.items_sqlite3)
 		{
 			if (
 					(cfg.toolset == toolset)
 					&& (cfg.cpu == cpu)
-					&& (cfg.dll == dll)
 			   )
 			{
 				return cfg;
@@ -273,7 +229,7 @@ public static class projects
 		throw new Exception(env);
 	}
 
-	public static List<config_pcl> find_pcls(string env, string api, string what, string cpu, string linkage)
+	public static List<config_pcl> find_pcls(string env, string api, string cpu)
 	{
 		List<config_pcl> a = new List<config_pcl>();
 		foreach (config_pcl cfg in projects.items_pcl)
@@ -295,37 +251,11 @@ public static class projects
 			}
 
 			if (
-					(what != null)
-					&& (cfg.what != what)
-			   )
-			{
-				continue;
-			}
-
-			if (
 					(cpu != null)
 					&& (cfg.cpu != cpu)
 			   )
 			{
 				continue;
-			}
-
-			if (linkage != null)
-			{
-				if (
-						(linkage == "static")
-						&& (cfg.dll)
-				   )
-				{
-					continue;
-				}
-				if (
-						(linkage == "dynamic")
-						&& (!cfg.dll)
-				   )
-				{
-					continue;
-				}
 			}
 
 			a.Add(cfg);
@@ -365,7 +295,6 @@ public class config_sqlite3 : config_info
 	public string toolset;
 	public string cpu;
 	public string guid;
-	public bool dll = false;
 
 	private void add_product(List<string> a, string s)
 	{
@@ -374,16 +303,12 @@ public class config_sqlite3 : config_info
 
 	public void get_products(List<string> a)
 	{
-		if (dll)
-		{
-			// TODO this is Windows-specific
-			add_product(a, "sqlite3.dll");
-		}
+		add_product(a, "sqlite3.dll");
 	}
 
 	private string area()
 	{
-		return "sqlite3_" + (dll ? "dynamic" : "static");
+		return "sqlite3";
 	}
 
 	public string get_nuget_target_path()
@@ -424,12 +349,11 @@ public class config_cppinterop : config_info
 	public string env;
 	public string cpu;
 	public string guid;
-	public bool dll = false;
 
 	public config_sqlite3 get_sqlite3_item()
 	{
 		string toolset = projects.cs_env_to_toolset(env);
-		config_sqlite3 other = projects.find_sqlite3(toolset, cpu, dll);
+		config_sqlite3 other = projects.find_sqlite3(toolset, cpu);
 		if (other == null)
 		{
 			throw new Exception(get_name());
@@ -463,7 +387,7 @@ public class config_cppinterop : config_info
 
 	private string area()
 	{
-		return "cppinterop_sqlite3_" + (dll ? "dynamic" : "static");
+		return "cppinterop";
 	}
 
 	public string get_name()
@@ -610,7 +534,7 @@ public class config_xamarin_native : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "z_sqlite.dll");
+		add_product(a, "esqlite.dll");
 	}
 
 	private const string AREA = "xamarin_native";
@@ -636,14 +560,13 @@ public class config_pcl : config_info
 {
 	public string env;
 	public string api;
-	public string what;
-	public string cpu;
 	public string guid;
-	public bool dll; // TODO should be string linkage, so it can be null for cases where it is not used
+
+	public string cpu = "anycpu";
 
 	public config_sqlite3 get_sqlite3_item()
 	{
-		if (is_cppinterop() && dll)
+		if (is_cppinterop())
 		{
 			config_cppinterop other = get_cppinterop_item();
 			return other.get_sqlite3_item();
@@ -651,7 +574,7 @@ public class config_pcl : config_info
 
 		if (is_pinvoke())
 		{
-			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_toolset(env), cpu, true);
+			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_toolset(env), cpu);
 			return other;
 		}
 
@@ -665,7 +588,6 @@ public class config_pcl : config_info
 			if (
 					(cfg.env == env)
 					&& (cfg.cpu == cpu)
-					&& (cfg.dll == dll)
 			   )
 			{
 				return cfg;
@@ -725,11 +647,11 @@ public class config_pcl : config_info
 	{
 		if (is_pinvoke())
 		{
-			return string.Format("{0}_{1}", api, what);
+			return string.Format("{0}", api);
 		}
 		else if (is_cppinterop())
 		{
-			return string.Format("{0}_{1}_{2}", api, what, (dll ? "dynamic" : "static"));
+			return string.Format("{0}", api);
 		}
 		else
 		{
@@ -1100,14 +1022,7 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			if (cfg.dll)
-			{
-				f.WriteElementString("ConfigurationType", "DynamicLibrary");
-			}
-			else
-			{
-				f.WriteElementString("ConfigurationType", "StaticLibrary");
-			}
+			f.WriteElementString("ConfigurationType", "DynamicLibrary");
 			f.WriteElementString("TargetName", "sqlite3");
 
 			f.WriteElementString("PlatformToolset", cfg.toolset);
@@ -1160,17 +1075,10 @@ public static class gen
 
 			f.WriteStartElement("ItemDefinitionGroup");
 			f.WriteStartElement("ClCompile");
-			if (cfg.dll)
-			{
-				write_cpp_define(f, "_USRDLL");
-				write_cpp_define(f, "SQLITE_API=__declspec(dllexport)");
-			}
-			else
-			{
-				write_cpp_define(f, "_LIB");
-			}
+			write_cpp_define(f, "_USRDLL");
+			write_cpp_define(f, "SQLITE_API=__declspec(dllexport)");
 			//write_cpp_define(f, "SQLITE_OMIT_LOAD_EXTENSION");
-			//write_cpp_define(f, "SQLITE_THREADSAFE=whatever");
+			// TODO write_cpp_define(f, "SQLITE_THREADSAFE=whatever");
 			//write_cpp_define(f, "SQLITE_TEMP_STORE=whatever");
 			write_cpp_define(f, "SQLITE_DEFAULT_FOREIGN_KEYS=1");
 			//write_cpp_define(f, "SQLITE_ENABLE_RTREE");
@@ -1579,7 +1487,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "z_sqlite"); // match the name in get_products()
+			f.WriteElementString("AssemblyName", "esqlite"); // match the name in get_products()
 
 			List<string> defines = new List<string>();
 
@@ -1830,9 +1738,6 @@ public static class gen
 			}
 			else
 			{
-                // TODO it's weird that in the block below we apparently do
-                // not write a project type guid for csharp when the
-                // env is net45, for example.
 				switch (cfg.env)
 				{
 					case "ios":
@@ -1862,6 +1767,9 @@ public static class gen
 						break;
 					case "uap10.0":
 						write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
+						break;
+					default:
+						write_project_type_guids(f, GUID_CSHARP);
 						break;
 				}
 			}
@@ -1938,6 +1846,7 @@ public static class gen
 				case "net45":
 					f.WriteElementString("ProductVersion", "12.0.0");
 					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					// TODO preload arch, intel
 					break;
 				case "net40":
 					f.WriteElementString("ProductVersion", "12.0.0");
@@ -1987,125 +1896,19 @@ public static class gen
 					break;
 			}
 
-			if (cfg.is_pinvoke())
-			{
-				switch (cfg.what)
-				{
-					case "internal":
-						if (cfg.env == "unified_ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-						}
-						else if (cfg.env == "unified_mac")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-						}
-						else if (cfg.env == "ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-						}
-						break;
-					case "packaged_sqlite3":
-						if (cfg.env == "android")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
-						}
-                        else if (cfg.env == "net45")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
-						}
-                        else if (cfg.env == "net40")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
-						}
-                        else if (cfg.env == "net35")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLITE3");
-						}
-						else if (cfg.env == "unified_ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLITE3");
-						}
-						else if (cfg.env == "unified_mac")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLITE3");
-						}
-						else if (cfg.env == "ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLITE3");
-						}
-						break;
-					case "packaged_sqlcipher":
-						if (cfg.env == "android")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
-						}
-                        else if (cfg.env == "net45")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
-						}
-                        else if (cfg.env == "net40")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
-						}
-                        else if (cfg.env == "net35")
-						{
-							defines.Add("PINVOKE_FROM_PACKAGED_SQLCIPHER");
-						}
-						else if (cfg.env == "unified_ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLCIPHER");
-						}
-						else if (cfg.env == "unified_mac")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLCIPHER");
-						}
-						else if (cfg.env == "ios")
-						{
-							defines.Add("PINVOKE_FROM_INTERNAL");
-							defines.Add("PACKAGED_SQLCIPHER");
-						}
-						break;
-					case "sqlite3":
-					default:
-						if (cfg.cpu == "anycpu") {
-							switch (cfg.env)
-							{
-								// TODO I wish we could do anycpu for winrt plats.  We can't build
-								// sqlite3.dll without a dependency on the VC++ runtime, which
-								// for RT platforms is only available as an extenson SDK, which
-								// refuses to build with AnyCPU.
-								case "net45":
-									defines.Add("PINVOKE_ANYCPU_NET45");
-									break;
-								case "net40":
-									defines.Add("PINVOKE_ANYCPU_NET45"); // okay for net40
-									break;
-								case "net35":
-									defines.Add("PINVOKE_ANYCPU_NET45"); // okay for net35
-									break;
-								default:
-                                                                        // TODO are there any situations where this will work? 
-									defines.Add("PINVOKE_FROM_SQLITE3");
-									break;
-							}
-						}
-						else {
-							defines.Add("PINVOKE_FROM_SQLITE3");
-						}
-						break;
-				}
-			}
-
 			if (cfg.is_portable())
 			{
 				f.WriteElementString("TargetFrameworkProfile", cfg.env);
 				defines.Add("NO_CONCURRENTDICTIONARY");
+				defines.Add("USE_PROVIDER_BAIT");
+			}
+			else if (cfg.is_cppinterop())
+			{
+				defines.Add("USE_PROVIDER_CPPINTEROP");
+			}
+			else if (cfg.is_pinvoke())
+			{
+				defines.Add("USE_PROVIDER_PINVOKE");
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -2167,19 +1970,10 @@ public static class gen
 			else if (cfg.is_pinvoke())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "src\\cs\\sqlite3_pinvoke.cs");
+				write_cs_compile(f, top, "pinvoke_sqlite3.cs");
+				write_cs_compile(f, top, "pinvoke_esqlite3.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
-			}
-
-			switch (cfg.env)
-			{
-				case "unified_ios":
-				case "ios":
-					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "src\\cs\\ios_native.cs");
-					f.WriteEndElement(); // ItemGroup
-					break;
 			}
 
 			if (cfg.is_cppinterop())
@@ -2247,118 +2041,20 @@ public static class gen
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-                        if (cfg.what == "packaged_sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
-                            f.WriteElementString("Link", "packaged_sqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-                        if (cfg.what == "packaged_sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
-                            f.WriteElementString("Link", "packaged_sqlcipher.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            f.WriteEndElement(); // ItemGroup
-                        }
 						break;
 					case "unified_mac":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-						if (cfg.what == "packaged_sqlite3")
-						{
-							f.WriteStartElement("ItemGroup");
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlite3.a"));
-							f.WriteElementString("Link", "packaged_sqlite3.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-							f.WriteEndElement(); // ItemGroup
-						}
-						if (cfg.what == "packaged_sqlcipher")
-						{
-							f.WriteStartElement("ItemGroup");
-
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlcipher.a"));
-							f.WriteElementString("Link", "packaged_sqlcipher.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\libcrypto.a"));
-							f.WriteElementString("Link", "libcrypto.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-							f.WriteEndElement(); // ItemGroup
-						}
 						break;
 					case "ios":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 						f.WriteEndElement(); // Import
 
-                        if (cfg.what == "packaged_sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
-                            f.WriteElementString("Link", "packaged_sqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-                        if (cfg.what == "packaged_sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
-                            f.WriteElementString("Link", "packaged_sqlcipher.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            f.WriteEndElement(); // ItemGroup
-                        }
 						break;
 					case "android":
-						if (cfg.what == "packaged_sqlite3")
-						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
-                            f.WriteEndElement(); // ItemGroup
-						}
-
-						if (cfg.what == "packaged_sqlcipher")
-						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlcipher");
-                            f.WriteEndElement(); // ItemGroup
-                        }
-
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
 						f.WriteEndElement(); // Import
@@ -2425,6 +2121,7 @@ public static class gen
 
 	// TODO the following function works when cfg.env is win8.  it might
 	// not work for any other configuration.  for now, that's fine.
+	// TODO broken?
 	private static void gen_tests(config_tests cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2653,21 +2350,6 @@ public static class gen
 			if (cfg.env == "win8")
 			{
 				config_pcl other = projects.find_bait(cfg.pcl);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			else if (cfg.env == "net45")
-			{
-				var a = projects.find_pcls(
-					"net45",
-					"pinvoke",
-					"sqlite3",
-					"x86",
-					"static"
-					);
-				config_pcl other = a[0];
 				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
@@ -3234,13 +2916,10 @@ public static class gen
 				f.WriteComment("BEGIN sqlite3 libraries");
 				foreach (config_sqlite3 cfg in projects.items_sqlite3)
 				{
-					if (cfg.dll)
-					{
-						write_nuspec_file_entry(
-								cfg, 
-								f
-								);
-					}
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
 				}
 
 				f.WriteComment("special case Mac packaged_sqlite3 dylib");
@@ -3271,225 +2950,14 @@ public static class gen
 
 			f.WriteComment("BEGIN platform assemblies");
 
-			f.WriteComment("BEGIN platform assemblies that use pinvoke in build dir");
-
-                // --------------------------------
-#if not // too big
-            {
-                f.WriteComment("special case packaged_sqlite3 for ios classic.  no targets file.");
-
-                var a = projects.find_pcls(
-                    "ios",
-                    "pinvoke",
-                    "packaged_sqlite3",
-                    "anycpu",
-                    null
-                    );
-                write_nuspec_file_entries(f, "build",
-                        a
-                        );
-
-            }
-#endif
-
-                // --------------------------------
-#if not // too big
-            {
-                f.WriteComment("special case packaged_sqlcipher for ios classic.  no targets file.");
-
-                var a = projects.find_pcls(
-                    "ios",
-                    "pinvoke",
-                    "packaged_sqlcipher",
-                    "anycpu",
-                    null
-                    );
-                write_nuspec_file_entries(f, "build",
-                        a
-                        );
-
-            }
-#endif
-
-                // --------------------------------
-            {
-                var a = projects.find_pcls(
-                    "net45",
-                    "pinvoke",
-                    "packaged_sqlite3",
-                    "anycpu",
-                    null
-                    );
-                write_nuspec_file_entries(f, "build",
-                        a
-                        );
-
-#if not // TODO a targets file here would be helpful for Xam studio mac stuff.  but then all of net45 needs to move from lib to build.
-                string tname = string.Format("{0}.targets", "unified_ios");
-
-		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
-
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("unified_ios")));
-
-		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("unified_ios")));
-		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified_ios")));
-		f.WriteEndElement(); // file
-
-                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
-
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", tname);
-                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("unified_ios"), id));
-                f.WriteEndElement(); // file
-#endif
-            }
-
-                // --------------------------------
-            {
-                var a = projects.find_pcls(
-                    "unified_ios",
-                    "pinvoke",
-                    null,
-                    "anycpu",
-                    null
-                    );
-                write_nuspec_file_entries(f, "build",
-                        a
-                        );
-
-                string tname = string.Format("{0}.targets", "unified_ios");
-
-		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
-
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("unified_ios")));
-
-		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("unified_ios")));
-		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified_ios")));
-		f.WriteEndElement(); // file
-
-                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
-
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", tname);
-                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("unified_ios"), id));
-                f.WriteEndElement(); // file
-            }
-
-                // --------------------------------
-			{
-				var a = projects.find_pcls(
-					"unified_mac",
-					"pinvoke",
-					null,
-					"anycpu",
-					null
-				);
-				write_nuspec_file_entries(f, "build",
-					a
-				);
-
-				string tname = string.Format("{0}.targets", "unified_mac");
-
-				f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
-
-				Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("unified_mac")));
-
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("unified_mac")));
-				f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("unified_mac")));
-				f.WriteEndElement(); // file
-
-				gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
-
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", tname);
-				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("unified_mac"), id));
-				f.WriteEndElement(); // file
-			}
-
-			// --------------------------------
-            {
-                var a = projects.find_pcls(
-                    "android",
-                    "pinvoke",
-                    null,
-                    "anycpu",
-                    null
-                    );
-                write_nuspec_file_entries(f, "build",
-                        a
-                        );
-
-                string tname = string.Format("{0}.targets", "android");
-
-		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
-
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name("android")));
-
-		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name("android")));
-		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name("android")));
-		f.WriteEndElement(); // file
-
-                gen_nuget_targets_android_or_unified_packaged_sqlite3(top, tname, a);
-
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", tname);
-                f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name("android"), id));
-                f.WriteEndElement(); // file
-            }
-
-			f.WriteComment("END platform assemblies that use pinvoke in build dir");
-
 			f.WriteComment("BEGIN platform assemblies that use pinvoke");
-			Dictionary<string, string> pcl_env_pinvoke = new Dictionary<string, string>();
-			pcl_env_pinvoke["ios"] = null;
-			// not here: pcl_env_pinvoke["android"] = null;
-			// not here: pcl_env_pinvoke["unified_ios"] = null;
-			// not here: pcl_env_pinvoke["unified_mac"] = null;
-			pcl_env_pinvoke["net45"] = null;
-			pcl_env_pinvoke["net40"] = null;
-			pcl_env_pinvoke["net35"] = null;
-			pcl_env_pinvoke["win8"] = null;
-			pcl_env_pinvoke["win81"] = null;
-			pcl_env_pinvoke["wpa81"] = null;
-			pcl_env_pinvoke["uap10.0"] = null;
-
-			foreach (string env in pcl_env_pinvoke.Keys)
-			{
-				write_nuspec_file_entries(f, "lib",
-						projects.find_pcls(
-							env,
-							"pinvoke",
-							"sqlite3",
-							"anycpu",
-							null
-							)
-						);
-
-				if ("ios" == env) continue; // Xamarin.iOS classic can't do .targets files
-				if ("unified_ios" == env) continue; // TODO fix this to handle packaged sqlite
-				if ("unified_mac" == env) continue; // TODO fix this to handle packaged sqlite
-				if ("android" == env) continue; // TODO fix this to handle packaged sqlite
-
-				string tname = string.Format("{0}.targets", env);
-
-				if (env == "net45" || env == "net40" || env == "net35")
-				{
-                    gen_nuget_targets_pinvoke_anycpu(top, tname, env);
-				}
-				else
-				{
-					gen_nuget_targets_sqlite3_itself(top, tname, env);
-				}
-
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", tname);
-				f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
-				f.WriteEndElement(); // file
-			}
+			write_nuspec_file_entries(f, "lib",
+					projects.find_pcls(
+						null,
+						"pinvoke",
+						null
+						)
+					);
 			f.WriteComment("END platform assemblies that use pinvoke");
 
 			// TODO remove this directory first?
@@ -3506,9 +2974,7 @@ public static class gen
 						projects.find_pcls(
 							env,
 							"cppinterop",
-							"sqlite3",
-							null,
-							"dynamic"
+							null
 							),
 						env,
 						top,
@@ -3704,11 +3170,6 @@ public static class gen
 					continue;
 				}
 
-				if (!cfg.dll)
-				{
-					continue;
-				}
-
 				bool b_platform_condition = true;
 
 				switch (env)
@@ -3792,11 +3253,6 @@ public static class gen
 					continue;
 				}
 
-				if (!cfg.dll)
-				{
-					continue;
-				}
-
 				// TODO for net45, handle more than just windows.  deal with mono on mac and linux
 
 				f.WriteStartElement("Content");
@@ -3808,71 +3264,6 @@ public static class gen
 				f.WriteEndElement(); // Content
 			}
 			f.WriteEndElement(); // ItemGroup
-
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
-					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuget_targets_android_or_unified_packaged_sqlite3(string top, string tname, List<config_pcl> a)
-    {
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			var guid = Guid.NewGuid().ToString();
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-
-			foreach (config_pcl cfg in a)
-			{
-				f.WriteComment(string.Format("{0}", cfg.get_name()));
-				f.WriteStartElement("ItemGroup");
-                if (cfg.what == "packaged_sqlite3")
-                {
-                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'packaged_sqlite3' "));
-                }
-                else if (cfg.what == "packaged_sqlcipher")
-                {
-                    f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' == 'packaged_sqlcipher' "));
-                }
-                else
-                {
-                    f.WriteAttributeString("Condition", string.Format(" ('$(UseSQLiteFrom.ToLower())' != 'packaged_sqlite3') AND ('$(UseSQLiteFrom.ToLower())' != 'packaged_sqlcipher') "));
-                }
-
-				f.WriteStartElement("Reference");
-				// TODO should Include be the HintPath?
-				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
-				f.WriteAttributeString("Include", "SQLitePCL.raw");
-
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.raw.dll")));
-
-				// TODO private?
-
-				// TODO name?
-
-				f.WriteEndElement(); // Reference
-
-				f.WriteEndElement(); // ItemGroup
-			}
 
 			f.WriteEndElement(); // Target
 
@@ -4020,6 +3411,18 @@ public static class gen
 
 		Directory.CreateDirectory(top);
 
+		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
+		{
+			string cs = cs_pinvoke.Replace("REPLACE_WITH_DLL_NAME", "sqlite3");
+			tw.Write(cs);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_esqlite3.cs")))
+		{
+			string cs = cs_pinvoke.Replace("REPLACE_WITH_DLL_NAME", "esqlite3");
+			tw.Write(cs);
+		}
+
 		// --------------------------------
 		// assign all the guids
 
@@ -4103,8 +3506,8 @@ public static class gen
 		{
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
-			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke_sqlite3.anycpu/platform.uap10.0.pinvoke_sqlite3.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke_sqlite3/anycpu/SQLitePCL.raw.dll");
-			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke_sqlite3.anycpu/platform.uap10.0.pinvoke_sqlite3.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke_sqlite3/anycpu/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build_mac.sh")))

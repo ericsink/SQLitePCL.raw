@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#if PACKAGED_SQLITE3
+#if IOS_PACKAGED_SQLITE3
 
 #if PLATFORM_UNIFIED
 
@@ -39,7 +39,7 @@
 
 #endif
 
-#if PACKAGED_SQLCIPHER
+#if IOS_PACKAGED_SQLCIPHER
 
 #if PLATFORM_UNIFIED
 [assembly: ObjCRuntime.LinkWith(
@@ -81,9 +81,10 @@
 
 #endif
 
-	public class foo
+	public class esqlite3
 {
-	public static void init_silly()
+	public static void Init()
 	{
 	}
 }
+

@@ -33,9 +33,9 @@ namespace SQLitePCL
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface
     /// </summary>
-    internal sealed class SQLite3Provider : ISQLite3Provider
+    internal sealed class SQLite3Provider_cppinterop : ISQLite3Provider
     {
-        public SQLite3Provider()
+        public SQLite3Provider_cppinterop()
         {
 #if WINDOWS_PHONE
             IntPtr db;

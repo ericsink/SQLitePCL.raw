@@ -32,11 +32,11 @@ namespace SQLitePCL
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface for .Net45 Framework.
     /// </summary>
-    public sealed class SQLite3Provider : ISQLite3Provider
+    public sealed class SQLite3Provider_bait : ISQLite3Provider
     {
 	private const string GRIPE = "Something went wrong in the build configuration.  This is the bait assembly, which is for referencing by portable libraries, and should never end up part of the app.  Reference the appropriate platform assembly instead.";
 
-        public SQLite3Provider()
+        public SQLite3Provider_bait()
         {
         }
 
