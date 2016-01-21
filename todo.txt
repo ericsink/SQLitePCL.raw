@@ -1,9 +1,12 @@
 
+xamarin.mac shouldn't even need to built on the Mac.
+just use a compatible build of SQLitePCL.raw.dll
+
 do we need two sets of sqlite3 projects?  one set for
 e, and the other set for the SL cppinterop stuff?
 
 cppinterop is only for SL-flavored WP8.  it does not
-support e.
+support e.  or it only supports e.
 
 all the custom sqlite builds need to end up called
 esqlite3.  except maybe the ones for SL-flavored WP8?

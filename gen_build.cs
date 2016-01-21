@@ -303,7 +303,7 @@ public class config_sqlite3 : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "sqlite3.dll");
+		add_product(a, "esqlite3.dll");
 	}
 
 	private string area()
@@ -1023,7 +1023,7 @@ public static class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("ConfigurationType", "DynamicLibrary");
-			f.WriteElementString("TargetName", "sqlite3");
+			f.WriteElementString("TargetName", "esqlite3");
 
 			f.WriteElementString("PlatformToolset", cfg.toolset);
 
@@ -1287,7 +1287,7 @@ public static class gen
 			f.WriteStartElement("Link");
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			string sqlite3_item_path = Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\sqlite3.lib", cfg.get_sqlite3_item().get_dest_subpath()));
+			string sqlite3_item_path = Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\esqlite3.lib", cfg.get_sqlite3_item().get_dest_subpath()));
 			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
@@ -2911,25 +2911,6 @@ public static class gen
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
-
-			{
-				f.WriteComment("BEGIN sqlite3 libraries");
-				foreach (config_sqlite3 cfg in projects.items_sqlite3)
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
-
-				f.WriteComment("special case Mac packaged_sqlite3 dylib");
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", Path.Combine(root, "apple\\libs\\mac\\libpackaged_sqlite3.dylib"));
-                f.WriteAttributeString("target", "build\\native\\sqlite3_dynamic\\mac");
-                f.WriteEndElement(); // file
-
-				f.WriteComment("END sqlite3 libraries");
-			}
 
 			// write all the bait
 
