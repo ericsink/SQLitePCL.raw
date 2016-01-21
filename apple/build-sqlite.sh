@@ -25,6 +25,7 @@ mkdir -p ./obj/ios/$Z_SQL/armv7
 mkdir -p ./obj/ios/$Z_SQL/armv7s
 mkdir -p ./obj/ios/$Z_SQL/arm64
 mkdir -p ./libs/ios/$Z_SQL
+mkdir -p ./libs/ios/$Z_SQL/esqlite3.framework
 
 mkdir -p ./obj/mac/$Z_SQL/i386
 mkdir -p ./obj/mac/$Z_SQL/x86_64
@@ -58,7 +59,7 @@ install_name_tool -id @rpath/esqlite3.framework/esqlite3  ./obj/ios/$Z_SQL/esqli
 xcrun --sdk iphonesimulator clang -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch i386 -arch x86_64 -o ./obj/ios/$Z_SQL/esqlite3.simulator -framework Foundation -fapplication-extension -mios-simulator-version-min=8.0 ./libs/ios/libcrypto.a
 install_name_tool -id @rpath/esqlite3.framework/esqlite3  ./obj/ios/$Z_SQL/esqlite3.simulator
 
-lipo -create  ./obj/ios/$Z_SQL/esqlite3.device  ./obj/ios/$Z_SQL/esqlite3.simulator -output  ./libs/ios/$Z_SQL/framework_esqlite3
+lipo -create  ./obj/ios/$Z_SQL/esqlite3.device  ./obj/ios/$Z_SQL/esqlite3.simulator -output  ./libs/ios/$Z_SQL/esqlite3.framework/esqlite3
 
 echo ----------------------------------------------------------------
 echo build-sqlite.sh done
