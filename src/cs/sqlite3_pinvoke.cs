@@ -44,7 +44,7 @@ namespace SQLitePCL
 #elif PLATFORM_UNIFIED
 	[Foundation.Preserve(AllMembers = true)]
 #endif
-    public sealed class SQLite3Provider_REPLACE_WITH_DLL_NAME : ISQLite3Provider
+    public sealed class SQLite3Provider_REPLACE_WITH_SIMPLE_DLL_NAME : ISQLite3Provider
     {
 	    // this file is intended to be compiled only after
 	    // an automatic search-and-replace has been done.
@@ -52,7 +52,7 @@ namespace SQLitePCL
 	    // TODO it would be nice to make this file error
 	    // at compile time when the replace has not been performed.
 
-        public SQLite3Provider_REPLACE_WITH_DLL_NAME()
+        public SQLite3Provider_REPLACE_WITH_SIMPLE_DLL_NAME()
         {
 #if NETFX_CORE
             // FYI, the wp8 code does this same thing except using PRAGMAs
@@ -1130,7 +1130,7 @@ namespace SQLitePCL
 
         private static class NativeMethods
         {
-        private const string SQLITE_DLL = "REPLACE_WITH_DLL_NAME";
+        private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
 
 #if PRELOAD_FROM_ARCH_DIRECTORY
 	// TODO on which Windows platforms is LoadLibraryEx available?

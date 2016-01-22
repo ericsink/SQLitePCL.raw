@@ -19,7 +19,7 @@
 #if PLATFORM_UNIFIED
 
 [assembly: ObjCRuntime.LinkWith(
-        "packaged_sqlite3.a",
+        "esqlite3.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
@@ -28,7 +28,7 @@
         ]
 #else
 [assembly: MonoTouch.ObjCRuntime.LinkWith(
-        "packaged_sqlite3.a",
+        "esqlite3.a",
         LinkTarget = MonoTouch.ObjCRuntime.LinkTarget.Simulator | MonoTouch.ObjCRuntime.LinkTarget.Simulator64 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7s | MonoTouch.ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
@@ -43,7 +43,7 @@
 
 #if PLATFORM_UNIFIED
 [assembly: ObjCRuntime.LinkWith(
-        "packaged_sqlcipher.a",
+        "esqlite3.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
@@ -61,7 +61,7 @@
         ]
 #else
 [assembly: MonoTouch.ObjCRuntime.LinkWith(
-        "packaged_sqlcipher.a",
+        "esqlite3.a",
         LinkTarget = MonoTouch.ObjCRuntime.LinkTarget.Simulator | MonoTouch.ObjCRuntime.LinkTarget.Simulator64 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7s | MonoTouch.ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
@@ -81,10 +81,12 @@
 
 #endif
 
-	public class esqlite3
+public class esqlite3
 {
 	public static void Init()
 	{
+		SQLitePCL.ISQLite3Provider imp = new SQLitePCL.SQLite3Provider_internal();
+		SQLitePCL.raw.SetProvider(imp);
 	}
 }
 

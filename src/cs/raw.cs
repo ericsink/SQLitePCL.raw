@@ -45,16 +45,21 @@ namespace SQLitePCL
 			// note the 'e'
 			// we are trying to load the custom SQLite build,
 			// if one is present.
-			ISQLite3Provider imp = new SQLite3Provider_esqlite3();
+			ISQLite3Provider imp = new SQLite3Provider_e();
 			var version = imp.sqlite3_libversion_number();
 			_imp = imp;
 			return;
 		}
 		catch {
 		}
-		_imp = new SQLite3Provider_sqlite3();
+		_imp = new SQLite3Provider_default();
 #endif
 
+	}
+
+	static public void SetProvider(ISQLite3Provider imp)
+	{
+		_imp = imp;
 	}
 
         public const int SQLITE_UTF8                = 1;

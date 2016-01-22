@@ -1457,9 +1457,6 @@ public static class gen
 				case "unified_ios":
 					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
 					break;
-				case "unified_mac":
-					write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
-					break;
 				case "android":
 					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
 					break;
@@ -1473,11 +1470,6 @@ public static class gen
 			f.WriteString("Debug");
 
 			f.WriteEndElement(); // Configuration
-
-			if (cfg.env == "unified_mac") {
-				f.WriteElementString ("TargetFrameworkVersion", "v2.0");
-				f.WriteElementString ("TargetFrameworkIdentifier", "Xamarin.Mac");
-			}
 
 			f.WriteElementString("SchemaVersion", "2.0");
 			f.WriteElementString("Platform", "AnyCPU");
@@ -1497,7 +1489,6 @@ public static class gen
 					defines.Add("PLATFORM_IOS");
 					break;
 				case "unified_ios":
-				case "unified_mac":
 					defines.Add("PLATFORM_UNIFIED");
 					break;
 				case "android":
@@ -1532,9 +1523,6 @@ public static class gen
 				case "unified_ios":
 					write_reference(f, "Xamarin.iOS");
 					break;
-				case "unified_mac":
-					write_reference(f, "Xamarin.Mac");
-					break;
 				case "ios":
 					write_reference(f, "monotouch");
 					break;
@@ -1550,9 +1538,23 @@ public static class gen
 				case "ios":
 					f.WriteStartElement("ItemGroup");
 					write_cs_compile(f, root, "src\\cs\\ios_native.cs");
+					write_cs_compile(f, top, "pinvoke_ios_internal.cs");
+					write_cs_compile(f, root, "src\\cs\\util.cs");
 					f.WriteEndElement(); // ItemGroup
 					break;
 			}
+
+			f.WriteStartElement("ItemGroup");
+			f.WriteStartElement("ProjectReference");
+			{
+				config_pcl other = projects.find_bait(cfg.env);
+				f.WriteAttributeString("Include", other.get_project_path(top));
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			f.WriteEndElement(); // ProjectReference
+			f.WriteEndElement(); // ItemGroup
 
 			switch (cfg.env)
 			{
@@ -1566,8 +1568,8 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
-                            f.WriteElementString("Link", "packaged_sqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
@@ -1577,8 +1579,8 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
-                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             // TODO warning says this is deprecated
@@ -1590,40 +1592,6 @@ public static class gen
                             f.WriteEndElement(); // ItemGroup
                         }
 					break;
-				case "unified_mac":
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
-					f.WriteEndElement(); // Import
-
-						if (cfg.what == "packaged_sqlite3")
-						{
-							f.WriteStartElement("ItemGroup");
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlite3.a"));
-							f.WriteElementString("Link", "packaged_sqlite3.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-							f.WriteEndElement(); // ItemGroup
-						}
-						if (cfg.what == "packaged_sqlcipher")
-						{
-							f.WriteStartElement("ItemGroup");
-
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\packaged_sqlcipher.a"));
-							f.WriteElementString("Link", "packaged_sqlcipher.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-							// TODO warning says this is deprecated
-							f.WriteStartElement("ManifestResourceWithNoCulture");
-							f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\mac\\libcrypto.a"));
-							f.WriteElementString("Link", "libcrypto.a");
-							f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-							f.WriteEndElement(); // ItemGroup
-						}
-						break;
 					case "ios":
 						f.WriteStartElement("Import");
 						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
@@ -1634,8 +1602,8 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlite3.a"));
-                            f.WriteElementString("Link", "packaged_sqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
@@ -1645,8 +1613,8 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\packaged_sqlcipher.a"));
-                            f.WriteElementString("Link", "packaged_sqlcipher.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             // TODO warning says this is deprecated
@@ -1970,8 +1938,8 @@ public static class gen
 			else if (cfg.is_pinvoke())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, top, "pinvoke_sqlite3.cs");
-				write_cs_compile(f, top, "pinvoke_esqlite3.cs");
+				write_cs_compile(f, top, "pinvoke_default.cs");
+				write_cs_compile(f, top, "pinvoke_e.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -3393,15 +3361,23 @@ public static class gen
 		Directory.CreateDirectory(top);
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_default.cs")))
 		{
-			string cs = cs_pinvoke.Replace("REPLACE_WITH_DLL_NAME", "sqlite3");
-			tw.Write(cs);
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "default");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
+			tw.Write(cs2);
 		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_esqlite3.cs")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e.cs")))
 		{
-			string cs = cs_pinvoke.Replace("REPLACE_WITH_DLL_NAME", "esqlite3");
-			tw.Write(cs);
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "esqlite3");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "internal");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "__Internal");
+			tw.Write(cs2);
 		}
 
 		// --------------------------------
