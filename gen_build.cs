@@ -1537,8 +1537,15 @@ public static class gen
 				case "unified_ios":
 				case "ios":
 					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "src\\cs\\ios_native.cs");
+					write_cs_compile(f, root, "src\\cs\\imp_ios_internal.cs");
 					write_cs_compile(f, top, "pinvoke_ios_internal.cs");
+					write_cs_compile(f, root, "src\\cs\\util.cs");
+					f.WriteEndElement(); // ItemGroup
+					break;
+				case "android":
+					f.WriteStartElement("ItemGroup");
+					write_cs_compile(f, root, "src\\cs\\imp_e.cs");
+					write_cs_compile(f, top, "pinvoke_e.cs");
 					write_cs_compile(f, root, "src\\cs\\util.cs");
 					f.WriteEndElement(); // ItemGroup
 					break;
