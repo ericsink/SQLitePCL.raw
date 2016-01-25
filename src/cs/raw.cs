@@ -46,8 +46,7 @@ namespace SQLitePCL
 			// we are trying to load the custom SQLite build,
 			// if one is present.
 			ISQLite3Provider imp = new SQLite3Provider_e();
-			var version = imp.sqlite3_libversion_number();
-			_imp = imp;
+			SetProvider(imp);
 			return;
 		}
 		catch {
@@ -59,6 +58,13 @@ namespace SQLitePCL
 
 	static public void SetProvider(ISQLite3Provider imp)
 	{
+		int version = imp.sqlite3_libversion_number();
+		IntPtr db;
+		int rc;
+	        rc = imp.sqlite3_open(":memory:", out db);
+		if (rc != 0) throw new Exception();
+		rc = imp.sqlite3_close(db);
+		if (rc != 0) throw new Exception();
 		_imp = imp;
 	}
 
