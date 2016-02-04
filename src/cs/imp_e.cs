@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public class esqlite3
+public class CustomSQLite3
 {
 	public static void Init()
 	{
