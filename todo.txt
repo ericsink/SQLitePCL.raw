@@ -1,5 +1,23 @@
 
-xamarin.mac shouldn't even need to built on the Mac.
+there are cases where we do not really want the
+version of the native code to be automatically chosen
+based on the .NET profile.  for example, "net45"
+doesn't really tell us much about which C runtime
+library we should assume is available.
+
+does the native code stuff in nuget 3.x get this
+specific?  can we provide a package which just looks
+at the environment and then has a dependency on
+The Right One?
+
+or should these packages simply be more specific?
+instead of one big esqlite3 package, maybe we should
+just put each one in its package?
+
+esqlite3.dll the assembly cannot have the same name
+as esqlite3.dll the native dll
+
+xamarin.mac shouldn't even need to be built on the Mac.
 just use a compatible build of SQLitePCL.raw.dll
 
 do we need two sets of sqlite3 projects?  one set for

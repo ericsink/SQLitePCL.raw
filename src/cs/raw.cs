@@ -40,6 +40,7 @@ namespace SQLitePCL
 		_imp = new SQLite3Provider_cppinterop();
 		return;
 #elif USE_PROVIDER_PINVOKE
+#if not
 		try
 		{
 			// note the 'e'
@@ -51,6 +52,7 @@ namespace SQLitePCL
 		}
 		catch {
 		}
+#endif
 		_imp = new SQLite3Provider_default();
 #endif
 

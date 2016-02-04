@@ -29,7 +29,7 @@ public static class projects
 	public static List<config_pcl> items_pcl = new List<config_pcl>();
 	public static List<config_higher> items_higher = new List<config_higher>();
 	public static List<config_tests> items_tests = new List<config_tests>();
-	public static List<config_xamarin_native> items_xamarin_native = new List<config_xamarin_native>();
+	public static List<config_shim> items_shim = new List<config_shim>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -39,7 +39,7 @@ public static class projects
 		init_cppinterop();
 		init_pcl_bait();
 		init_pcl_pinvoke();
-		init_xamarin_native();
+		init_shim();
 		init_pcl_cppinterop();
 		init_higher();
 		init_tests();
@@ -114,16 +114,24 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="x86"});
 	}
 
-	private static void init_xamarin_native()
+	private static void init_shim()
 	{
-		items_xamarin_native.Add(new config_xamarin_native { env="ios", what="packaged_sqlite3" });
-		items_xamarin_native.Add(new config_xamarin_native { env="ios", what="packaged_sqlcipher" });
+		items_shim.Add(new config_shim { env="ios", toolset="default", what="sqlite3" });
+		//items_shim.Add(new config_shim { env="ios", toolset="default", what="sqlcipher" });
 
-		items_xamarin_native.Add(new config_xamarin_native { env="unified_ios", what="packaged_sqlite3" });
-		items_xamarin_native.Add(new config_xamarin_native { env="unified_ios", what="packaged_sqlcipher" });
+		items_shim.Add(new config_shim { env="unified_ios", toolset="default", what="sqlite3" });
+		//items_shim.Add(new config_shim { env="unified_ios", toolset="default", what="sqlcipher" });
 
-		items_xamarin_native.Add(new config_xamarin_native { env="android", what="packaged_sqlite3" });
-		items_xamarin_native.Add(new config_xamarin_native { env="android", what="packaged_sqlcipher" });
+		items_shim.Add(new config_shim { env="android", toolset="default", what="sqlite3" });
+		//items_shim.Add(new config_shim { env="android", toolset="default", what="sqlcipher" });
+
+		items_shim.Add(new config_shim { env="net45", toolset="v110_xp", what="sqlite3" });
+		items_shim.Add(new config_shim { env="net40", toolset="v110_xp", what="sqlite3" });
+		items_shim.Add(new config_shim { env="net35", toolset="v110_xp", what="sqlite3" });
+
+		items_shim.Add(new config_shim { env="win8", toolset="v110", what="sqlite3" });
+		items_shim.Add(new config_shim { env="win81", toolset="v120", what="sqlite3" });
+		items_shim.Add(new config_shim { env="uap10.0", toolset="v140", what="sqlite3" });
 	}
 
 	private static void init_pcl_pinvoke()
@@ -131,7 +139,7 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="ios", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke"});
+		//items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="net40", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="net35", api="pinvoke"});
@@ -200,6 +208,21 @@ public static class projects
 		}
 		//throw new Exception();
 		return null;
+	}
+
+	public static List<config_sqlite3> find_sqlite3(string toolset)
+	{
+		var result = new List<config_sqlite3>();
+		foreach (config_sqlite3 cfg in projects.items_sqlite3)
+		{
+			if (
+					(cfg.toolset == toolset)
+			   )
+			{
+				result.Add(cfg);
+			}
+		}
+		return result;
 	}
 
 	public static config_pcl find_bait(string env)
@@ -454,7 +477,7 @@ public class config_higher : config_info
 
 	public bool is_portable()
 	{
-		return env.StartsWith("profile");
+		return config_cs.env_is_portable(env);
 	}
 
 	public string get_nuget_target_path()
@@ -465,7 +488,7 @@ public class config_higher : config_info
 		}
 		else
 		{
-			return string.Format("lib\\{0}\\", config_pcl.get_nuget_framework_name(env));
+			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
 		}
 	}
 
@@ -498,11 +521,79 @@ public class config_tests : config_info
 
 }
 
-public class config_xamarin_native : config_info
+public class config_shim : config_info
 {
 	public string env;
 	public string what;
 	public string guid;
+	public string toolset;
+
+	public List<config_sqlite3> get_sqlite3_items()
+	{
+		List<config_sqlite3> other = projects.find_sqlite3(toolset);
+		if (other == null)
+		{
+			throw new Exception(get_name());
+		}
+		return other;
+	}
+
+	public string get_nuget_target_path(string where)
+	{
+		return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, "CustomSQLite3.dll");
+	}
+
+	private const string AREA = "shim";
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}\\{2}\\{3}", AREA, env, toolset, what);
+	}
+
+	public string get_name()
+	{
+		return string.Format("shim.{0}.{1}.{2}", env, toolset, what);
+	}
+
+	public string get_id()
+	{
+		return string.Format("e_{0}", get_name());
+	}
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", get_name());
+	}
+	
+}
+
+public class config_cs
+{
+	public static bool env_needs_project_dot_json(string env)
+	{
+		switch (env)
+		{
+			case "uap10.0":
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	public static bool env_is_portable(string env)
+	{
+		return env.StartsWith("profile");
+	}
 
 	public static string get_nuget_framework_name(string env)
 	{
@@ -517,43 +608,29 @@ public class config_xamarin_native : config_info
 				return "Xamarin.Mac20";
 			case "android":
 				return "MonoAndroid";
+			case "net45":
+				return "net45";
+			case "net40":
+				return "net40";
+			case "net35":
+				return "net35";
+			case "wp80":
+				return "wp8";
+			case "wp81_sl":
+				return "wp81";
+			case "wpa81":
+				return "wpa81";
+			case "uap10.0":
+				return "uap10.0";
+			case "win8":
+				return "win8";
+			case "win81":
+				return "win81";
 			default:
 				throw new Exception(env);
 		}
 	}
 					
-	public string get_nuget_target_path(string where)
-	{
-		return string.Format("lib\\{0}\\", get_nuget_framework_name(env));
-	}
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, "esqlite3.dll");
-	}
-
-	private const string AREA = "xamarin_native";
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}\\{2}", AREA, env, what);
-	}
-
-	public string get_name()
-	{
-		return string.Format("xamarin_native.{0}.{1}", env, what);
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-	
 }
 
 public class config_pcl : config_info
@@ -598,51 +675,9 @@ public class config_pcl : config_info
 
 	public bool needs_project_dot_json()
 	{
-		switch (env)
-		{
-			case "uap10.0":
-				return true;
-			default:
-				return false;
-		}
+		return config_cs.env_needs_project_dot_json(env);
 	}
 
-	public static string get_nuget_framework_name(string env)
-	{
-		// TODO maybe I should just use the TFM names?
-		switch (env)
-		{
-			case "ios":
-				return "MonoTouch";
-			case "unified_ios":
-				return "Xamarin.iOS10";
-			case "unified_mac":
-				return "Xamarin.Mac20";
-			case "android":
-				return "MonoAndroid";
-			case "net45":
-				return "net45";
-			case "net40":
-				return "net40";
-			case "net35":
-				return "net35";
-			case "wp80":
-				return "wp8";
-			case "wp81_sl":
-				return "wp81";
-			case "wpa81":
-				return "wpa81";
-			case "uap10.0":
-				return "uap10.0";
-			case "win8":
-				return "win8";
-			case "win81":
-				return "win81";
-			default:
-				throw new Exception(env);
-		}
-	}
-					
 	private string nat()
 	{
 		if (is_pinvoke())
@@ -674,7 +709,7 @@ public class config_pcl : config_info
 			}
 			else
 			{
-				return string.Format("build\\{0}\\{1}\\{2}\\", get_nuget_framework_name(env), nat(), cpu);
+				return string.Format("build\\{0}\\{1}\\{2}\\", config_cs.get_nuget_framework_name(env), nat(), cpu);
 			}
 		}
 		else if ("lib" == where)
@@ -685,7 +720,7 @@ public class config_pcl : config_info
 			}
 			else
 			{
-				return string.Format("lib\\{0}\\", get_nuget_framework_name(env));
+				return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
 			}
 		}
 		else
@@ -721,7 +756,7 @@ public class config_pcl : config_info
 
 	public bool is_portable()
 	{
-		return env.StartsWith("profile");
+		return config_cs.env_is_portable(env);
 	}
 
 	public bool is_cppinterop()
@@ -910,7 +945,7 @@ public static class gen
 		f.WriteEndElement(); // PropertyGroup
 	}
 
-	private static void write_section(string top, config_xamarin_native cfg, XmlWriter f, bool debug, List<string> defines)
+	private static void write_section(string top, config_shim cfg, XmlWriter f, bool debug, List<string> defines)
 	{
 		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
@@ -940,6 +975,348 @@ public static class gen
 		f.WriteElementString("DebugType", debug ? "full" : "none");
 
 		f.WriteEndElement(); // PropertyGroup
+	}
+
+	private static void write_project_dot_json(string subdir)
+	{
+		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
+		{
+			tw.WriteLine("{");
+			tw.WriteLine("    \"dependencies\" : {");
+			tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\"");
+			tw.WriteLine("    },");
+			tw.WriteLine("    \"frameworks\" : {");
+			tw.WriteLine("         \"uap10.0\": {}");
+			tw.WriteLine("    },");
+			tw.WriteLine("    \"runtimes\" : {");
+			tw.WriteLine("         \"win10-arm\": {},");
+			tw.WriteLine("         \"win10-arm-aot\": {},");
+			tw.WriteLine("         \"win10-x86\": {},");
+			tw.WriteLine("         \"win10-x86-aot\": {},");
+			tw.WriteLine("         \"win10-x64\": {},");
+			tw.WriteLine("         \"win10-x64-aot\": {}");
+			tw.WriteLine("    }");
+			tw.WriteLine("}");
+		}
+	}
+
+	private static void write_csproj_footer(XmlWriter f, string env)
+	{
+		if (config_cs.env_is_portable(env))
+		{
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
+			f.WriteEndElement(); // Import
+		}
+		else
+		{
+			switch (env)
+			{
+				case "win8":
+					f.WriteStartElement("PropertyGroup");
+					f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '11.0' ");
+					f.WriteElementString("VisualStudioVersion", "11.0");
+					f.WriteEndElement(); // PropertyGroup
+					break;
+				case "win81":
+					f.WriteStartElement("PropertyGroup");
+					f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+					f.WriteElementString("VisualStudioVersion", "12.0");
+					f.WriteEndElement(); // PropertyGroup
+					break;
+				case "uap10.0":
+					f.WriteStartElement("PropertyGroup");
+					f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '14.0' ");
+					f.WriteElementString("VisualStudioVersion", "14.0");
+					f.WriteEndElement(); // PropertyGroup
+					break;
+				case "wpa81":
+					f.WriteStartElement("PropertyGroup");
+					f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
+					f.WriteElementString("VisualStudioVersion", "12.0");
+					f.WriteEndElement(); // PropertyGroup
+
+					f.WriteStartElement("PropertyGroup");
+					f.WriteAttributeString("Condition", " '$(TargetPlatformIdentifier)' == '' ");
+					f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
+					f.WriteEndElement(); // PropertyGroup
+					break;
+				case "wp81_sl":
+					break;
+			}
+
+			switch (env)
+			{
+				case "unified_ios":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+					break;
+				case "unified_mac":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+					break;
+				case "ios":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+					break;
+				case "android":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+					break;
+				case "win8":
+				case "win81":
+				case "wpa81":
+				case "uap10.0":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
+					f.WriteEndElement(); // Import
+					break;
+				case "net45":
+				case "net40":
+				case "net35":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
+					f.WriteEndElement(); // Import
+					break;
+				case "wp80":
+				case "wp81_sl":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
+					f.WriteEndElement(); // Import
+
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets");
+					f.WriteEndElement(); // Import
+					break;
+			}
+		}
+
+	}
+
+	private static void write_standard_assemblies(XmlWriter f, string env)
+	{
+		switch (env)
+		{
+			case "ios":
+			case "unified_ios":
+			case "unified_mac":
+			case "android":
+			case "net45":
+			case "net40":
+			case "net35":
+				write_reference(f, "System");
+				write_reference(f, "System.Core");
+				break;
+		}
+		switch (env)
+		{
+			case "unified_ios":
+				write_reference(f, "Xamarin.iOS");
+				break;
+			case "unified_mac":
+				write_reference(f, "Xamarin.Mac");
+				break;
+			case "ios":
+				write_reference(f, "monotouch");
+				break;
+			case "android":
+				write_reference(f, "Mono.Android");
+				break;
+		}
+	}
+
+	private static List<string> write_header_properties(XmlWriter f, string env)
+	{
+		f.WriteElementString("DefaultLanguage", "en-us");
+		//f.WriteElementString("FileAlignment", "512");
+		f.WriteElementString("WarningLevel", "4");
+		//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+		f.WriteElementString("OutputType", "Library");
+
+		List<string> defines = new List<string>();
+
+		if (config_cs.env_is_portable(env))
+		{
+			switch (env)
+			{
+				case "profile136":
+				case "profile158":
+					f.WriteElementString("TargetFrameworkVersion", "v4.0");
+					break;
+				case "profile111":
+				case "profile78":
+				case "profile259":
+					f.WriteElementString("TargetFrameworkVersion", "v4.5");
+					break;
+				default:
+					throw new Exception();
+			}
+			defines.Add("NO_CONCURRENTDICTIONARY");
+			f.WriteElementString("TargetFrameworkProfile", env);
+		}
+
+		switch (env)
+		{
+			case "ios":
+				defines.Add("PLATFORM_IOS");
+				break;
+			case "unified_ios":
+			case "unified_mac":
+				defines.Add("PLATFORM_UNIFIED");
+				break;
+			case "android":
+				defines.Add("__MOBILE__");
+				defines.Add("__ANDROID__");
+				f.WriteElementString("AndroidUseLatestPlatformdk", "true");
+				break;
+			case "win8":
+				//f.WriteElementString("TargetPlatformVersion", "8.0");
+				f.WriteElementString("UseVSHostingProcess", "false");
+				//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+				// TargetFrameworkVersion?
+				defines.Add("NETFX_CORE");
+				break;
+			case "win81":
+				f.WriteElementString("TargetPlatformVersion", "8.1");
+				f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+				f.WriteElementString("TargetFrameworkVersion", null);
+				defines.Add("NETFX_CORE");
+				break;
+			case "uap10.0":
+				f.WriteElementString("TargetPlatformIdentifier", "UAP");
+				f.WriteElementString("TargetPlatformVersion", "10.0.10240.0");
+				f.WriteElementString("TargetPlatformMinVersion", "10.0.10240.0");
+				f.WriteElementString("MinimumVisualStudioVersion", "14.0");
+				f.WriteElementString("TargetFrameworkVersion", null);
+				defines.Add("NETFX_CORE");
+				defines.Add("WINDOWS_UWP");
+				break;
+			case "net45":
+				f.WriteElementString("ProductVersion", "12.0.0");
+				f.WriteElementString("TargetFrameworkVersion", "v4.5");
+				// TODO preload arch, intel
+				break;
+			case "net40":
+				f.WriteElementString("ProductVersion", "12.0.0");
+				defines.Add("OLD_REFLECTION");
+				f.WriteElementString("TargetFrameworkVersion", "v4.0");
+				break;
+			case "net35":
+				f.WriteElementString("ProductVersion", "12.0.0");
+				defines.Add("OLD_REFLECTION");
+				defines.Add("NO_CONCURRENTDICTIONARY");
+				f.WriteElementString("TargetFrameworkVersion", "v3.5");
+				break;
+			case "wp80":
+				f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+				f.WriteElementString("TargetFrameworkVersion", "v8.0");
+				f.WriteElementString("MinimumVisualStudioVersion", "11.0");
+				f.WriteElementString("SilverlightVersion", "v8.0");
+				f.WriteElementString("SilverlightApplication", "false");
+				f.WriteElementString("ValidateXaml", "true");
+				f.WriteElementString("ThrowErrorsInValidation", "true");
+				defines.Add("WINDOWS_PHONE");
+				defines.Add("SILVERLIGHT");
+				defines.Add("NO_CONCURRENTDICTIONARY");
+				f.WriteElementString("NoStdLib", "true");
+				f.WriteElementString("NoConfig", "true");
+				break;
+			case "wpa81":
+				f.WriteElementString("TargetPlatformVersion", "8.1");
+				f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+				f.WriteElementString("UseVSHostingProcess", "false");
+				defines.Add("NETFX_CORE");
+				defines.Add("WINDOWS_PHONE_APP");
+				break;
+			case "wp81_sl":
+				f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+				f.WriteElementString("TargetFrameworkVersion", "v8.1");
+				f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+				f.WriteElementString("SilverlightVersion", "v8.1");
+				f.WriteElementString("SilverlightApplication", "false");
+				f.WriteElementString("ValidateXaml", "true");
+				f.WriteElementString("ThrowErrorsInValidation", "true");
+				defines.Add("WINDOWS_PHONE");
+				defines.Add("SILVERLIGHT");
+				defines.Add("NO_CONCURRENTDICTIONARY");
+				f.WriteElementString("NoStdLib", "true");
+				f.WriteElementString("NoConfig", "true");
+				break;
+		}
+
+		return defines;
+	}
+
+	private static void write_toolsversion(XmlWriter f, string env)
+	{
+		switch (env)
+		{
+			case "uap10.0":
+				f.WriteAttributeString("ToolsVersion", "14.0");
+				break;
+			case "win81":
+			case "wpa81":
+			case "wp81_sl":
+				f.WriteAttributeString("ToolsVersion", "12.0");
+				break;
+			default:
+				f.WriteAttributeString("ToolsVersion", "4.0");
+				break;
+		}
+	}
+
+	private static void write_project_type_guids_for_env(XmlWriter f, string env)
+	{
+		if (config_cs.env_is_portable(env))
+		{
+			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
+		}
+		else
+		{
+			switch (env)
+			{
+				case "ios":
+					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
+					break;
+				case "unified_ios":
+					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
+					break;
+				case "unified_mac":
+					write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
+					break;
+				case "android":
+					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
+					break;
+				case "win8":
+				case "win81":
+					write_project_type_guids(f, GUID_WINRT, GUID_CSHARP);
+					break;
+				case "wp80":
+					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
+					break;
+				case "wpa81":
+					write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
+					break;
+				case "wp81_sl":
+					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
+					break;
+				case "uap10.0":
+					write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
+					break;
+				default:
+					write_project_type_guids(f, GUID_CSHARP);
+					break;
+			}
+		}
+
 	}
 
 	private static void gen_sqlite3(config_sqlite3 cfg, string root, string top)
@@ -1115,6 +1492,9 @@ public static class gen
 			f.WriteElementString("Optimization", "MaxSpeed");
 			f.WriteElementString("FunctionLevelLinking", "true");
 			f.WriteElementString("IntrinsicFunctions", "true");
+			if (cfg.toolset == "v110_xp") {
+				f.WriteElementString("RuntimeLibrary", "MultiThreaded");
+			}
 			write_cpp_define(f, "NDEBUG");
 			f.WriteEndElement(); // ClCompile
 			f.WriteStartElement("Link");
@@ -1424,7 +1804,7 @@ public static class gen
 
     }
 
-	private static void gen_xamarin_native(config_xamarin_native cfg, string root, string top)
+	private static void gen_shim(config_shim cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -1437,7 +1817,7 @@ public static class gen
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
+			write_toolsversion(f, cfg.env);
 			f.WriteAttributeString("DefaultTargets", "Build");
 
 			// TODO is this actually needed?
@@ -1449,20 +1829,8 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
-			switch (cfg.env)
-			{
-				case "ios":
-					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
-					break;
-				case "unified_ios":
-					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
-					break;
-				case "android":
-					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
-					break;
-				default:
-					throw new Exception(cfg.env);
-			}
+
+			write_project_type_guids_for_env(f, cfg.env);
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
@@ -1479,31 +1847,16 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "esqlite3"); // match the name in get_products()
+			f.WriteElementString("AssemblyName", "CustomSQLite3"); // match the name in get_products()
 
-			List<string> defines = new List<string>();
-
-			switch (cfg.env)
-			{
-				case "ios":
-					defines.Add("PLATFORM_IOS");
-					break;
-				case "unified_ios":
-					defines.Add("PLATFORM_UNIFIED");
-					break;
-				case "android":
-					defines.Add("__MOBILE__");
-					defines.Add("__ANDROID__");
-					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
-					break;
-			}
+			List<string> defines = write_header_properties(f, cfg.env);
 
 			switch (cfg.what)
 			{
-				case "packaged_sqlite3":
+				case "sqlite3":
 					defines.Add("IOS_PACKAGED_SQLITE3");
 					break;
-				case "packaged_sqlcipher":
+				case "sqlcipher":
 					defines.Add("IOS_PACKAGED_SQLCIPHER");
 					break;
 				default:
@@ -1516,20 +1869,7 @@ public static class gen
 			write_section(top, cfg, f, false, defines);
 
 			f.WriteStartElement("ItemGroup");
-			write_reference(f, "System");
-			write_reference(f, "System.Core");
-			switch (cfg.env)
-			{
-				case "unified_ios":
-					write_reference(f, "Xamarin.iOS");
-					break;
-				case "ios":
-					write_reference(f, "monotouch");
-					break;
-				case "android":
-					write_reference(f, "Mono.Android");
-					break;
-			}
+			write_standard_assemblies(f, cfg.env);
 			f.WriteEndElement(); // ItemGroup
 
 			switch (cfg.env)
@@ -1543,6 +1883,13 @@ public static class gen
 					f.WriteEndElement(); // ItemGroup
 					break;
 				case "android":
+					f.WriteStartElement("ItemGroup");
+					write_cs_compile(f, root, "src\\cs\\imp_e.cs");
+					write_cs_compile(f, top, "pinvoke_e.cs");
+					write_cs_compile(f, root, "src\\cs\\util.cs");
+					f.WriteEndElement(); // ItemGroup
+					break;
+				default:
 					f.WriteStartElement("ItemGroup");
 					write_cs_compile(f, root, "src\\cs\\imp_e.cs");
 					write_cs_compile(f, top, "pinvoke_e.cs");
@@ -1566,11 +1913,7 @@ public static class gen
 			switch (cfg.env)
 			{
 				case "unified_ios":
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
-					f.WriteEndElement(); // Import
-
-                        if (cfg.what == "packaged_sqlite3")
+                        if (cfg.what == "sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
@@ -1580,7 +1923,7 @@ public static class gen
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
-                        if (cfg.what == "packaged_sqlcipher")
+			else if (cfg.what == "sqlcipher")
                         {
                             f.WriteStartElement("ItemGroup");
 
@@ -1599,12 +1942,9 @@ public static class gen
                             f.WriteEndElement(); // ItemGroup
                         }
 					break;
-					case "ios":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
-						f.WriteEndElement(); // Import
 
-                        if (cfg.what == "packaged_sqlite3")
+					case "ios":
+                        if (cfg.what == "sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
@@ -1614,7 +1954,7 @@ public static class gen
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
-                        if (cfg.what == "packaged_sqlcipher")
+			else if (cfg.what == "sqlcipher")
                         {
                             f.WriteStartElement("ItemGroup");
 
@@ -1633,33 +1973,37 @@ public static class gen
                             f.WriteEndElement(); // ItemGroup
                         }
 						break;
+
 					case "android":
-						if (cfg.what == "packaged_sqlite3")
+						if (cfg.what == "sqlite3")
 						{
                             f.WriteStartElement("ItemGroup");
                             write_android_native_libs(root, f, "sqlite3");
                             f.WriteEndElement(); // ItemGroup
 						}
 
-						if (cfg.what == "packaged_sqlcipher")
+						if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
                             write_android_native_libs(root, f, "sqlcipher");
                             f.WriteEndElement(); // ItemGroup
                         }
 
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
-						f.WriteEndElement(); // Import
-
 						break;
 				}
+
+			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
 		}
 
+		if (config_cs.env_needs_project_dot_json(cfg.env))
+		{
+			string subdir = cfg.get_project_subdir(top);
+			write_project_dot_json(subdir);
+		}
 	}
 
 	private static void gen_pcl(config_pcl cfg, string root, string top)
@@ -1675,20 +2019,7 @@ public static class gen
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			switch (cfg.env)
-			{
-				case "uap10.0":
-					f.WriteAttributeString("ToolsVersion", "14.0");
-					break;
-				case "win81":
-				case "wpa81":
-				case "wp81_sl":
-					f.WriteAttributeString("ToolsVersion", "12.0");
-					break;
-				default:
-					f.WriteAttributeString("ToolsVersion", "4.0");
-					break;
-			}
+			write_toolsversion(f, cfg.env);
 			f.WriteAttributeString("DefaultTargets", "Build");
 
 			switch (cfg.env)
@@ -1707,53 +2038,11 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
-			if (cfg.is_portable())
-			{
-				write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
-			}
-			else
-			{
-				switch (cfg.env)
-				{
-					case "ios":
-						write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
-						break;
-					case "unified_ios":
-						write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
-						break;
-					case "unified_mac":
-						write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
-						break;
-					case "android":
-						write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
-						break;
-					case "win8":
-					case "win81":
-						write_project_type_guids(f, GUID_WINRT, GUID_CSHARP);
-						break;
-					case "wp80":
-						write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
-						break;
-					case "wpa81":
-						write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
-						break;
-					case "wp81_sl":
-						write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
-						break;
-					case "uap10.0":
-						write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
-						break;
-					default:
-						write_project_type_guids(f, GUID_CSHARP);
-						break;
-				}
-			}
+			write_project_type_guids_for_env(f, cfg.env);
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-
 			f.WriteString("Debug");
-
 			f.WriteEndElement(); // Configuration
 
 			if (cfg.env == "unified_mac") {
@@ -1763,118 +2052,13 @@ public static class gen
 
 			f.WriteElementString("SchemaVersion", "2.0");
 			f.WriteElementString("Platform", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("DefaultLanguage", "en-us");
-			//f.WriteElementString("FileAlignment", "512");
-			f.WriteElementString("WarningLevel", "4");
-			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
 			f.WriteElementString("AssemblyName", "SQLitePCL.raw"); // match the name in get_products()
 
-			List<string> defines = new List<string>();
-
-			switch (cfg.env)
-			{
-				case "profile136":
-				case "profile158":
-					f.WriteElementString("TargetFrameworkVersion", "v4.0");
-					break;
-				case "profile111":
-				case "profile78":
-				case "profile259":
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					break;
-				case "ios":
-					defines.Add("PLATFORM_IOS");
-					break;
-				case "unified_ios":
-				case "unified_mac":
-					defines.Add("PLATFORM_UNIFIED");
-					break;
-				case "android":
-					defines.Add("__MOBILE__");
-					defines.Add("__ANDROID__");
-					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
-					break;
-				case "win8":
-					//f.WriteElementString("TargetPlatformVersion", "8.0");
-					f.WriteElementString("UseVSHostingProcess", "false");
-					//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					// TargetFrameworkVersion?
-					defines.Add("NETFX_CORE");
-					break;
-				case "win81":
-					f.WriteElementString("TargetPlatformVersion", "8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("TargetFrameworkVersion", null);
-					defines.Add("NETFX_CORE");
-					break;
-				case "uap10.0":
-					f.WriteElementString("TargetPlatformIdentifier", "UAP");
-					f.WriteElementString("TargetPlatformVersion", "10.0.10240.0");
-					f.WriteElementString("TargetPlatformMinVersion", "10.0.10240.0");
-					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
-					f.WriteElementString("TargetFrameworkVersion", null);
-					defines.Add("NETFX_CORE");
-					defines.Add("WINDOWS_UWP");
-					break;
-				case "net45":
-					f.WriteElementString("ProductVersion", "12.0.0");
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					// TODO preload arch, intel
-					break;
-				case "net40":
-					f.WriteElementString("ProductVersion", "12.0.0");
-					defines.Add("OLD_REFLECTION");
-					f.WriteElementString("TargetFrameworkVersion", "v4.0");
-					break;
-				case "net35":
-					f.WriteElementString("ProductVersion", "12.0.0");
-					defines.Add("OLD_REFLECTION");
-					defines.Add("NO_CONCURRENTDICTIONARY");
-					f.WriteElementString("TargetFrameworkVersion", "v3.5");
-					break;
-				case "wp80":
-					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-					f.WriteElementString("TargetFrameworkVersion", "v8.0");
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					f.WriteElementString("SilverlightVersion", "v8.0");
-					f.WriteElementString("SilverlightApplication", "false");
-					f.WriteElementString("ValidateXaml", "true");
-					f.WriteElementString("ThrowErrorsInValidation", "true");
-					defines.Add("WINDOWS_PHONE");
-					defines.Add("SILVERLIGHT");
-					defines.Add("NO_CONCURRENTDICTIONARY");
-					f.WriteElementString("NoStdLib", "true");
-					f.WriteElementString("NoConfig", "true");
-					break;
-				case "wpa81":
-					f.WriteElementString("TargetPlatformVersion", "8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("UseVSHostingProcess", "false");
-					defines.Add("NETFX_CORE");
-					defines.Add("WINDOWS_PHONE_APP");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-					f.WriteElementString("TargetFrameworkVersion", "v8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("SilverlightVersion", "v8.1");
-					f.WriteElementString("SilverlightApplication", "false");
-					f.WriteElementString("ValidateXaml", "true");
-					f.WriteElementString("ThrowErrorsInValidation", "true");
-					defines.Add("WINDOWS_PHONE");
-					defines.Add("SILVERLIGHT");
-					defines.Add("NO_CONCURRENTDICTIONARY");
-					f.WriteElementString("NoStdLib", "true");
-					f.WriteElementString("NoConfig", "true");
-					break;
-			}
+			List<string> defines = write_header_properties(f, cfg.env);
 
 			if (cfg.is_portable())
 			{
-				f.WriteElementString("TargetFrameworkProfile", cfg.env);
-				defines.Add("NO_CONCURRENTDICTIONARY");
 				defines.Add("USE_PROVIDER_BAIT");
 			}
 			else if (cfg.is_cppinterop())
@@ -1892,34 +2076,7 @@ public static class gen
 			write_section(top, cfg, f, false, defines);
 
 			f.WriteStartElement("ItemGroup");
-			switch (cfg.env)
-			{
-				case "ios":
-				case "unified_ios":
-				case "unified_mac":
-				case "android":
-				case "net45":
-				case "net40":
-				case "net35":
-					write_reference(f, "System");
-					write_reference(f, "System.Core");
-					break;
-			}
-			switch (cfg.env)
-			{
-				case "unified_ios":
-					write_reference(f, "Xamarin.iOS");
-					break;
-				case "unified_mac":
-					write_reference(f, "Xamarin.Mac");
-					break;
-				case "ios":
-					write_reference(f, "monotouch");
-					break;
-				case "android":
-					write_reference(f, "Mono.Android");
-					break;
-			}
+			write_standard_assemblies(f, cfg.env);
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteStartElement("ItemGroup");
@@ -1946,7 +2103,7 @@ public static class gen
 			{
 				f.WriteStartElement("ItemGroup");
 				write_cs_compile(f, top, "pinvoke_default.cs");
-				write_cs_compile(f, top, "pinvoke_e.cs");
+				//write_cs_compile(f, top, "pinvoke_e.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -1966,102 +2123,7 @@ public static class gen
 				f.WriteEndElement(); // ItemGroup
 			}
 
-			if (cfg.is_portable())
-			{
-				f.WriteStartElement("Import");
-				f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
-				f.WriteEndElement(); // Import
-			}
-			else
-			{
-				switch (cfg.env)
-				{
-					case "win8":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '11.0' ");
-						f.WriteElementString("VisualStudioVersion", "11.0");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "win81":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
-						f.WriteElementString("VisualStudioVersion", "12.0");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "uap10.0":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '14.0' ");
-						f.WriteElementString("VisualStudioVersion", "14.0");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "wpa81":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
-						f.WriteElementString("VisualStudioVersion", "12.0");
-						f.WriteEndElement(); // PropertyGroup
-
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(TargetPlatformIdentifier)' == '' ");
-						f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "wp81_sl":
-						break;
-				}
-
-				switch (cfg.env)
-				{
-					case "unified_ios":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
-						f.WriteEndElement(); // Import
-
-						break;
-					case "unified_mac":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
-						f.WriteEndElement(); // Import
-
-						break;
-					case "ios":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
-						f.WriteEndElement(); // Import
-
-						break;
-					case "android":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
-						f.WriteEndElement(); // Import
-
-						break;
-					case "win8":
-					case "win81":
-					case "wpa81":
-					case "uap10.0":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "net45":
-					case "net40":
-					case "net35":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "wp80":
-					case "wp81_sl":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
-						f.WriteEndElement(); // Import
-
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-				}
-			}
+			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
 
@@ -2071,26 +2133,7 @@ public static class gen
 		if (cfg.needs_project_dot_json())
 		{
 			string subdir = cfg.get_project_subdir(top);
-			using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
-			{
-				tw.WriteLine("{");
-				tw.WriteLine("    \"dependencies\" : {");
-				tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\"");
-				//tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"1.4.2\"");
-				tw.WriteLine("    },");
-				tw.WriteLine("    \"frameworks\" : {");
-				tw.WriteLine("         \"uap10.0\": {}");
-				tw.WriteLine("    },");
-				tw.WriteLine("    \"runtimes\" : {");
-				tw.WriteLine("         \"win10-arm\": {},");
-				tw.WriteLine("         \"win10-arm-aot\": {},");
-				tw.WriteLine("         \"win10-x86\": {},");
-				tw.WriteLine("         \"win10-x86-aot\": {},");
-				tw.WriteLine("         \"win10-x64\": {},");
-				tw.WriteLine("         \"win10-x64-aot\": {}");
-				tw.WriteLine("    }");
-				tw.WriteLine("}");
-			}
+			write_project_dot_json(subdir);
 		}
 	}
 
@@ -2110,17 +2153,7 @@ public static class gen
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			switch (cfg.env)
-			{
-				case "win81":
-				case "wpa81":
-				case "wp81_sl":
-					f.WriteAttributeString("ToolsVersion", "12.0");
-					break;
-				default:
-					f.WriteAttributeString("ToolsVersion", "4.0");
-					break;
-			}
+			write_toolsversion(f, cfg.env);
 			f.WriteAttributeString("DefaultTargets", "Build");
 
 			switch (cfg.env)
@@ -2139,44 +2172,11 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
-
-			switch (cfg.env)
-			{
-				case "ios":
-					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
-					break;
-				case "unified_ios":
-					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
-					break;
-				case "unified_mac":
-					write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
-					break;
-				case "android":
-					write_project_type_guids(f, GUID_ANDROID, GUID_CSHARP);
-					break;
-				case "win8":
-				case "win81":
-					write_project_type_guids(f, GUID_WINRT, GUID_CSHARP);
-					break;
-				case "wp80":
-					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
-					break;
-				case "wpa81":
-					write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
-					break;
-				case "wp81_sl":
-					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
-					break;
-				case "net45":
-					write_project_type_guids(f, GUID_TEST, GUID_CSHARP);
-					break;
-			}
+			write_project_type_guids_for_env(f, cfg.env);
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-
 			f.WriteString("Debug");
-
 			f.WriteEndElement(); // Configuration
 
 			if (cfg.env == "unified_mac") {
@@ -2194,84 +2194,8 @@ public static class gen
 			// TODO f.WriteElementString("RootNamespace", "SQLitePCL");
 			// TODO f.WriteElementString("AssemblyName", "SQLitePCL"); // match the name in get_products()
 
-			List<string> defines = new List<string>();
-
-			switch (cfg.env)
-			{
-				case "profile136":
-				case "profile158":
-					f.WriteElementString("TargetFrameworkVersion", "v4.0");
-					break;
-				case "profile111":
-				case "profile78":
-				case "profile259":
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					break;
-				case "ios":
-					defines.Add("PLATFORM_IOS");
-					break;
-				case "unified_ios":
-				case "unified_mac":
-					defines.Add("PLATFORM_UNIFIED");
-					break;
-				case "android":
-					defines.Add("__MOBILE__");
-					defines.Add("__ANDROID__");
-					f.WriteElementString("AndroidUseLatestPlatformdk", "true");
-					break;
-				case "win8":
-					//f.WriteElementString("TargetPlatformVersion", "8.0");
-					f.WriteElementString("UseVSHostingProcess", "false");
-					//f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					// TargetFrameworkVersion?
-					defines.Add("NETFX_CORE");
-					break;
-				case "win81":
-					f.WriteElementString("TargetPlatformVersion", "8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("TargetFrameworkVersion", null);
-					defines.Add("NETFX_CORE");
-					break;
-				case "net45":
-					f.WriteElementString("ProductVersion", "12.0.0");
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					f.WriteElementString("ReferencePath", "$(ProgramFiles)\\Common Files\\microsoft shared\\VSTT\\$(VisualStudioVersion)\\UITestExtensionPackages");
-					f.WriteElementString("TestProjectType", "UnitTest");
-					break;
-				case "wp80":
-					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-					f.WriteElementString("TargetFrameworkVersion", "v8.0");
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					f.WriteElementString("SilverlightVersion", "v8.0");
-					f.WriteElementString("SilverlightApplication", "false");
-					f.WriteElementString("ValidateXaml", "true");
-					f.WriteElementString("ThrowErrorsInValidation", "true");
-					defines.Add("WINDOWS_PHONE");
-					defines.Add("SILVERLIGHT");
-					f.WriteElementString("NoStdLib", "true");
-					f.WriteElementString("NoConfig", "true");
-					break;
-				case "wpa81":
-					f.WriteElementString("TargetPlatformVersion", "8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("UseVSHostingProcess", "false");
-					defines.Add("NETFX_CORE");
-					defines.Add("WINDOWS_PHONE_APP");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-					f.WriteElementString("TargetFrameworkVersion", "v8.1");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("SilverlightVersion", "v8.1");
-					f.WriteElementString("SilverlightApplication", "false");
-					f.WriteElementString("ValidateXaml", "true");
-					f.WriteElementString("ThrowErrorsInValidation", "true");
-					defines.Add("WINDOWS_PHONE");
-					defines.Add("SILVERLIGHT");
-					f.WriteElementString("NoStdLib", "true");
-					f.WriteElementString("NoConfig", "true");
-					break;
-			}
+			List<string> defines = write_header_properties(f, cfg.env);
+			f.WriteElementString("TestProjectType", "UnitTest");
 
 			// TODO maybe define NUNIT
 
@@ -2281,37 +2205,16 @@ public static class gen
 			write_section(top, cfg.get_dest_subpath(), f, false, defines);
 
 			f.WriteStartElement("ItemGroup");
+			write_standard_assemblies(f, cfg.env);
 			switch (cfg.env)
 			{
-				case "unified_ios":
-				case "unified_mac":
-				case "ios":
-				case "android":
-					break;
 				case "net45":
-					write_reference(f, "System");
-					write_reference(f, "System.Core");
 					write_reference(f, "Microsoft.VisualStudio.QualityTools.UnitTestFramework");
 					break;
 				case "win8":
 					f.WriteStartElement("SDKReference");
 					f.WriteAttributeString("Include", "MSTestFramework, Version=11.0");
 					f.WriteEndElement(); // SDKReference
-					break;
-			}
-			switch (cfg.env)
-			{
-				case "unified_ios":
-					write_reference(f, "Xamarin.iOS");
-					break;
-				case "unified_mac":
-					write_reference (f, "Xamarin.Mac");
-					break;
-				case "ios":
-					write_reference(f, "monotouch");
-					break;
-				case "android":
-					write_reference(f, "Mono.Android");
 					break;
 			}
 			f.WriteEndElement(); // ItemGroup
@@ -2342,87 +2245,7 @@ public static class gen
 			f.WriteEndElement(); // ProjectReference
 			f.WriteEndElement(); // ItemGroup
 
-			{
-				switch (cfg.env)
-				{
-					case "win8":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '11.0' ");
-						f.WriteElementString("VisualStudioVersion", "11.0");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "win81":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
-						f.WriteElementString("VisualStudioVersion", "12.0");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "wpa81":
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '12.0' ");
-						f.WriteElementString("VisualStudioVersion", "12.0");
-						f.WriteEndElement(); // PropertyGroup
-
-						f.WriteStartElement("PropertyGroup");
-						f.WriteAttributeString("Condition", " '$(TargetPlatformIdentifier)' == '' ");
-						f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
-						f.WriteEndElement(); // PropertyGroup
-						break;
-					case "wp81_sl":
-						break;
-				}
-
-				switch (cfg.env)
-				{
-					case "unified_ios":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "unified_mac":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "ios":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "android":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "win8":
-					case "win81":
-					case "wpa81":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "net45":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(VSToolsPath)\\TeamTest\\Microsoft.TestTools.targets");
-						f.WriteAttributeString("Condition", "Exists('$(VSToolsPath)\\TeamTest\\Microsoft.TestTools.targets')");
-						f.WriteEndElement(); // Import
-
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-					case "wp80":
-					case "wp81_sl":
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
-						f.WriteEndElement(); // Import
-
-						f.WriteStartElement("Import");
-						f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets");
-						f.WriteEndElement(); // Import
-						break;
-				}
-			}
+			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
 
@@ -2447,7 +2270,7 @@ public static class gen
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
+			write_toolsversion(f, cfg.env);
 			f.WriteAttributeString("DefaultTargets", "Build");
 
 			// TODO is this actually needed?
@@ -2459,20 +2282,11 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
-			if (cfg.is_portable()) 
-            {
-                write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
-            }
-            else
-            {
-                write_project_type_guids(f, GUID_CSHARP);
-            }
+			write_project_type_guids_for_env(f, cfg.env);
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-
 			f.WriteString("Debug");
-
 			f.WriteEndElement(); // Configuration
 
 			f.WriteElementString("SchemaVersion", "2.0");
@@ -2481,30 +2295,10 @@ public static class gen
 			//f.WriteElementString("FileAlignment", "512");
 			f.WriteElementString("WarningLevel", "4");
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("OutputType", "Library");
 			//f.WriteElementString("RootNamespace", "whatever"); // TODO
 			f.WriteElementString("AssemblyName", cfg.assemblyname);
 
-			switch (cfg.env)
-			{
-				case "net35":
-					f.WriteElementString("TargetFrameworkVersion", "v3.5");
-					break;
-				case "profile136":
-				case "profile158":
-					f.WriteElementString("TargetFrameworkVersion", "v4.0");
-					break;
-				case "profile111":
-				case "profile78":
-				case "profile259":
-					f.WriteElementString("TargetFrameworkVersion", "v4.5");
-					break;
-			}
-
-			if (cfg.is_portable()) 
-			{
-				f.WriteElementString("TargetFrameworkProfile", cfg.env);
-			}
+			List<string> defines = write_header_properties(f, cfg.env);
 
 			f.WriteEndElement(); // PropertyGroup
 
@@ -2589,7 +2383,7 @@ public static class gen
 			string folder_cppinterop = write_folder(f, "cppinterop");
 			string folder_platforms = write_folder(f, "platforms");
 			string folder_portable = write_folder(f, "portable");
-			string folder_xamarin_native = write_folder(f, "xamarin_native");
+			string folder_shim = write_folder(f, "shim");
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
@@ -2636,7 +2430,7 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
-			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			foreach (config_shim cfg in projects.items_shim)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CSHARP,
@@ -2644,6 +2438,20 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
+				switch (cfg.env)
+				{
+					case "ios":
+					case "unified_ios":
+					case "android":
+						break;
+					default:
+						f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+						foreach (config_sqlite3 other in cfg.get_sqlite3_items()) {
+							f.WriteLine("\t\t{0} = {0}", other.guid);
+						}
+						f.WriteLine("\tEndProjectSection");
+						break;
+				}
 				f.WriteLine("EndProject");
 			}
 
@@ -2708,7 +2516,7 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
-			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			foreach (config_shim cfg in projects.items_shim)
 			{
 				if (cfg.env == "unified_mac") continue;
 
@@ -2757,13 +2565,28 @@ public static class gen
 					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
 				}
 			}
-			foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+			foreach (config_shim cfg in projects.items_shim)
 			{
-				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_xamarin_native);
+				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_shim);
 			}
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");
+		}
+	}
+
+	private static void write_nuspec_file_entry(config_shim cfg, XmlWriter f)
+	{
+		f.WriteComment(string.Format("{0}", cfg.get_name()));
+		var a = new List<string>();
+		cfg.get_products(a);
+
+		foreach (string s in a)
+		{
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+			f.WriteAttributeString("target", cfg.get_nuget_target_path("lib"));
+			f.WriteEndElement(); // file
 		}
 	}
 
@@ -2832,11 +2655,11 @@ public static class gen
 
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
 
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_pcl.get_nuget_framework_name(env)));
+		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), config_cs.get_nuget_framework_name(env)));
 
 		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_pcl.get_nuget_framework_name(env)));
-		f.WriteAttributeString("target", string.Format("lib\\{0}", config_pcl.get_nuget_framework_name(env)));
+		f.WriteAttributeString("src", string.Format("empty\\{0}\\", config_cs.get_nuget_framework_name(env)));
+		f.WriteAttributeString("target", string.Format("lib\\{0}", config_cs.get_nuget_framework_name(env)));
 		f.WriteEndElement(); // file
 
 		f.WriteComment("msbuild .targets file to inject reference for the right cpu");
@@ -2846,7 +2669,7 @@ public static class gen
 
 		f.WriteStartElement("file");
 		f.WriteAttributeString("src", tname);
-		f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_pcl.get_nuget_framework_name(env), id));
+		f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(env), id));
 		f.WriteEndElement(); // file
 	}
 
@@ -2940,6 +2763,84 @@ public static class gen
 			f.WriteComment("END platform assemblies that use cppinterop");
 
 			f.WriteComment("END platform assemblies");
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_e(string top, string root, config_shim cfg)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = cfg.get_id();
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "TODO SQLitePCL.raw");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			write_nuspec_file_entry(
+					cfg, 
+					f
+					);
+
+			switch (cfg.env) {
+				case "ios":
+				case "unified_ios":
+				case "android":
+					break;
+				case "net45":
+				case "net40":
+				case "net35":
+				case "win8":
+				case "win81":
+				case "uap10.0":
+					foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+					{
+						write_nuspec_file_entry(
+								other, 
+								f
+								);
+					}
+					string tname = string.Format("{0}.targets", cfg.env);
+					gen_nuget_targets_sqlite3_itself(top, tname, cfg.env);
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", tname);
+					f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(cfg.env), id));
+					f.WriteEndElement(); // file
+					break;
+				default:
+					throw new Exception();
+			}
 
 			f.WriteEndElement(); // files
 
@@ -3117,7 +3018,6 @@ public static class gen
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-            f.WriteAttributeString("Condition", string.Format(" '$(UseSQLiteFrom.ToLower())' != 'elsewhere' "));
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
@@ -3151,7 +3051,7 @@ public static class gen
 
 				f.WriteStartElement("Content");
 				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "sqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "esqlite3.dll")));
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
@@ -3168,6 +3068,7 @@ public static class gen
 		}
 	}
 
+	// TODO change the name of this to something like dual arch
 	private static void gen_nuget_targets_pinvoke_anycpu(string top, string tname, string env)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -3405,7 +3306,7 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+		foreach (config_shim cfg in projects.items_shim)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
@@ -3438,9 +3339,9 @@ public static class gen
 			gen_pcl(cfg, root, top);
 		}
 
-		foreach (config_xamarin_native cfg in projects.items_xamarin_native)
+		foreach (config_shim cfg in projects.items_shim)
 		{
-			gen_xamarin_native(cfg, root, top);
+			gen_shim(cfg, root, top);
 		}
 
 		foreach (config_higher cfg in projects.items_higher)
@@ -3464,7 +3365,10 @@ public static class gen
 
 		gen_nuspec_ugly(top);
 
-		//gen_nuspec_tests(top, root);
+		foreach (config_shim cfg in projects.items_shim)
+		{
+			gen_nuspec_e(top, root, cfg);
+		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
@@ -3472,16 +3376,17 @@ public static class gen
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
 			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
-		}
-
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build_mac.sh")))
-		{
-			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_packaged_sqlcipher.anycpu.csproj");
-			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_packaged_sqlite3.anycpu.csproj");
-			tw.WriteLine("xbuild /p:Configuration=Release platform.unified_mac.pinvoke_sqlite3.anycpu.csproj");
-            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_sqlite3 ../apple/libs/mac");
-            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_packaged_sqlite3 ../apple/libs/mac");
-            tw.WriteLine("cp -r ./release/bin/pcl/unified_mac/pinvoke_packaged_sqlcipher ../apple/libs/mac");
+			foreach (config_shim cfg in projects.items_shim)
+			{
+				if (config_cs.env_needs_project_dot_json(cfg.env))
+				{
+					string id = cfg.get_id();
+					var a = new List<string>();
+					cfg.get_products(a);
+					// TODO assert a.count is 1
+					tw.WriteLine("../../refgen UAP,Version=v10.0 {0} ./{1}.nuspec {2} ./release/bin/{3}", cfg.env, cfg.get_id(), cfg.get_project_path(top), a[0]);
+				}
+			}
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
@@ -3491,7 +3396,11 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
-			//tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
+			foreach (config_shim cfg in projects.items_shim)
+			{
+				string id = cfg.get_id();
+				tw.WriteLine("../../nuget pack {0}.nuspec", id);
+			}
 			tw.WriteLine("ls *.nupkg");
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
@@ -3501,7 +3410,11 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
-			//tw.WriteLine("../../nuget push SQLitePCL.tests.{0}.nupkg", NUSPEC_VERSION);
+			foreach (config_shim cfg in projects.items_shim)
+			{
+				string id = cfg.get_id();
+				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+			}
 		}
 	}
 }
