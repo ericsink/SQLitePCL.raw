@@ -130,7 +130,9 @@ public static class projects
 		items_custom.Add(new config_custom { env="net35", toolset="v110_xp", what="sqlite3" });
 
 		items_custom.Add(new config_custom { env="win8", toolset="v110", what="sqlite3" });
+		items_custom.Add(new config_custom { env="win8", toolset="v110_xp", what="sqlite3" });
 		items_custom.Add(new config_custom { env="win81", toolset="v120", what="sqlite3" });
+		items_custom.Add(new config_custom { env="win81", toolset="v110_xp", what="sqlite3" });
 		items_custom.Add(new config_custom { env="uap10.0", toolset="v140", what="sqlite3" });
 	}
 
@@ -2830,8 +2832,8 @@ public static class gen
 								f
 								);
 					}
-					string tname = string.Format("{0}.targets", cfg.env);
-					gen_nuget_targets_sqlite3_itself(top, tname, cfg.env);
+
+					string tname = gen_nuget_targets_sqlite3_itself(top, cfg);
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", tname);
@@ -2968,7 +2970,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_sqlite3_itself(string top, string tname, string env)
+	private static string gen_nuget_targets_sqlite3_itself(string top, config_custom cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2976,6 +2978,7 @@ public static class gen
 
 		// TODO should we put the cpu check code here, like the original version of this function (below)?
 
+		string tname = string.Format("{0}.targets", cfg.get_id());
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
@@ -2984,10 +2987,12 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
-			// TODO this should switch on the toolset, not the cs env
-			switch (env)
+			switch (cfg.toolset)
 			{
-				case "win8":
+				case "v110_xp":
+					// statically linked
+					break;
+				case "v110":
 					f.WriteStartElement("ItemGroup");
 					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
 					f.WriteStartElement("SDKReference");
@@ -2995,9 +3000,7 @@ public static class gen
 					f.WriteEndElement(); // SDKReference
 					f.WriteEndElement(); // ItemGroup
 					break;
-				case "win81":
-				case "wpa81":
-				case "wp81_sl":
+				case "v120":
 					f.WriteStartElement("ItemGroup");
 					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
 					f.WriteStartElement("SDKReference");
@@ -3005,7 +3008,7 @@ public static class gen
 					f.WriteEndElement(); // SDKReference
 					f.WriteEndElement(); // ItemGroup
 					break;
-				case "uap10.0":
+				case "v140":
 #if not // TODO do we need this?  we should, but testing says we don't.
 					f.WriteStartElement("ItemGroup");
 					f.WriteStartElement("SDKReference");
@@ -3020,39 +3023,19 @@ public static class gen
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
-			foreach (config_sqlite3 cfg in projects.items_sqlite3)
+			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
-				if (cfg.toolset != projects.cs_env_to_toolset(env))
+				if (other.toolset != cfg.toolset)
 				{
 					continue;
 				}
 
-				bool b_platform_condition = true;
-
-				switch (env)
-				{
-					// TODO unified?
-					case "ios":
-						b_platform_condition = false;
-						break;
-					case "android":
-						b_platform_condition = false;
-						break;
-
-					default:
-						break;
-				}
-
 				f.WriteStartElement("ItemGroup");
-				if (b_platform_condition)
-				{
-					// TODO put a condition flag here allowing this to be skipped
-					f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
-				}
+				f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", other.cpu.ToLower()));
 
 				f.WriteStartElement("Content");
-				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "esqlite3.dll")));
+				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
@@ -3067,6 +3050,7 @@ public static class gen
 
 			f.WriteEndDocument();
 		}
+		return tname;
 	}
 
 	// TODO change the name of this to something like dual arch

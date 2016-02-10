@@ -53,7 +53,16 @@ namespace SQLitePCL
 		catch {
 		}
 #endif
-		_imp = new SQLite3Provider_default();
+		try
+		{
+			// try to load the default pinvoke.
+			// if it fails, that's okay, as long as
+			// somebody installs another one.
+			_imp = new SQLite3Provider_default();
+		}
+		catch {
+			_imp = null;
+		}
 #endif
 
 	}
