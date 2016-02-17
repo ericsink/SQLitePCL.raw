@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public class CustomSQLite3
+public class SQLite3Plugin
 {
 	public static void Init()
 	{

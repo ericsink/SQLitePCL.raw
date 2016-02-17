@@ -29,7 +29,7 @@ public static class projects
 	public static List<config_pcl> items_pcl = new List<config_pcl>();
 	public static List<config_higher> items_higher = new List<config_higher>();
 	public static List<config_tests> items_tests = new List<config_tests>();
-	public static List<config_custom> items_custom = new List<config_custom>();
+	public static List<config_plugin> items_plugin = new List<config_plugin>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -39,7 +39,7 @@ public static class projects
 		init_cppinterop();
 		init_pcl_bait();
 		init_pcl_pinvoke();
-		init_custom();
+		init_plugin();
 		init_pcl_cppinterop();
 		init_higher();
 		init_tests();
@@ -114,33 +114,34 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="x86"});
 	}
 
-	private static void init_custom()
+	private static void init_plugin()
 	{
-		items_custom.Add(new config_custom { env="ios", toolset="default", what="sqlite3" });
-		items_custom.Add(new config_custom { env="ios", toolset="default", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher" });
 
-		items_custom.Add(new config_custom { env="unified_ios", toolset="default", what="sqlite3" });
-		items_custom.Add(new config_custom { env="unified_ios", toolset="default", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher" });
 
-		items_custom.Add(new config_custom { env="android", toolset="default", what="sqlite3" });
-		items_custom.Add(new config_custom { env="android", toolset="default", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="android", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="android", what="sqlcipher" });
 
-		items_custom.Add(new config_custom { env="net45", toolset="v110_xp", what="sqlite3" });
-		items_custom.Add(new config_custom { env="net40", toolset="v110_xp", what="sqlite3" });
-		items_custom.Add(new config_custom { env="net35", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net45", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net35", toolset="v110_xp", what="sqlite3" });
 
-		items_custom.Add(new config_custom { env="win8", toolset="v110", what="sqlite3" });
-		items_custom.Add(new config_custom { env="win8", toolset="v110_xp", what="sqlite3" });
-		items_custom.Add(new config_custom { env="win81", toolset="v120", what="sqlite3" });
-		items_custom.Add(new config_custom { env="win81", toolset="v110_xp", what="sqlite3" });
-		items_custom.Add(new config_custom { env="uap10.0", toolset="v140", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", toolset="v110", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", toolset="v120", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="wpa81", toolset="v120_wp81", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="uap10.0", toolset="v140", what="sqlite3" });
 	}
 
 	private static void init_pcl_pinvoke()
 	{
 		items_pcl.Add(new config_pcl { env="android", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="ios", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="unified_ios", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="ios_classic", api="pinvoke"});
+		items_pcl.Add(new config_pcl { env="ios_unified", api="pinvoke"});
 		//items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="net45", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="net40", api="pinvoke"});
@@ -523,7 +524,7 @@ public class config_tests : config_info
 
 }
 
-public class config_custom : config_info
+public class config_plugin : config_info
 {
 	public string env;
 	public string what;
@@ -552,10 +553,10 @@ public class config_custom : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "CustomSQLite3.dll");
+		add_product(a, "SQLite3Plugin.dll");
 	}
 
-	private const string AREA = "custom";
+	private const string AREA = "plugin";
 
 	public string get_dest_subpath()
 	{
@@ -564,7 +565,20 @@ public class config_custom : config_info
 
 	public string get_name()
 	{
-		return string.Format("custom.{0}.{1}.{2}", what, env, toolset);
+		if (string.IsNullOrWhiteSpace(toolset)) {
+			return string.Format("plugin.{0}.{1}", what, env);
+		} else {
+			return string.Format("plugin.{0}.{1}.{2}", what, env, toolset);
+		}
+	}
+
+	public string get_title()
+	{
+		if (string.IsNullOrWhiteSpace(toolset)) {
+			return string.Format("Native code plugin ({0}, {1}) for SQLitePCL.raw", what, env);
+		} else {
+			return string.Format("Native code plugin ({0}, {1}, compiled with {2}) for SQLitePCL.raw", what, env, toolset);
+		}
 	}
 
 	public string get_id()
@@ -602,9 +616,9 @@ public class config_cs
 		// TODO maybe I should just use the TFM names?
 		switch (env)
 		{
-			case "ios":
+			case "ios_classic":
 				return "MonoTouch";
-			case "unified_ios":
+			case "ios_unified":
 				return "Xamarin.iOS10";
 			case "unified_mac":
 				return "Xamarin.Mac20";
@@ -947,7 +961,7 @@ public static class gen
 		f.WriteEndElement(); // PropertyGroup
 	}
 
-	private static void write_section(string top, config_custom cfg, XmlWriter f, bool debug, List<string> defines)
+	private static void write_section(string top, config_plugin cfg, XmlWriter f, bool debug, List<string> defines)
 	{
 		string name = debug ? "debug" : "release";
 		f.WriteStartElement("PropertyGroup");
@@ -1049,7 +1063,7 @@ public static class gen
 
 			switch (env)
 			{
-				case "unified_ios":
+				case "ios_unified":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.iOS.CSharp.targets");
 					f.WriteEndElement(); // Import
@@ -1061,7 +1075,7 @@ public static class gen
 					f.WriteEndElement(); // Import
 
 					break;
-				case "ios":
+				case "ios_classic":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
 					f.WriteEndElement(); // Import
@@ -1107,8 +1121,8 @@ public static class gen
 	{
 		switch (env)
 		{
-			case "ios":
-			case "unified_ios":
+			case "ios_classic":
+			case "ios_unified":
 			case "unified_mac":
 			case "android":
 			case "net45":
@@ -1120,13 +1134,13 @@ public static class gen
 		}
 		switch (env)
 		{
-			case "unified_ios":
+			case "ios_unified":
 				write_reference(f, "Xamarin.iOS");
 				break;
 			case "unified_mac":
 				write_reference(f, "Xamarin.Mac");
 				break;
-			case "ios":
+			case "ios_classic":
 				write_reference(f, "monotouch");
 				break;
 			case "android":
@@ -1167,10 +1181,10 @@ public static class gen
 
 		switch (env)
 		{
-			case "ios":
+			case "ios_classic":
 				defines.Add("PLATFORM_IOS");
 				break;
-			case "unified_ios":
+			case "ios_unified":
 			case "unified_mac":
 				defines.Add("PLATFORM_UNIFIED");
 				break;
@@ -1285,10 +1299,10 @@ public static class gen
 		{
 			switch (env)
 			{
-				case "ios":
+				case "ios_classic":
 					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
 					break;
-				case "unified_ios":
+				case "ios_unified":
 					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
 					break;
 				case "unified_mac":
@@ -1806,7 +1820,7 @@ public static class gen
 
     }
 
-	private static void gen_custom(config_custom cfg, string root, string top)
+	private static void gen_plugin(config_plugin cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -1849,7 +1863,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "CustomSQLite3"); // match the name in get_products()
+			f.WriteElementString("AssemblyName", "SQLite3Plugin"); // match the name in get_products()
 
 			List<string> defines = write_header_properties(f, cfg.env);
 
@@ -1876,8 +1890,8 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "unified_ios":
-				case "ios":
+				case "ios_unified":
+				case "ios_classic":
 					f.WriteStartElement("ItemGroup");
 					write_cs_compile(f, root, "src\\cs\\imp_ios_internal.cs");
 					write_cs_compile(f, top, "pinvoke_ios_internal.cs");
@@ -1914,7 +1928,7 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "unified_ios":
+				case "ios_unified":
                         if (cfg.what == "sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
@@ -1945,7 +1959,7 @@ public static class gen
                         }
 					break;
 
-					case "ios":
+					case "ios_classic":
                         if (cfg.what == "sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
@@ -2385,7 +2399,7 @@ public static class gen
 			string folder_cppinterop = write_folder(f, "cppinterop");
 			string folder_platforms = write_folder(f, "platforms");
 			string folder_portable = write_folder(f, "portable");
-			string folder_custom = write_folder(f, "custom");
+			string folder_plugin = write_folder(f, "plugin");
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
@@ -2432,7 +2446,7 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
 						GUID_CSHARP,
@@ -2442,8 +2456,8 @@ public static class gen
 						);
 				switch (cfg.env)
 				{
-					case "ios":
-					case "unified_ios":
+					case "ios_classic":
+					case "ios_unified":
 					case "android":
 						break;
 					default:
@@ -2518,7 +2532,7 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				if (cfg.env == "unified_mac") continue;
 
@@ -2567,9 +2581,9 @@ public static class gen
 					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
 				}
 			}
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
-				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_custom);
+				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_plugin);
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -2577,7 +2591,7 @@ public static class gen
 		}
 	}
 
-	private static void write_nuspec_file_entry(config_custom cfg, XmlWriter f)
+	private static void write_nuspec_file_entry(config_plugin cfg, XmlWriter f)
 	{
 		f.WriteComment(string.Format("{0}", cfg.get_name()));
 		var a = new List<string>();
@@ -2676,7 +2690,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.9.0-pre1";
-	private const string NUSPEC_RELEASE_NOTES = "sep";
+	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has any native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2774,7 +2788,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_custom(string top, string root, config_custom cfg)
+	private static void gen_nuspec_plugin(string top, string root, config_plugin cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2793,8 +2807,8 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "Custom native code for SQLitePCL.raw");
-			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
+			f.WriteElementString("title", cfg.get_title());
+			f.WriteElementString("description", "Install this package in your app project and call SQLite3Plugin.Init()");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -2815,8 +2829,8 @@ public static class gen
 					);
 
 			switch (cfg.env) {
-				case "ios":
-				case "unified_ios":
+				case "ios_classic":
+				case "ios_unified":
 				case "android":
 					break;
 				case "net45":
@@ -2825,6 +2839,7 @@ public static class gen
 				case "win8":
 				case "win81":
 				case "uap10.0":
+				case "wpa81":
 					foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
 					{
 						write_nuspec_file_entry(
@@ -2970,7 +2985,7 @@ public static class gen
 		}
 	}
 
-	private static string gen_nuget_targets_sqlite3_itself(string top, config_custom cfg)
+	private static string gen_nuget_targets_sqlite3_itself(string top, config_plugin cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3185,7 +3200,7 @@ public static class gen
 				switch (cfg.env)
 				{
 					// TODO unified?
-					case "ios":
+					case "ios_classic":
 						b_platform_condition = false;
 						break;
 					case "android":
@@ -3291,7 +3306,7 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_custom cfg in projects.items_custom)
+		foreach (config_plugin cfg in projects.items_plugin)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
@@ -3324,9 +3339,9 @@ public static class gen
 			gen_pcl(cfg, root, top);
 		}
 
-		foreach (config_custom cfg in projects.items_custom)
+		foreach (config_plugin cfg in projects.items_plugin)
 		{
-			gen_custom(cfg, root, top);
+			gen_plugin(cfg, root, top);
 		}
 
 		foreach (config_higher cfg in projects.items_higher)
@@ -3350,9 +3365,9 @@ public static class gen
 
 		gen_nuspec_ugly(top);
 
-		foreach (config_custom cfg in projects.items_custom)
+		foreach (config_plugin cfg in projects.items_plugin)
 		{
-			gen_nuspec_custom(top, root, cfg);
+			gen_nuspec_plugin(top, root, cfg);
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
@@ -3361,7 +3376,7 @@ public static class gen
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
 			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				if (config_cs.env_needs_project_dot_json(cfg.env))
 				{
@@ -3381,7 +3396,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget pack {0}.nuspec", id);
@@ -3395,7 +3410,7 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
-			foreach (config_custom cfg in projects.items_custom)
+			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
