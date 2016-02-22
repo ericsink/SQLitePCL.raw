@@ -1867,6 +1867,15 @@ public static class gen
 
 			List<string> defines = write_header_properties(f, cfg.env);
 
+			switch (cfg.env)
+			{
+				case "net35":
+				case "net40":
+				case "net45":
+					defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
+					break;
+			}
+
 			switch (cfg.what)
 			{
 				case "sqlite3":
@@ -2689,7 +2698,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0-pre1";
+	private const string NUSPEC_VERSION = "0.9.0-pre2";
 	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has any native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -2848,7 +2857,22 @@ public static class gen
 								);
 					}
 
-					string tname = gen_nuget_targets_sqlite3_itself(top, cfg);
+					string tname;
+					switch (cfg.env) {
+						case "net45":
+						case "net40":
+						case "net35":
+							tname = gen_nuget_targets_pinvoke_anycpu(top, cfg);
+							break;
+						case "win8":
+						case "win81":
+						case "uap10.0":
+						case "wpa81":
+							tname = gen_nuget_targets_sqlite3_itself(top, cfg);
+							break;
+						default:
+							throw new Exception();
+					}
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", tname);
@@ -3037,6 +3061,7 @@ public static class gen
 			f.WriteStartElement("Target");
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
 			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
@@ -3069,12 +3094,13 @@ public static class gen
 	}
 
 	// TODO change the name of this to something like dual arch
-	private static void gen_nuget_targets_pinvoke_anycpu(string top, string tname, string env)
+	private static string gen_nuget_targets_pinvoke_anycpu(string top, config_plugin cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
+		string tname = string.Format("{0}.targets", cfg.get_id());
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
@@ -3088,24 +3114,12 @@ public static class gen
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
-			switch (env)
-			{
-				case "win8":
-				case "win81":
-				case "wpa81":
-				case "wp81_sl":
-					f.WriteStartElement("Message");
-					f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
-					f.WriteAttributeString("Importance", "High");
-					f.WriteEndElement(); // Message
-					break;
-			}
-			
 			f.WriteStartElement("ItemGroup");
+			// TODO problem with net45 on Linux because of the 'e'
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-			foreach (config_sqlite3 cfg in projects.items_sqlite3)
+			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
-				if (cfg.toolset != projects.cs_env_to_toolset(env))
+				if (cfg.toolset != other.toolset)
 				{
 					continue;
 				}
@@ -3113,10 +3127,10 @@ public static class gen
 				// TODO for net45, handle more than just windows.  deal with mono on mac and linux
 
 				f.WriteStartElement("Content");
-				// TODO call cfg.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(cfg.get_nuget_target_path(), "sqlite3.dll")));
+				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
 				// TODO condition/exists ?
-				f.WriteElementString("Link", string.Format("{0}\\sqlite3.dll", cfg.cpu.ToLower()));
+				f.WriteElementString("Link", string.Format("{0}\\esqlite3.dll", other.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 				f.WriteEndElement(); // Content
 			}
@@ -3133,6 +3147,7 @@ public static class gen
 
 			f.WriteEndDocument();
 		}
+		return tname;
 	}
 
 	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_pcl> a)

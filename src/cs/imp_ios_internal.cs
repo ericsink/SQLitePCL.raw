@@ -81,7 +81,7 @@
 
 #endif
 
-public class esqlite3
+public class SQLite3Plugin
 {
 	public static void Init()
 	{

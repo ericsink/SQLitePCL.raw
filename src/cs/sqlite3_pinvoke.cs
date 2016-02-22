@@ -1148,7 +1148,7 @@ namespace SQLitePCL
 	    var dllName = string.Format("{0}.dll", SQLITE_DLL);
 
 		string baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
-		if baseDirectory == null 
+		if (baseDirectory == null)
 		{
 			return false;
 		}
