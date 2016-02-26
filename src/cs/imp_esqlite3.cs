@@ -18,7 +18,7 @@ public class SQLite3Plugin
 {
 	public static void Init()
 	{
-		SQLitePCL.ISQLite3Provider imp = new SQLitePCL.SQLite3Provider_e();
+		SQLitePCL.ISQLite3Provider imp = new SQLitePCL.SQLite3Provider_esqlite3();
 		SQLitePCL.raw.SetProvider(imp);
 	}
 }

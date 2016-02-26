@@ -125,6 +125,8 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="android", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="android", what="sqlcipher" });
 
+		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher" });
+
 		items_plugin.Add(new config_plugin { env="net45", toolset="v110_xp", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="net40", toolset="v110_xp", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="net35", toolset="v110_xp", what="sqlite3" });
@@ -1820,6 +1822,54 @@ public static class gen
 
     }
 
+    private static void write_android_native_libs_sqlcipher(string root, XmlWriter f)
+    {
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("x86\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86_64\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("x86_64\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("armeabi\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\arm64-v8a\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("arm64-v8a\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi-v7a\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("armeabi-v7a\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+#if not
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("mips\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+        f.WriteStartElement("EmbeddedNativeLibrary");
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips64\\libsqlcipher.so")));
+        f.WriteElementString("CopyToOutputDirectory", "Always");
+        f.WriteElementString("Link", string.Format("mips64\\libsqlcipher.so"));
+        f.WriteEndElement(); // EmbeddedNativeLibrary
+#endif
+
+    }
+
 	private static void gen_plugin(config_plugin cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -1909,15 +1959,37 @@ public static class gen
 					break;
 				case "android":
 					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "src\\cs\\imp_e.cs");
-					write_cs_compile(f, top, "pinvoke_e.cs");
+					switch (cfg.what)
+					{
+						case "sqlite3":
+							write_cs_compile(f, root, "src\\cs\\imp_esqlite3.cs");
+							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
+							break;
+						case "sqlcipher":
+							write_cs_compile(f, root, "src\\cs\\imp_sqlcipher.cs");
+							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
+							break;
+						default:
+							throw new Exception(cfg.what);
+					}
 					write_cs_compile(f, root, "src\\cs\\util.cs");
 					f.WriteEndElement(); // ItemGroup
 					break;
 				default:
 					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "src\\cs\\imp_e.cs");
-					write_cs_compile(f, top, "pinvoke_e.cs");
+					switch (cfg.what)
+					{
+						case "sqlite3":
+							write_cs_compile(f, root, "src\\cs\\imp_esqlite3.cs");
+							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
+							break;
+						case "sqlcipher":
+							write_cs_compile(f, root, "src\\cs\\imp_sqlcipher.cs");
+							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
+							break;
+						default:
+							throw new Exception(cfg.what);
+					}
 					write_cs_compile(f, root, "src\\cs\\util.cs");
 					f.WriteEndElement(); // ItemGroup
 					break;
@@ -1954,14 +2026,8 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
+                            f.WriteElementString("Link", "libsqlcipher.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             f.WriteEndElement(); // ItemGroup
@@ -2010,7 +2076,7 @@ public static class gen
 						if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlcipher");
+                            write_android_native_libs_sqlcipher(root, f);
                             f.WriteEndElement(); // ItemGroup
                         }
 
@@ -2128,7 +2194,6 @@ public static class gen
 			{
 				f.WriteStartElement("ItemGroup");
 				write_cs_compile(f, top, "pinvoke_default.cs");
-				//write_cs_compile(f, top, "pinvoke_e.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -2849,12 +2914,37 @@ public static class gen
 				case "win81":
 				case "uap10.0":
 				case "wpa81":
-					foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
-					{
-						write_nuspec_file_entry(
-								other, 
-								f
-								);
+					switch (cfg.what) {
+					case "sqlite3":
+						foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+						{
+							write_nuspec_file_entry(
+									other, 
+									f
+									);
+						}
+						break;
+					case "sqlcipher":
+						switch (cfg.env) {
+						case "net45":
+						case "net40":
+						case "net35":
+							f.WriteStartElement("file");
+							f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86\\sqlcipher.dll"));
+							f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", cfg.env, "x86"));
+							f.WriteEndElement(); // file
+
+							f.WriteStartElement("file");
+							f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86_64\\sqlcipher.dll"));
+							f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", cfg.env, "x86_64"));
+							f.WriteEndElement(); // file
+							break;
+						default:
+							throw new Exception();
+						}
+					break;
+					default:
+						throw new Exception();
 					}
 
 					string tname;
@@ -2862,7 +2952,16 @@ public static class gen
 						case "net45":
 						case "net40":
 						case "net35":
-							tname = gen_nuget_targets_pinvoke_anycpu(top, cfg);
+							switch (cfg.what) {
+							case "sqlite3":
+								tname = gen_nuget_targets_pinvoke_anycpu(top, cfg);
+								break;
+							case "sqlcipher":
+								tname = gen_nuget_targets_pinvoke_anycpu_sqlcipher(top, cfg);
+								break;
+							default:
+								throw new Exception();
+							}
 							break;
 						case "win8":
 						case "win81":
@@ -3150,6 +3249,61 @@ public static class gen
 		return tname;
 	}
 
+	// TODO change the name of this to something like dual arch
+	private static string gen_nuget_targets_pinvoke_anycpu_sqlcipher(string top, config_plugin cfg)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string tname = string.Format("{0}.targets", cfg.get_id());
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			f.WriteAttributeString("ToolsVersion", "4.0");
+
+			var guid = Guid.NewGuid().ToString();
+			f.WriteStartElement("Target");
+			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
+			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
+
+			f.WriteStartElement("ItemGroup");
+			// TODO problem with net45 on Linux because of the 'e'
+			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
+
+			f.WriteStartElement("Content");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\native\\{0}\\x86\\sqlcipher.dll", cfg.env));
+			// TODO condition/exists ?
+			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x86"));
+			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+			f.WriteEndElement(); // Content
+
+			f.WriteStartElement("Content");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\native\\{0}\\x86_64\\sqlcipher.dll", cfg.env));
+			// TODO condition/exists ?
+			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x64"));
+			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+			f.WriteEndElement(); // Content
+
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteEndElement(); // Target
+
+			f.WriteStartElement("PropertyGroup");
+			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
+					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
+			f.WriteEndElement(); // PropertyGroup
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+		return tname;
+	}
+
 	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_pcl> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -3290,10 +3444,16 @@ public static class gen
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
 			tw.Write(cs2);
 		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e.cs")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_esqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e");
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "esqlite3");
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "esqlite3");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlcipher.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher");
 			tw.Write(cs2);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))
