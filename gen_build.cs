@@ -1217,8 +1217,8 @@ public static class gen
 				break;
 			case "net45":
 				f.WriteElementString("ProductVersion", "12.0.0");
+				defines.Add("OLD_REFLECTION");
 				f.WriteElementString("TargetFrameworkVersion", "v4.5");
-				// TODO preload arch, intel
 				break;
 			case "net40":
 				f.WriteElementString("ProductVersion", "12.0.0");

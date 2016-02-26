@@ -1150,6 +1150,18 @@ namespace SQLitePCL
 		string baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
 		if (baseDirectory == null)
 		{
+#if OLD_REFLECTION
+			var currentAssembly = typeof(NativeMethods).Assembly;
+#else
+			var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
+#endif
+			var codeBase = currentAssembly.CodeBase;
+			var uri = new UriBuilder(codeBase);
+			baseDirectory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+
+		}
+		if (baseDirectory == null)
+		{
 			return false;
 		}
             System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
