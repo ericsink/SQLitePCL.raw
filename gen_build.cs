@@ -2765,7 +2765,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0-pre3";
+	private const string NUSPEC_VERSION = "0.9.0-pre4";
 	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has any native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3359,15 +3359,13 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\build\\native\\{0}\\x86\\sqlcipher.dll", "windows"));
-			// TODO condition/exists ?
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86\\sqlcipher.dll", "windows"));
 			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x86"));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\build\\native\\{0}\\x86_64\\sqlcipher.dll", "windows"));
-			// TODO condition/exists ?
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86_64\\sqlcipher.dll", "windows"));
 			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x64"));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
@@ -3410,7 +3408,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\build\\native\\osx\\libsqlcipher.dylib"));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\osx\\libsqlcipher.dylib"));
 			f.WriteElementString("Link", "libsqlcipher.dylib");
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
@@ -3453,7 +3451,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\build\\native\\osx\\libsqlcipher.so"));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\osx\\libsqlcipher.so"));
 			f.WriteElementString("Link", "libsqlcipher.so");
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
