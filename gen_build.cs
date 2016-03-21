@@ -2765,7 +2765,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0-pre4";
+	private const string NUSPEC_VERSION = "0.9.0-pre5";
 	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has any native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -2786,7 +2786,11 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.raw");
+			if (id == "SQLitePCL.raw_basic") {
+				f.WriteElementString("title", "SQLitePCL.raw_basic (deprecated)");
+			} else {
+				f.WriteElementString("title", "SQLitePCL.raw");
+			}
 			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3764,7 +3768,9 @@ public static class gen
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
 			}
-			// TODO push the native packages too
+			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.windows.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.osx.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.linux.{0}.nupkg", NUSPEC_VERSION);
 		}
 	}
 }
