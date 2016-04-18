@@ -3011,7 +3011,7 @@ public static class gen
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", string.Format("Native code only ({0}) for SQLitePCL.raw", plat));
 			f.WriteElementString("description", "TODO explain this");
-			f.WriteElementString("authors", "Couchbase");
+			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
