@@ -30,6 +30,7 @@ public static class projects
 	public static List<config_higher> items_higher = new List<config_higher>();
 	public static List<config_tests> items_tests = new List<config_tests>();
 	public static List<config_plugin> items_plugin = new List<config_plugin>();
+	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -40,6 +41,7 @@ public static class projects
 		init_pcl_bait();
 		init_pcl_pinvoke();
 		init_plugin();
+		init_esqlite3();
 		init_pcl_cppinterop();
 		init_higher();
 		init_tests();
@@ -114,6 +116,11 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="x86"});
 	}
 
+	private static void init_esqlite3()
+	{
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
+	}
+
 	private static void init_plugin()
 	{
 		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3" });
@@ -128,6 +135,10 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher" });
 		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher" });
 		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher" });
+
+		items_plugin.Add(new config_plugin { env="net45", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net35", what="sqlite3" });
 
 		items_plugin.Add(new config_plugin { env="net45", toolset="v110_xp", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="net40", toolset="v110_xp", what="sqlite3" });
@@ -593,6 +604,60 @@ public class config_plugin : config_info
 	public string get_project_filename()
 	{
 		return string.Format("{0}.csproj", get_name());
+	}
+	
+}
+
+public class config_esqlite3 : config_info
+{
+	public string guid;
+	public string toolset;
+
+	public List<config_sqlite3> get_sqlite3_items()
+	{
+		List<config_sqlite3> other = projects.find_sqlite3(toolset);
+		if (other == null)
+		{
+			throw new Exception(get_name());
+		}
+		return other;
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	private const string AREA = "native";
+
+	public string get_nuget_target_path()
+	{
+		return string.Format("build\\native\\{0}\\", get_dest_subpath());
+	}
+
+	public string get_dest_subpath()
+	{
+		return string.Format("native\\sqlite3\\{0}", toolset);
+	}
+
+	public string get_name()
+	{
+		return string.Format("native.sqlite3.{0}", toolset);
+	}
+
+	public string get_title()
+	{
+		return string.Format("Native code only (esqlite3, compiled with {0}) for SQLitePCL.raw", toolset);
+	}
+
+	public string get_id()
+	{
+		return string.Format("SQLitePCL.{0}", get_name());
+	}
+
+	public string get_project_filename()
+	{
+		throw new NotImplementedException();
 	}
 	
 }
@@ -2868,6 +2933,73 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_esqlite3(string top, string root, config_esqlite3 cfg)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = cfg.get_id();
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", cfg.get_title());
+			f.WriteElementString("description", "Install this package in your app project and call SQLite3Plugin.Init()");
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+			{
+				write_nuspec_file_entry(
+						other, 
+						f
+						);
+			}
+			string tname;
+			switch (cfg.toolset) {
+				case "v110_xp":
+					tname = gen_nuget_targets_pinvoke_anycpu(top, cfg.get_id(), cfg.toolset);
+					break;
+				default:
+					tname = gen_nuget_targets_sqlite3_itself(top, cfg.get_id(), cfg.toolset);
+					break;
+			}
+
+			if (tname != null) {
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", tname);
+				f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
+				f.WriteEndElement(); // file
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_plugin(string top, string root, config_plugin cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2922,13 +3054,15 @@ public static class gen
 				case "wpa81":
 					switch (cfg.what) {
 					case "sqlite3":
-						// TODO is this putting three copies of the DLL in for net45, net40, and net35?
-						foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+						if (cfg.toolset != null)
 						{
-							write_nuspec_file_entry(
-									other, 
-									f
-									);
+							foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+							{
+								write_nuspec_file_entry(
+										other, 
+										f
+										);
+							}
 						}
 						break;
 					case "sqlcipher":
@@ -2952,7 +3086,14 @@ public static class gen
 						case "net35":
 							switch (cfg.what) {
 							case "sqlite3":
-								tname = gen_nuget_targets_pinvoke_anycpu(top, cfg);
+								if (cfg.toolset != null)
+								{
+									tname = gen_nuget_targets_pinvoke_anycpu(top, cfg.get_id(), cfg.toolset);
+								}
+								else
+								{
+									tname = null;
+								}
 								break;
 							case "sqlcipher":
 								tname = null;
@@ -2965,7 +3106,7 @@ public static class gen
 						case "win81":
 						case "uap10.0":
 						case "wpa81":
-							tname = gen_nuget_targets_sqlite3_itself(top, cfg);
+							tname = gen_nuget_targets_sqlite3_itself(top, cfg.get_id(), cfg.toolset);
 							break;
 						default:
 							throw new Exception();
@@ -3199,7 +3340,7 @@ public static class gen
 		}
 	}
 
-	private static string gen_nuget_targets_sqlite3_itself(string top, config_plugin cfg)
+	private static string gen_nuget_targets_sqlite3_itself(string top, string id, string toolset)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3207,7 +3348,7 @@ public static class gen
 
 		// TODO should we put the cpu check code here, like the original version of this function (below)?
 
-		string tname = string.Format("{0}.targets", cfg.get_id());
+		string tname = string.Format("{0}.targets", id);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
@@ -3216,7 +3357,7 @@ public static class gen
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
 
-			switch (cfg.toolset)
+			switch (toolset)
 			{
 				case "v110_xp":
 					// statically linked
@@ -3255,7 +3396,7 @@ public static class gen
 
 			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
-				if (other.toolset != cfg.toolset)
+				if (other.toolset != toolset)
 				{
 					continue;
 				}
@@ -3284,13 +3425,13 @@ public static class gen
 	}
 
 	// TODO change the name of this to something like dual arch
-	private static string gen_nuget_targets_pinvoke_anycpu(string top, config_plugin cfg)
+	private static string gen_nuget_targets_pinvoke_anycpu(string top, string id, string toolset)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string tname = string.Format("{0}.targets", cfg.get_id());
+		string tname = string.Format("{0}.targets", id);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
 		{
 			f.WriteStartDocument();
@@ -3309,7 +3450,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
-				if (cfg.toolset != other.toolset)
+				if (toolset != other.toolset)
 				{
 					continue;
 				}
@@ -3716,6 +3857,11 @@ public static class gen
 			gen_nuspec_plugin(top, root, cfg);
 		}
 
+		foreach (config_esqlite3 cfg in projects.items_esqlite3)
+		{
+			gen_nuspec_esqlite3(top, root, cfg);
+		}
+
 		gen_nuspec_sqlcipher(top, root, "windows");
 		gen_nuspec_sqlcipher(top, root, "osx");
 		gen_nuspec_sqlcipher(top, root, "linux");
@@ -3751,6 +3897,11 @@ public static class gen
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget pack {0}.nuspec", id);
 			}
+			foreach (config_esqlite3 cfg in projects.items_esqlite3)
+			{
+				string id = cfg.get_id();
+				tw.WriteLine("../../nuget pack {0}.nuspec", id);
+			}
 			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.windows.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.osx.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.linux.nuspec");
@@ -3767,6 +3918,11 @@ public static class gen
 			{
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+			}
+			foreach (config_esqlite3 cfg in projects.items_esqlite3)
+			{
+				string id = cfg.get_id();
+				tw.WriteLine("#../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
 			}
 			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.windows.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.osx.{0}.nupkg", NUSPEC_VERSION);
