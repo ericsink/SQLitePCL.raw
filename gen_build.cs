@@ -132,13 +132,13 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="android", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="android", what="sqlcipher" });
 
-		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher", empty=true });
+		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher", empty=true });
+		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher", empty=true });
 
-		items_plugin.Add(new config_plugin { env="net45", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net45", what="sqlite3", empty=true });
+		items_plugin.Add(new config_plugin { env="net40", what="sqlite3", empty=true });
+		items_plugin.Add(new config_plugin { env="net35", what="sqlite3", empty=true });
 
 		items_plugin.Add(new config_plugin { env="net45", toolset="v110_xp", what="sqlite3" });
 		items_plugin.Add(new config_plugin { env="net40", toolset="v110_xp", what="sqlite3" });
@@ -545,6 +545,7 @@ public class config_plugin : config_info
 	public string what;
 	public string guid;
 	public string toolset;
+	public bool empty;
 
 	public List<config_sqlite3> get_sqlite3_items()
 	{
@@ -575,6 +576,7 @@ public class config_plugin : config_info
 
 	public string get_dest_subpath()
 	{
+		// TODO what if toolset is null/empty here?
 		return string.Format("{0}\\{1}\\{2}\\{3}", AREA, what, env, toolset);
 	}
 
@@ -590,9 +592,9 @@ public class config_plugin : config_info
 	public string get_title()
 	{
 		if (string.IsNullOrWhiteSpace(toolset)) {
-			return string.Format("Native code plugin ({0}, {1}) for SQLitePCL.raw", what, env);
+			return string.Format("Plugin ({0}, {1}) for SQLitePCL.raw", what, env);
 		} else {
-			return string.Format("Native code plugin ({0}, {1}, compiled with {2}) for SQLitePCL.raw", what, env, toolset);
+			return string.Format("Plugin ({0}, {1}, compiled with {2}) for SQLitePCL.raw", what, env, toolset);
 		}
 	}
 
@@ -647,7 +649,7 @@ public class config_esqlite3 : config_info
 
 	public string get_title()
 	{
-		return string.Format("Native code only (esqlite3, compiled with {0}) for SQLitePCL.raw", toolset);
+		return string.Format("Native code only (sqlite3, compiled with {0}) for SQLitePCL.raw", toolset);
 	}
 
 	public string get_id()
@@ -2830,8 +2832,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0-pre7";
-	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has any native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.";
+	private const string NUSPEC_VERSION = "0.9.0-pre8";
+	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  In some cases, upgrading from previous versions will require changes.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -2856,7 +2858,7 @@ public static class gen
 			} else {
 				f.WriteElementString("title", "SQLitePCL.raw");
 			}
-			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  (Note that with the 0.8.0 release, the package ID is changing from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  On platforms (like Android or iOS) where SQLite is preinstalled, this package may be all you need.  On other platforms, or if you want to use a different SQLite build, see the SQLitePCL.plugin.* packages.  (Note that with the 0.8.0 release, the ID of this package changed from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -2953,8 +2955,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", cfg.get_title());
-			f.WriteElementString("description", "Install this package in your app project and call SQLite3Plugin.Init()");
-			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCL.raw as well as SQLitePCL.plugin.sqlite3.net45 or similar.");
+			f.WriteElementString("authors", "D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
@@ -3020,7 +3022,12 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", cfg.get_title());
-			f.WriteElementString("description", "Install this package in your app project and call SQLite3Plugin.Init()");
+			string desc = "A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLite3Plugin.Init().";
+			if (cfg.empty)
+			{
+				desc = desc + "  This particular plugin package contains no native code, so you will need to add one of the SQLitePCL.native.* packages.";
+			}
+			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3150,8 +3157,8 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", string.Format("Native code only ({0}) for SQLitePCL.raw", plat));
-			f.WriteElementString("description", "TODO explain this");
+			f.WriteElementString("title", string.Format("Native code only (sqlcipher, {0}) for SQLitePCL.raw", plat));
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCL.raw as well as SQLitePCL.plugin.sqlcipher.net45 or similar.");
 			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
