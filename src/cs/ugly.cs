@@ -622,6 +622,42 @@ namespace SQLitePCL.Ugly
             {
                 return Convert.ChangeType(stmt.column_int64(index), t, null);
             }
+            else if (typeof(System.Nullable<long>) == t) 
+            {
+                if (stmt.column_type(index) == raw.SQLITE_NULL)
+                {
+                    return null;
+                }
+		else
+		{
+		    long? x = stmt.column_int64(index);
+		    return x;
+		}
+            }
+            else if (typeof(System.Nullable<double>) == t) 
+            {
+                if (stmt.column_type(index) == raw.SQLITE_NULL)
+                {
+                    return null;
+                }
+		else
+		{
+		    double? x = stmt.column_double(index);
+		    return x;
+		}
+            }
+            else if (typeof(System.Nullable<int>) == t) 
+            {
+                if (stmt.column_type(index) == raw.SQLITE_NULL)
+                {
+                    return null;
+                }
+		else
+		{
+		    int? x = stmt.column_int(index);
+		    return x;
+		}
+            }
             else if (typeof(decimal) == t) 
             {
                 return (decimal)Convert.ChangeType(stmt.column_double(index), t, null);
