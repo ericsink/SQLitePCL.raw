@@ -2902,6 +2902,53 @@ public static class gen
 					);
 			f.WriteComment("END platform assemblies that use pinvoke");
 
+			f.WriteComment("END platform assemblies");
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_cppinterop(string top, string root)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = "SQLitePCL.cppinterop";
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.cppinterop");
+			f.WriteElementString("description", "TODO");
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			f.WriteComment("BEGIN platform assemblies");
+
 			// TODO remove this directory first?
 			Directory.CreateDirectory(Path.Combine(top, "empty"));
 			
@@ -3856,6 +3903,7 @@ public static class gen
 
 		gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
+		gen_nuspec_cppinterop(top, root);
 
 		gen_nuspec_ugly(top);
 
@@ -3897,6 +3945,7 @@ public static class gen
 			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			foreach (config_plugin cfg in projects.items_plugin)
@@ -3919,6 +3968,7 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_plugin cfg in projects.items_plugin)
