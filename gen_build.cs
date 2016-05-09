@@ -3942,7 +3942,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
-			tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
+			//tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
@@ -3979,7 +3979,7 @@ public static class gen
 			foreach (config_esqlite3 cfg in projects.items_esqlite3)
 			{
 				string id = cfg.get_id();
-				tw.WriteLine("#../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
 			}
 			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.windows.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.osx.{0}.nupkg", NUSPEC_VERSION);
