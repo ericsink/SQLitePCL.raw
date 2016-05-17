@@ -119,6 +119,10 @@ public static class projects
 	private static void init_esqlite3()
 	{
 		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
 	}
 
 	private static void init_plugin()
@@ -140,16 +144,11 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="net40", what="sqlite3", empty=true });
 		items_plugin.Add(new config_plugin { env="net35", what="sqlite3", empty=true });
 
-		items_plugin.Add(new config_plugin { env="net45", toolset="v110_xp", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", toolset="v110_xp", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", toolset="v110_xp", what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", empty=true, what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3" });
 
-		items_plugin.Add(new config_plugin { env="win8", toolset="v110", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win8", toolset="v110_xp", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", toolset="v120", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", toolset="v110_xp", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="wpa81", toolset="v120_wp81", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="uap10.0", toolset="v140", what="sqlite3" });
 	}
 
 	private static void init_pcl_pinvoke()
@@ -544,18 +543,7 @@ public class config_plugin : config_info
 	public string env;
 	public string what;
 	public string guid;
-	public string toolset;
 	public bool empty;
-
-	public List<config_sqlite3> get_sqlite3_items()
-	{
-		List<config_sqlite3> other = projects.find_sqlite3(toolset);
-		if (other == null)
-		{
-			throw new Exception(get_name());
-		}
-		return other;
-	}
 
 	public string get_nuget_target_path(string where)
 	{
@@ -576,26 +564,17 @@ public class config_plugin : config_info
 
 	public string get_dest_subpath()
 	{
-		// TODO what if toolset is null/empty here?
-		return string.Format("{0}\\{1}\\{2}\\{3}", AREA, what, env, toolset);
+		return string.Format("{0}\\{1}\\{2}", AREA, what, env);
 	}
 
 	public string get_name()
 	{
-		if (string.IsNullOrWhiteSpace(toolset)) {
-			return string.Format("plugin.{0}.{1}", what, env);
-		} else {
-			return string.Format("plugin.{0}.{1}.{2}", what, env, toolset);
-		}
+		return string.Format("plugin.{0}.{1}", what, env);
 	}
 
 	public string get_title()
 	{
-		if (string.IsNullOrWhiteSpace(toolset)) {
-			return string.Format("Plugin ({0}, {1}) for SQLitePCL.raw", what, env);
-		} else {
-			return string.Format("Plugin ({0}, {1}, compiled with {2}) for SQLitePCL.raw", what, env, toolset);
-		}
+		return string.Format("Plugin ({0}, {1}) for SQLitePCL.raw", what, env);
 	}
 
 	public string get_id()
@@ -1995,6 +1974,8 @@ public static class gen
 					break;
 			}
 
+			// TODO er, we only want this define for iOS, right?
+			// not that it'll hurt anything...
 			switch (cfg.what)
 			{
 				case "sqlite3":
@@ -2597,20 +2578,6 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
-				switch (cfg.env)
-				{
-					case "ios_classic":
-					case "ios_unified":
-					case "android":
-						break;
-					default:
-						f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-						foreach (config_sqlite3 other in cfg.get_sqlite3_items()) {
-							f.WriteLine("\t\t{0} = {0}", other.guid);
-						}
-						f.WriteLine("\tEndProjectSection");
-						break;
-				}
 				f.WriteLine("EndProject");
 			}
 
@@ -2832,7 +2799,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0";
+	private const string NUSPEC_VERSION = "0.9.0-pre9";
 	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  In some cases, upgrading from previous versions will require changes.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3093,89 +3060,6 @@ public static class gen
 					cfg, 
 					f
 					);
-
-			switch (cfg.env) {
-				case "ios_classic":
-				case "ios_unified":
-				case "android":
-					break;
-				case "net45":
-				case "net40":
-				case "net35":
-				case "win8":
-				case "win81":
-				case "uap10.0":
-				case "wpa81":
-					switch (cfg.what) {
-					case "sqlite3":
-						if (cfg.toolset != null)
-						{
-							foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
-							{
-								write_nuspec_file_entry(
-										other, 
-										f
-										);
-							}
-						}
-						break;
-					case "sqlcipher":
-						switch (cfg.env) {
-						case "net45":
-						case "net40":
-						case "net35":
-							break;
-						default:
-							throw new Exception();
-						}
-					break;
-					default:
-						throw new Exception();
-					}
-
-					string tname;
-					switch (cfg.env) {
-						case "net45":
-						case "net40":
-						case "net35":
-							switch (cfg.what) {
-							case "sqlite3":
-								if (cfg.toolset != null)
-								{
-									tname = gen_nuget_targets_pinvoke_anycpu(top, cfg.get_id(), cfg.toolset);
-								}
-								else
-								{
-									tname = null;
-								}
-								break;
-							case "sqlcipher":
-								tname = null;
-								break;
-							default:
-								throw new Exception();
-							}
-							break;
-						case "win8":
-						case "win81":
-						case "uap10.0":
-						case "wpa81":
-							tname = gen_nuget_targets_sqlite3_itself(top, cfg.get_id(), cfg.toolset);
-							break;
-						default:
-							throw new Exception();
-					}
-
-					if (tname != null) {
-						f.WriteStartElement("file");
-						f.WriteAttributeString("src", tname);
-						f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(cfg.env), id));
-						f.WriteEndElement(); // file
-					}
-					break;
-				default:
-					throw new Exception();
-			}
 
 			f.WriteEndElement(); // files
 
