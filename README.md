@@ -11,13 +11,13 @@ native SQLite library.  The original intent here was to make this nuget
 package Just Work for all the common use cases.  But over time, as more
 platforms and options got added, the package was getting enormous.
 
-In 0.9, the native code has been moved to separate packages, and the
+In 0.9, the native code has been moved to separate packages, so the
 main package is much smaller.
 
 If you are using the system-provided SQLite library on iOS or Android (see
 below for caveats on Android N), or
-if you are using the SQLite vsix on Windows, the transition to 0.9 should be
-seamless.
+if you are using the SQLite extension SDK (vsix) on Windows, 
+the transition to 0.9 should be seamless.
 
 In other cases, you will need to add one of the SQLitePCL.plugin packages,
 and perhaps one of the SQLitePCL.native packages, and add a line of code to initialize 
@@ -51,7 +51,10 @@ also need to add a SQLitePCL.native package, such as this one:
 
 This contain the SQLite library compiled with the Visual C++ v110\_xp toolset.
 If you are on a desktop version of Windows and you're not sure which native
-SQLite library to use, this is the one you should try first.
+SQLite library to use, this is the one you should try first.  A large percentage
+of the trouble people have with SQLitePCL.raw is related to which C runtime
+library is required.  The v110\_xp build has the C runtime library statically
+linked.
 
 The plugins with sqlite3 in the name are for vanilla SQLite.  The ones with
 sqlcipher in the name are the SQLCipher variant.  BTW, another difference with
@@ -67,6 +70,13 @@ is that most people will use the SQLite provided by the distro.
 The UseSQLiteFrom feature is no longer supported in 0.9.  If you were
 using this, you will need to switch to specifying things by which
 plugin/native package you include.
+
+## Android N
+
+With the release of Android N, use of the system-provided SQLite library
+is no longer allowed.  So for compatibility with Android N, you would
+need to use SQLitePCL.plugin.sqlite3.android
+
 
 # CONTENT BELOW THIS LINE IS NOT YET UPDATED FOR 0.9
 
