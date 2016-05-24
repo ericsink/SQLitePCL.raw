@@ -4,6 +4,72 @@
 SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw)
 access to SQLite. License:  Apache License v2.
 
+# What's new in 0.9
+
+Before 0.9, the main nuget package contained a bunch of different copies of the
+native SQLite library.  The original intent here was to make this nuget
+package Just Work for all the common use cases.  But over time, as more
+platforms and options got added, the package was getting enormous.
+
+In 0.9, the native code has been moved to separate packages, and the
+main package is much smaller.
+
+If you are using the system-provided SQLite library on iOS or Android (see
+below for caveats on Android N), or
+if you are using the SQLite vsix on Windows, the transition to 0.9 should be
+seamless.
+
+In other cases, you will need to add one of the SQLitePCL.plugin packages,
+and perhaps one of the SQLitePCL.native packages, and add a line of code to initialize 
+things:
+
+    SQLite3Plugin.Init();
+
+The SQLitePCL.plugin packages are platform-specific, not PCLs.  Add the
+plugin to either your app project or to a platform-specific library.
+The call to SQLite3Plugin.Init() should go somewhere in your app initialization
+code.
+
+For iOS and Android, the plugin packages are self-contained.  These plugins
+are all you need on that platform.
+
+For other platforms, the plugin is "empty", in the sense that you also need
+to add a SQLitePCL.native package to specify exactly which version of the
+native SQLite code you want to use.
+
+For example, if you are building a desktop app, you might add
+
+    SQLitePCL.plugin.sqlite3.net45
+
+The "net45" in the name of this package
+means that the contents were compiled for .NET 4.5.  But this doesn't
+say anything about the native code.  This particularly package can be used
+on various Windows platforms or even with Mono on Linux or Mac.  So you
+also need to add a SQLitePCL.native package, such as this one:
+
+    SQLitePCL.native.sqlite3.v110_xp
+
+This contain the SQLite library compiled with the Visual C++ v110\_xp toolset.
+If you are on a desktop version of Windows and you're not sure which native
+SQLite library to use, this is the one you should try first.
+
+The plugins with sqlite3 in the name are for vanilla SQLite.  The ones with
+sqlcipher in the name are the SQLCipher variant.  BTW, another difference with
+0.9 is that I am no longer building SQLCipher.  The SQLCipher packages simply
+contain the SQLCipher builds maintained by Couchbase.
+
+The set of packages I publish does not include every possible combination
+of platform and toolset and so on.  If you need one that I have not built,
+let me know and I'll see what makes sense.  One example is that I do not
+have a package called SQLitePCL.native.sqlite3.linux, because my assumption
+is that most people will use the SQLite provided by the distro.
+
+The UseSQLiteFrom feature is no longer supported in 0.9.  If you were
+using this, you will need to switch to specifying things by which
+plugin/native package you include.
+
+# CONTENT BELOW THIS LINE IS NOT YET UPDATED FOR 0.9
+
 ## QuickStart
 
 Add the SQLitePCL.raw NuGet package to your platform projects (iOS, Android, Windows, etc) and to your PCL projects as needed. 

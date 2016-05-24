@@ -3785,7 +3785,7 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
+		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
 		gen_nuspec_cppinterop(top, root);
 
@@ -3810,7 +3810,7 @@ public static class gen
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
 			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
-			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
+			//tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				if (config_cs.env_needs_project_dot_json(cfg.env))
@@ -3830,7 +3830,7 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
+			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
@@ -3853,7 +3853,7 @@ public static class gen
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
+			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
