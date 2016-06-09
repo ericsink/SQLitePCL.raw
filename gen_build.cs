@@ -2799,8 +2799,8 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.0";
-	private const string NUSPEC_RELEASE_NOTES = "Major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  In some cases, upgrading from previous versions will require changes.  See the SQLitePCL.raw page on GitHub for more info.";
+	private const string NUSPEC_VERSION = "0.9.1";
+	private const string NUSPEC_RELEASE_NOTES = "(0.9.1 is a minor packing bug fix)  0.9 is a major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  In some cases, upgrading from previous versions will require changes.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3344,7 +3344,7 @@ public static class gen
 
 				f.WriteStartElement("Content");
 				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
@@ -3397,7 +3397,7 @@ public static class gen
 
 				f.WriteStartElement("Content");
 				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
 				// TODO condition/exists ?
 				f.WriteElementString("Link", string.Format("{0}\\esqlite3.dll", other.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
