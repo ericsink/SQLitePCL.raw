@@ -20,14 +20,21 @@ if you are using the SQLite extension SDK (vsix) on Windows,
 the transition to 0.9 should be seamless.
 
 In other cases, you will need to add one of the SQLitePCL.plugin packages,
-and perhaps one of the SQLitePCL.native packages, and add a line of code to initialize 
-things:
+and perhaps one of the SQLitePCL.native packages, and add a line of 
+code to initialize things:
 
-    SQLite3Plugin.Init();
+    // for iOS
+    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal())
+
+    // for SQLitePCL.plugin.sqlite3.*
+    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_esqlite3())
+
+    // for SQLitePCL.plugin.sqlcipher.*
+    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher())
 
 The SQLitePCL.plugin packages are platform-specific, not PCLs.  Add the
 plugin to either your app project or to a platform-specific library.
-The call to SQLite3Plugin.Init() should go somewhere in your app initialization
+The above call to SetProvider() should go somewhere in your app initialization
 code.
 
 For iOS and Android, the plugin packages are self-contained.  These plugins
@@ -49,7 +56,7 @@ also need to add a SQLitePCL.native package, such as this one:
 
     SQLitePCL.native.sqlite3.v110_xp
 
-This contain the SQLite library compiled with the Visual C++ v110\_xp toolset.
+This contains the SQLite library compiled with the Visual C++ v110\_xp toolset.
 If you are on a desktop version of Windows and you're not sure which native
 SQLite library to use, this is the one you should try first.  A large percentage
 of the trouble people have with SQLitePCL.raw is related to which C runtime
@@ -57,9 +64,9 @@ library is required.  The v110\_xp build has the C runtime library statically
 linked.
 
 The plugins with sqlite3 in the name are for vanilla SQLite.  The ones with
-sqlcipher in the name are the SQLCipher variant.  BTW, another difference with
+sqlcipher in the name are the SQLCipher variant.  (BTW, another difference with
 0.9 is that I am no longer building SQLCipher.  The SQLCipher packages simply
-contain the SQLCipher builds maintained by Couchbase.
+contain the SQLCipher builds maintained by Couchbase.)
 
 The set of packages I publish does not include every possible combination
 of platform and toolset and so on.  If you need one that I have not built,

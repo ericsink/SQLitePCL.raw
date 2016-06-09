@@ -65,12 +65,3 @@
 
 #endif
 
-public class SQLite3Plugin
-{
-	public static void Init()
-	{
-		SQLitePCL.ISQLite3Provider imp = new SQLitePCL.SQLite3Provider_internal();
-		SQLitePCL.raw.SetProvider(imp);
-	}
-}
-

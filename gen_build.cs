@@ -127,27 +127,27 @@ public static class projects
 
 	private static void init_plugin()
 	{
-		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3", imp="internal" });
+		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher", imp="internal" });
 
-		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlite3", imp="internal" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher", imp="internal" });
 
-		items_plugin.Add(new config_plugin { env="android", what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="android", what="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="android", what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="android", what="sqlcipher", imp="sqlcipher" });
 
-		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher", empty=true });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher", empty=true });
-		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher", empty=true });
+		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher", empty=true, imp="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher", empty=true, imp="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher", empty=true, imp="sqlcipher" });
 
-		items_plugin.Add(new config_plugin { env="net45", what="sqlite3", empty=true });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlite3", empty=true });
-		items_plugin.Add(new config_plugin { env="net35", what="sqlite3", empty=true });
+		items_plugin.Add(new config_plugin { env="net45", what="sqlite3", empty=true, imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", what="sqlite3", empty=true, imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="net35", what="sqlite3", empty=true, imp="esqlite3" });
 
-		items_plugin.Add(new config_plugin { env="win8", empty=true, what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3" });
-		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", empty=true, what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3", imp="esqlite3" });
 
 	}
 
@@ -542,6 +542,7 @@ public class config_plugin : config_info
 {
 	public string env;
 	public string what;
+	public string imp;
 	public string guid;
 	public bool empty;
 
@@ -557,7 +558,7 @@ public class config_plugin : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "SQLite3Plugin.dll");
+		add_product(a, string.Format("SQLitePCLPlugin_{0}.dll", imp));
 	}
 
 	private const string AREA = "plugin";
@@ -1961,7 +1962,7 @@ public static class gen
 			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
 			f.WriteElementString("OutputType", "Library");
 			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "SQLite3Plugin"); // match the name in get_products()
+			f.WriteElementString("AssemblyName", string.Format("SQLitePCLPlugin_{0}", cfg.imp)); // match the name in get_products()
 
 			List<string> defines = write_header_properties(f, cfg.env);
 
@@ -2012,11 +2013,9 @@ public static class gen
 					switch (cfg.what)
 					{
 						case "sqlite3":
-							write_cs_compile(f, root, "src\\cs\\imp_esqlite3.cs");
 							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
 							break;
 						case "sqlcipher":
-							write_cs_compile(f, root, "src\\cs\\imp_sqlcipher.cs");
 							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
 							break;
 						default:
@@ -2030,11 +2029,9 @@ public static class gen
 					switch (cfg.what)
 					{
 						case "sqlite3":
-							write_cs_compile(f, root, "src\\cs\\imp_esqlite3.cs");
 							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
 							break;
 						case "sqlcipher":
-							write_cs_compile(f, root, "src\\cs\\imp_sqlcipher.cs");
 							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
 							break;
 						default:
@@ -2800,7 +2797,7 @@ public static class gen
 	}
 
 	private const string NUSPEC_VERSION = "0.9.1";
-	private const string NUSPEC_RELEASE_NOTES = "(0.9.1 is a minor packing bug fix)  0.9 is a major restructuring of the NuGet packages.  Main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  In some cases, upgrading from previous versions will require changes.  See the SQLitePCL.raw page on GitHub for more info.";
+	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
 	{
@@ -3036,10 +3033,10 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", cfg.get_title());
-			string desc = "A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLite3Plugin.Init().";
+			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.imp);
 			if (cfg.empty)
 			{
-				desc = desc + "  This particular plugin package contains no native code, so you will need to add one of the SQLitePCL.native.* packages.";
+				desc = desc + "  This particular plugin package contains no native code, so you will also need to add one of the SQLitePCL.native.* packages.";
 			}
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
