@@ -105,6 +105,18 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
+
+		// in the following platforms, it is pretty clear what we should do
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+
+		// TODO not sure about the following
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+
+		// fallback
+		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
 	private static void init_pcl_cppinterop()
@@ -240,6 +252,18 @@ public static class projects
 			}
 		}
 		return result;
+	}
+
+	public static config_plugin find_battery_plugin(string env)
+	{
+		foreach (config_plugin cfg in projects.items_plugin)
+		{
+			if ((cfg.env == env) && (cfg.what == "sqlite3"))
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(env);
 	}
 
 	public static config_pcl find_bait(string env)
@@ -2443,6 +2467,10 @@ public static class gen
 			write_section(top, cfg.get_dest_subpath(), f, false, cfg.defines);
 
 			f.WriteStartElement("ItemGroup");
+			write_standard_assemblies(f, cfg.env);
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
 			foreach (string csfile in cfg.csfiles)
 			{
 				write_cs_compile(f, root, csfile);
@@ -2450,8 +2478,10 @@ public static class gen
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteStartElement("ItemGroup");
+
 			f.WriteStartElement("ProjectReference");
 			{
+				// TODO should be called find_pcl ?
 				config_pcl other = projects.find_bait(cfg.env);
 				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
@@ -2459,35 +2489,40 @@ public static class gen
 				//f.WriteElementString("Private", "true");
 			}
 			f.WriteEndElement(); // ProjectReference
+
+			if (cfg.name == "batteries")
+			{
+				if (cfg.is_portable())
+				{
+					// this is the fallback case.
+					// its implementation of Batteries.Init() does nothing.
+					// so we don't need to reference a plugin.
+				}
+				else
+				{
+					config_plugin other = projects.find_battery_plugin(cfg.env);
+					f.WriteStartElement("ProjectReference");
+					f.WriteAttributeString("Include", other.get_project_path(top));
+					f.WriteElementString("Project", other.guid);
+					f.WriteElementString("Name", other.get_name());
+					//f.WriteElementString("Private", "true");
+					f.WriteEndElement(); // ProjectReference
+				}
+			}
+
 			f.WriteEndElement(); // ItemGroup
 
-			if (cfg.is_portable()) 
-			{
-			}
-			else 
-			{
-				f.WriteStartElement("ItemGroup");
-				write_reference(f, "System");
-				write_reference(f, "System.Core");
-				f.WriteEndElement(); // ItemGroup
-			}
-
-			if (cfg.is_portable()) 
-			{
-				f.WriteStartElement("Import");
-				f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
-				f.WriteEndElement(); // Import
-			} 
-			else
-			{
-				f.WriteStartElement("Import");
-				f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
-				f.WriteEndElement(); // Import
-			}
+			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
+		}
+
+		if (config_cs.env_needs_project_dot_json(cfg.env))
+		{
+			string subdir = cfg.get_project_subdir(top);
+			write_project_dot_json(subdir);
 		}
 	}
 
@@ -2796,7 +2831,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.1";
+	private const string NUSPEC_VERSION = "0.9.2-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3203,6 +3238,198 @@ public static class gen
 			foreach (config_higher cfg in projects.items_higher)
 			{
 				if (cfg.name == "ugly")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_batteries_included(string top)
+	{
+		string id = "SQLitePCL.batteries_included";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.batteries_included");
+			f.WriteElementString("description", "This is a convenience package which brings in SQLitePCL.raw and the necessary plugins for certain common use cases.  Call SQLitePCL.Batteries.Init().  This package sacrifices flexibility to get ease.  It is not compatible with Mono on Mac/Linux, nor does it support SQLCipher.");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "Convenience package to bring in SQLitePCL.raw and commonly used dependencies");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.android");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.wpa81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120_wp81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.cppinterop");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp81_sl"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.cppinterop");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.win81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.uap10.0");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v140");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net45"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.net45");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_xp");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_higher cfg in projects.items_higher)
+			{
+				if (cfg.name == "batteries")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -3787,6 +4014,7 @@ public static class gen
 		gen_nuspec_cppinterop(top, root);
 
 		gen_nuspec_ugly(top);
+		gen_nuspec_batteries_included(top);
 
 		foreach (config_plugin cfg in projects.items_plugin)
 		{
@@ -3829,6 +4057,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
 			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.batteries_included.nuspec");
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
@@ -3852,6 +4081,7 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
 			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.batteries_included.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
