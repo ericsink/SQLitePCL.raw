@@ -31,6 +31,7 @@ public static class projects
 	public static List<config_tests> items_tests = new List<config_tests>();
 	public static List<config_plugin> items_plugin = new List<config_plugin>();
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
+	public static List<config_batteries> items_batteries = new List<config_batteries>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -44,6 +45,7 @@ public static class projects
 		init_esqlite3();
 		init_pcl_cppinterop();
 		init_higher();
+		init_batteries();
 		init_tests();
 	}
 
@@ -105,18 +107,20 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
+	}
 
-		// in the following platforms, it is pretty clear what we should do
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+	private static void init_batteries()
+	{
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
 
 		// TODO not sure about the following
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
 
 		// fallback
-		items_higher.Add(new config_higher { name="batteries", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
 	private static void init_pcl_cppinterop()
@@ -488,6 +492,58 @@ public class config_cppinterop : config_info
 }
 
 public class config_higher : config_info
+{
+	public string env;
+	public string name;
+	public string assemblyname;
+	public string guid;
+	public List<string> csfiles;
+	public List<string> defines;
+
+	public string get_dest_subpath()
+	{
+		return string.Format("{0}\\{1}", name, env);
+	}
+
+	public string get_name()
+	{
+		return string.Format("{0}_{1}", name, env);
+	}
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", get_name());
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_dest_subpath(), s));
+	}
+
+	public bool is_portable()
+	{
+		return config_cs.env_is_portable(env);
+	}
+
+	public string get_nuget_target_path()
+	{
+		if (is_portable())
+		{
+			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else
+		{
+			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
+		}
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, string.Format("{0}.dll", assemblyname));
+	}
+}
+
+public class config_batteries : config_info
 {
 	public string env;
 	public string name;
@@ -2526,6 +2582,115 @@ public static class gen
 		}
 	}
 
+	private static void gen_batteries(
+			config_batteries cfg,
+			string root, 
+			string top
+			)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			write_toolsversion(f, cfg.env);
+			f.WriteAttributeString("DefaultTargets", "Build");
+
+			// TODO is this actually needed?
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
+			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
+			f.WriteEndElement(); // Import
+
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("ProjectGuid", cfg.guid);
+			write_project_type_guids_for_env(f, cfg.env);
+
+			f.WriteStartElement("Configuration");
+			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
+			f.WriteString("Debug");
+			f.WriteEndElement(); // Configuration
+
+			f.WriteElementString("SchemaVersion", "2.0");
+			f.WriteElementString("Platform", "AnyCPU");
+			f.WriteElementString("DefaultLanguage", "en-us");
+			//f.WriteElementString("FileAlignment", "512");
+			f.WriteElementString("WarningLevel", "4");
+			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
+			//f.WriteElementString("RootNamespace", "whatever"); // TODO
+			f.WriteElementString("AssemblyName", cfg.assemblyname);
+
+			List<string> defines = write_header_properties(f, cfg.env);
+
+			f.WriteEndElement(); // PropertyGroup
+
+			write_section(top, cfg.get_dest_subpath(), f, true, cfg.defines);
+			write_section(top, cfg.get_dest_subpath(), f, false, cfg.defines);
+
+			f.WriteStartElement("ItemGroup");
+			write_standard_assemblies(f, cfg.env);
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+			foreach (string csfile in cfg.csfiles)
+			{
+				write_cs_compile(f, root, csfile);
+			}
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+
+			f.WriteStartElement("ProjectReference");
+			{
+				// TODO should be called find_pcl ?
+				config_pcl other = projects.find_bait(cfg.env);
+				f.WriteAttributeString("Include", other.get_project_path(top));
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+			}
+			f.WriteEndElement(); // ProjectReference
+
+			if (cfg.is_portable())
+			{
+				// this is the fallback case.
+				// its implementation of Batteries.Init() does nothing.
+				// so we don't need to reference a plugin.
+			}
+			else
+			{
+				config_plugin other = projects.find_battery_plugin(cfg.env);
+				f.WriteStartElement("ProjectReference");
+				f.WriteAttributeString("Include", other.get_project_path(top));
+				f.WriteElementString("Project", other.guid);
+				f.WriteElementString("Name", other.get_name());
+				//f.WriteElementString("Private", "true");
+				f.WriteEndElement(); // ProjectReference
+			}
+
+			f.WriteEndElement(); // ItemGroup
+
+			write_csproj_footer(f, cfg.env);
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+
+		if (config_cs.env_needs_project_dot_json(cfg.env))
+		{
+			string subdir = cfg.get_project_subdir(top);
+			write_project_dot_json(subdir);
+		}
+	}
+
 	public static string write_folder(StreamWriter f, string name)
 	{
 		string folder_guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -2628,6 +2793,21 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
+			foreach (config_batteries cfg in projects.items_batteries)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
+				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
+				config_pcl other = projects.find_bait(cfg.env);
+				f.WriteLine("\t\t{0} = {0}", other.guid);
+				f.WriteLine("\tEndProjectSection");
+				f.WriteLine("EndProject");
+			}
+
 			foreach (config_tests cfg in projects.items_tests)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
@@ -2684,6 +2864,13 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
 			}
 			foreach (config_higher cfg in projects.items_higher)
+			{
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
+			}
+			foreach (config_batteries cfg in projects.items_batteries)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
@@ -2759,6 +2946,21 @@ public static class gen
 			f.WriteStartElement("file");
 			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
 			f.WriteAttributeString("target", cfg.get_nuget_target_path(where));
+			f.WriteEndElement(); // file
+		}
+	}
+
+	private static void write_nuspec_file_entry(config_batteries cfg, XmlWriter f)
+	{
+		f.WriteComment(string.Format("{0}", cfg.get_name()));
+		var a = new List<string>();
+		cfg.get_products(a);
+
+		foreach (string s in a)
+		{
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+			f.WriteAttributeString("target", cfg.get_nuget_target_path());
 			f.WriteEndElement(); // file
 		}
 	}
@@ -3254,9 +3456,9 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_batteries_included(string top)
+	private static void gen_nuspec_bundle_green(string top)
 	{
-		string id = "SQLitePCL.batteries_included";
+		string id = "SQLitePCL.bundle_green";
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3274,8 +3476,8 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.batteries_included");
-			f.WriteElementString("description", "This is a convenience package which brings in SQLitePCL.raw and the necessary plugins for certain common use cases.  Call SQLitePCL.Batteries.Init().  This package sacrifices flexibility to get ease.  It is not compatible with Mono on Mac/Linux, nor does it support SQLCipher.");
+			f.WriteElementString("title", "SQLitePCL.bundle_green");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary plugins for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, Android/wpa81/uwp/win81=SQLite included, net45=Windows SQLite included.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3283,7 +3485,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Convenience package to bring in SQLitePCL.raw and commonly used dependencies");
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -3427,9 +3629,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_higher cfg in projects.items_higher)
+			foreach (config_batteries cfg in projects.items_batteries)
 			{
-				if (cfg.name == "batteries")
+				if (cfg.name == "batteries_green")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -3965,6 +4167,11 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
+		foreach (config_batteries cfg in projects.items_batteries)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
 		foreach (config_tests cfg in projects.items_tests)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -3998,6 +4205,11 @@ public static class gen
 			gen_higher(cfg, root, top);
 		}
 
+		foreach (config_batteries cfg in projects.items_batteries)
+		{
+			gen_batteries(cfg, root, top);
+		}
+
 		foreach (config_tests cfg in projects.items_tests)
 		{
 			gen_tests(cfg, root, top);
@@ -4014,7 +4226,7 @@ public static class gen
 		gen_nuspec_cppinterop(top, root);
 
 		gen_nuspec_ugly(top);
-		gen_nuspec_batteries_included(top);
+		gen_nuspec_bundle_green(top);
 
 		foreach (config_plugin cfg in projects.items_plugin)
 		{
@@ -4057,7 +4269,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
 			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.batteries_included.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
@@ -4081,7 +4293,7 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
 			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.batteries_included.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
 				string id = cfg.get_id();
