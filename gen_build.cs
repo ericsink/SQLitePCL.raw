@@ -152,6 +152,9 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="android", what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="android", what="sqlcipher", imp="sqlcipher" });
 
+#if not
+// empty plugins removed because all these providers moved into
+// the main assembly
 		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher", empty=true, imp="sqlcipher" });
 		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher", empty=true, imp="sqlcipher" });
 		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher", empty=true, imp="sqlcipher" });
@@ -164,7 +167,7 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3", imp="esqlite3" });
-
+#endif
 	}
 
 	private static void init_pcl_pinvoke()
@@ -256,18 +259,6 @@ public static class projects
 			}
 		}
 		return result;
-	}
-
-	public static config_plugin find_battery_plugin(string env)
-	{
-		foreach (config_plugin cfg in projects.items_plugin)
-		{
-			if ((cfg.env == env) && (cfg.what == "sqlite3"))
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(env);
 	}
 
 	public static config_pcl find_bait(string env)
@@ -2090,6 +2081,8 @@ public static class gen
 					break;
 				case "android":
 					f.WriteStartElement("ItemGroup");
+#if not
+// these provider implementations moved to the main assembly
 					switch (cfg.what)
 					{
 						case "sqlite3":
@@ -2102,10 +2095,13 @@ public static class gen
 							throw new Exception(cfg.what);
 					}
 					write_cs_compile(f, root, "src\\cs\\util.cs");
+#endif
 					f.WriteEndElement(); // ItemGroup
 					break;
 				default:
 					f.WriteStartElement("ItemGroup");
+#if not
+// these provider implementations moved to the main assembly
 					switch (cfg.what)
 					{
 						case "sqlite3":
@@ -2118,6 +2114,7 @@ public static class gen
 							throw new Exception(cfg.what);
 					}
 					write_cs_compile(f, root, "src\\cs\\util.cs");
+#endif
 					f.WriteEndElement(); // ItemGroup
 					break;
 			}
@@ -2286,6 +2283,15 @@ public static class gen
 			else if (cfg.is_pinvoke())
 			{
 				defines.Add("USE_PROVIDER_PINVOKE");
+				switch (cfg.env)
+				{
+					// TODO win81?  uwp?  others?
+					case "net35":
+					case "net40":
+					case "net45":
+						defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
+						break;
+				}
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -2320,7 +2326,20 @@ public static class gen
 			else if (cfg.is_pinvoke())
 			{
 				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, top, "pinvoke_default.cs");
+				// the static constructor on class raw will
+				// choose which of these provider implementations
+				// to use by trying to load each one (in a defined
+				// search ordering) and taking the first one that
+				// works.
+				write_cs_compile(f, top, "pinvoke_sqlite3.cs");
+				write_cs_compile(f, top, "pinvoke_esqlite3.cs");
+				write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
+				write_cs_compile(f, top, "pinvoke_custom_sqlite3.cs");
+				// TODO perhaps winsqlite3.dll for UWP
+
+				// cannot include __Internal here because then the ios linker
+				// will complain if a sqlite build is not included
+				// write_cs_compile(f, top, "pinvoke_ios_internal.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -2546,26 +2565,6 @@ public static class gen
 			}
 			f.WriteEndElement(); // ProjectReference
 
-			if (cfg.name == "batteries")
-			{
-				if (cfg.is_portable())
-				{
-					// this is the fallback case.
-					// its implementation of Batteries.Init() does nothing.
-					// so we don't need to reference a plugin.
-				}
-				else
-				{
-					config_plugin other = projects.find_battery_plugin(cfg.env);
-					f.WriteStartElement("ProjectReference");
-					f.WriteAttributeString("Include", other.get_project_path(top));
-					f.WriteElementString("Project", other.guid);
-					f.WriteElementString("Name", other.get_name());
-					//f.WriteElementString("Private", "true");
-					f.WriteEndElement(); // ProjectReference
-				}
-			}
-
 			f.WriteEndElement(); // ItemGroup
 
 			write_csproj_footer(f, cfg.env);
@@ -2658,6 +2657,7 @@ public static class gen
 			}
 			f.WriteEndElement(); // ProjectReference
 
+#if not
 			if (cfg.is_portable())
 			{
 				// this is the fallback case.
@@ -2674,6 +2674,7 @@ public static class gen
 				//f.WriteElementString("Private", "true");
 				f.WriteEndElement(); // ProjectReference
 			}
+#endif
 
 			f.WriteEndElement(); // ItemGroup
 
@@ -3033,7 +3034,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.2";
+	private const string NUSPEC_VERSION = "0.9.3-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -3510,10 +3511,13 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
 
+#if not
+// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.wpa81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
+#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120_wp81");
@@ -3553,10 +3557,13 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
 
+#if not
+// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.win81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
+#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120");
@@ -3574,10 +3581,13 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
 
+#if not
+// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.uap10.0");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
+#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v140");
@@ -3595,10 +3605,13 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net45"));
 
+#if not
+// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.net45");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
+#endif
 
 			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
 			f.WriteStartElement("dependency");
@@ -4114,9 +4127,9 @@ public static class gen
 		Directory.CreateDirectory(top);
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_default.cs")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "default");
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3");
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
 			tw.Write(cs2);
 		}
@@ -4130,6 +4143,12 @@ public static class gen
 		{
 			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher");
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_custom_sqlite3.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "custom_sqlite3");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "custom_sqlite3");
 			tw.Write(cs2);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))

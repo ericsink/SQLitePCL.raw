@@ -24,17 +24,7 @@ namespace SQLitePCL
     {
 	    public static void Init()
 	    {
-#if BATTERY_ESQLITE3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_esqlite3());
-#elif BATTERY_INTERNAL
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif BATTERY_SQLCIPHER
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
-#elif BATTERY_NONE
-		    // intentionally don't do anything here
-#else
-		    //throw new Exception("batteries.cs built with nothing specified");
-#endif
+		    // for possible future use
 	    }
     }
 }

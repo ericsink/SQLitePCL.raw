@@ -1,4 +1,14 @@
 
+use reflection to find all classes that implement ISQLiteProvider?
+would this catch the _internal case for ios?
+
+can we do a dylib ios version?
+
+is there any case where we would need the Batteries.Init()
+function?  like for an ios problem?
+
+keep Batteries.Init() somewhere, so SQLite-net won't break?
+
 version numbers on SQLitePCL.custom stuff should
 not need to match SQLitePCL.raw, and might want to
 match the underlying SQLite version number.
