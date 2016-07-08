@@ -310,6 +310,19 @@ namespace SQLitePCL
         public const int SQLITE_DBSTATUS_CACHE_WRITE         = 9;
         public const int SQLITE_DBSTATUS_DEFERRED_FKS        = 10;
 
+        public const int SQLITE_LIMIT_LENGTH              = 0;
+        public const int SQLITE_LIMIT_SQL_LENGTH          = 1;
+        public const int SQLITE_LIMIT_COLUMN              = 2;
+        public const int SQLITE_LIMIT_EXPR_DEPTH          = 3;
+        public const int SQLITE_LIMIT_COMPOUND_SELECT     = 4;
+        public const int SQLITE_LIMIT_VDBE_OP             = 5;
+        public const int SQLITE_LIMIT_FUNCTION_ARG        = 6;
+        public const int SQLITE_LIMIT_ATTACHED            = 7;
+        public const int SQLITE_LIMIT_LIKE_PATTERN_LENGTH = 8;
+        public const int SQLITE_LIMIT_VARIABLE_NUMBER     = 9;
+        public const int SQLITE_LIMIT_TRIGGER_DEPTH       = 10;
+        public const int SQLITE_LIMIT_WORKER_THREADS      = 11;
+
         public const int SQLITE_STATUS_MEMORY_USED        = 0;
         public const int SQLITE_STATUS_PAGECACHE_USED     = 1;
         public const int SQLITE_STATUS_PAGECACHE_OVERFLOW = 2;
@@ -367,6 +380,11 @@ namespace SQLitePCL
         static public int sqlite3_enable_shared_cache(int enable)
         {
             return _imp.sqlite3_enable_shared_cache(enable);
+        }
+
+        static public int sqlite3_limit(sqlite3 db, int id, int newVal)
+        {
+            return _imp.sqlite3_limit(db.ptr, id, newVal);
         }
 
         static public void sqlite3_interrupt(sqlite3 db)
