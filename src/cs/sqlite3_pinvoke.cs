@@ -1186,7 +1186,13 @@ namespace SQLitePCL
         static NativeMethods()
         {
 #if PRELOAD_FROM_ARCH_DIRECTORY
-	    if (TryLoadFromArchDirectory())
+	    // TODO the check below is intended to prevent the LoadLibraryEx call
+	    // from happening when using the net45 build on Mono on non-Windows
+	    // platforms.  this approach is almost certainly wrong-ish for .NET Core.
+	    if (
+		(System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
+		&& (TryLoadFromArchDirectory())
+	       )
 	    {
 		return;
 	    }
