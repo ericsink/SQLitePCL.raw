@@ -1,7 +1,15 @@
 
-kill wp81_sl and just keep wp80?
+should main nupkg have a wp8-only dep on
+native.v120_wp80 ?
 
-changes to eliminate bundle_green and let the main assembly
+currently wp8-SL support is limited to esqlite3.  no
+sqlcipher.  no extension SDK.
+
+kill wp81_sl and just keep wp80?  a Windows Phone SilverLight 8.1
+project can consume a wp80 nuget, right?  currently the native
+code is v110_wp80 for both anyway.
+
+changes to eliminate code in bundle_green and let the main assembly
 have multiple pinvokes in it.
 
 win81 failing validation.  C++ compile settings changed since
