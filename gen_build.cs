@@ -108,15 +108,6 @@ public static class projects
 
 	private static void init_batteries()
 	{
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-
-		// TODO not sure about the following
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-
-		// fallback
 		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
