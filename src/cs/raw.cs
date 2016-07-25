@@ -108,6 +108,8 @@ namespace SQLitePCL
 #elif USE_PROVIDER_PINVOKE
 		// TODO review ordering.  for example:
 		// if both sqlcipher and esqlite3 exist, which should be chosen?
+		// TODO for UWP 8.1, having a pinvoke set which is not used
+		// causes errors with the Windows App Certification Kit.
 		SetProvider(new Provider[] {
 				Provider.CUSTOM_SQLITE3,
 				Provider.SQLCIPHER,

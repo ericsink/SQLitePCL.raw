@@ -2253,6 +2253,9 @@ public static class gen
 			}
 			else if (cfg.is_pinvoke())
 			{
+				// TODO for UWP 8.1, having a pinvoke set which is not used
+				// causes errors with the Windows App Certification Kit.
+
 				f.WriteStartElement("ItemGroup");
 				// the static constructor on class raw will
 				// choose which of these provider implementations
