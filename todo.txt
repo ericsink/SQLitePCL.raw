@@ -1,13 +1,11 @@
 
 should main nupkg have a wp8-only dep on
-native.v120_wp80 ?
+native.v120_wp80 ?  argument against this is that
+the dep is in bundle_green, and without the dep,
+somebody could replace esqlite3.
 
 currently wp8-SL support is limited to esqlite3.  no
 sqlcipher.  no extension SDK.
-
-kill wp81_sl and just keep wp80?  a Windows Phone SilverLight 8.1
-project can consume a wp80 nuget, right?  currently the native
-code is v110_wp80 for both anyway.
 
 changes to eliminate code in bundle_green and let the main assembly
 have multiple pinvokes in it.
@@ -15,8 +13,6 @@ have multiple pinvokes in it.
 win81 failing validation.  C++ compile settings changed since
 0.8.6?  Windows App Certification Kit.  is it scanning for
 pinvokes?
-
-SL/cppinterop stuff broken
 
 build iOS targetted for older iOS versions
 
