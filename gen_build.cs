@@ -77,9 +77,6 @@ public static class projects
 	{
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm"});
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86"});
-
-		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="arm"});
-		items_cppinterop.Add(new config_cppinterop { env="wp81_sl", cpu="x86"});
 	}
 
 	private static void init_pcl_bait()
@@ -127,9 +124,6 @@ public static class projects
 	{
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="x86"});
-
-		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="wp81_sl", api="cppinterop", cpu="x86"});
 	}
 
 	private static void init_esqlite3()
@@ -197,8 +191,6 @@ public static class projects
 			return "v110_xp";
 		case "wp80":
 			return "v110_wp80";
-		case "wp81_sl":
-			return "v120";
 		case "wpa81":
 			return "v120_wp81";
 		case "uap10.0":
@@ -432,11 +424,6 @@ public class config_cppinterop : config_info
 		switch (env)
 		{
 			case "wp80":
-				add_product(a, "SQLitePCL.cppinterop.winmd");
-				break;
-
-			case "wp81_sl":
-				add_product(a, "SQLitePCL.cppinterop.pri");
 				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 
@@ -755,8 +742,6 @@ public class config_cs
 				return "net35";
 			case "wp80":
 				return "wp8";
-			case "wp81_sl":
-				return "wp81";
 			case "wpa81":
 				return "wpa81";
 			case "uap10.0":
@@ -1180,8 +1165,6 @@ public static class gen
 					f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
 					f.WriteEndElement(); // PropertyGroup
 					break;
-				case "wp81_sl":
-					break;
 			}
 
 			switch (env)
@@ -1226,7 +1209,6 @@ public static class gen
 					f.WriteEndElement(); // Import
 					break;
 				case "wp80":
-				case "wp81_sl":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
 					f.WriteEndElement(); // Import
@@ -1375,20 +1357,6 @@ public static class gen
 				defines.Add("NETFX_CORE");
 				defines.Add("WINDOWS_PHONE_APP");
 				break;
-			case "wp81_sl":
-				f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
-				f.WriteElementString("TargetFrameworkVersion", "v8.1");
-				f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-				f.WriteElementString("SilverlightVersion", "v8.1");
-				f.WriteElementString("SilverlightApplication", "false");
-				f.WriteElementString("ValidateXaml", "true");
-				f.WriteElementString("ThrowErrorsInValidation", "true");
-				defines.Add("WINDOWS_PHONE");
-				defines.Add("SILVERLIGHT");
-				defines.Add("NO_CONCURRENTDICTIONARY");
-				f.WriteElementString("NoStdLib", "true");
-				f.WriteElementString("NoConfig", "true");
-				break;
 		}
 
 		return defines;
@@ -1403,7 +1371,6 @@ public static class gen
 				break;
 			case "win81":
 			case "wpa81":
-			case "wp81_sl":
 				f.WriteAttributeString("ToolsVersion", "12.0");
 				break;
 			default:
@@ -1443,9 +1410,6 @@ public static class gen
 					break;
 				case "wpa81":
 					write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
-					break;
-				case "wp81_sl":
-					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 					break;
 				case "uap10.0":
 					write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
@@ -1680,9 +1644,6 @@ public static class gen
 				case "wp80":
 					f.WriteAttributeString("ToolsVersion", "4.0");
 					break;
-				case "wp81_sl":
-					f.WriteAttributeString("ToolsVersion", "12.0");
-					break;
 				default:
 					throw new Exception("invalid cppinterop env");
 			}
@@ -1716,13 +1677,6 @@ public static class gen
 					f.WriteElementString("WinMDAssembly", "true");
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					break;
-				case "wp81_sl":
-					f.WriteElementString("Keyword", "Win32Proj");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -1738,9 +1692,6 @@ public static class gen
 			{
 				case "wp80":
 					f.WriteElementString("PlatformToolset", "v110_wp80");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("PlatformToolset", "v120");
 					break;
 			}
 
@@ -1759,15 +1710,6 @@ public static class gen
 					f.WriteElementString("GenerateWindowsMetadata", "true");
 					f.WriteElementString("IgnoreSpecificDefaultLibraries", "ole32.lib;%(IgnoreSpecificDefaultLibraries)");
 					f.WriteElementString("AdditionalDependencies", "WindowsPhoneCore.lib;runtimeobject.lib;PhoneAppModelHost.lib;%(AdditionalDependencies)");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				case "wp81_sl":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
 					f.WriteEndElement(); // Link
 					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
@@ -1855,8 +1797,6 @@ public static class gen
 					f.WriteEndElement(); // Reference
 					f.WriteEndElement(); // ItemGroup
 					break;
-				case "wp81_sl":
-					break;
 			}
 
 #if not
@@ -1884,8 +1824,6 @@ public static class gen
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsPhone\\v$(TargetPlatformVersion)\\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets");
 					f.WriteEndElement(); // Import
-					break;
-				case "wp81_sl":
 					break;
 			}
 
@@ -2240,8 +2178,6 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "wp81_sl":
-					break;
 				default:
 					// TODO is this actually needed?
 					f.WriteStartElement("Import");
@@ -2395,8 +2331,6 @@ public static class gen
 
 			switch (cfg.env)
 			{
-				case "wp81_sl":
-					break;
 				default:
 					// TODO is this actually needed?
 					f.WriteStartElement("Import");
@@ -3108,77 +3042,6 @@ public static class gen
 			f.WriteComment("BEGIN platform assemblies that use cppinterop");
 			Dictionary<string, string> pcl_env_cppinterop = new Dictionary<string, string>();
 			pcl_env_cppinterop["wp80"] = null;
-			pcl_env_cppinterop["wp81_sl"] = null;
-
-			foreach (string env in pcl_env_cppinterop.Keys)
-			{
-				write_cppinterop_with_targets_file(f, 
-						projects.find_pcls(
-							env,
-							"cppinterop",
-							null
-							),
-						env,
-						top,
-						id
-						);
-			}
-			f.WriteComment("END platform assemblies that use cppinterop");
-
-			f.WriteComment("END platform assemblies");
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuspec_cppinterop(string top, string root)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string id = "SQLitePCL.cppinterop";
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.8.1");
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.cppinterop");
-			f.WriteElementString("description", "TODO");
-			f.WriteElementString("authors", "Eric Sink, et al");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			f.WriteComment("BEGIN platform assemblies");
-
-			// TODO remove this directory first?
-			Directory.CreateDirectory(Path.Combine(top, "empty"));
-			
-			f.WriteComment("BEGIN platform assemblies that use cppinterop");
-			Dictionary<string, string> pcl_env_cppinterop = new Dictionary<string, string>();
-			pcl_env_cppinterop["wp80"] = null;
-			pcl_env_cppinterop["wp81_sl"] = null;
 
 			foreach (string env in pcl_env_cppinterop.Keys)
 			{
@@ -3555,22 +3418,6 @@ public static class gen
 			// --------
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_wp80");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp81_sl"));
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.raw");
@@ -4073,17 +3920,6 @@ public static class gen
 
 			foreach (config_pcl cfg in a)
 			{
-				switch (cfg.env)
-				{
-					case "wp81_sl":
-						// TODO SDKReference
-						f.WriteStartElement("Message");
-						f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
-						f.WriteAttributeString("Importance", "High");
-						f.WriteEndElement(); // Message
-						break;
-				}
-				
 				bool b_platform_condition = true;
 
 				switch (cfg.env)
@@ -4275,7 +4111,6 @@ public static class gen
 
 		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
-		//gen_nuspec_cppinterop(top, root);
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
@@ -4318,7 +4153,6 @@ public static class gen
 			//tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			//tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
 			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
@@ -4342,7 +4176,6 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
-			//tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
 			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
