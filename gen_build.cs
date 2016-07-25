@@ -136,6 +136,7 @@ public static class projects
 	{
 		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v110" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110_wp80" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
@@ -3104,6 +3105,26 @@ public static class gen
 					);
 			f.WriteComment("END platform assemblies that use pinvoke");
 
+			f.WriteComment("BEGIN platform assemblies that use cppinterop");
+			Dictionary<string, string> pcl_env_cppinterop = new Dictionary<string, string>();
+			pcl_env_cppinterop["wp80"] = null;
+			pcl_env_cppinterop["wp81_sl"] = null;
+
+			foreach (string env in pcl_env_cppinterop.Keys)
+			{
+				write_cppinterop_with_targets_file(f, 
+						projects.find_pcls(
+							env,
+							"cppinterop",
+							null
+							),
+						env,
+						top,
+						id
+						);
+			}
+			f.WriteComment("END platform assemblies that use cppinterop");
+
 			f.WriteComment("END platform assemblies");
 
 			f.WriteEndElement(); // files
@@ -3536,7 +3557,12 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.cppinterop");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_wp80");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3547,7 +3573,12 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp81_sl"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.cppinterop");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_wp80");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4089,6 +4120,7 @@ public static class gen
 
 				f.WriteEndElement(); // Reference
 
+#if not
 				{
 					config_sqlite3 other = cfg.get_sqlite3_item();
 					if (other != null)
@@ -4102,6 +4134,7 @@ public static class gen
 						f.WriteEndElement(); // Content
 					}
 				}
+#endif
 
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -4242,7 +4275,7 @@ public static class gen
 
 		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
 		gen_nuspec_basic(top, root, "SQLitePCL.raw");
-		gen_nuspec_cppinterop(top, root);
+		//gen_nuspec_cppinterop(top, root);
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
@@ -4285,7 +4318,7 @@ public static class gen
 			//tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
+			//tw.WriteLine("../../nuget pack SQLitePCL.cppinterop.nuspec");
 			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
@@ -4309,7 +4342,7 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
+			//tw.WriteLine("../../nuget push SQLitePCL.cppinterop.{0}.nupkg", NUSPEC_VERSION);
 			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);

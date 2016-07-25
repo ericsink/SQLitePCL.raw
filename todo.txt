@@ -1,4 +1,21 @@
 
+kill wp81_sl and just keep wp80?
+
+changes to eliminate bundle_green and let the main assembly
+have multiple pinvokes in it.
+
+win81 failing validation.  C++ compile settings changed since
+0.8.6?  Windows App Certification Kit.  is it scanning for
+pinvokes?
+
+SL/cppinterop stuff broken
+
+build iOS targetted for older iOS versions
+
+LoadLibraryEx
+
+--------
+
 use reflection to find all classes that implement ISQLiteProvider?
 would this catch the _internal case for ios?
 
