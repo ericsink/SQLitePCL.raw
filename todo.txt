@@ -1,4 +1,24 @@
 
+net45
+	seems fine
+iOS
+	only "sqlite3" works unless dylibs
+	__Internal can't be there
+android
+	"sqlite3" should be removed for Android N
+	but that'll break things now (cblite too)
+UWP 10
+	winsqlite3 should be added
+UWP 8
+	nothing should be there for Certfication Kit
+.NET Native
+	not sure what'll happen here
+
+core problem with uwp is that we can't have multiple
+sets of pinvokes, so the set we want has to be somewhere,
+and we just removed all the "plugins" and left only the
+"native" stuff.
+
 should main nupkg have a wp8-only dep on
 native.v120_wp80 ?  argument against this is that
 the dep is in bundle_green, and without the dep,
