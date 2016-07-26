@@ -1,4 +1,13 @@
 
+we moved toward auto-init in the main assembly
+because when the assembly is referenced in
+PCL code only, the Init call still has to go
+somewhere.  it would be nice to be able to
+write a wrapper (like sqlite-net) which does init
+for its consumers, without needing an init call
+in each platform-specific project, but if that
+wrapper is a PCL, things are harder.
+
 net45
 	seems fine
 iOS
