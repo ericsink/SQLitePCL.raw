@@ -1,4 +1,22 @@
 
+could/should plugin for android/ios be separated into
+small plugin + native nupkg, like the others?
+
+dislike the name "plain"
+
+e_sqlite3
+custom_sqlite3
+default_sqlite3
+xamarin_sqlite3 ?
+
+maybe the "first pinvoke set that works" code should
+go somewhere else, higher up?
+
+if we're going to build plugins containing a
+pinvoke set, we need the corresponding build
+of the main assembly to NOT contain that
+pinvoke set.
+
 we moved toward auto-init in the main assembly
 because when the assembly is referenced in
 PCL code only, the Init call still has to go
@@ -11,22 +29,42 @@ wrapper is a PCL, things are harder.
 net45
 	seems fine
 iOS
-	only "sqlite3" works unless dylibs
-	__Internal can't be there
+	only "sqlite3" works, unless dylibs
+	__Internal can't be there because linker
 android
 	"sqlite3" should be removed for Android N
 	but that'll break things now (cblite too)
 UWP 10
 	winsqlite3 should be added
+	plain sqlite3 is the extension SDK
 UWP 8
-	nothing should be there for Certfication Kit
+	nothing should be there for Certification Kit
 .NET Native
 	not sure what'll happen here
+wp80
+	cppinterop
 
 core problem with uwp is that we can't have multiple
 sets of pinvokes, so the set we want has to be somewhere,
 and we just removed all the "plugins" and left only the
 "native" stuff.
+
+in fact, since "sqlite3" cannot be in the main assembly
+for UWP 8.1, we need a "sqlite3" plugin, which we have
+never needed before.
+
+config_plugin has a problem with the way it uses "what"
+and "imp".  what is always "sqlite3" or "sqlcipher",
+but now we need the names to be more flexible, since we
+can have "sqlite3" with "e" and "sqlite3" without.
+it would be better if the current set had "e" in the
+name, but they don't.
+
+what if the main assembly never has an implementation
+of IProvider in it?  it doesn't even need to be a bait
+and switch PCL anymore.  although the platforms still
+need to inject an implementation.  provider_bait() would
+become useless?
 
 should main nupkg have a wp8-only dep on
 native.v120_wp80 ?  argument against this is that
@@ -34,7 +72,9 @@ the dep is in bundle_green, and without the dep,
 somebody could replace esqlite3.
 
 currently wp8-SL support is limited to esqlite3.  no
-sqlcipher.  no extension SDK.
+sqlcipher.  no extension SDK.  although we could in
+theory build multiple versions of this, each linked
+against a different library name.
 
 changes to eliminate code in bundle_green and let the main assembly
 have multiple pinvokes in it.

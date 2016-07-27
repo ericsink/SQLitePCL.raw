@@ -30,71 +30,6 @@ namespace SQLitePCL
 
     public static class raw
     {
-	    public enum Provider
-	    {
-		    NONE,
-		    SQLITE3,
-		    ESQLITE3,
-		    SQLCIPHER,
-		    CUSTOM_SQLITE3,
-	    }
-
-	static public void SetProvider(ISQLite3Provider imp)
-	{
-		int version = imp.sqlite3_libversion_number();
-		IntPtr db;
-		int rc;
-	        rc = imp.sqlite3_open(":memory:", out db);
-		if (rc != 0) throw new Exception();
-		rc = imp.sqlite3_close(db);
-		if (rc != 0) throw new Exception();
-		_imp = imp;
-	}
-
-#if USE_PROVIDER_PINVOKE
-	static public bool SetProvider(Provider p)
-	{
-		try
-		{
-			ISQLite3Provider imp;
-			switch (p)
-			{
-				case Provider.SQLITE3:
-					imp = new SQLite3Provider_sqlite3();
-					break;
-				case Provider.ESQLITE3:
-					imp = new SQLite3Provider_esqlite3();
-					break;
-				case Provider.SQLCIPHER:
-					imp = new SQLite3Provider_sqlcipher();
-					break;
-				case Provider.CUSTOM_SQLITE3:
-					imp = new SQLite3Provider_custom_sqlite3();
-					break;
-				default:
-					throw new NotImplementedException();
-			}
-			SetProvider(imp);
-			return true;
-		}
-		catch {
-			return false;
-		}
-	}
-
-	static public Provider SetProvider(IList<Provider> a)
-	{
-		foreach (var p in a)
-		{
-			if (SetProvider(p))
-			{
-				return p;
-			}
-		}
-		return Provider.NONE;
-	}
-#endif
-
         private static ISQLite3Provider _imp;
 
 	static raw()
@@ -106,18 +41,31 @@ namespace SQLitePCL
 		_imp = new SQLite3Provider_cppinterop();
 		return;
 #elif USE_PROVIDER_PINVOKE
-		// TODO review ordering.  for example:
-		// if both sqlcipher and esqlite3 exist, which should be chosen?
-		// TODO for UWP 8.1, having a pinvoke set which is not used
-		// causes errors with the Windows App Certification Kit.
-		SetProvider(new Provider[] {
-				Provider.CUSTOM_SQLITE3,
-				Provider.SQLCIPHER,
-				Provider.ESQLITE3,
-				Provider.SQLITE3,
-				});
+		try
+		{
+			// try to load the default pinvoke.
+			// if it fails, that's okay, as long as
+			// somebody installs another one.
+			// TODO don't do this on UWP 8.1
+			_imp = new SQLite3Provider_sqlite3();
+		}
+		catch {
+			_imp = null;
+		}
 #endif
 
+	}
+
+	static public void SetProvider(ISQLite3Provider imp)
+	{
+		int version = imp.sqlite3_libversion_number();
+		IntPtr db;
+		int rc;
+	        rc = imp.sqlite3_open(":memory:", out db);
+		if (rc != 0) throw new Exception();
+		rc = imp.sqlite3_close(db);
+		if (rc != 0) throw new Exception();
+		_imp = imp;
 	}
 
         public const int SQLITE_UTF8                = 1;

@@ -108,6 +108,16 @@ public static class projects
 
 	private static void init_batteries()
 	{
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+
+		// TODO not sure about the following
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
+
+		// fallback
+		// TODO should this instead throw a "bait" error?
 		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
@@ -129,31 +139,49 @@ public static class projects
 
 	private static void init_plugin()
 	{
+		// esqlite3
 		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3", imp="internal" });
-		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher", imp="internal" });
-
 		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlite3", imp="internal" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher", imp="internal" });
-
 		items_plugin.Add(new config_plugin { env="android", what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="android", what="sqlcipher", imp="sqlcipher" });
-
-#if not
-// empty plugins removed because all these providers moved into
-// the main assembly
-		items_plugin.Add(new config_plugin { env="net35", what="sqlcipher", empty=true, imp="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlcipher", empty=true, imp="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net45", what="sqlcipher", empty=true, imp="sqlcipher" });
-
-		items_plugin.Add(new config_plugin { env="net45", what="sqlite3", empty=true, imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", what="sqlite3", empty=true, imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", what="sqlite3", empty=true, imp="esqlite3" });
-
+		items_plugin.Add(new config_plugin { env="net35", empty=true, what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", empty=true, what="sqlite3", imp="esqlite3" });
+		items_plugin.Add(new config_plugin { env="net45", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="win8", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3", imp="esqlite3" });
 		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3", imp="esqlite3" });
-#endif
+
+		// sqlcipher
+		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher", imp="internal" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher", imp="internal" });
+		items_plugin.Add(new config_plugin { env="android", what="sqlcipher", imp="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net35", empty=true, what="sqlcipher", imp="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net40", empty=true, what="sqlcipher", imp="sqlcipher" });
+		items_plugin.Add(new config_plugin { env="net45", empty=true, what="sqlcipher", imp="sqlcipher" });
+
+		// plain
+		items_plugin.Add(new config_plugin { env="ios_classic", what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="android", what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net35", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="net45", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="plain", imp="sqlite3" });
+		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="plain", imp="sqlite3" });
+
+		// "custom"
+		items_plugin.Add(new config_plugin { env="ios_classic", what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="ios_unified", what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="android", what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="net35", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="net40", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="net45", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="win8", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="win81", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="custom", imp="custom_sqlite3" });
+		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="custom", imp="custom_sqlite3" });
 	}
 
 	private static void init_pcl_pinvoke()
@@ -182,6 +210,8 @@ public static class projects
 			return "v110_xp";
 		case "wp80":
 			return "v110_wp80";
+		case "wp81_sl":
+			return "v120";
 		case "wpa81":
 			return "v120_wp81";
 		case "uap10.0":
@@ -243,6 +273,18 @@ public static class projects
 			}
 		}
 		return result;
+	}
+
+	public static config_plugin find_battery_plugin(string env)
+	{
+		foreach (config_plugin cfg in projects.items_plugin)
+		{
+			if ((cfg.env == env) && (cfg.what == "sqlite3"))
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(env);
 	}
 
 	public static config_pcl find_bait(string env)
@@ -415,6 +457,11 @@ public class config_cppinterop : config_info
 		switch (env)
 		{
 			case "wp80":
+				add_product(a, "SQLitePCL.cppinterop.winmd");
+				break;
+
+			case "wp81_sl":
+				add_product(a, "SQLitePCL.cppinterop.pri");
 				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 
@@ -733,6 +780,8 @@ public class config_cs
 				return "net35";
 			case "wp80":
 				return "wp8";
+			case "wp81_sl":
+				return "wp81";
 			case "wpa81":
 				return "wpa81";
 			case "uap10.0":
@@ -1156,6 +1205,8 @@ public static class gen
 					f.WriteElementString("TargetPlatformIdentifier", "WindowsPhoneApp");
 					f.WriteEndElement(); // PropertyGroup
 					break;
+				case "wp81_sl":
+					break;
 			}
 
 			switch (env)
@@ -1200,6 +1251,7 @@ public static class gen
 					f.WriteEndElement(); // Import
 					break;
 				case "wp80":
+				case "wp81_sl":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\$(TargetFrameworkIdentifier)\\$(TargetFrameworkVersion)\\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets");
 					f.WriteEndElement(); // Import
@@ -1348,6 +1400,20 @@ public static class gen
 				defines.Add("NETFX_CORE");
 				defines.Add("WINDOWS_PHONE_APP");
 				break;
+			case "wp81_sl":
+				f.WriteElementString("TargetFrameworkIdentifier", "WindowsPhone");
+				f.WriteElementString("TargetFrameworkVersion", "v8.1");
+				f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+				f.WriteElementString("SilverlightVersion", "v8.1");
+				f.WriteElementString("SilverlightApplication", "false");
+				f.WriteElementString("ValidateXaml", "true");
+				f.WriteElementString("ThrowErrorsInValidation", "true");
+				defines.Add("WINDOWS_PHONE");
+				defines.Add("SILVERLIGHT");
+				defines.Add("NO_CONCURRENTDICTIONARY");
+				f.WriteElementString("NoStdLib", "true");
+				f.WriteElementString("NoConfig", "true");
+				break;
 		}
 
 		return defines;
@@ -1362,6 +1428,7 @@ public static class gen
 				break;
 			case "win81":
 			case "wpa81":
+			case "wp81_sl":
 				f.WriteAttributeString("ToolsVersion", "12.0");
 				break;
 			default:
@@ -1401,6 +1468,9 @@ public static class gen
 					break;
 				case "wpa81":
 					write_project_type_guids(f, GUID_WP81RT, GUID_CSHARP);
+					break;
+				case "wp81_sl":
+					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 					break;
 				case "uap10.0":
 					write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
@@ -1635,6 +1705,9 @@ public static class gen
 				case "wp80":
 					f.WriteAttributeString("ToolsVersion", "4.0");
 					break;
+				case "wp81_sl":
+					f.WriteAttributeString("ToolsVersion", "12.0");
+					break;
 				default:
 					throw new Exception("invalid cppinterop env");
 			}
@@ -1668,6 +1741,13 @@ public static class gen
 					f.WriteElementString("WinMDAssembly", "true");
 					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
 					break;
+				case "wp81_sl":
+					f.WriteElementString("Keyword", "Win32Proj");
+					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
+					f.WriteElementString("AppContainerApplication", "true");
+					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
+					f.WriteElementString("ApplicationTypeRevision", "8.1");
+					break;
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -1683,6 +1763,9 @@ public static class gen
 			{
 				case "wp80":
 					f.WriteElementString("PlatformToolset", "v110_wp80");
+					break;
+				case "wp81_sl":
+					f.WriteElementString("PlatformToolset", "v120");
 					break;
 			}
 
@@ -1701,6 +1784,15 @@ public static class gen
 					f.WriteElementString("GenerateWindowsMetadata", "true");
 					f.WriteElementString("IgnoreSpecificDefaultLibraries", "ole32.lib;%(IgnoreSpecificDefaultLibraries)");
 					f.WriteElementString("AdditionalDependencies", "WindowsPhoneCore.lib;runtimeobject.lib;PhoneAppModelHost.lib;%(AdditionalDependencies)");
+					f.WriteEndElement(); // Link
+					f.WriteEndElement(); // ItemDefinitionGroup
+					break;
+				case "wp81_sl":
+					f.WriteStartElement("ItemDefinitionGroup");
+					f.WriteStartElement("ClCompile");
+					write_cpp_define(f, "_WINRT_DLL");
+					f.WriteEndElement(); // ClCompile
+					f.WriteStartElement("Link");
 					f.WriteEndElement(); // Link
 					f.WriteEndElement(); // ItemDefinitionGroup
 					break;
@@ -1788,6 +1880,8 @@ public static class gen
 					f.WriteEndElement(); // Reference
 					f.WriteEndElement(); // ItemGroup
 					break;
+				case "wp81_sl":
+					break;
 			}
 
 #if not
@@ -1815,6 +1909,8 @@ public static class gen
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsPhone\\v$(TargetPlatformVersion)\\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets");
 					f.WriteEndElement(); // Import
+					break;
+				case "wp81_sl":
 					break;
 			}
 
@@ -1976,18 +2072,28 @@ public static class gen
 					break;
 			}
 
-			// TODO er, we only want this define for iOS, right?
-			// not that it'll hurt anything...
-			switch (cfg.what)
+			switch (cfg.env)
 			{
-				case "sqlite3":
-					defines.Add("IOS_PACKAGED_SQLITE3");
+				case "ios_classic":
+				case "ios_unified":
+					switch (cfg.what)
+					{
+						case "plain":
+							// no define needed
+							break;
+						case "custom":
+							defines.Add("IOS_PACKAGED_CUSTOM");
+							break;
+						case "sqlite3":
+							defines.Add("IOS_PACKAGED_SQLITE3");
+							break;
+						case "sqlcipher":
+							defines.Add("IOS_PACKAGED_SQLCIPHER");
+							break;
+						default:
+							throw new Exception(cfg.what);
+					}
 					break;
-				case "sqlcipher":
-					defines.Add("IOS_PACKAGED_SQLCIPHER");
-					break;
-				default:
-					throw new Exception(cfg.what);
 			}
 
 			f.WriteEndElement(); // PropertyGroup
@@ -2009,31 +2115,16 @@ public static class gen
 					write_cs_compile(f, root, "src\\cs\\util.cs");
 					f.WriteEndElement(); // ItemGroup
 					break;
-				case "android":
-					f.WriteStartElement("ItemGroup");
-#if not
-// these provider implementations moved to the main assembly
-					switch (cfg.what)
-					{
-						case "sqlite3":
-							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
-							break;
-						case "sqlcipher":
-							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
-							break;
-						default:
-							throw new Exception(cfg.what);
-					}
-					write_cs_compile(f, root, "src\\cs\\util.cs");
-#endif
-					f.WriteEndElement(); // ItemGroup
-					break;
 				default:
 					f.WriteStartElement("ItemGroup");
-#if not
-// these provider implementations moved to the main assembly
 					switch (cfg.what)
 					{
+						case "plain":
+							write_cs_compile(f, top, "pinvoke_sqlite3.cs");
+							break;
+						case "custom":
+							write_cs_compile(f, top, "pinvoke_custom_sqlite3.cs");
+							break;
 						case "sqlite3":
 							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
 							break;
@@ -2044,7 +2135,6 @@ public static class gen
 							throw new Exception(cfg.what);
 					}
 					write_cs_compile(f, root, "src\\cs\\util.cs");
-#endif
 					f.WriteEndElement(); // ItemGroup
 					break;
 			}
@@ -2086,6 +2176,18 @@ public static class gen
 
                             f.WriteEndElement(); // ItemGroup
                         }
+			else if (cfg.what == "plain")
+			{
+				// nothing in resources needed
+			}
+			else if (cfg.what == "custom")
+			{
+				// resource must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
 					break;
 
 					case "ios_classic":
@@ -2117,6 +2219,18 @@ public static class gen
 
                             f.WriteEndElement(); // ItemGroup
                         }
+			else if (cfg.what == "plain")
+			{
+				// nothing in resources needed
+			}
+			else if (cfg.what == "custom")
+			{
+				// resource must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
 						break;
 
 					case "android":
@@ -2126,13 +2240,25 @@ public static class gen
                             write_android_native_libs(root, f, "sqlite3");
                             f.WriteEndElement(); // ItemGroup
 						}
-
-						if (cfg.what == "sqlcipher")
+						else if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
                             write_android_native_libs_sqlcipher(root, f);
                             f.WriteEndElement(); // ItemGroup
                         }
+			else if (cfg.what == "plain")
+			{
+				// nothing in resources needed
+				// TODO this should be disallowed as of Android N, right?
+			}
+			else if (cfg.what == "custom")
+			{
+				// dll must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
 
 						break;
 				}
@@ -2169,6 +2295,8 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "wp81_sl":
+					break;
 				default:
 					// TODO is this actually needed?
 					f.WriteStartElement("Import");
@@ -2253,24 +2381,8 @@ public static class gen
 			}
 			else if (cfg.is_pinvoke())
 			{
-				// TODO for UWP 8.1, having a pinvoke set which is not used
-				// causes errors with the Windows App Certification Kit.
-
 				f.WriteStartElement("ItemGroup");
-				// the static constructor on class raw will
-				// choose which of these provider implementations
-				// to use by trying to load each one (in a defined
-				// search ordering) and taking the first one that
-				// works.
 				write_cs_compile(f, top, "pinvoke_sqlite3.cs");
-				write_cs_compile(f, top, "pinvoke_esqlite3.cs");
-				write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
-				write_cs_compile(f, top, "pinvoke_custom_sqlite3.cs");
-				// TODO perhaps winsqlite3.dll for UWP
-
-				// cannot include __Internal here because then the ios linker
-				// will complain if a sqlite build is not included
-				// write_cs_compile(f, top, "pinvoke_ios_internal.cs");
 				write_cs_compile(f, root, "src\\cs\\util.cs");
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -2325,6 +2437,8 @@ public static class gen
 
 			switch (cfg.env)
 			{
+				case "wp81_sl":
+					break;
 				default:
 					// TODO is this actually needed?
 					f.WriteStartElement("Import");
@@ -2586,7 +2700,6 @@ public static class gen
 			}
 			f.WriteEndElement(); // ProjectReference
 
-#if not
 			if (cfg.is_portable())
 			{
 				// this is the fallback case.
@@ -2603,7 +2716,6 @@ public static class gen
 				//f.WriteElementString("Private", "true");
 				f.WriteEndElement(); // ProjectReference
 			}
-#endif
 
 			f.WriteEndElement(); // ItemGroup
 
@@ -3389,13 +3501,10 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
 
-#if not
-// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.wpa81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
-#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120_wp81");
@@ -3429,13 +3538,10 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
 
-#if not
-// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.win81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
-#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120");
@@ -3453,13 +3559,10 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
 
-#if not
-// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.uap10.0");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
-#endif
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v140");
@@ -3477,13 +3580,10 @@ public static class gen
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net45"));
 
-#if not
-// removed truly-empty plugin
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.net45");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
-#endif
 
 			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
 			f.WriteStartElement("dependency");
@@ -3914,6 +4014,17 @@ public static class gen
 
 			foreach (config_pcl cfg in a)
 			{
+				switch (cfg.env)
+				{
+					case "wp81_sl":
+						// TODO SDKReference
+						f.WriteStartElement("Message");
+						f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
+						f.WriteAttributeString("Importance", "High");
+						f.WriteEndElement(); // Message
+						break;
+				}
+				
 				bool b_platform_condition = true;
 
 				switch (cfg.env)
