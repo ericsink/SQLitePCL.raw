@@ -159,6 +159,7 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="net40", empty=true, what="sqlcipher", imp="sqlcipher" });
 		items_plugin.Add(new config_plugin { env="net45", empty=true, what="sqlcipher", imp="sqlcipher" });
 
+#if notyet
 		// plain
 		items_plugin.Add(new config_plugin { env="ios_classic", what="plain", imp="sqlite3" });
 		items_plugin.Add(new config_plugin { env="ios_unified", what="plain", imp="sqlite3" });
@@ -182,6 +183,7 @@ public static class projects
 		items_plugin.Add(new config_plugin { env="win81", empty=true, what="custom", imp="custom_sqlite3" });
 		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="custom", imp="custom_sqlite3" });
 		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="custom", imp="custom_sqlite3" });
+#endif
 	}
 
 	private static void init_pcl_pinvoke()
