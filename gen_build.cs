@@ -86,6 +86,9 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile136", cpu="anycpu" });
 		items_pcl.Add(new config_pcl { env="profile111", cpu="anycpu" });
+
+		items_pcl.Add(new config_pcl { env="netstandard1.0", cpu="anycpu" });
+		items_pcl.Add(new config_pcl { env="netstandard1.1", cpu="anycpu" });
 	}
 
 	private static void init_tests()
@@ -104,6 +107,8 @@ public static class projects
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
 		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
+
+		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="netstandard1.0", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 	}
 
 	private static void init_batteries()
@@ -119,6 +124,7 @@ public static class projects
 		// fallback
 		// TODO should this instead throw a "bait" error?
 		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
+		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="netstandard1.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
 	private static void init_pcl_cppinterop()
@@ -544,11 +550,20 @@ public class config_higher : config_info
 		return config_cs.env_is_portable(env);
 	}
 
+	public bool is_netstandard()
+	{
+		return config_cs.env_is_netstandard(env);
+	}
+
 	public string get_nuget_target_path()
 	{
 		if (is_portable())
 		{
 			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else if (is_netstandard())
+		{
+			return string.Format("lib\\{0}\\", env);
 		}
 		else
 		{
@@ -596,11 +611,20 @@ public class config_batteries : config_info
 		return config_cs.env_is_portable(env);
 	}
 
+	public bool is_netstandard()
+	{
+		return config_cs.env_is_netstandard(env);
+	}
+
 	public string get_nuget_target_path()
 	{
 		if (is_portable())
 		{
 			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else if (is_netstandard())
+		{
+			return string.Format("lib\\{0}\\", env);
 		}
 		else
 		{
@@ -745,20 +769,14 @@ public class config_esqlite3 : config_info
 
 public class config_cs
 {
-	public static bool env_needs_project_dot_json(string env)
-	{
-		switch (env)
-		{
-			case "uap10.0":
-				return true;
-			default:
-				return false;
-		}
-	}
-
 	public static bool env_is_portable(string env)
 	{
 		return env.StartsWith("profile");
+	}
+
+	public static bool env_is_netstandard(string env)
+	{
+		return env.StartsWith("netstandard");
 	}
 
 	public static string get_nuget_framework_name(string env)
@@ -839,11 +857,6 @@ public class config_pcl : config_info
 		throw new Exception(get_name());
 	}
 
-	public bool needs_project_dot_json()
-	{
-		return config_cs.env_needs_project_dot_json(env);
-	}
-
 	private string nat()
 	{
 		if (is_pinvoke())
@@ -883,6 +896,10 @@ public class config_pcl : config_info
 			if (is_portable())
 			{
 				return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+			}
+			else if (is_netstandard())
+			{
+				return string.Format("lib\\{0}\\", env);
 			}
 			else
 			{
@@ -925,6 +942,11 @@ public class config_pcl : config_info
 		return config_cs.env_is_portable(env);
 	}
 
+	public bool is_netstandard()
+	{
+		return config_cs.env_is_netstandard(env);
+	}
+
 	public bool is_cppinterop()
 	{
 		if (is_portable())
@@ -953,6 +975,10 @@ public class config_pcl : config_info
 		{
 			return string.Format("{0}\\{1}", AREA, env);
 		}
+		else if (is_netstandard())
+		{
+			return string.Format("{0}\\{1}", AREA, env);
+		}
 		else
 		{
 			return string.Format("{0}\\{1}\\{2}\\{3}", AREA, env, nat(), cpu);
@@ -964,6 +990,10 @@ public class config_pcl : config_info
 		if (is_portable())
 		{
 			return string.Format("portable.{0}", env);
+		}
+		else if (is_netstandard())
+		{
+			return string.Format("{0}", env);
 		}
 		else
 		{
@@ -1143,7 +1173,7 @@ public static class gen
 		f.WriteEndElement(); // PropertyGroup
 	}
 
-	private static void write_project_dot_json(string subdir)
+	private static void write_project_dot_json_uap(string subdir)
 	{
 		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
 		{
@@ -1166,10 +1196,49 @@ public static class gen
 		}
 	}
 
+	private static void write_project_dot_json_netstandard10(string subdir)
+	{
+		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
+		{
+			tw.WriteLine("{");
+			tw.WriteLine("    \"dependencies\" : {");
+			tw.WriteLine("         \"Microsoft.NETCore.Portable.Compatibility\": \"1.0.1\",");
+			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
+			tw.WriteLine("    },");
+			tw.WriteLine("    \"frameworks\" : {");
+			tw.WriteLine("         \"netstandard1.0\": {}");
+			tw.WriteLine("    }");
+			tw.WriteLine("}");
+		}
+	}
+
+	private static void write_project_dot_json_netstandard11(string subdir)
+	{
+		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
+		{
+			tw.WriteLine("{");
+			tw.WriteLine("    \"dependencies\" : {");
+			tw.WriteLine("         \"Microsoft.NETCore.Portable.Compatibility\": \"1.0.1\",");
+			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
+			tw.WriteLine("    },");
+			tw.WriteLine("    \"frameworks\" : {");
+			tw.WriteLine("         \"netstandard1.1\": {}");
+			tw.WriteLine("    }");
+			tw.WriteLine("}");
+		}
+	}
+
 	private static void write_csproj_footer(XmlWriter f, string env)
 	{
 		if (config_cs.env_is_portable(env))
 		{
+			f.WriteStartElement("Import");
+			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
+			f.WriteEndElement(); // Import
+		}
+		else if (config_cs.env_is_netstandard(env))
+		{
+			// TODO not sure about this
 			f.WriteStartElement("Import");
 			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets");
 			f.WriteEndElement(); // Import
@@ -1325,9 +1394,18 @@ public static class gen
 				default:
 					throw new Exception();
 			}
-			// TODO why would we need to define NO_CONCURRENTDICTIONARY for the bait?
 			defines.Add("NO_CONCURRENTDICTIONARY");
 			f.WriteElementString("TargetFrameworkProfile", env);
+		}
+		else if (config_cs.env_is_netstandard(env))
+		{
+			if (env == "netstandard1.0")
+			{
+				defines.Add("NO_CONCURRENTDICTIONARY");
+			}
+			f.WriteElementString("TargetFrameworkProfile", "");
+			f.WriteElementString("TargetFrameworkVersion", "v5.0");
+			f.WriteElementString("MinimumVisualStudioVersion", "14.0");
 		}
 
 		switch (env)
@@ -1443,6 +1521,10 @@ public static class gen
 	private static void write_project_type_guids_for_env(XmlWriter f, string env)
 	{
 		if (config_cs.env_is_portable(env))
+		{
+			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
+		}
+		else if (config_cs.env_is_netstandard(env))
 		{
 			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
 		}
@@ -2273,10 +2355,18 @@ public static class gen
 			f.WriteEndDocument();
 		}
 
-		if (config_cs.env_needs_project_dot_json(cfg.env))
+		string subdir = cfg.get_project_subdir(top);
+		switch (cfg.env)
 		{
-			string subdir = cfg.get_project_subdir(top);
-			write_project_dot_json(subdir);
+			case "uap10.0":
+				write_project_dot_json_uap(subdir);
+				break;
+			case "netstandard1.0":
+				write_project_dot_json_netstandard10(subdir);
+				break;
+			case "netstandard1.1":
+				write_project_dot_json_netstandard11(subdir);
+				break;
 		}
 	}
 
@@ -2335,6 +2425,10 @@ public static class gen
 			{
 				defines.Add("USE_PROVIDER_BAIT");
 			}
+			else if (cfg.is_netstandard())
+			{
+				defines.Add("USE_PROVIDER_BAIT");
+			}
 			else if (cfg.is_cppinterop())
 			{
 				defines.Add("USE_PROVIDER_CPPINTEROP");
@@ -2370,6 +2464,12 @@ public static class gen
 			f.WriteEndElement(); // ItemGroup
 
 			if (cfg.is_portable())
+			{
+				f.WriteStartElement("ItemGroup");
+				write_cs_compile(f, root, "src\\cs\\sqlite3_bait.cs");
+				f.WriteEndElement(); // ItemGroup
+			}
+			else if (cfg.is_netstandard())
 			{
 				f.WriteStartElement("ItemGroup");
 				write_cs_compile(f, root, "src\\cs\\sqlite3_bait.cs");
@@ -2412,10 +2512,18 @@ public static class gen
 			f.WriteEndDocument();
 		}
 
-		if (cfg.needs_project_dot_json())
+		string subdir = cfg.get_project_subdir(top);
+		switch (cfg.env)
 		{
-			string subdir = cfg.get_project_subdir(top);
-			write_project_dot_json(subdir);
+			case "uap10.0":
+				write_project_dot_json_uap(subdir);
+				break;
+			case "netstandard1.0":
+				write_project_dot_json_netstandard10(subdir);
+				break;
+			case "netstandard1.1":
+				write_project_dot_json_netstandard11(subdir);
+				break;
 		}
 	}
 
@@ -2620,10 +2728,18 @@ public static class gen
 			f.WriteEndDocument();
 		}
 
-		if (config_cs.env_needs_project_dot_json(cfg.env))
+		string subdir = cfg.get_project_subdir(top);
+		switch (cfg.env)
 		{
-			string subdir = cfg.get_project_subdir(top);
-			write_project_dot_json(subdir);
+			case "uap10.0":
+				write_project_dot_json_uap(subdir);
+				break;
+			case "netstandard1.0":
+				write_project_dot_json_netstandard10(subdir);
+				break;
+			case "netstandard1.1":
+				write_project_dot_json_netstandard11(subdir);
+				break;
 		}
 	}
 
@@ -2709,6 +2825,12 @@ public static class gen
 				// its implementation of Batteries.Init() does nothing.
 				// so we don't need to reference a plugin.
 			}
+			else if (cfg.is_netstandard())
+			{
+				// this is the fallback case.
+				// its implementation of Batteries.Init() does nothing.
+				// so we don't need to reference a plugin.
+			}
 			else
 			{
 				config_plugin other = projects.find_battery_plugin(cfg.env);
@@ -2729,10 +2851,18 @@ public static class gen
 			f.WriteEndDocument();
 		}
 
-		if (config_cs.env_needs_project_dot_json(cfg.env))
+		string subdir = cfg.get_project_subdir(top);
+		switch (cfg.env)
 		{
-			string subdir = cfg.get_project_subdir(top);
-			write_project_dot_json(subdir);
+			case "uap10.0":
+				write_project_dot_json_uap(subdir);
+				break;
+			case "netstandard1.0":
+				write_project_dot_json_netstandard10(subdir);
+				break;
+			case "netstandard1.1":
+				write_project_dot_json_netstandard11(subdir);
+				break;
 		}
 	}
 
@@ -2950,6 +3080,10 @@ public static class gen
 				{
 					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_portable);
 				}
+				else if (cfg.is_netstandard())
+				{
+					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_portable);
+				}
 				else
 				{
 					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
@@ -3125,7 +3259,7 @@ public static class gen
 			// TODO we don't need ALL the bait assemblies in here
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
-				if (cfg.is_portable())
+				if (cfg.is_portable() || cfg.is_netstandard())
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -4241,17 +4375,22 @@ public static class gen
 		{
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
-			tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
-			//tw.WriteLine("../../refgen UAP,Version=v10.0 uap10.0 ./SQLitePCL.raw_basic.nuspec ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen generate-single -m UAP,Version=v10.0 -t uap10.0 -n ./SQLitePCL.raw.nuspec -p ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj -f ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.0/netstandard1.0.csproj -f ./release/bin/pcl/netstandard1.0/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.1 -t netstandard1.1 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.1/netstandard1.1.csproj -f ./release/bin/pcl/netstandard1.1/SQLitePCL.raw.dll");
+			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.ugly.nuspec  -p ./ugly_netstandard1.0/ugly_netstandard1.0.csproj -f ./release/bin/ugly/netstandard1.0/SQLitePCL.ugly.dll");
+			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.bundle_green.nuspec  -p ./batteries_green_netstandard1.0/batteries_green_netstandard1.0.csproj -f ./release/bin/batteries_green/netstandard1.0/SQLitePCL.batteries.dll");
 			foreach (config_plugin cfg in projects.items_plugin)
 			{
-				if (config_cs.env_needs_project_dot_json(cfg.env))
+				switch (cfg.env)
 				{
-					string id = cfg.get_id();
-					var a = new List<string>();
-					cfg.get_products(a);
-					// TODO assert a.count is 1
-					tw.WriteLine("../../refgen UAP,Version=v10.0 {0} ./{1}.nuspec {2} ./release/bin/{3}", cfg.env, cfg.get_id(), cfg.get_project_path(top), a[0]);
+					case "uap10.0":
+						string id = cfg.get_id();
+						var a = new List<string>();
+						cfg.get_products(a);
+						// TODO assert a.count is 1
+						tw.WriteLine("../../refgen generate-single -m UAP,Version=v10.0 -t {0} -n ./{1}.nuspec -p {2} -f ./release/bin/{3}", cfg.env, cfg.get_id(), cfg.get_project_path(top), a[0]);
+						break;
 				}
 			}
 		}
