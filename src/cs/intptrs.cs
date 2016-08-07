@@ -238,16 +238,38 @@ namespace SQLitePCL
     {
         private readonly IntPtr _p;
 	private bool _disposed = false;
+
+	// this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
 #if NO_CONCURRENTDICTIONARY
-        private System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt> _stmts = new System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt>();
+        private System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt> _stmts = null;
 #else
-        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
 #endif
 
         internal sqlite3(IntPtr p)
         {
             _p = p;
+	    enable_sqlite3_next_stmt(true);
         }
+
+	public void enable_sqlite3_next_stmt(bool enabled)
+	{
+		if (enabled)
+		{
+		if (_stmts == null)
+		{
+#if NO_CONCURRENTDICTIONARY
+		_stmts = new System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt>();
+#else
+		_stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+#endif
+		}
+		}
+		else
+		{
+			_stmts = null;
+		}
+	}
 
         public void Dispose()
         {
@@ -284,6 +306,8 @@ namespace SQLitePCL
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
+		if (_stmts != null)
+		{
 #if NO_CONCURRENTDICTIONARY
 		lock(_stmts)
 		{
@@ -292,18 +316,32 @@ namespace SQLitePCL
 #else
             _stmts[stmt.ptr] = stmt;
 #endif
+		}
         }
 
         internal sqlite3_stmt find_stmt(IntPtr p)
         {
-		lock(_stmts)
+		if (_stmts != null)
 		{
+#if NO_CONCURRENTDICTIONARY
+			lock(_stmts)
+			{
+			    return _stmts[p];
+			}
+#else
 		    return _stmts[p];
+#endif
+		}
+		else
+		{
+			throw new Exception("The sqlite3_next_stmt() function is disabled by default for performance reasons.  To enable it, call sqlite3.enable_sqlite3_next_stmt() immediately after opening the sqlite3 connection.");
 		}
         }
 
         internal void remove_stmt(sqlite3_stmt s)
         {
+		if (_stmts != null)
+		{
 #if NO_CONCURRENTDICTIONARY
 		lock(_stmts)
 		{
@@ -313,6 +351,7 @@ namespace SQLitePCL
 		sqlite3_stmt stmt;
             _stmts.TryRemove(s.ptr, out stmt);
 #endif
+		}
         }
     }
 
