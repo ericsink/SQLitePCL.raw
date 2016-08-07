@@ -284,18 +284,31 @@ namespace SQLitePCL
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
+#if NO_CONCURRENTDICTIONARY
+		lock(_stmts)
+		{
+		    _stmts[stmt.ptr] = stmt;
+		}
+#else
             _stmts[stmt.ptr] = stmt;
+#endif
         }
 
         internal sqlite3_stmt find_stmt(IntPtr p)
         {
-            return _stmts[p];
+		lock(_stmts)
+		{
+		    return _stmts[p];
+		}
         }
 
         internal void remove_stmt(sqlite3_stmt s)
         {
 #if NO_CONCURRENTDICTIONARY
-            _stmts.Remove(s.ptr);
+		lock(_stmts)
+		{
+		    _stmts.Remove(s.ptr);
+		}
 #else
 		sqlite3_stmt stmt;
             _stmts.TryRemove(s.ptr, out stmt);

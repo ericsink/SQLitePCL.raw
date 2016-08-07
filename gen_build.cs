@@ -1325,6 +1325,7 @@ public static class gen
 				default:
 					throw new Exception();
 			}
+			// TODO why would we need to define NO_CONCURRENTDICTIONARY for the bait?
 			defines.Add("NO_CONCURRENTDICTIONARY");
 			f.WriteElementString("TargetFrameworkProfile", env);
 		}
@@ -3077,7 +3078,7 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private const string NUSPEC_VERSION = "0.9.3-pre2";
+	private const string NUSPEC_VERSION = "0.9.4-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
