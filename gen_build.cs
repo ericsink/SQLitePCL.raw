@@ -4522,26 +4522,6 @@ public static class gen
 		{
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
-#if not
-			tw.WriteLine("../../refgen generate-single -m UAP,Version=v10.0 -t uap10.0 -n ./SQLitePCL.raw.nuspec -p ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj -f ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
-			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.0/netstandard1.0.csproj -f ./release/bin/pcl/netstandard1.0/SQLitePCL.raw.dll");
-			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.1 -t netstandard1.1 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.1/netstandard1.1.csproj -f ./release/bin/pcl/netstandard1.1/SQLitePCL.raw.dll");
-			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.ugly.nuspec  -p ./ugly_netstandard1.0/ugly_netstandard1.0.csproj -f ./release/bin/ugly/netstandard1.0/SQLitePCL.ugly.dll");
-			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.bundle_green.nuspec  -p ./batteries_green_netstandard1.0/batteries_green_netstandard1.0.csproj -f ./release/bin/batteries_green/netstandard1.0/SQLitePCL.batteries.dll");
-			foreach (config_plugin cfg in projects.items_plugin)
-			{
-				switch (cfg.env)
-				{
-					case "uap10.0":
-						string id = cfg.get_id();
-						var a = new List<string>();
-						cfg.get_products(a);
-						// TODO assert a.count is 1
-						tw.WriteLine("../../refgen generate-single -m UAP,Version=v10.0 -t {0} -n ./{1}.nuspec -p {2} -f ./release/bin/{3}", cfg.env, cfg.get_id(), cfg.get_project_path(top), a[0]);
-						break;
-				}
-			}
-#endif
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
@@ -4549,7 +4529,6 @@ public static class gen
 			//tw.WriteLine("echo \"Run apple/libs/mac/cp_mac.ps1\"");
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			//tw.WriteLine("../../nuget pack SQLitePCL.raw_basic.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
 			foreach (config_plugin cfg in projects.items_plugin)
@@ -4572,7 +4551,6 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
-			//tw.WriteLine("../../nuget push SQLitePCL.raw_basic.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_plugin cfg in projects.items_plugin)

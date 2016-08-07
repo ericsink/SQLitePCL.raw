@@ -1,4 +1,7 @@
 
+need to go to nuget.org and mark some of the older 
+packages deprecated
+
 could/should plugin for android/ios be separated into
 small plugin + native nupkg, like the others?
 
