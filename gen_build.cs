@@ -3249,6 +3249,68 @@ public static class gen
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
+			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "uap10.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Collections");
+			f.WriteAttributeString("version", "4.0.11");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Collections.Concurrent");
+			f.WriteAttributeString("version", "4.0.12");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Resources.ResourceManager");
+			f.WriteAttributeString("version", "4.0.1");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Runtime");
+			f.WriteAttributeString("version", "4.1.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Runtime.InteropServices");
+			f.WriteAttributeString("version", "4.1.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Text.Encoding");
+			f.WriteAttributeString("version", "4.0.11");
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "netstandard1.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "netstandard1.1");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
@@ -3414,6 +3476,48 @@ public static class gen
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
+			switch (cfg.env)
+			{
+				case "uap10.0":
+					// --------
+					f.WriteStartElement("group");
+					f.WriteAttributeString("targetFramework", "uap10.0");
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Collections");
+					f.WriteAttributeString("version", "4.0.11");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Collections.Concurrent");
+					f.WriteAttributeString("version", "4.0.12");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Resources.ResourceManager");
+					f.WriteAttributeString("version", "4.0.1");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Runtime");
+					f.WriteAttributeString("version", "4.1.0");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Runtime.InteropServices");
+					f.WriteAttributeString("version", "4.1.0");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Text.Encoding");
+					f.WriteAttributeString("version", "4.0.11");
+					f.WriteEndElement(); // dependency
+
+					f.WriteEndElement(); // group
+
+					break;
+			}
+
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
@@ -3555,10 +3659,33 @@ public static class gen
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "netstandard1.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
+			f.WriteEndElement(); // dependency
+
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
 			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
@@ -3726,6 +3853,22 @@ public static class gen
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_xp");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "netstandard1.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
@@ -4375,6 +4518,7 @@ public static class gen
 		{
 			tw.WriteLine("../../nuget restore sqlitepcl.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
+#if not
 			tw.WriteLine("../../refgen generate-single -m UAP,Version=v10.0 -t uap10.0 -n ./SQLitePCL.raw.nuspec -p ./platform.uap10.0.pinvoke.anycpu/platform.uap10.0.pinvoke.anycpu.csproj -f ./release/bin/pcl/uap10.0/pinvoke/anycpu/SQLitePCL.raw.dll");
 			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.0 -t netstandard1.0 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.0/netstandard1.0.csproj -f ./release/bin/pcl/netstandard1.0/SQLitePCL.raw.dll");
 			tw.WriteLine("../../refgen generate-single -m .NETStandard,Version=v1.1 -t netstandard1.1 -n ./SQLitePCL.raw.nuspec  -p ./netstandard1.1/netstandard1.1.csproj -f ./release/bin/pcl/netstandard1.1/SQLitePCL.raw.dll");
@@ -4393,6 +4537,7 @@ public static class gen
 						break;
 				}
 			}
+#endif
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
