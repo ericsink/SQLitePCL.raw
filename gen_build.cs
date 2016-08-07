@@ -3476,6 +3476,8 @@ public static class gen
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
+			f.WriteStartElement("dependencies");
+
 			switch (cfg.env)
 			{
 				case "uap10.0":
@@ -3517,6 +3519,8 @@ public static class gen
 
 					break;
 			}
+
+			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
 
