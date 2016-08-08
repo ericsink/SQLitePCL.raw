@@ -3255,32 +3255,37 @@ public static class gen
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Collections");
-			f.WriteAttributeString("version", "4.0.11");
+			f.WriteAttributeString("version", "4.0.10");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Collections.Concurrent");
-			f.WriteAttributeString("version", "4.0.12");
+			f.WriteAttributeString("version", "4.0.10");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Resources.ResourceManager");
-			f.WriteAttributeString("version", "4.0.1");
+			f.WriteAttributeString("version", "4.0.0");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Runtime");
-			f.WriteAttributeString("version", "4.1.0");
+			f.WriteAttributeString("version", "4.0.20");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Runtime.InteropServices");
-			f.WriteAttributeString("version", "4.1.0");
+			f.WriteAttributeString("version", "4.0.20");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "System.Text.Encoding");
-			f.WriteAttributeString("version", "4.0.11");
+			f.WriteAttributeString("version", "4.0.10");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "System.Threading");
+			f.WriteAttributeString("version", "4.0.10");
 			f.WriteEndElement(); // dependency
 
 			f.WriteEndElement(); // group
@@ -3485,32 +3490,37 @@ public static class gen
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Collections");
-					f.WriteAttributeString("version", "4.0.11");
+					f.WriteAttributeString("version", "4.0.10");
 					f.WriteEndElement(); // dependency
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Collections.Concurrent");
-					f.WriteAttributeString("version", "4.0.12");
+					f.WriteAttributeString("version", "4.0.10");
 					f.WriteEndElement(); // dependency
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Resources.ResourceManager");
-					f.WriteAttributeString("version", "4.0.1");
+					f.WriteAttributeString("version", "4.0.0");
 					f.WriteEndElement(); // dependency
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Runtime");
-					f.WriteAttributeString("version", "4.1.0");
+					f.WriteAttributeString("version", "4.0.20");
 					f.WriteEndElement(); // dependency
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Runtime.InteropServices");
-					f.WriteAttributeString("version", "4.1.0");
+					f.WriteAttributeString("version", "4.0.20");
 					f.WriteEndElement(); // dependency
 
 					f.WriteStartElement("dependency");
 					f.WriteAttributeString("id", "System.Text.Encoding");
-					f.WriteAttributeString("version", "4.0.11");
+					f.WriteAttributeString("version", "4.0.10");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Threading");
+					f.WriteAttributeString("version", "4.0.10");
 					f.WriteEndElement(); // dependency
 
 					f.WriteEndElement(); // group
