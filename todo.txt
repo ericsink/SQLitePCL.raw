@@ -1,4 +1,9 @@
 
+uap messed up.  0.9.3 fine.  install 0.9.4-pre and
+it uninstalls a bunch of stuff and package downgrades
+and etc.  generated deps from refgen are identical.
+only difference is presence of netstandard stuff?
+
 need to go to nuget.org and mark some of the older 
 packages deprecated
 

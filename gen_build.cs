@@ -1180,8 +1180,6 @@ public static class gen
 			tw.WriteLine("{");
 			tw.WriteLine("    \"dependencies\" : {");
 			tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\",");
-			tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"1.4.2\",");
-			//tw.WriteLine("         \"NuSpec.ReferenceGenerator\": \"2.0.0-beta-bld14\",");
 			tw.WriteLine("    },");
 			tw.WriteLine("    \"frameworks\" : {");
 			tw.WriteLine("         \"uap10.0\": {}");
@@ -1204,7 +1202,6 @@ public static class gen
 		{
 			tw.WriteLine("{");
 			tw.WriteLine("    \"dependencies\" : {");
-			tw.WriteLine("         \"Microsoft.NETCore.Portable.Compatibility\": \"1.0.1\",");
 			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
 			tw.WriteLine("    },");
 			tw.WriteLine("    \"frameworks\" : {");
@@ -1220,7 +1217,6 @@ public static class gen
 		{
 			tw.WriteLine("{");
 			tw.WriteLine("    \"dependencies\" : {");
-			tw.WriteLine("         \"Microsoft.NETCore.Portable.Compatibility\": \"1.0.1\",");
 			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
 			tw.WriteLine("    },");
 			tw.WriteLine("    \"frameworks\" : {");
@@ -2238,12 +2234,6 @@ public static class gen
 			f.WriteEndElement(); // ProjectReference
 			f.WriteEndElement(); // ItemGroup
 
-			f.WriteStartElement("ItemGroup");
-			f.WriteStartElement("NuSpecFile");
-			f.WriteAttributeString("Include", string.Format("../{0}.nuspec", cfg.get_id()));
-			f.WriteEndElement(); // NuSpecFile
-			f.WriteEndElement(); // ItemGroup
-
 			switch (cfg.env)
 			{
 				case "ios_unified":
@@ -3259,7 +3249,6 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-#if not
 			// --------
 			f.WriteStartElement("group");
 			f.WriteAttributeString("targetFramework", "uap10.0");
@@ -3295,7 +3284,6 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteEndElement(); // group
-#endif
 
 			// --------
 			f.WriteStartElement("group");
@@ -3491,7 +3479,6 @@ public static class gen
 			switch (cfg.env)
 			{
 				case "uap10.0":
-#if not
 					// --------
 					f.WriteStartElement("group");
 					f.WriteAttributeString("targetFramework", "uap10.0");
@@ -3528,7 +3515,6 @@ public static class gen
 
 					f.WriteEndElement(); // group
 
-#endif
 					break;
 			}
 
