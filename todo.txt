@@ -1,8 +1,42 @@
 
-uap messed up.  0.9.3 fine.  install 0.9.4-pre and
-it uninstalls a bunch of stuff and package downgrades
-and etc.  generated deps from refgen are identical.
-only difference is presence of netstandard stuff?
+hey, why not just have every project write to the bin directory
+in its own subdir?  now that every project has its own subdir,
+wouldn't this be simpler?
+
+chg bait error message to explain the need to call SetProvider
+
+do we need a copy of the main raw assembly compiled specifically
+for every tfm?  like android?  or is it sufficient to have
+it compiled for each set of compile options, and each platform
+use the one that is compatible with it.
+
+want to create a plugin for wp80.
+
+a plugin is just the main csproj without the extra code,
+right?
+
+why don't we define NO_CONCURRENT for any of the plugins?
+oh, we do.  it's in the write_header_properties function.
+
+main assembly
+	net35
+	some basic pcl profile
+	netstandard1.0
+	netstandard1.1
+
+plugins
+	sqlite3
+	e_sqlite3
+	custom_sqlite3
+	sqlcipher
+	__Internal
+
+native
+	e_sqlite3
+	sqlcipher
+
+bundle
+	green
 
 need to go to nuget.org and mark some of the older 
 packages deprecated

@@ -32,6 +32,7 @@ public static class projects
 	public static List<config_plugin> items_plugin = new List<config_plugin>();
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 	public static List<config_batteries> items_batteries = new List<config_batteries>();
+	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -47,6 +48,7 @@ public static class projects
 		init_higher();
 		init_batteries();
 		init_tests();
+        init_csproj();
 	}
 
 	private static void init_sqlite3()
@@ -78,6 +80,36 @@ public static class projects
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm"});
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86"});
 	}
+
+    private static void init_csproj()
+    {
+        items_csproj.Add(config_csproj.create_raw("net35"));
+        items_csproj.Add(config_csproj.create_raw("profile136"));
+        items_csproj.Add(config_csproj.create_raw("profile259"));
+        items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
+        items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
+
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+
+        items_csproj.Add(config_csproj.create_wp80_provider("arm"));
+        items_csproj.Add(config_csproj.create_wp80_provider("x86"));
+
+        items_csproj.Add(config_csproj.create_ugly("net35"));
+        items_csproj.Add(config_csproj.create_ugly("profile136"));
+        items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
+        items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
+        // TODO ios
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3")); // TODO?
+        // TODO profile259?
+        // TODO wp80
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", "sqlite3"));
+    }
 
 	private static void init_pcl_bait()
 	{
@@ -306,6 +338,30 @@ public static class projects
 		}
 		throw new Exception(env);
 	}
+
+	public static config_csproj find_main(string env)
+	{
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			if (cfg.name.StartsWith("raw") && cfg.env == env)
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(env);
+	}
+
+    public static config_csproj find_provider(string what, string env)
+    {
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			if ((cfg.env == env) && (cfg.what == what))
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(string.Format("provider not found for {0}/{1}", what, env));
+    }
 
 	public static config_higher find_ugly(string env)
 	{
@@ -817,6 +873,210 @@ public class config_cs
 					
 }
 
+public class config_csproj : config_info
+{
+    public string area;
+    public string what;
+    public string name;
+	public string guid;
+	public string assemblyname;
+	public string env;
+	public string cpu = "anycpu";
+	public List<string> csfiles_src = new List<string>();
+	public List<string> csfiles_bld = new List<string>();
+	public List<string> defines = new List<string>();
+    public string ref_main;
+    public string ref_provider;
+    public bool ref_cppinterop = false;
+    // TODO embedded resources
+
+    public static config_csproj create_raw(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "raw";
+        cfg.name = string.Format("raw.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.raw");
+        cfg.env = env;
+
+        cfg.csfiles_src.Add("AssemblyInfo.cs");
+        cfg.csfiles_src.Add("raw.cs");
+        cfg.csfiles_src.Add("intptrs.cs");
+        cfg.csfiles_src.Add("isqlite3.cs");
+        cfg.csfiles_src.Add("sqlite3_bait.cs");
+
+        cfg.defines.Add("USE_PROVIDER_BAIT");
+        return cfg;
+    }
+
+    // TODO 'what' should be the name used in DllImport
+    public static config_csproj create_provider(string what, string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "provider";
+        cfg.what = what;
+        cfg.name = string.Format("provider.{0}.{1}", what, env);
+        cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}", what, env);
+        cfg.env = env;
+        cfg.csfiles_src.Add("util.cs");
+        cfg.ref_main = env;
+        switch (cfg.env)
+        {
+            case "net35":
+            case "net40":
+            case "net45":
+                cfg.defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
+                break;
+        }
+        switch (cfg.env)
+        {
+            case "ios_classic":
+            case "ios_unified":
+                switch (what)
+                {
+                    case "sqlite3":
+                        // no define needed
+                        break;
+                    case "custom_sqlite3":
+                        cfg.defines.Add("IOS_PACKAGED_CUSTOM_SQLITE3");
+                        break;
+                    case "e_sqlite3":
+                        cfg.defines.Add("IOS_PACKAGED_E_SQLITE3");
+                        break;
+                    case "sqlcipher":
+                        cfg.defines.Add("IOS_PACKAGED_SQLCIPHER");
+                        break;
+                    default:
+                        throw new Exception(what);
+                }
+                break;
+        }
+        switch (cfg.env)
+        {
+            case "ios_unified":
+            case "ios_classic":
+                cfg.csfiles_src.Add("imp_ios_internal.cs");
+                cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
+                break;
+            default:
+                switch (what)
+                {
+                    case "sqlite3":
+                        cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
+                        break;
+                    case "custom_sqlite3":
+                        cfg.csfiles_bld.Add("pinvoke_custom_sqlite3.cs");
+                        break;
+                    case "e_sqlite3":
+                        cfg.csfiles_bld.Add("pinvoke_e_sqlite3.cs");
+                        break;
+                    case "sqlcipher":
+                        cfg.csfiles_bld.Add("pinvoke_sqlcipher.cs");
+                        break;
+                    default:
+                        throw new Exception(what);
+                }
+                break;
+        }
+
+        return cfg;
+    }
+
+    public static config_csproj create_wp80_provider(string cpu)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "provider";
+        cfg.cpu = cpu;
+        cfg.env = "wp80";
+        string what = "sqlite3"; // TODO ?
+        cfg.name = string.Format("provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
+        cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
+        cfg.csfiles_src.Add("util.cs");
+        cfg.csfiles_src.Add("sqlite3_cppinterop.cs");
+        cfg.ref_main = "profile136";
+        cfg.ref_cppinterop = true;
+        return cfg;
+    }
+
+    public static config_csproj create_ugly(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "ugly";
+        cfg.name = string.Format("newugly.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.ugly");
+        cfg.env = env;
+        cfg.csfiles_src.Add("ugly.cs");
+        cfg.ref_main = env;
+        return cfg;
+    }
+
+    public static config_csproj create_batteries(string area, string env, string what)
+    {
+        var cfg = new config_csproj();
+        cfg.area = area;
+        cfg.name = string.Format("new{0}.{1}.{2}", area, what, env);
+        cfg.assemblyname = string.Format("SQLitePCL.batteries");
+        cfg.env = env;
+        cfg.csfiles_src.Add("batteries.cs");
+        cfg.defines.Add("BATTERY_" + what);
+        cfg.ref_main = env;
+        cfg.ref_provider = what;
+        return cfg;
+    }
+
+	public bool is_portable()
+	{
+		return config_cs.env_is_portable(env);
+	}
+
+	public bool is_netstandard()
+	{
+		return config_cs.env_is_netstandard(env);
+	}
+
+    public string get_name()
+    {
+        return name;
+    }
+
+	public string get_project_filename()
+	{
+		return string.Format("{0}.csproj", name);
+	}
+	
+	public string get_dest_subpath()
+	{
+        return string.Format("{0}\\{1}\\{2}", name, env, cpu);
+	}
+
+	public string fixed_cpu()
+	{
+		if (cpu == "anycpu")
+		{
+			return "Any CPU";
+		}
+		else
+		{
+			return cpu;
+		}
+	}
+
+	public config_cppinterop get_cppinterop_item()
+	{
+		foreach (config_cppinterop cfg in projects.items_cppinterop)
+		{
+			if (
+					(cfg.env == env)
+					&& (cfg.cpu == cpu)
+			   )
+			{
+				return cfg;
+			}
+		}
+		throw new Exception(get_name());
+	}
+
+}
+
 public class config_pcl : config_info
 {
 	public string env;
@@ -1068,6 +1328,43 @@ public static class gen
 	private static void write_project_type_guids(XmlWriter f, string s1, string s2)
 	{
 		f.WriteElementString("ProjectTypeGuids", string.Format("{0};{1}", s1, s2));
+	}
+
+	private static void write_section(string top, config_csproj cfg, XmlWriter f, bool debug, List<string> defines)
+	{
+		string name = debug ? "debug" : "release";
+		f.WriteStartElement("PropertyGroup");
+		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
+
+		f.WriteElementString("OutputPath", string.Format("bin\\{0}\\{1}", cfg.cpu, name));
+		f.WriteElementString("IntermediateOutputPath", string.Format("obj\\{0}\\{1}", cfg.cpu, name));
+
+		string defs;
+		if (debug)
+		{
+			defs = "DEBUG;";
+		}
+		else
+		{
+			defs = "";
+		}
+		foreach (string d in defines)
+		{
+			defs += d;
+			defs += ";";
+		}
+		foreach (string d in cfg.defines)
+		{
+			defs += d;
+			defs += ";";
+		}
+		f.WriteElementString("DefineConstants", defs);
+
+		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
+		f.WriteElementString("Optimize", debug ? "false" : "true");
+		f.WriteElementString("DebugType", debug ? "full" : "none");
+
+		f.WriteEndElement(); // PropertyGroup
 	}
 
 	private static void write_section(string top, string dest_subpath, XmlWriter f, bool debug, List<string> defines)
@@ -1408,6 +1705,9 @@ public static class gen
 
 		switch (env)
 		{
+			case "profile136":
+				defines.Add("OLD_REFLECTION");
+				break;
 			case "ios_classic":
 				defines.Add("PLATFORM_IOS");
 				break;
@@ -1693,6 +1993,7 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
+            // TODO just leave these in the project directory
 			f.WriteElementString("OutDir", Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath())));
 			f.WriteElementString("IntDir", Path.Combine(top, string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath())));
 			f.WriteEndElement(); // PropertyGroup
@@ -2368,6 +2669,144 @@ public static class gen
 		}
 	}
 
+	private static void gen_csproj(config_csproj cfg, string root, string top)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string proj = cfg.get_project_path(top);
+		using (XmlWriter f = XmlWriter.Create(proj, settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+			write_toolsversion(f, cfg.env);
+			f.WriteAttributeString("DefaultTargets", "Build");
+
+			switch (cfg.env)
+			{
+				case "wp81_sl":
+					break;
+				default:
+					// TODO is this actually needed?
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
+					f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
+					f.WriteEndElement(); // Import
+					break;
+			}
+
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("ProjectGuid", cfg.guid);
+			write_project_type_guids_for_env(f, cfg.env);
+
+			f.WriteStartElement("Configuration");
+			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
+			f.WriteString("Debug");
+			f.WriteEndElement(); // Configuration
+
+			f.WriteElementString("SchemaVersion", "2.0");
+			f.WriteElementString("Platform", cfg.cpu.Replace(" ", ""));
+			f.WriteElementString("RootNamespace", "TODO");
+			f.WriteElementString("AssemblyName", cfg.assemblyname);
+
+			List<string> defines = write_header_properties(f, cfg.env);
+
+			f.WriteEndElement(); // PropertyGroup
+
+			write_section(top, cfg, f, true, defines);
+			write_section(top, cfg, f, false, defines);
+
+			f.WriteStartElement("ItemGroup");
+			write_standard_assemblies(f, cfg.env);
+			f.WriteEndElement(); // ItemGroup
+
+			f.WriteStartElement("ItemGroup");
+            string src = Path.Combine(root, "src\\cs");
+			foreach (string csfile in cfg.csfiles_src)
+			{
+				write_cs_compile(f, src, csfile);
+			}
+			foreach (string csfile in cfg.csfiles_bld)
+			{
+				write_cs_compile(f, top, csfile);
+			}
+			f.WriteEndElement(); // ItemGroup
+
+            if (cfg.ref_main != null)
+            {
+                f.WriteStartElement("ItemGroup");
+
+                f.WriteStartElement("ProjectReference");
+                {
+                    config_csproj other = projects.find_main(cfg.ref_main);
+                    f.WriteAttributeString("Include", other.get_project_path(top));
+                    f.WriteElementString("Project", other.guid);
+                    f.WriteElementString("Name", other.get_name());
+                    //f.WriteElementString("Private", "true");
+                }
+                f.WriteEndElement(); // ProjectReference
+
+                f.WriteEndElement(); // ItemGroup
+            }
+
+            if (cfg.ref_provider != null)
+            {
+                f.WriteStartElement("ItemGroup");
+
+                f.WriteStartElement("ProjectReference");
+                {
+                    config_csproj other = projects.find_provider(cfg.ref_provider, cfg.env);
+                    f.WriteAttributeString("Include", other.get_project_path(top));
+                    f.WriteElementString("Project", other.guid);
+                    f.WriteElementString("Name", other.get_name());
+                    //f.WriteElementString("Private", "true");
+                }
+                f.WriteEndElement(); // ProjectReference
+
+                f.WriteEndElement(); // ItemGroup
+            }
+
+			if (cfg.ref_cppinterop)
+			{
+				f.WriteStartElement("ItemGroup");
+				f.WriteStartElement("ProjectReference");
+				{
+					config_cppinterop other = cfg.get_cppinterop_item();
+					f.WriteAttributeString("Include", other.get_project_path(top));
+					f.WriteElementString("Project", other.guid);
+					f.WriteElementString("Name", other.get_name());
+					//f.WriteElementString("Private", "true");
+				}
+				f.WriteEndElement(); // ProjectReference
+				f.WriteEndElement(); // ItemGroup
+			}
+
+			write_csproj_footer(f, cfg.env);
+
+			f.WriteEndElement(); // Project
+
+			f.WriteEndDocument();
+		}
+
+		string subdir = cfg.get_project_subdir(top);
+		switch (cfg.env)
+		{
+			case "uap10.0":
+				write_project_dot_json_uap(subdir);
+				break;
+			case "netstandard1.0":
+				write_project_dot_json_netstandard10(subdir);
+				break;
+			case "netstandard1.1":
+				write_project_dot_json_netstandard11(subdir);
+				break;
+		}
+	}
+
 	private static void gen_pcl(config_pcl cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2687,6 +3126,7 @@ public static class gen
 			f.WriteElementString("AssemblyName", cfg.assemblyname);
 
 			List<string> defines = write_header_properties(f, cfg.env);
+            // TODO defines is unused
 
 			f.WriteEndElement(); // PropertyGroup
 
@@ -2922,6 +3362,18 @@ public static class gen
 				f.WriteLine("EndProject");
 			}
 
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
+                // TODO project dependency
+				f.WriteLine("EndProject");
+			}
+
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
@@ -2948,6 +3400,7 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
+                // TODO project dependency
 				f.WriteLine("EndProject");
 			}
 
@@ -3018,6 +3471,13 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
+			}
 			foreach (config_pcl cfg in projects.items_pcl)
 			{
 				if (cfg.env == "unified_mac") continue;
@@ -3062,6 +3522,8 @@ public static class gen
 			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
 			f.WriteLine("\t\tHideSolutionNode = FALSE");
 			f.WriteLine("\tEndGlobalSection");
+
+            // TODO put csproj stuff into folders?
 
 			f.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
@@ -4399,10 +4861,17 @@ public static class gen
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
 			tw.Write(cs2);
 		}
+        // TODO rm.  chgd name to include the underscore, e_sqlite3
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_esqlite3.cs")))
 		{
 			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "esqlite3");
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "esqlite3");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e_sqlite3.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e_sqlite3");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "e_sqlite3");
 			tw.Write(cs2);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlcipher.cs")))
@@ -4433,6 +4902,11 @@ public static class gen
 		}
 
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
+		foreach (config_csproj cfg in projects.items_csproj)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
@@ -4473,6 +4947,11 @@ public static class gen
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
 		{
 			gen_cppinterop(cfg, root, top);
+		}
+
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			gen_csproj(cfg, root, top);
 		}
 
 		foreach (config_pcl cfg in projects.items_pcl)

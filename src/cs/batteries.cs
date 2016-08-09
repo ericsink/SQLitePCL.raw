@@ -26,6 +26,10 @@ namespace SQLitePCL
 	    {
 #if BATTERY_ESQLITE3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_esqlite3());
+#elif BATTERY_sqlite3
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
+#elif BATTERY_e_sqlite3
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
 #elif BATTERY_SQLITE3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 #elif BATTERY_INTERNAL
@@ -34,9 +38,9 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
 #elif BATTERY_NONE
 		    // intentionally don't do anything here
+		    // TODO what is the use case here?
 #else
-		    // TODO bait error?
-		    //throw new Exception("batteries.cs built with nothing specified");
+#error batteries.cs built with nothing specified
 #endif
 	    }
     }
