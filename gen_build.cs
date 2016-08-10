@@ -98,7 +98,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_classic"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "android"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "android")); // bad idea
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
@@ -162,8 +162,10 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
         items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_classic", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
@@ -3850,6 +3852,115 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_provider(string top, string root, string what)
+    {
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = string.Format("SQLitePCL.provider.{0}", what);
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", id);
+			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", what);
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.native.* packages.";
+			f.WriteElementString("description", desc);
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+#if not // TODO
+			switch (cfg.env)
+			{
+				case "uap10.0":
+					// --------
+					f.WriteStartElement("group");
+					f.WriteAttributeString("targetFramework", "uap10.0");
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Collections");
+					f.WriteAttributeString("version", "4.0.10");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Collections.Concurrent");
+					f.WriteAttributeString("version", "4.0.10");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Resources.ResourceManager");
+					f.WriteAttributeString("version", "4.0.0");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Runtime");
+					f.WriteAttributeString("version", "4.0.20");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Runtime.InteropServices");
+					f.WriteAttributeString("version", "4.0.20");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Text.Encoding");
+					f.WriteAttributeString("version", "4.0.10");
+					f.WriteEndElement(); // dependency
+
+					f.WriteStartElement("dependency");
+					f.WriteAttributeString("id", "System.Threading");
+					f.WriteAttributeString("version", "4.0.10");
+					f.WriteEndElement(); // dependency
+
+					f.WriteEndElement(); // group
+
+					break;
+			}
+#endif
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+            foreach (var cfg in projects.items_csproj)
+            {
+                if (cfg.area == "provider" && cfg.what == what)
+                {
+                    write_nuspec_file_entry(
+                            cfg, 
+                            f
+                            );
+                }
+            }
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_plugin(string top, string root, config_csproj cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -4166,7 +4277,7 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.android");
+			f.WriteAttributeString("id", "SQLitePCL.provider.sqlite3.android");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4883,6 +4994,11 @@ public static class gen
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
 
+        gen_nuspec_provider(top, root, "sqlite3");
+        gen_nuspec_provider(top, root, "e_sqlite3");
+        gen_nuspec_provider(top, root, "custom_sqlite3");
+        gen_nuspec_provider(top, root, "sqlcipher");
+
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
 			gen_nuspec_plugin(top, root, cfg);
@@ -4910,6 +5026,10 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlite3.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.provider.e_sqlite3.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.provider.custom_sqlite3.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlcipher.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider")

@@ -1,4 +1,9 @@
 
+or maybe SQLitePCL.provider.e_sqlite3.nuspec should be
+a metapackage.
+
+can provider.e_sqlite3 have deps on native packages?
+
 still consider sep provider/native for ios and android.
 but native-only for ios/android would need to be an
 actual csproj+embedded, not just a nuspec+targets
@@ -19,7 +24,9 @@ where would wp80 fit in this?
 but this doesn't help.  because a given situation might
 and probably will want to vary based on platform.  for
 example, bundle_green wants "sqlite3" on ios and "e_sqlite3"
-on android.
+on android.  but it could vary those on platform deps groups.
+but what about net45?  want e_sqlite3 on windows but
+system sqlite on mac and linux.
 
 config_esqlite3 is weird because it doesn't generate a
 project, only a nuspec.
