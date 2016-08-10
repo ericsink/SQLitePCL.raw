@@ -1,4 +1,7 @@
 
+use_provider_bait should be renamed.  maybe the whole
+use_provider_* stuff should go away.
+
 or maybe SQLitePCL.provider.e_sqlite3.nuspec should be
 a metapackage.
 

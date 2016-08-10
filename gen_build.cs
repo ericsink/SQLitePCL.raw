@@ -928,6 +928,52 @@ public static class config_cs
 		return env.StartsWith("netstandard");
 	}
 
+	public static string get_full_framework_name(string env)
+	{
+		// TODO maybe I should just use the TFM names?
+		switch (env)
+		{
+			case "ios_classic":
+				return "MonoTouch,Version=v1.0";
+			case "ios_unified":
+				return "Xamarin.iOS10";
+			case "unified_mac":
+				return "Xamarin.Mac20";
+			case "android":
+				return "MonoAndroid,Version=v2.3";
+			case "net45":
+				return "net45";
+			case "net40":
+				return "net40";
+			case "net35":
+				return "net35";
+			case "wp80":
+				return "wp8";
+			case "wp81_sl":
+				return "wp81";
+			case "wpa81":
+				return "wpa81";
+			case "uap10.0":
+				return "uap10.0";
+			case "win8":
+				return ".NETCore,Version=4.5.1";
+			case "win81":
+				return ".NETCore,Version=4.5.1";
+            case "profile111":
+                return ".NETPortable,Version=v4.5,Profile=profile111";
+            case "profile136":
+                return ".NETPortable,Version=v4.0,Profile=profile136";
+            case "profile259":
+                return ".NETPortable,Version=v4.5,Profile=profile259";
+            case "netstandard1.0":
+                return "netstandard1.0";
+            case "netstandard1.1":
+                return "netstandard1.1";
+			default:
+				throw new Exception(env);
+		}
+	}
+					
 	public static string get_nuget_framework_name(string env)
 	{
 		// TODO maybe I should just use the TFM names?
@@ -978,10 +1024,11 @@ public class config_csproj : config_info
 	public List<string> csfiles_src = new List<string>();
 	public List<string> csfiles_bld = new List<string>();
 	public List<string> defines = new List<string>();
+	public List<string> runtimes = new List<string>();
+	public Dictionary<string,string> deps = new Dictionary<string,string>();
     public bool ref_raw;
     public string ref_provider;
     public bool ref_cppinterop = false;
-    // TODO embedded resources
 
     public static config_csproj create_raw(string env)
     {
@@ -1679,6 +1726,37 @@ public static class gen
 			tw.WriteLine("    \"frameworks\" : {");
 			tw.WriteLine("         \"netstandard1.1\": {}");
 			tw.WriteLine("    }");
+			tw.WriteLine("}");
+		}
+	}
+
+	private static void write_project_dot_json(string subdir, string framework, Dictionary<string,string> deps, List<string> runtimes)
+	{
+		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
+		{
+			tw.WriteLine("{");
+			tw.WriteLine("    \"dependencies\" : {");
+            foreach (var id in deps.Keys)
+            {
+                tw.WriteLine(string.Format("         \"{0}\": \"{1}\"", id, deps[id]));
+            }
+			tw.WriteLine("    },");
+			tw.WriteLine("    \"frameworks\" : {");
+			tw.WriteLine(string.Format("         \"{0}\": {{}}", framework));
+			tw.WriteLine("    },");
+            if (runtimes != null && runtimes.Count > 0)
+            {
+                tw.WriteLine("    \"runtimes\" : {");
+                foreach (var r in runtimes)
+                {
+                    tw.WriteLine(string.Format("         \"{0}\": {{}},", r));
+                }
+                tw.WriteLine("    }");
+            }
+            else
+            {
+                tw.WriteLine("    \"supports\" : {}");
+            }
 			tw.WriteLine("}");
 		}
 	}
@@ -3047,6 +3125,30 @@ public static class gen
 		}
 
 		string subdir = cfg.get_project_subdir(top);
+#if true
+        switch (cfg.env)
+        {
+            case "net35":
+            case "net40":
+            case "net45":
+                cfg.runtimes.Add("win");
+                break;
+			case "uap10.0":
+                cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.0.0";
+                cfg.runtimes.Add("win10-arm");
+                cfg.runtimes.Add("win10-x86");
+                cfg.runtimes.Add("win10-x64");
+				break;
+			case "netstandard1.0":
+                cfg.deps["NETStandard.Library"] = "1.6.0";
+				break;
+			case "netstandard1.1":
+                cfg.deps["NETStandard.Library"] = "1.6.0";
+				break;
+        }
+
+        write_project_dot_json(subdir, config_cs.get_full_framework_name(cfg.env), cfg.deps, cfg.runtimes);
+#else
 		switch (cfg.env)
 		{
 			case "uap10.0":
@@ -3059,6 +3161,7 @@ public static class gen
 				write_project_dot_json_netstandard11(subdir);
 				break;
 		}
+#endif
 	}
 
 #if not
