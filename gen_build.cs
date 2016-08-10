@@ -86,37 +86,73 @@ public static class projects
     private static void init_csproj()
     {
         items_csproj.Add(config_csproj.create_raw("net35"));
+        items_csproj.Add(config_csproj.create_raw("profile111"));
         items_csproj.Add(config_csproj.create_raw("profile136"));
         items_csproj.Add(config_csproj.create_raw("profile259"));
         items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
         items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
-        //items_csproj.Add(config_csproj.create_provider("sqlite3", "profile259"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "android"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "uap10.0"));
 
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
-        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "profile111"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net40"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "android"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win8"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win81"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "wpa81"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "uap10.0"));
+        // ios would only make sense here with dylibs
+        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
+        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
-        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "profile259"));
+        items_csproj.Add(config_csproj.create_provider("internal", "ios_unified"));
+        items_csproj.Add(config_csproj.create_provider("internal", "ios_classic"));
+
+        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "android"));
+        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_unified"));
+        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_classic"));
+
+        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
+        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
+        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_classic"));
+
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net40"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "android"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win8"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win81"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "wpa81"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "uap10.0"));
+        // ios would only make sense here with dylibs
+        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
+        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
-        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "profile259"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net45"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "android"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "win8"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "win81"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "wpa81"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "uap10.0"));
+        // ios would only make sense here with dylibs
+        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
+        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_wp80_provider("arm"));
         items_csproj.Add(config_csproj.create_wp80_provider("x86"));
@@ -138,36 +174,12 @@ public static class projects
     }
 
 #if not
-	private static void init_pcl_bait()
-	{
-		items_pcl.Add(new config_pcl { env="profile78", cpu="anycpu" });
-		items_pcl.Add(new config_pcl { env="profile259", cpu="anycpu" });
-		items_pcl.Add(new config_pcl { env="profile158", cpu="anycpu" });
-		items_pcl.Add(new config_pcl { env="profile136", cpu="anycpu" });
-		items_pcl.Add(new config_pcl { env="profile111", cpu="anycpu" });
-
-		items_pcl.Add(new config_pcl { env="netstandard1.0", cpu="anycpu" });
-		items_pcl.Add(new config_pcl { env="netstandard1.1", cpu="anycpu" });
-	}
-
 	private static void init_tests()
 	{
 		// TODO it is not confirmed that any other environments will work here.
 		// for now that's fine.
 
 		items_tests.Add(new config_tests { env="win8", pcl="profile78" });
-	}
-
-	private static void init_higher()
-	{
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile78", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile111", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile259", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile158", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="profile136", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="net35", csfiles=new List<string>() {"src\\cs\\ugly.cs"}, defines=new List<string>() {"OLD_REFLECTION"} });
-
-		items_higher.Add(new config_higher { name="ugly", assemblyname="SQLitePCL.ugly", env="netstandard1.0", csfiles=new List<string>() {"src\\cs\\ugly.cs"} });
 	}
 
 	private static void init_batteries()
@@ -400,7 +412,21 @@ public static class projects
         {
             // TODO need to find a raw that is compatible with env
             // TODO this should be smarter
-            cfg = find("raw", "netstandard1.1");
+            switch (env)
+            {
+                case "net40":
+                    cfg = find("raw", "profile136");
+                    break;
+                case "net45":
+                    cfg = find("raw", "profile111");
+                    break;
+                case "win81":
+                    cfg = find("raw", "profile111");
+                    break;
+                default:
+                    cfg = find("raw", "netstandard1.1");
+                    break;
+            }
         }
         if (cfg != null)
         {
@@ -973,6 +999,56 @@ public class config_csproj : config_info
         return cfg;
     }
 
+    public static config_csproj create_embedded(string what, string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "embedded";
+        cfg.what = what;
+        cfg.name = string.Format("embedded.{0}.{1}", what, env);
+        cfg.assemblyname = string.Format("SQLitePCL.embedded.{0}.{1}", what, env);
+        cfg.env = env;
+        switch (cfg.env)
+        {
+            case "ios_classic":
+            case "ios_unified":
+                switch (what)
+                {
+                    case "custom_sqlite3":
+                        cfg.defines.Add("IOS_PACKAGED_CUSTOM_SQLITE3");
+                        break;
+                    case "e_sqlite3":
+                        cfg.defines.Add("IOS_PACKAGED_E_SQLITE3");
+                        break;
+                    case "sqlcipher":
+                        cfg.defines.Add("IOS_PACKAGED_SQLCIPHER");
+                        break;
+                    default:
+                        throw new Exception(what);
+                }
+                break;
+        }
+        switch (cfg.env)
+        {
+            case "ios_unified":
+            case "ios_classic":
+                switch (what)
+                {
+                    case "custom_sqlite3":
+                    case "e_sqlite3":
+                    case "sqlcipher":
+                        cfg.csfiles_src.Add("imp_ios_internal.cs");
+                        break;
+                    default:
+                        throw new Exception(what);
+                }
+                break;
+            default:
+                break;
+        }
+
+        return cfg;
+    }
+
     // TODO 'what' should be the name used in DllImport
     public static config_csproj create_provider(string what, string env)
     {
@@ -994,29 +1070,6 @@ public class config_csproj : config_info
         }
         switch (cfg.env)
         {
-            case "ios_classic":
-            case "ios_unified":
-                switch (what)
-                {
-                    case "sqlite3":
-                        // no define needed
-                        break;
-                    case "custom_sqlite3":
-                        cfg.defines.Add("IOS_PACKAGED_CUSTOM_SQLITE3");
-                        break;
-                    case "e_sqlite3":
-                        cfg.defines.Add("IOS_PACKAGED_E_SQLITE3");
-                        break;
-                    case "sqlcipher":
-                        cfg.defines.Add("IOS_PACKAGED_SQLCIPHER");
-                        break;
-                    default:
-                        throw new Exception(what);
-                }
-                break;
-        }
-        switch (cfg.env)
-        {
             case "ios_unified":
             case "ios_classic":
                 switch (what)
@@ -1024,10 +1077,7 @@ public class config_csproj : config_info
                     case "sqlite3":
                         cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
                         break;
-                    case "custom_sqlite3":
-                    case "e_sqlite3":
-                    case "sqlcipher":
-                        cfg.csfiles_src.Add("imp_ios_internal.cs");
+                    case "internal":
                         cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
                         break;
                     default:
@@ -2897,7 +2947,7 @@ public static class gen
 				f.WriteEndElement(); // ItemGroup
 			}
 
-            if (cfg.area == "provider")
+            if (cfg.area == "embedded")
             {
 			switch (cfg.env)
 			{
@@ -2924,14 +2974,6 @@ public static class gen
 
                             f.WriteEndElement(); // ItemGroup
                         }
-			else if (cfg.what == "sqlite3")
-			{
-				// nothing in resources needed
-			}
-			else if (cfg.what == "custom_sqlite3")
-			{
-				// resource must be provided later
-			}
 			else
 			{
 				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
@@ -2967,14 +3009,6 @@ public static class gen
 
                             f.WriteEndElement(); // ItemGroup
                         }
-			else if (cfg.what == "sqlite3")
-			{
-				// nothing in resources needed
-			}
-			else if (cfg.what == "custom_sqlite3")
-			{
-				// resource must be provided later
-			}
 			else
 			{
 				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
@@ -2994,15 +3028,6 @@ public static class gen
                             write_android_native_libs_sqlcipher(root, f);
                             f.WriteEndElement(); // ItemGroup
                         }
-			else if (cfg.what == "sqlite3")
-			{
-				// nothing in resources needed
-				// TODO this should be disallowed as of Android N, right?
-			}
-			else if (cfg.what == "custom_sqlite3")
-			{
-				// dll must be provided later
-			}
 			else
 			{
 				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));

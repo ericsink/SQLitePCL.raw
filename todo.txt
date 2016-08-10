@@ -1,4 +1,10 @@
 
+still consider sep provider/native for ios and android.
+but native-only for ios/android would need to be an
+actual csproj+embedded, not just a nuspec+targets
+
+fix all the native libs to have e_ underscore
+
 the two wp80 providers should go in one package
 
 can multiple providers be bunched into one npkg?  why not
