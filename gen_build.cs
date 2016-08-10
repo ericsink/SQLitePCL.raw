@@ -173,6 +173,8 @@ public static class projects
         // TODO profile259?
         // TODO wp80
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", "sqlite3"));
+
+        items_csproj.Add(config_csproj.create_test("net45"));
     }
 
 #if not
@@ -1027,6 +1029,7 @@ public class config_csproj : config_info
 	public List<string> runtimes = new List<string>();
 	public Dictionary<string,string> deps = new Dictionary<string,string>();
     public bool ref_raw;
+    public bool ref_ugly;
     public string ref_provider;
     public bool ref_cppinterop = false;
 
@@ -1182,6 +1185,24 @@ public class config_csproj : config_info
         cfg.env = env;
         cfg.csfiles_src.Add("ugly.cs");
         cfg.ref_raw = true;
+        return cfg;
+    }
+
+    public static config_csproj create_test(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("test.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.test");
+        cfg.env = env;
+        cfg.csfiles_src.Add("test_cases.cs");
+        cfg.ref_raw = true;
+        cfg.ref_ugly = true;
+        //cfg.deps["xUnit.net"] = "2.1.0";
+        cfg.deps["NUnit"] = "3.4.1";
+        // TODO need dep on provider
+        // TODO need dep on native
+        cfg.defines.Add("USE_NUNIT");
         return cfg;
     }
 
@@ -2985,6 +3006,23 @@ public static class gen
                 f.WriteStartElement("ProjectReference");
                 {
                     config_csproj other = projects.find_raw(cfg.env);
+                    f.WriteAttributeString("Include", other.get_project_path(top));
+                    f.WriteElementString("Project", other.guid);
+                    f.WriteElementString("Name", other.get_name());
+                    //f.WriteElementString("Private", "true");
+                }
+                f.WriteEndElement(); // ProjectReference
+
+                f.WriteEndElement(); // ItemGroup
+            }
+
+            if (cfg.ref_ugly)
+            {
+                f.WriteStartElement("ItemGroup");
+
+                f.WriteStartElement("ProjectReference");
+                {
+                    config_csproj other = projects.find_ugly(cfg.env);
                     f.WriteAttributeString("Include", other.get_project_path(top));
                     f.WriteElementString("Project", other.guid);
                     f.WriteElementString("Name", other.get_name());
