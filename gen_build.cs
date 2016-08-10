@@ -26,13 +26,14 @@ public static class projects
 	//
 	public static List<config_sqlite3> items_sqlite3 = new List<config_sqlite3>();
 	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
-	public static List<config_pcl> items_pcl = new List<config_pcl>();
-	public static List<config_higher> items_higher = new List<config_higher>();
-	public static List<config_tests> items_tests = new List<config_tests>();
-	public static List<config_plugin> items_plugin = new List<config_plugin>();
-	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
-	public static List<config_batteries> items_batteries = new List<config_batteries>();
+	//public static List<config_pcl> items_pcl = new List<config_pcl>();
+	//public static List<config_higher> items_higher = new List<config_higher>();
+	//public static List<config_tests> items_tests = new List<config_tests>();
+	//public static List<config_plugin> items_plugin = new List<config_plugin>();
+	//public static List<config_batteries> items_batteries = new List<config_batteries>();
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
+
+	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -40,15 +41,16 @@ public static class projects
 	{
 		init_sqlite3();
 		init_cppinterop();
-		init_pcl_bait();
-		init_pcl_pinvoke();
-		init_plugin();
-		init_esqlite3();
-		init_pcl_cppinterop();
-		init_higher();
-		init_batteries();
-		init_tests();
+		//init_pcl_bait();
+		//init_pcl_pinvoke();
+		//init_plugin();
+		//init_pcl_cppinterop();
+		//init_higher();
+		//init_batteries();
+		//init_tests();
         init_csproj();
+
+		init_esqlite3();
 	}
 
 	private static void init_sqlite3()
@@ -89,8 +91,32 @@ public static class projects
         items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
         items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
 
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
+        //items_csproj.Add(config_csproj.create_provider("sqlite3", "profile259"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_classic"));
+
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
+        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "profile111"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "android"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_classic"));
+
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
+        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "profile259"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "android"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
+
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
+        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "profile259"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "android"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_wp80_provider("arm"));
         items_csproj.Add(config_csproj.create_wp80_provider("x86"));
@@ -101,7 +127,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
-        // TODO ios
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
@@ -111,6 +137,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", "sqlite3"));
     }
 
+#if not
 	private static void init_pcl_bait()
 	{
 		items_pcl.Add(new config_pcl { env="profile78", cpu="anycpu" });
@@ -163,16 +190,6 @@ public static class projects
 	{
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="arm"});
 		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="x86"});
-	}
-
-	private static void init_esqlite3()
-	{
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110_wp80" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
 	}
 
 	private static void init_plugin()
@@ -237,6 +254,17 @@ public static class projects
 		items_pcl.Add(new config_pcl { env="win81", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke"});
 		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke"});
+	}
+#endif
+
+	private static void init_esqlite3()
+	{
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v110_wp80" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
+		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
 	}
 
     public static string cs_env_to_toolset(string env)
@@ -315,6 +343,7 @@ public static class projects
 		return result;
 	}
 
+#if not
 	public static config_plugin find_battery_plugin(string env)
 	{
 		foreach (config_plugin cfg in projects.items_plugin)
@@ -338,46 +367,81 @@ public static class projects
 		}
 		throw new Exception(env);
 	}
+#endif
 
-	public static config_csproj find_main(string env)
-	{
+	public static config_csproj find(string area, string env)
+    {
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
-			if (cfg.name.StartsWith("raw") && cfg.env == env)
+			if (cfg.area == area && cfg.env == env)
 			{
 				return cfg;
 			}
 		}
-		throw new Exception(env);
+        return null;
+    }
+
+	public static config_csproj find(string area, string what, string env)
+    {
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			if (cfg.area == area && cfg.what == what && cfg.env == env)
+			{
+				return cfg;
+			}
+		}
+        return null;
+    }
+
+	public static config_csproj find_raw(string env)
+	{
+        config_csproj cfg = find("raw", env);
+        if (cfg == null)
+        {
+            // TODO need to find a raw that is compatible with env
+            // TODO this should be smarter
+            cfg = find("raw", "netstandard1.1");
+        }
+        if (cfg != null)
+        {
+            return cfg;
+        }
+		throw new Exception(string.Format("raw not found for {0}", env));
 	}
 
     public static config_csproj find_provider(string what, string env)
     {
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			if ((cfg.env == env) && (cfg.what == what))
-			{
-				return cfg;
-			}
-		}
+        config_csproj cfg = find("provider", what, env);
+        if (cfg == null)
+        {
+            // TODO need to find a provider that is compatible with env
+            // TODO this should be smarter
+            cfg = find("provider", what, "netstandard1.1");
+        }
+        if (cfg != null)
+        {
+            return cfg;
+        }
 		throw new Exception(string.Format("provider not found for {0}/{1}", what, env));
     }
 
-	public static config_higher find_ugly(string env)
+	public static config_csproj find_ugly(string env)
 	{
-		foreach (config_higher cfg in projects.items_higher)
-		{
-			if (
-					(cfg.name == "ugly")
-					&& (cfg.env == env)
-			   )
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(env);
+        config_csproj cfg = find("ugly", env);
+        if (cfg == null)
+        {
+            // TODO need to find one that is compatible with env
+            // TODO this should be smarter
+            cfg = find("ugly", "netstandard1.1");
+        }
+        if (cfg != null)
+        {
+            return cfg;
+        }
+		throw new Exception(string.Format("ugly not found for {0}", env));
 	}
 
+#if not
 	public static List<config_pcl> find_pcls(string env, string api, string cpu)
 	{
 		List<config_pcl> a = new List<config_pcl>();
@@ -411,6 +475,7 @@ public static class projects
 		}
 		return a;
 	}
+#endif
 
 }
 
@@ -447,7 +512,7 @@ public class config_sqlite3 : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public void get_products(List<string> a)
@@ -512,7 +577,7 @@ public class config_cppinterop : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public void get_products(List<string> a)
@@ -598,7 +663,7 @@ public class config_higher : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public bool is_portable()
@@ -659,7 +724,7 @@ public class config_batteries : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public bool is_portable()
@@ -732,7 +797,7 @@ public class config_plugin : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public void get_products(List<string> a)
@@ -786,7 +851,7 @@ public class config_esqlite3 : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	private const string AREA = "native";
@@ -823,7 +888,7 @@ public class config_esqlite3 : config_info
 	
 }
 
-public class config_cs
+public static class config_cs
 {
 	public static bool env_is_portable(string env)
 	{
@@ -885,7 +950,7 @@ public class config_csproj : config_info
 	public List<string> csfiles_src = new List<string>();
 	public List<string> csfiles_bld = new List<string>();
 	public List<string> defines = new List<string>();
-    public string ref_main;
+    public bool ref_raw;
     public string ref_provider;
     public bool ref_cppinterop = false;
     // TODO embedded resources
@@ -918,7 +983,7 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}", what, env);
         cfg.env = env;
         cfg.csfiles_src.Add("util.cs");
-        cfg.ref_main = env;
+        cfg.ref_raw = true;
         switch (cfg.env)
         {
             case "net35":
@@ -954,8 +1019,20 @@ public class config_csproj : config_info
         {
             case "ios_unified":
             case "ios_classic":
-                cfg.csfiles_src.Add("imp_ios_internal.cs");
-                cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
+                switch (what)
+                {
+                    case "sqlite3":
+                        cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
+                        break;
+                    case "custom_sqlite3":
+                    case "e_sqlite3":
+                    case "sqlcipher":
+                        cfg.csfiles_src.Add("imp_ios_internal.cs");
+                        cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
+                        break;
+                    default:
+                        throw new Exception(what);
+                }
                 break;
             default:
                 switch (what)
@@ -992,7 +1069,7 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
         cfg.csfiles_src.Add("util.cs");
         cfg.csfiles_src.Add("sqlite3_cppinterop.cs");
-        cfg.ref_main = "profile136";
+        cfg.ref_raw = true;
         cfg.ref_cppinterop = true;
         return cfg;
     }
@@ -1001,11 +1078,11 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "ugly";
-        cfg.name = string.Format("newugly.{0}", env);
+        cfg.name = string.Format("ugly.{0}", env);
         cfg.assemblyname = string.Format("SQLitePCL.ugly");
         cfg.env = env;
         cfg.csfiles_src.Add("ugly.cs");
-        cfg.ref_main = env;
+        cfg.ref_raw = true;
         return cfg;
     }
 
@@ -1013,12 +1090,12 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = area;
-        cfg.name = string.Format("new{0}.{1}.{2}", area, what, env);
+        cfg.name = string.Format("{0}.{1}.{2}", area, what, env);
         cfg.assemblyname = string.Format("SQLitePCL.batteries");
         cfg.env = env;
         cfg.csfiles_src.Add("batteries.cs");
         cfg.defines.Add("BATTERY_" + what);
-        cfg.ref_main = env;
+        cfg.ref_raw = true;
         cfg.ref_provider = what;
         return cfg;
     }
@@ -1073,6 +1150,37 @@ public class config_csproj : config_info
 			}
 		}
 		throw new Exception(get_name());
+	}
+
+	private void add_product(List<string> a, string s)
+	{
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
+	}
+
+	public void get_products(List<string> a)
+	{
+		add_product(a, string.Format("{0}.dll", assemblyname));
+	}
+
+	public string get_nuget_target_path()
+	{
+		if (is_portable())
+		{
+			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else if (is_netstandard())
+		{
+			return string.Format("lib\\{0}\\", env);
+		}
+		else
+		{
+			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
+		}
+	}
+
+	public string get_id()
+	{
+		return string.Format("SQLitePCL.{0}", get_name());
 	}
 
 }
@@ -1174,7 +1282,7 @@ public class config_pcl : config_info
 
 	private void add_product(List<string> a, string s)
 	{
-		a.Add(Path.Combine(get_dest_subpath(), s));
+		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
 	public void get_products(List<string> a)
@@ -1336,8 +1444,8 @@ public static class gen
 		f.WriteStartElement("PropertyGroup");
 		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
 
-		f.WriteElementString("OutputPath", string.Format("bin\\{0}\\{1}", cfg.cpu, name));
-		f.WriteElementString("IntermediateOutputPath", string.Format("obj\\{0}\\{1}", cfg.cpu, name));
+		f.WriteElementString("OutputPath", string.Format("bin\\{0}", name));
+		f.WriteElementString("IntermediateOutputPath", string.Format("obj\\{0}", name));
 
 		string defs;
 		if (debug)
@@ -1483,11 +1591,11 @@ public static class gen
 			tw.WriteLine("    },");
 			tw.WriteLine("    \"runtimes\" : {");
 			tw.WriteLine("         \"win10-arm\": {},");
-			tw.WriteLine("         \"win10-arm-aot\": {},");
+			//tw.WriteLine("         \"win10-arm-aot\": {},");
 			tw.WriteLine("         \"win10-x86\": {},");
-			tw.WriteLine("         \"win10-x86-aot\": {},");
+			//tw.WriteLine("         \"win10-x86-aot\": {},");
 			tw.WriteLine("         \"win10-x64\": {},");
-			tw.WriteLine("         \"win10-x64-aot\": {}");
+			//tw.WriteLine("         \"win10-x64-aot\": {}");
 			tw.WriteLine("    }");
 			tw.WriteLine("}");
 		}
@@ -1993,9 +2101,8 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-            // TODO just leave these in the project directory
-			f.WriteElementString("OutDir", Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath())));
-			f.WriteElementString("IntDir", Path.Combine(top, string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath())));
+			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
+			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("ItemDefinitionGroup");
@@ -2198,8 +2305,8 @@ public static class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\", cfg.get_dest_subpath())));
-			f.WriteElementString("IntDir", Path.Combine(top, string.Format("$(Configuration)\\obj\\{0}\\", cfg.get_dest_subpath())));
+			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
+			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
 			write_cpp_includepath(f, root, "sqlite3\\");
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
@@ -2215,7 +2322,10 @@ public static class gen
 			f.WriteStartElement("Link");
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			string sqlite3_item_path = Path.Combine(top, string.Format("$(Configuration)\\bin\\{0}\\esqlite3.lib", cfg.get_sqlite3_item().get_dest_subpath()));
+			string sqlite3_item_path = Path.Combine(top, cfg.get_sqlite3_item().get_name(),
+                    "bin",
+                    "release",
+                    "esqlite3.lib");
 			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
@@ -2400,6 +2510,7 @@ public static class gen
 
     }
 
+#if not
 	private static void gen_plugin(config_plugin cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2668,6 +2779,7 @@ public static class gen
 				break;
 		}
 	}
+#endif
 
 	private static void gen_csproj(config_csproj cfg, string root, string top)
 	{
@@ -2736,13 +2848,13 @@ public static class gen
 			}
 			f.WriteEndElement(); // ItemGroup
 
-            if (cfg.ref_main != null)
+            if (cfg.ref_raw)
             {
                 f.WriteStartElement("ItemGroup");
 
                 f.WriteStartElement("ProjectReference");
                 {
-                    config_csproj other = projects.find_main(cfg.ref_main);
+                    config_csproj other = projects.find_raw(cfg.env);
                     f.WriteAttributeString("Include", other.get_project_path(top));
                     f.WriteElementString("Project", other.guid);
                     f.WriteElementString("Name", other.get_name());
@@ -2785,6 +2897,121 @@ public static class gen
 				f.WriteEndElement(); // ItemGroup
 			}
 
+            if (cfg.area == "provider")
+            {
+			switch (cfg.env)
+			{
+				case "ios_unified":
+                        if (cfg.what == "e_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+			else if (cfg.what == "sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
+                            f.WriteElementString("Link", "libsqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
+			else if (cfg.what == "sqlite3")
+			{
+				// nothing in resources needed
+			}
+			else if (cfg.what == "custom_sqlite3")
+			{
+				// resource must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
+					break;
+
+					case "ios_classic":
+                        if (cfg.what == "e_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+			else if (cfg.what == "sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
+                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
+                            f.WriteElementString("Link", "libcrypto.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
+			else if (cfg.what == "sqlite3")
+			{
+				// nothing in resources needed
+			}
+			else if (cfg.what == "custom_sqlite3")
+			{
+				// resource must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
+						break;
+
+					case "android":
+						if (cfg.what == "e_sqlite3")
+						{
+                            f.WriteStartElement("ItemGroup");
+                            write_android_native_libs(root, f, "sqlite3");
+                            f.WriteEndElement(); // ItemGroup
+						}
+						else if (cfg.what == "sqlcipher")
+						{
+                            f.WriteStartElement("ItemGroup");
+                            write_android_native_libs_sqlcipher(root, f);
+                            f.WriteEndElement(); // ItemGroup
+                        }
+			else if (cfg.what == "sqlite3")
+			{
+				// nothing in resources needed
+				// TODO this should be disallowed as of Android N, right?
+			}
+			else if (cfg.what == "custom_sqlite3")
+			{
+				// dll must be provided later
+			}
+			else
+			{
+				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+			}
+
+						break;
+            }
+            }
+
 			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
@@ -2807,6 +3034,7 @@ public static class gen
 		}
 	}
 
+#if not
 	private static void gen_pcl(config_pcl cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2963,7 +3191,9 @@ public static class gen
 				break;
 		}
 	}
+#endif
 
+#if not
 	// TODO the following function works when cfg.env is win8.  it might
 	// not work for any other configuration.  for now, that's fine.
 	// TODO broken?
@@ -3063,7 +3293,7 @@ public static class gen
 			f.WriteEndElement(); // ProjectReference
 			f.WriteStartElement("ProjectReference");
 			{
-				config_higher other = projects.find_ugly(cfg.pcl);
+				config_csproj other = projects.find_ugly(cfg.pcl);
 				f.WriteAttributeString("Include", other.get_project_path(top));
 				f.WriteElementString("Project", other.guid);
 				f.WriteElementString("Name", other.get_name());
@@ -3077,107 +3307,6 @@ public static class gen
 			f.WriteEndElement(); // Project
 
 			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_higher(
-			config_higher cfg,
-			string root, 
-			string top
-			)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			write_toolsversion(f, cfg.env);
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			// TODO is this actually needed?
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
-			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			write_project_type_guids_for_env(f, cfg.env);
-
-			f.WriteStartElement("Configuration");
-			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-			f.WriteString("Debug");
-			f.WriteEndElement(); // Configuration
-
-			f.WriteElementString("SchemaVersion", "2.0");
-			f.WriteElementString("Platform", "AnyCPU");
-			f.WriteElementString("DefaultLanguage", "en-us");
-			//f.WriteElementString("FileAlignment", "512");
-			f.WriteElementString("WarningLevel", "4");
-			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			//f.WriteElementString("RootNamespace", "whatever"); // TODO
-			f.WriteElementString("AssemblyName", cfg.assemblyname);
-
-			List<string> defines = write_header_properties(f, cfg.env);
-            // TODO defines is unused
-
-			f.WriteEndElement(); // PropertyGroup
-
-			write_section(top, cfg.get_dest_subpath(), f, true, cfg.defines);
-			write_section(top, cfg.get_dest_subpath(), f, false, cfg.defines);
-
-			f.WriteStartElement("ItemGroup");
-			write_standard_assemblies(f, cfg.env);
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-			foreach (string csfile in cfg.csfiles)
-			{
-				write_cs_compile(f, root, csfile);
-			}
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-
-			f.WriteStartElement("ProjectReference");
-			{
-				// TODO should be called find_pcl ?
-				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			f.WriteEndElement(); // ProjectReference
-
-			f.WriteEndElement(); // ItemGroup
-
-			write_csproj_footer(f, cfg.env);
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-
-		string subdir = cfg.get_project_subdir(top);
-		switch (cfg.env)
-		{
-			case "uap10.0":
-				write_project_dot_json_uap(subdir);
-				break;
-			case "netstandard1.0":
-				write_project_dot_json_netstandard10(subdir);
-				break;
-			case "netstandard1.1":
-				write_project_dot_json_netstandard11(subdir);
-				break;
 		}
 	}
 
@@ -3303,6 +3432,7 @@ public static class gen
 				break;
 		}
 	}
+#endif
 
 	public static string write_folder(StreamWriter f, string name)
 	{
@@ -3371,81 +3501,21 @@ public static class gen
 						cfg.guid
 						);
                 // TODO project dependency
-				f.WriteLine("EndProject");
-			}
-
-			foreach (config_pcl cfg in projects.items_pcl)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				if (cfg.is_cppinterop())
-				{
+                if (cfg.ref_raw)
+                {
+                    // TODO
+                }
+                if (cfg.ref_provider != null)
+                {
+                    // TODO
+                }
+                if (cfg.ref_cppinterop)
+                {
 					f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
 					config_cppinterop other = cfg.get_cppinterop_item();
 					f.WriteLine("\t\t{0} = {0}", other.guid);
 					f.WriteLine("\tEndProjectSection");
-				}
-				f.WriteLine("EndProject");
-			}
-
-			foreach (config_plugin cfg in projects.items_plugin)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-                // TODO project dependency
-				f.WriteLine("EndProject");
-			}
-
-			foreach (config_higher cfg in projects.items_higher)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteLine("\t\t{0} = {0}", other.guid);
-				f.WriteLine("\tEndProjectSection");
-				f.WriteLine("EndProject");
-			}
-
-			foreach (config_batteries cfg in projects.items_batteries)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteLine("\t\t{0} = {0}", other.guid);
-				f.WriteLine("\tEndProjectSection");
-				f.WriteLine("EndProject");
-			}
-
-			foreach (config_tests cfg in projects.items_tests)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-				config_pcl other = projects.find_bait(cfg.pcl);
-				f.WriteLine("\t\t{0} = {0}", other.guid);
-				f.WriteLine("\tEndProjectSection");
+                }
 				f.WriteLine("EndProject");
 			}
 
@@ -3478,52 +3548,11 @@ public static class gen
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
 			}
-			foreach (config_pcl cfg in projects.items_pcl)
-			{
-				if (cfg.env == "unified_mac") continue;
-
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
-			foreach (config_plugin cfg in projects.items_plugin)
-			{
-				if (cfg.env == "unified_mac") continue;
-
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
-			}
-			foreach (config_higher cfg in projects.items_higher)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
-			}
-			foreach (config_batteries cfg in projects.items_batteries)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
-			}
-			foreach (config_tests cfg in projects.items_tests)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, "Any CPU");
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, "Any CPU");
-			}
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
 			f.WriteLine("\t\tHideSolutionNode = FALSE");
 			f.WriteLine("\tEndGlobalSection");
-
-            // TODO put csproj stuff into folders?
 
 			f.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
@@ -3534,32 +3563,13 @@ public static class gen
 			{
 				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_cppinterop);
 			}
-			foreach (config_pcl cfg in projects.items_pcl)
-			{
-				if (cfg.is_portable())
-				{
-					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_portable);
-				}
-				else if (cfg.is_netstandard())
-				{
-					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_portable);
-				}
-				else
-				{
-					f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_platforms);
-				}
-			}
-			foreach (config_plugin cfg in projects.items_plugin)
-			{
-				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_plugin);
-			}
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");
 		}
 	}
 
-	private static void write_nuspec_file_entry(config_plugin cfg, XmlWriter f)
+	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
 	{
 		f.WriteComment(string.Format("{0}", cfg.get_name()));
 		var a = new List<string>();
@@ -3568,52 +3578,7 @@ public static class gen
 		foreach (string s in a)
 		{
 			f.WriteStartElement("file");
-			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
-			f.WriteAttributeString("target", cfg.get_nuget_target_path("lib"));
-			f.WriteEndElement(); // file
-		}
-	}
-
-	private static void write_nuspec_file_entry(config_pcl cfg, XmlWriter f, string where)
-	{
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
-			f.WriteAttributeString("target", cfg.get_nuget_target_path(where));
-			f.WriteEndElement(); // file
-		}
-	}
-
-	private static void write_nuspec_file_entry(config_batteries cfg, XmlWriter f)
-	{
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
-			f.WriteAttributeString("target", cfg.get_nuget_target_path());
-			f.WriteEndElement(); // file
-		}
-	}
-
-	private static void write_nuspec_file_entry(config_higher cfg, XmlWriter f)
-	{
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+			f.WriteAttributeString("src", s);
 			f.WriteAttributeString("target", cfg.get_nuget_target_path());
 			f.WriteEndElement(); // file
 		}
@@ -3628,21 +3593,14 @@ public static class gen
 		foreach (string s in a)
 		{
 			f.WriteStartElement("file");
-			f.WriteAttributeString("src", string.Format("release\\bin\\{0}", s));
+			f.WriteAttributeString("src", s);
 			f.WriteAttributeString("target", cfg.get_nuget_target_path());
 			f.WriteEndElement(); // file
 		}
 	}
 
-	private static void write_nuspec_file_entries(XmlWriter f, string where, List<config_pcl> a)
-	{
-		foreach (config_pcl cfg in a)
-		{
-			write_nuspec_file_entry(cfg, f, where);
-		}
-	}
-
-	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_pcl> a, string env, string top, string id)
+#if not
+	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_csproj> a, string env, string top, string id)
 	{
 		f.WriteComment(string.Format("platform assemblies for {0}", env));
 
@@ -3671,6 +3629,7 @@ public static class gen
 		f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(env), id));
 		f.WriteEndElement(); // file
 	}
+#endif
 
 	private const string NUSPEC_VERSION = "0.9.4-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
@@ -3780,55 +3739,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// write all the bait
-
-			f.WriteComment("BEGIN bait assemblies");
-			// TODO we don't need ALL the bait assemblies in here
-			foreach (config_pcl cfg in projects.items_pcl)
+			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.is_portable() || cfg.is_netstandard())
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f, 
-							"lib"
-							);
-				}
+                if (cfg.area == "raw")
+                {
+                    write_nuspec_file_entry(
+                            cfg, 
+                            f
+                            );
+                }
 			}
-			f.WriteComment("END bait assemblies");
-
-			f.WriteComment("BEGIN platform assemblies");
-
-			f.WriteComment("BEGIN platform assemblies that use pinvoke");
-			write_nuspec_file_entries(f, "lib",
-					projects.find_pcls(
-						null,
-						"pinvoke",
-						null
-						)
-					);
-			f.WriteComment("END platform assemblies that use pinvoke");
-
-			f.WriteComment("BEGIN platform assemblies that use cppinterop");
-			Dictionary<string, string> pcl_env_cppinterop = new Dictionary<string, string>();
-			pcl_env_cppinterop["wp80"] = null;
-
-			foreach (string env in pcl_env_cppinterop.Keys)
-			{
-				write_cppinterop_with_targets_file(f, 
-						projects.find_pcls(
-							env,
-							"cppinterop",
-							null
-							),
-						env,
-						top,
-						id
-						);
-			}
-			f.WriteComment("END platform assemblies that use cppinterop");
-
-			f.WriteComment("END platform assemblies");
 
 			f.WriteEndElement(); // files
 
@@ -3857,7 +3777,7 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", cfg.get_title());
+			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCL.raw as well as SQLitePCL.plugin.sqlite3.net45 or similar.");
 			f.WriteElementString("authors", "D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3905,7 +3825,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_plugin(string top, string root, config_plugin cfg)
+	private static void gen_nuspec_plugin(string top, string root, config_csproj cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3924,12 +3844,9 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", cfg.get_title());
-			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.imp);
-			if (cfg.empty)
-			{
-				desc = desc + "  This particular plugin package contains no native code, so you will also need to add one of the SQLitePCL.native.* packages.";
-			}
+			f.WriteElementString("title", id);
+			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.native.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -4166,9 +4083,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_higher cfg in projects.items_higher)
+			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.name == "ugly")
+				if (cfg.area == "ugly")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -4368,9 +4285,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_batteries cfg in projects.items_batteries)
+			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.name == "batteries_green")
+				if (cfg.area == "batteries_green")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -4911,31 +4828,6 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_pcl cfg in projects.items_pcl)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
-		foreach (config_plugin cfg in projects.items_plugin)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
-		foreach (config_higher cfg in projects.items_higher)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
-		foreach (config_batteries cfg in projects.items_batteries)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
-		foreach (config_tests cfg in projects.items_tests)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
 		// --------------------------------
 		// generate all the project files
 
@@ -4954,31 +4846,6 @@ public static class gen
 			gen_csproj(cfg, root, top);
 		}
 
-		foreach (config_pcl cfg in projects.items_pcl)
-		{
-			gen_pcl(cfg, root, top);
-		}
-
-		foreach (config_plugin cfg in projects.items_plugin)
-		{
-			gen_plugin(cfg, root, top);
-		}
-
-		foreach (config_higher cfg in projects.items_higher)
-		{
-			gen_higher(cfg, root, top);
-		}
-
-		foreach (config_batteries cfg in projects.items_batteries)
-		{
-			gen_batteries(cfg, root, top);
-		}
-
-		foreach (config_tests cfg in projects.items_tests)
-		{
-			gen_tests(cfg, root, top);
-		}
-
 		// --------------------------------
 
 		gen_solution(top);
@@ -4991,7 +4858,7 @@ public static class gen
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
 
-		foreach (config_plugin cfg in projects.items_plugin)
+		foreach (config_csproj cfg in projects.items_csproj)
 		{
 			gen_nuspec_plugin(top, root, cfg);
 		}
@@ -5018,10 +4885,13 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
-			foreach (config_plugin cfg in projects.items_plugin)
+			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				string id = cfg.get_id();
-				tw.WriteLine("../../nuget pack {0}.nuspec", id);
+                if (cfg.area == "provider")
+                {
+                    string id = cfg.get_id();
+                    tw.WriteLine("../../nuget pack {0}.nuspec", id);
+                }
 			}
 			foreach (config_esqlite3 cfg in projects.items_esqlite3)
 			{
@@ -5040,10 +4910,13 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
-			foreach (config_plugin cfg in projects.items_plugin)
+			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				string id = cfg.get_id();
-				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+                if (cfg.area == "provider")
+                {
+                    string id = cfg.get_id();
+                    tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+                }
 			}
 			foreach (config_esqlite3 cfg in projects.items_esqlite3)
 			{

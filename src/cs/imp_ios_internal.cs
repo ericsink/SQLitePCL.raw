@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#if IOS_PACKAGED_SQLITE3
+#if IOS_PACKAGED_E_SQLITE3
 
 #if PLATFORM_UNIFIED
 
@@ -65,7 +65,7 @@
 
 #endif
 
-#if IOS_PACKAGED_CUSTOM
+#if IOS_PACKAGED_CUSTOM_SQLITE3
 
 #if PLATFORM_UNIFIED
 
