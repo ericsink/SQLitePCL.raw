@@ -212,12 +212,6 @@ public static class projects
 		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="netstandard1.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
 	}
 
-	private static void init_pcl_cppinterop()
-	{
-		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="arm"});
-		items_pcl.Add(new config_pcl { env="wp80", api="cppinterop", cpu="x86"});
-	}
-
 	private static void init_plugin()
 	{
 		// esqlite3
@@ -523,7 +517,6 @@ public interface config_info
 {
 	string get_project_filename();
 	string get_name();
-	string get_dest_subpath();
 }
 
 public static class config_info_ext
@@ -567,12 +560,7 @@ public class config_sqlite3 : config_info
 
 	public string get_nuget_target_path()
 	{
-		return string.Format("build\\native\\{0}\\", get_dest_subpath());
-	}
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}\\{2}", area(), toolset, cpu);
+		return string.Format("build\\native\\{0}\\{1}\\{2}\\", area(), toolset, cpu);
 	}
 
 	public string get_name()
@@ -649,11 +637,6 @@ public class config_cppinterop : config_info
 		return string.Format("{0}.{1}.{2}", area(), env, cpu);
 	}
 
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}\\{2}", area(), env, cpu);
-	}
-
 	public string get_project_filename()
 	{
 		return string.Format("{0}.vcxproj", get_name());
@@ -677,203 +660,6 @@ public class config_cppinterop : config_info
 	}
 }
 
-public class config_higher : config_info
-{
-	public string env;
-	public string name;
-	public string assemblyname;
-	public string guid;
-	public List<string> csfiles;
-	public List<string> defines;
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}", name, env);
-	}
-
-	public string get_name()
-	{
-		return string.Format("{0}_{1}", name, env);
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public bool is_portable()
-	{
-		return config_cs.env_is_portable(env);
-	}
-
-	public bool is_netstandard()
-	{
-		return config_cs.env_is_netstandard(env);
-	}
-
-	public string get_nuget_target_path()
-	{
-		if (is_portable())
-		{
-			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
-		}
-		else if (is_netstandard())
-		{
-			return string.Format("lib\\{0}\\", env);
-		}
-		else
-		{
-			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
-		}
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, string.Format("{0}.dll", assemblyname));
-	}
-}
-
-public class config_batteries : config_info
-{
-	public string env;
-	public string name;
-	public string assemblyname;
-	public string guid;
-	public List<string> csfiles;
-	public List<string> defines;
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}", name, env);
-	}
-
-	public string get_name()
-	{
-		return string.Format("{0}_{1}", name, env);
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public bool is_portable()
-	{
-		return config_cs.env_is_portable(env);
-	}
-
-	public bool is_netstandard()
-	{
-		return config_cs.env_is_netstandard(env);
-	}
-
-	public string get_nuget_target_path()
-	{
-		if (is_portable())
-		{
-			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
-		}
-		else if (is_netstandard())
-		{
-			return string.Format("lib\\{0}\\", env);
-		}
-		else
-		{
-			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
-		}
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, string.Format("{0}.dll", assemblyname));
-	}
-}
-
-public class config_tests : config_info
-{
-	public string env;
-	public string pcl;
-	public string guid;
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}", "tests", env);
-	}
-
-	public string get_name()
-	{
-		return string.Format("{0}_{1}", "tests", env);
-	}
-
-}
-
-public class config_plugin : config_info
-{
-	public string env;
-	public string what;
-	public string imp;
-	public string guid;
-	public bool empty;
-
-	public string get_nuget_target_path(string where)
-	{
-		return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
-	}
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, string.Format("SQLitePCLPlugin_{0}.dll", imp));
-	}
-
-	private const string AREA = "plugin";
-
-	public string get_dest_subpath()
-	{
-		return string.Format("{0}\\{1}\\{2}", AREA, what, env);
-	}
-
-	public string get_name()
-	{
-		return string.Format("plugin.{0}.{1}", what, env);
-	}
-
-	public string get_title()
-	{
-		return string.Format("Plugin ({0}, {1}) for SQLitePCL.raw", what, env);
-	}
-
-	public string get_id()
-	{
-		return string.Format("SQLitePCL.{0}", get_name());
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-	
-}
-
 public class config_esqlite3 : config_info
 {
 	public string guid;
@@ -894,26 +680,21 @@ public class config_esqlite3 : config_info
 		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
-	private const string AREA = "native";
+	private const string AREA = "lib";
 
 	public string get_nuget_target_path()
 	{
-		return string.Format("build\\native\\{0}\\", get_dest_subpath());
-	}
-
-	public string get_dest_subpath()
-	{
-		return string.Format("native\\sqlite3\\{0}", toolset);
+		return string.Format("build\\native\\e_sqlite3\\{0}\\", toolset);
 	}
 
 	public string get_name()
 	{
-		return string.Format("native.sqlite3.{0}", toolset);
+		return string.Format("lib.e_sqlite3.{0}", toolset);
 	}
 
 	public string get_title()
 	{
-		return string.Format("Native code only (sqlite3, compiled with {0}) for SQLitePCL.raw", toolset);
+		return string.Format("Native code only (e_sqlite3, compiled with {0}) for SQLitePCL.raw", toolset);
 	}
 
 	public string get_id()
@@ -1217,7 +998,7 @@ public class config_csproj : config_info
             case "net35":
             case "net40":
             case "net45":
-                cfg.deps["SQLitePCL.native.sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
+                cfg.deps["SQLitePCL.lib.e_sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
                 break;
         }
         return cfg;
@@ -1257,11 +1038,6 @@ public class config_csproj : config_info
 		return string.Format("{0}.csproj", name);
 	}
 	
-	public string get_dest_subpath()
-	{
-        return string.Format("{0}\\{1}\\{2}", name, env, cpu);
-	}
-
 	public string fixed_cpu()
 	{
 		if (cpu == "anycpu")
@@ -1320,208 +1096,6 @@ public class config_csproj : config_info
 		return string.Format("SQLitePCL.{0}", get_name());
 	}
 
-}
-
-public class config_pcl : config_info
-{
-	public string env;
-	public string api;
-	public string guid;
-
-	public string cpu = "anycpu";
-
-	public config_sqlite3 get_sqlite3_item()
-	{
-		if (is_cppinterop())
-		{
-			config_cppinterop other = get_cppinterop_item();
-			return other.get_sqlite3_item();
-		}
-
-		if (is_pinvoke())
-		{
-			config_sqlite3 other = projects.find_sqlite3(projects.cs_env_to_toolset(env), cpu);
-			return other;
-		}
-
-		return null;
-	}
-
-	public config_cppinterop get_cppinterop_item()
-	{
-		foreach (config_cppinterop cfg in projects.items_cppinterop)
-		{
-			if (
-					(cfg.env == env)
-					&& (cfg.cpu == cpu)
-			   )
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(get_name());
-	}
-
-	private string nat()
-	{
-		if (is_pinvoke())
-		{
-			return string.Format("{0}", api);
-		}
-		else if (is_cppinterop())
-		{
-			return string.Format("{0}", api);
-		}
-		else
-		{
-			throw new Exception(get_name());
-		}
-	}
-
-	public string get_nuget_target_subpath()
-	{
-		return string.Format("{0}\\{1}", nat(), cpu);
-	}
-
-	public string get_nuget_target_path(string where)
-	{
-		if ("build" == where)
-		{
-			if (is_portable())
-			{
-				throw new Exception(get_name());
-			}
-			else
-			{
-				return string.Format("build\\{0}\\{1}\\{2}\\", config_cs.get_nuget_framework_name(env), nat(), cpu);
-			}
-		}
-		else if ("lib" == where)
-		{
-			if (is_portable())
-			{
-				return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
-			}
-			else if (is_netstandard())
-			{
-				return string.Format("lib\\{0}\\", env);
-			}
-			else
-			{
-				return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
-			}
-		}
-		else
-		{
-			throw new Exception(get_name());
-		}
-	}
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, "SQLitePCL.raw.dll");
-		switch (env)
-		{
-			case "win8":
-			case "win81":
-			case "wpa81":
-			case "uap10.0":
-				add_product(a, "SQLitePCL.raw.pri");
-				break;
-		}
-
-		if (is_cppinterop())
-		{
-			config_cppinterop other = get_cppinterop_item();
-			other.get_products(a);
-		}
-	}
-
-	public bool is_portable()
-	{
-		return config_cs.env_is_portable(env);
-	}
-
-	public bool is_netstandard()
-	{
-		return config_cs.env_is_netstandard(env);
-	}
-
-	public bool is_cppinterop()
-	{
-		if (is_portable())
-		{
-			return false;
-		}
-
-		return api == "cppinterop";
-	}
-
-	public bool is_pinvoke()
-	{
-		if (is_portable())
-		{
-			return false;
-		}
-
-		return api == "pinvoke";
-	}
-
-	private const string AREA = "pcl";
-
-	public string get_dest_subpath()
-	{
-		if (is_portable())
-		{
-			return string.Format("{0}\\{1}", AREA, env);
-		}
-		else if (is_netstandard())
-		{
-			return string.Format("{0}\\{1}", AREA, env);
-		}
-		else
-		{
-			return string.Format("{0}\\{1}\\{2}\\{3}", AREA, env, nat(), cpu);
-		}
-	}
-
-	public string get_name()
-	{
-		if (is_portable())
-		{
-			return string.Format("portable.{0}", env);
-		}
-		else if (is_netstandard())
-		{
-			return string.Format("{0}", env);
-		}
-		else
-		{
-			return string.Format("platform.{0}.{1}.{2}", env, nat(), cpu);
-		}
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", get_name());
-	}
-	
-	public string fixed_cpu()
-	{
-		if (cpu == "anycpu")
-		{
-			return "Any CPU";
-		}
-		else
-		{
-			return cpu;
-		}
-	}
 }
 
 public static class gen
@@ -1649,123 +1223,6 @@ public static class gen
 		f.WriteElementString("DebugType", debug ? "full" : "none");
 
 		f.WriteEndElement(); // PropertyGroup
-	}
-
-	private static void write_section(string top, config_pcl cfg, XmlWriter f, bool debug, List<string> defines)
-	{
-		string name = debug ? "debug" : "release";
-		f.WriteStartElement("PropertyGroup");
-		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", name, cfg.cpu));
-
-		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath())));
-		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath())));
-
-		string defs;
-		if (debug)
-		{
-			defs = "DEBUG;";
-		}
-		else
-		{
-			defs = "";
-		}
-		foreach (string d in defines)
-		{
-			defs += d;
-			defs += ";";
-		}
-		f.WriteElementString("DefineConstants", defs);
-
-		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
-		f.WriteElementString("Optimize", debug ? "false" : "true");
-		f.WriteElementString("DebugType", debug ? "full" : "none");
-
-		f.WriteEndElement(); // PropertyGroup
-	}
-
-	private static void write_section(string top, config_plugin cfg, XmlWriter f, bool debug, List<string> defines)
-	{
-		string name = debug ? "debug" : "release";
-		f.WriteStartElement("PropertyGroup");
-		f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == '{0}' ", name));
-
-		f.WriteElementString("OutputPath", Path.Combine(top, string.Format("{0}\\bin\\{1}\\", name, cfg.get_dest_subpath())));
-		f.WriteElementString("IntermediateOutputPath", Path.Combine(top, string.Format("{0}\\obj\\{1}\\", name, cfg.get_dest_subpath())));
-
-		string defs;
-		if (debug)
-		{
-			defs = "DEBUG;";
-		}
-		else
-		{
-			defs = "";
-		}
-		foreach (string d in defines)
-		{
-			defs += d;
-			defs += ";";
-		}
-		f.WriteElementString("DefineConstants", defs);
-
-		f.WriteElementString("DebugSymbols", debug ? "true" : "false");
-		f.WriteElementString("Optimize", debug ? "false" : "true");
-		f.WriteElementString("DebugType", debug ? "full" : "none");
-
-		f.WriteEndElement(); // PropertyGroup
-	}
-
-	private static void write_project_dot_json_uap(string subdir)
-	{
-		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
-		{
-			tw.WriteLine("{");
-			tw.WriteLine("    \"dependencies\" : {");
-			tw.WriteLine("         \"Microsoft.NETCore.UniversalWindowsPlatform\": \"5.0.0\",");
-			tw.WriteLine("    },");
-			tw.WriteLine("    \"frameworks\" : {");
-			tw.WriteLine("         \"uap10.0\": {}");
-			tw.WriteLine("    },");
-			tw.WriteLine("    \"runtimes\" : {");
-			tw.WriteLine("         \"win10-arm\": {},");
-			//tw.WriteLine("         \"win10-arm-aot\": {},");
-			tw.WriteLine("         \"win10-x86\": {},");
-			//tw.WriteLine("         \"win10-x86-aot\": {},");
-			tw.WriteLine("         \"win10-x64\": {},");
-			//tw.WriteLine("         \"win10-x64-aot\": {}");
-			tw.WriteLine("    }");
-			tw.WriteLine("}");
-		}
-	}
-
-	private static void write_project_dot_json_netstandard10(string subdir)
-	{
-		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
-		{
-			tw.WriteLine("{");
-			tw.WriteLine("    \"dependencies\" : {");
-			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
-			tw.WriteLine("    },");
-			tw.WriteLine("    \"frameworks\" : {");
-			tw.WriteLine("         \"netstandard1.0\": {}");
-			tw.WriteLine("    }");
-			tw.WriteLine("}");
-		}
-	}
-
-	private static void write_project_dot_json_netstandard11(string subdir)
-	{
-		using (TextWriter tw = new StreamWriter(Path.Combine(subdir, "project.json")))
-		{
-			tw.WriteLine("{");
-			tw.WriteLine("    \"dependencies\" : {");
-			tw.WriteLine("         \"NETStandard.Library\": \"1.6.0\"");
-			tw.WriteLine("    },");
-			tw.WriteLine("    \"frameworks\" : {");
-			tw.WriteLine("         \"netstandard1.1\": {}");
-			tw.WriteLine("    }");
-			tw.WriteLine("}");
-		}
 	}
 
 	private static void write_project_dot_json(string subdir, string framework, Dictionary<string,string> deps, List<string> runtimes)
@@ -3392,247 +2849,6 @@ public static class gen
 	}
 #endif
 
-#if not
-	// TODO the following function works when cfg.env is win8.  it might
-	// not work for any other configuration.  for now, that's fine.
-	// TODO broken?
-	private static void gen_tests(config_tests cfg, string root, string top)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			write_toolsversion(f, cfg.env);
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			switch (cfg.env)
-			{
-				case "wp81_sl":
-					break;
-				default:
-					// TODO is this actually needed?
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
-					f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
-					f.WriteEndElement(); // Import
-					break;
-			}
-
-			f.WriteStartElement("PropertyGroup");
-
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			write_project_type_guids_for_env(f, cfg.env);
-
-			f.WriteStartElement("Configuration");
-			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-			f.WriteString("Debug");
-			f.WriteEndElement(); // Configuration
-
-			if (cfg.env == "unified_mac") {
-				f.WriteElementString ("TargetFrameworkVersion", "v2.0");
-				f.WriteElementString ("TargetFrameworkIdentifier", "Xamarin.Mac");
-			}
-
-			f.WriteElementString("SchemaVersion", "2.0");
-			//f.WriteElementString("Platform", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("DefaultLanguage", "en-us");
-			//f.WriteElementString("FileAlignment", "512");
-			f.WriteElementString("WarningLevel", "4");
-			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("OutputType", "Library");
-			// TODO f.WriteElementString("RootNamespace", "SQLitePCL");
-			// TODO f.WriteElementString("AssemblyName", "SQLitePCL"); // match the name in get_products()
-
-			List<string> defines = write_header_properties(f, cfg.env);
-			f.WriteElementString("TestProjectType", "UnitTest");
-
-			// TODO maybe define NUNIT
-
-			f.WriteEndElement(); // PropertyGroup
-
-			write_section(top, cfg.get_dest_subpath(), f, true, defines);
-			write_section(top, cfg.get_dest_subpath(), f, false, defines);
-
-			f.WriteStartElement("ItemGroup");
-			write_standard_assemblies(f, cfg.env);
-			switch (cfg.env)
-			{
-				case "net45":
-					write_reference(f, "Microsoft.VisualStudio.QualityTools.UnitTestFramework");
-					break;
-				case "win8":
-					f.WriteStartElement("SDKReference");
-					f.WriteAttributeString("Include", "MSTestFramework, Version=11.0");
-					f.WriteEndElement(); // SDKReference
-					break;
-			}
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-			write_cs_compile(f, root, "src\\cs\\test_cases.cs");
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteStartElement("ProjectReference");
-			if (cfg.env == "win8")
-			{
-				config_pcl other = projects.find_bait(cfg.pcl);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			f.WriteEndElement(); // ProjectReference
-			f.WriteStartElement("ProjectReference");
-			{
-				config_csproj other = projects.find_ugly(cfg.pcl);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			f.WriteEndElement(); // ProjectReference
-			f.WriteEndElement(); // ItemGroup
-
-			write_csproj_footer(f, cfg.env);
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_batteries(
-			config_batteries cfg,
-			string root, 
-			string top
-			)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			write_toolsversion(f, cfg.env);
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			// TODO is this actually needed?
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
-			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			write_project_type_guids_for_env(f, cfg.env);
-
-			f.WriteStartElement("Configuration");
-			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-			f.WriteString("Debug");
-			f.WriteEndElement(); // Configuration
-
-			f.WriteElementString("SchemaVersion", "2.0");
-			f.WriteElementString("Platform", "AnyCPU");
-			f.WriteElementString("DefaultLanguage", "en-us");
-			//f.WriteElementString("FileAlignment", "512");
-			f.WriteElementString("WarningLevel", "4");
-			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			//f.WriteElementString("RootNamespace", "whatever"); // TODO
-			f.WriteElementString("AssemblyName", cfg.assemblyname);
-
-			List<string> defines = write_header_properties(f, cfg.env);
-
-			f.WriteEndElement(); // PropertyGroup
-
-			write_section(top, cfg.get_dest_subpath(), f, true, cfg.defines);
-			write_section(top, cfg.get_dest_subpath(), f, false, cfg.defines);
-
-			f.WriteStartElement("ItemGroup");
-			write_standard_assemblies(f, cfg.env);
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-			foreach (string csfile in cfg.csfiles)
-			{
-				write_cs_compile(f, root, csfile);
-			}
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-
-			f.WriteStartElement("ProjectReference");
-			{
-				// TODO should be called find_pcl ?
-				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			f.WriteEndElement(); // ProjectReference
-
-			if (cfg.is_portable())
-			{
-				// this is the fallback case.
-				// its implementation of Batteries.Init() does nothing.
-				// so we don't need to reference a plugin.
-			}
-			else if (cfg.is_netstandard())
-			{
-				// this is the fallback case.
-				// its implementation of Batteries.Init() does nothing.
-				// so we don't need to reference a plugin.
-			}
-			else
-			{
-				config_plugin other = projects.find_battery_plugin(cfg.env);
-				f.WriteStartElement("ProjectReference");
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-				f.WriteEndElement(); // ProjectReference
-			}
-
-			f.WriteEndElement(); // ItemGroup
-
-			write_csproj_footer(f, cfg.env);
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-
-		string subdir = cfg.get_project_subdir(top);
-		switch (cfg.env)
-		{
-			case "uap10.0":
-				write_project_dot_json_uap(subdir);
-				break;
-			case "netstandard1.0":
-				write_project_dot_json_netstandard10(subdir);
-				break;
-			case "netstandard1.1":
-				write_project_dot_json_netstandard11(subdir);
-				break;
-		}
-	}
-#endif
-
 	public static string write_folder(StreamWriter f, string name)
 	{
 		string folder_guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -3874,7 +3090,7 @@ public static class gen
 	}
 #endif
 
-	public const string NUSPEC_VERSION = "0.9.4-pre1-bld4";
+	public const string NUSPEC_VERSION = "0.9.4-pre1-bld5";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -4021,7 +3237,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCL.raw as well as SQLitePCL.plugin.sqlite3.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCL.raw as well as SQLitePCL.provider.e_sqlite3.net45 or similar.");
 			f.WriteElementString("authors", "D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -4088,8 +3304,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", what);
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.native.* packages.";
+			string desc = string.Format("A SQLitePCL.raw provider bridges the gap between SQLitePCL.raw and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", what);
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.lib.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -4198,7 +3414,7 @@ public static class gen
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
 			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.native.* packages.";
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.lib.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -4284,7 +3500,7 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = string.Format("SQLitePCL.native.sqlcipher.{0}", plat);
+		string id = string.Format("SQLitePCL.lib.sqlcipher.{0}", plat);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -4514,7 +3730,7 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120_wp81");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120_wp81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4535,7 +3751,7 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_wp80");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_wp80");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4551,7 +3767,7 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v120");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4572,7 +3788,7 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v140");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v140");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4594,7 +3810,7 @@ public static class gen
 
 			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.native.sqlite3.v110_xp");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4988,14 +4204,14 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_pcl> a)
+	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_csproj> a)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
 		Dictionary<string,string> cpus = new Dictionary<string,string>();
-		foreach (config_pcl cfg in a)
+		foreach (var cfg in a)
 		{
 			cpus[cfg.cpu.ToLower()] = null;
 		}
@@ -5035,7 +4251,7 @@ public static class gen
 			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
-			foreach (config_pcl cfg in a)
+			foreach (var cfg in a)
 			{
 				switch (cfg.env)
 				{
@@ -5076,7 +4292,7 @@ public static class gen
 				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
 				f.WriteAttributeString("Include", "SQLitePCL.raw");
 
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.get_nuget_target_subpath(), "SQLitePCL.raw.dll")));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.env, "SQLitePCL.raw.dll")));
 
 				// TODO private?
 
@@ -5262,9 +4478,9 @@ public static class gen
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget pack {0}.nuspec", id);
 			}
-			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.windows.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.osx.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.linux.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.windows.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.osx.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.linux.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
 
@@ -5294,9 +4510,9 @@ public static class gen
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
 			}
-			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.windows.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.osx.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.native.sqlcipher.linux.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.lib.sqlcipher.windows.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.lib.sqlcipher.osx.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.lib.sqlcipher.linux.{0}.nupkg", NUSPEC_VERSION);
 		}
 	}
 }
