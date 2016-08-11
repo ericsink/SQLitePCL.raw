@@ -3180,6 +3180,12 @@ public static class gen
             }
             }
 
+            f.WriteStartElement("ItemGroup");
+            f.WriteStartElement("None");
+            f.WriteAttributeString("Include", "project.json");
+            f.WriteEndElement(); // None
+            f.WriteEndElement(); // ItemGroup
+
 			write_csproj_footer(f, cfg.env);
 
 			f.WriteEndElement(); // Project
@@ -3644,10 +3650,9 @@ public static class gen
 	{
 		using (StreamWriter f = new StreamWriter(Path.Combine(top, "sqlitepcl.sln")))
 		{
-			// TODO change to VS 2015
 			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 2013");
-			f.WriteLine("VisualStudioVersion = 12.0");
+			f.WriteLine("# Visual Studio 14");
+			f.WriteLine("VisualStudioVersion = 14.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
 
 			// solution folders
@@ -3766,10 +3771,9 @@ public static class gen
 	{
 		using (StreamWriter f = new StreamWriter(Path.Combine(top, "test.sln")))
 		{
-			// TODO change to VS 2015
 			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 2013");
-			f.WriteLine("VisualStudioVersion = 12.0");
+			f.WriteLine("# Visual Studio 14");
+			f.WriteLine("VisualStudioVersion = 14.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
 
 			foreach (config_csproj cfg in projects.items_test)
@@ -3870,7 +3874,7 @@ public static class gen
 	}
 #endif
 
-	public const string NUSPEC_VERSION = "0.9.4-pre1-bld3";
+	public const string NUSPEC_VERSION = "0.9.4-pre1-bld4";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
