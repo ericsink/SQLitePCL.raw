@@ -32,6 +32,7 @@ public static class projects
 	//public static List<config_plugin> items_plugin = new List<config_plugin>();
 	//public static List<config_batteries> items_batteries = new List<config_batteries>();
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
+	public static List<config_csproj> items_test = new List<config_csproj>();
 
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 
@@ -47,10 +48,10 @@ public static class projects
 		//init_pcl_cppinterop();
 		//init_higher();
 		//init_batteries();
-		//init_tests();
         init_csproj();
-
 		init_esqlite3();
+
+		init_tests();
 	}
 
 	private static void init_sqlite3()
@@ -174,18 +175,24 @@ public static class projects
         // TODO wp80
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", "sqlite3"));
 
-        items_csproj.Add(config_csproj.create_test("net45"));
     }
 
-#if not
 	private static void init_tests()
 	{
-		// TODO it is not confirmed that any other environments will work here.
-		// for now that's fine.
+        // TODO need tests where the project referencing our nuget packages
+        // is a PCL, and tests where it is not.
 
-		items_tests.Add(new config_tests { env="win8", pcl="profile78" });
+        items_test.Add(config_csproj.create_test("net45", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("win8", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("win81", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("wpa81", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("uap10.0", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
 	}
 
+#if not
 	private static void init_batteries()
 	{
 		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
@@ -1188,7 +1195,7 @@ public class config_csproj : config_info
         return cfg;
     }
 
-    public static config_csproj create_test(string env)
+    public static config_csproj create_test(string env, string what)
     {
         var cfg = new config_csproj();
         cfg.area = "test";
@@ -1196,13 +1203,13 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("SQLitePCL.test");
         cfg.env = env;
         cfg.csfiles_src.Add("test_cases.cs");
-        cfg.ref_raw = true;
-        cfg.ref_ugly = true;
+
+        cfg.defines.Add("USE_NUNIT");
         //cfg.deps["xUnit.net"] = "2.1.0";
         cfg.deps["NUnit"] = "3.4.1";
-        // TODO need dep on provider
-        // TODO need dep on native
-        cfg.defines.Add("USE_NUNIT");
+
+        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        cfg.deps["SQLitePCL.provider.e_sqlite3"] = gen.NUSPEC_VERSION;
         return cfg;
     }
 
@@ -1759,7 +1766,7 @@ public static class gen
 			tw.WriteLine("    \"dependencies\" : {");
             foreach (var id in deps.Keys)
             {
-                tw.WriteLine(string.Format("         \"{0}\": \"{1}\"", id, deps[id]));
+                tw.WriteLine(string.Format("         \"{0}\": \"{1}\",", id, deps[id]));
             }
 			tw.WriteLine("    },");
 			tw.WriteLine("    \"frameworks\" : {");
@@ -3737,6 +3744,52 @@ public static class gen
 		}
 	}
 
+	public static void gen_test_solution(string top)
+	{
+		using (StreamWriter f = new StreamWriter(Path.Combine(top, "test.sln")))
+		{
+			// TODO change to VS 2015
+			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
+			f.WriteLine("# Visual Studio 2013");
+			f.WriteLine("VisualStudioVersion = 12.0");
+			f.WriteLine("MinimumVisualStudioVersion = 12.0");
+
+			foreach (config_csproj cfg in projects.items_test)
+			{
+				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
+						GUID_CSHARP,
+						cfg.get_name(),
+						cfg.get_project_filename(),
+						cfg.guid
+						);
+				f.WriteLine("EndProject");
+			}
+
+			f.WriteLine("Global");
+
+			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
+			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
+			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
+			foreach (config_csproj cfg in projects.items_test)
+			{
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
+				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
+			}
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
+			f.WriteLine("\t\tHideSolutionNode = FALSE");
+			f.WriteLine("\tEndGlobalSection");
+
+			f.WriteLine("EndGlobal");
+		}
+	}
+
 	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
 	{
 		f.WriteComment(string.Format("{0}", cfg.get_name()));
@@ -3799,7 +3852,7 @@ public static class gen
 	}
 #endif
 
-	private const string NUSPEC_VERSION = "0.9.4-pre1";
+	public const string NUSPEC_VERSION = "0.9.4-pre1";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -5055,13 +5108,6 @@ public static class gen
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
 			tw.Write(cs2);
 		}
-        // TODO rm.  chgd name to include the underscore, e_sqlite3
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_esqlite3.cs")))
-		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "esqlite3");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "esqlite3");
-			tw.Write(cs2);
-		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e_sqlite3.cs")))
 		{
 			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e_sqlite3");
@@ -5104,6 +5150,10 @@ public static class gen
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
+		foreach (config_csproj cfg in projects.items_test)
+		{
+			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
 
 		// --------------------------------
 		// generate all the project files
@@ -5123,9 +5173,15 @@ public static class gen
 			gen_csproj(cfg, root, top);
 		}
 
+		foreach (config_csproj cfg in projects.items_test)
+		{
+			gen_csproj(cfg, root, top);
+		}
+
 		// --------------------------------
 
 		gen_solution(top);
+		gen_test_solution(top);
 
 		// --------------------------------
 
@@ -5189,6 +5245,13 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.native.sqlcipher.linux.nuspec");
 			tw.WriteLine("ls *.nupkg");
 		}
+
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
+		{
+			tw.WriteLine("../../nuget restore -Source . test.sln");
+			tw.WriteLine("msbuild /p:Configuration=Release test.sln");
+		}
+
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
 		{
 			tw.WriteLine("# TODO");

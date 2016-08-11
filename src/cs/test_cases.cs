@@ -51,6 +51,12 @@ namespace SQLitePCL.Test
 	[TestClass]
 	public class test_cases
 	{
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         [TestMethod]
         public void test_bind_parameter_index()
         {
