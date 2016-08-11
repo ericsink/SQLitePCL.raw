@@ -21,34 +21,11 @@ using System.Text;
 using SQLitePCL;
 using SQLitePCL.Ugly;
 
-// NOTE
-//
-// If you are getting a compile error right around here, you 
-// probably need to add a reference to the test framework you
-// are using.
-//
-// And if that test framework is NUnit, you should #define USE_NUNIT
-// somewhere.
-//
-#if USE_NUNIT
 using NUnit.Framework;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestContext = System.Object;
-using TestProperty = NUnit.Framework.PropertyAttribute;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-#elif WINDOWS_PHONE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-#elif NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-#else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace SQLitePCL.Test
 {
-	[TestClass]
+	[TestFixture]
 	public class test_cases
 	{
         [OneTimeSetUp]
@@ -57,7 +34,7 @@ namespace SQLitePCL.Test
             raw.SetProvider(new SQLite3Provider_e_sqlite3());
         }
 
-        [TestMethod]
+        [Test]
         public void test_bind_parameter_index()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -88,7 +65,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_blob_read()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -128,7 +105,7 @@ namespace SQLitePCL.Test
 
         }
 
-        [TestMethod]
+        [Test]
         public void test_blob_read_with_byte_array_offset()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -174,7 +151,7 @@ namespace SQLitePCL.Test
 
         }
 
-        [TestMethod]
+        [Test]
         public void test_blob_write_with_byte_array_offset()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -230,7 +207,7 @@ namespace SQLitePCL.Test
 
         }
 
-        [TestMethod]
+        [Test]
         public void test_blob_write()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -270,7 +247,7 @@ namespace SQLitePCL.Test
             }
         }
         
-        [TestMethod]
+        [Test]
         public void test_db_readonly()
         {
             using (sqlite3 db = ugly.open_v2(":memory:", raw.SQLITE_OPEN_READONLY, null))
@@ -286,7 +263,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_get_autocommit()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -297,7 +274,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_last_insert_rowid()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -308,7 +285,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_libversion()
         {
             string sourceid = raw.sqlite3_sourceid();
@@ -324,7 +301,7 @@ namespace SQLitePCL.Test
             Assert.AreEqual(libversion_number / 1000000, 3);
         }
 
-        [TestMethod]
+        [Test]
         public void test_enable_shared_cache()
         {
             int result = raw.sqlite3_enable_shared_cache(1);
@@ -334,7 +311,7 @@ namespace SQLitePCL.Test
             Assert.AreEqual(result, raw.SQLITE_OK);
         }
 
-        [TestMethod]
+        [Test]
         public void test_sqlite3_memory()
         {
             long memory_used = raw.sqlite3_memory_used();
@@ -347,7 +324,7 @@ namespace SQLitePCL.Test
 #endif
         }
 
-        [TestMethod]
+        [Test]
         public void test_sqlite3_status()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -361,7 +338,7 @@ namespace SQLitePCL.Test
             }
 	}
 
-        [TestMethod]
+        [Test]
         public void test_backup()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -385,7 +362,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_compileoption()
         {
             int i = 0;
@@ -401,7 +378,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_bernt()
         {
             using (sqlite3 db = ugly.open(""))
@@ -424,7 +401,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_create_table_temp_db()
         {
             using (sqlite3 db = ugly.open(""))
@@ -433,7 +410,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_create_table_file()
         {
 	    string name;
@@ -453,7 +430,7 @@ namespace SQLitePCL.Test
 	    ugly.vfs__delete(null, filename, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void test_error()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -485,7 +462,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_result_zeroblob()
         {
             delegate_function_scalar zeroblob_func =
@@ -511,7 +488,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_result_errors()
         {
             int code = 10;
@@ -562,7 +539,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_create_table_memory_db()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -571,7 +548,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_open_v2()
         {
             using (sqlite3 db = ugly.open_v2(":memory:", raw.SQLITE_OPEN_READWRITE | raw.SQLITE_OPEN_CREATE, null))
@@ -580,7 +557,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_db_status()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -594,7 +571,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_create_table_explicit_close()
         {
             sqlite3 db = ugly.open(":memory:");
@@ -602,7 +579,7 @@ namespace SQLitePCL.Test
             db.close();
         }
 
-        [TestMethod]
+        [Test]
         public void test_create_table_explicit_close_v2()
         {
 #if not
@@ -619,7 +596,7 @@ namespace SQLitePCL.Test
             db.close_v2();
         }
 
-        [TestMethod]
+        [Test]
         public void test_count()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -633,7 +610,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_stmt_complete()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -651,7 +628,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_next_stmt()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -666,7 +643,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_stmt_busy()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -693,7 +670,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_stmt_status()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -716,7 +693,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_total_changes()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -743,7 +720,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_explicit_prepare()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -765,7 +742,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_exec_two_with_tail()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -777,7 +754,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_column_origin()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -808,7 +785,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_wal()
         {
             string tmpFile;
@@ -852,7 +829,7 @@ namespace SQLitePCL.Test
             ugly.vfs__delete(null, tmpFile, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void test_set_authorizer()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -940,9 +917,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_row
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private class row
         {
             public int x { get; set; }
@@ -953,7 +936,7 @@ namespace SQLitePCL.Test
             public string q { get; set; }
         }
 
-        [TestMethod]
+        [Test]
         public void test_row()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1004,7 +987,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_table_column_metadata()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1034,7 +1017,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_progress_handler()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1084,9 +1067,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_exec_with_callback
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private class work
         {
             public int count;
@@ -1105,7 +1094,7 @@ namespace SQLitePCL.Test
             return 0;
         }
 
-        [TestMethod]
+        [Test]
         public void test_exec_with_callback()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1124,9 +1113,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_collation
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private const int val = 5;
 
         private static int my_collation(object v, string s1, string s2)
@@ -1136,7 +1131,7 @@ namespace SQLitePCL.Test
             return string.Compare(s1, s2);
         }
 
-        [TestMethod]
+        [Test]
         public void test_collation()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1166,7 +1161,7 @@ namespace SQLitePCL.Test
                 db.exec("INSERT INTO foo (x) VALUES ('f')");
 	}
 
-        [TestMethod]
+        [Test]
         public void test_collation_2()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1195,7 +1190,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_collation_3()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1227,7 +1222,7 @@ namespace SQLitePCL.Test
                 db.exec("INSERT INTO foo (x) VALUES ('f')");
 	}
 
-        [TestMethod]
+        [Test]
         public void test_collation_4()
         {
 		string res1,res2,res3;
@@ -1258,7 +1253,7 @@ namespace SQLitePCL.Test
 		return string.Compare(s2,s1);
         }
 
-        [TestMethod]
+        [Test]
         public void test_collation_5()
         {
 		string res1,res2,res3;
@@ -1281,9 +1276,15 @@ namespace SQLitePCL.Test
 
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_cube
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private const int val = 5;
 
         private static void cube(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1294,7 +1295,7 @@ namespace SQLitePCL.Test
             ctx.result_int64(x * x * x);
         }
 
-        [TestMethod]
+        [Test]
        public void test_cube()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1309,9 +1310,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_makeblob
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private const int val = 5;
 
         private static void makeblob(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1324,7 +1331,7 @@ namespace SQLitePCL.Test
             ctx.result_blob(b);
         }
 
-        [TestMethod]
+        [Test]
        public void test_makeblob()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1336,9 +1343,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_scalar_mean_double
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private const int val = 5;
 
         private static void mean(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1351,7 +1364,7 @@ namespace SQLitePCL.Test
             ctx.result_double(d / args.Length);
         }
 
-        [TestMethod]
+        [Test]
        public void test_scalar_mean_double()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1368,15 +1381,21 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_countargs
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private static void count_args(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
             ctx.result_int(args.Length);
         }
 
-        [TestMethod]
+        [Test]
        public void test_countargs()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1393,9 +1412,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_countnullargs
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private static void count_nulls(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
             int r = 0;
@@ -1409,7 +1434,7 @@ namespace SQLitePCL.Test
             ctx.result_int(r);
         }
 
-        [TestMethod]
+        [Test]
        public void test_countnullargs()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1428,9 +1453,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_len_as_blobs
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private static void len_as_blobs(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
             int r = 0;
@@ -1445,7 +1476,7 @@ namespace SQLitePCL.Test
             ctx.result_int(r);
         }
 
-        [TestMethod]
+        [Test]
        public void test_len_as_blobs()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1462,9 +1493,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_concat
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private const int val = 5;
 
         private static void concat(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1477,7 +1514,7 @@ namespace SQLitePCL.Test
             ctx.result_text(r);
         }
 
-        [TestMethod]
+        [Test]
        public void test_concat()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1492,9 +1529,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_sum_plus_count
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private class my_state
         {
             public long sum;
@@ -1526,7 +1569,7 @@ namespace SQLitePCL.Test
             ctx.result_int64(st.sum + st.count);
         }
 
-        [TestMethod]
+        [Test]
        public void test_sum_plus_count()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1546,9 +1589,15 @@ namespace SQLitePCL.Test
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class class_test_hooks
     {
+        [OneTimeSetUp]
+        public void Init()
+        {
+            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+        }
+
         private class work
         {
             public int count_commits;
@@ -1589,7 +1638,7 @@ namespace SQLitePCL.Test
             w.count_profiles++;
         }
 
-        [TestMethod]
+        [Test]
         public void test_rollback_hook_on_close_db()
 	{
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1605,7 +1654,7 @@ namespace SQLitePCL.Test
             }
         }
 
-        [TestMethod]
+        [Test]
         public void test_hooks()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -1670,5 +1719,4 @@ namespace SQLitePCL.Test
     }
 
 }
-
 

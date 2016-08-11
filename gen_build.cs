@@ -182,6 +182,8 @@ public static class projects
         // TODO need tests where the project referencing our nuget packages
         // is a PCL, and tests where it is not.
 
+        items_test.Add(config_csproj.create_test("net35", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("net40", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("net45", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("win8", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("win81", "e_sqlite3"));
@@ -1200,12 +1202,11 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "test";
-        cfg.name = string.Format("test.{0}", env);
-        cfg.assemblyname = string.Format("SQLitePCL.test");
+        cfg.name = string.Format("test.e_sqlite3.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.test.e_sqlite3");
         cfg.env = env;
         cfg.csfiles_src.Add("test_cases.cs");
 
-        cfg.defines.Add("USE_NUNIT");
         //cfg.deps["xUnit.net"] = "2.1.0";
         cfg.deps["NUnit"] = "3.4.1";
 
@@ -1213,6 +1214,8 @@ public class config_csproj : config_info
         cfg.deps["SQLitePCL.provider.e_sqlite3"] = gen.NUSPEC_VERSION;
         switch (cfg.env)
         {
+            case "net35":
+            case "net40":
             case "net45":
                 cfg.deps["SQLitePCL.native.sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
                 break;
@@ -3867,7 +3870,7 @@ public static class gen
 	}
 #endif
 
-	public const string NUSPEC_VERSION = "0.9.4-pre1-bld2";
+	public const string NUSPEC_VERSION = "0.9.4-pre1-bld3";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
