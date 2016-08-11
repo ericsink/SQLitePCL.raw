@@ -186,10 +186,11 @@ public static class projects
         items_test.Add(config_csproj.create_test("win8", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("win81", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("wpa81", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("uap10.0", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
+
+        //items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
 	}
 
 #if not
@@ -554,7 +555,7 @@ public class config_sqlite3 : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "esqlite3.dll");
+		add_product(a, "e_sqlite3.dll");
 	}
 
 	private string area()
@@ -1210,6 +1211,12 @@ public class config_csproj : config_info
 
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         cfg.deps["SQLitePCL.provider.e_sqlite3"] = gen.NUSPEC_VERSION;
+        switch (cfg.env)
+        {
+            case "net45":
+                cfg.deps["SQLitePCL.native.sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
+                break;
+        }
         return cfg;
     }
 
@@ -2213,7 +2220,7 @@ public static class gen
 
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("ConfigurationType", "DynamicLibrary");
-			f.WriteElementString("TargetName", "esqlite3");
+			f.WriteElementString("TargetName", "e_sqlite3");
 
 			f.WriteElementString("PlatformToolset", cfg.toolset);
 
@@ -2483,7 +2490,7 @@ public static class gen
 			string sqlite3_item_path = Path.Combine(top, cfg.get_sqlite3_item().get_name(),
                     "bin",
                     "release",
-                    "esqlite3.lib");
+                    "e_sqlite3.lib");
 			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
@@ -2574,6 +2581,8 @@ public static class gen
 
     private static void write_android_native_libs(string root, XmlWriter f, string which)
     {
+        // TODO put underscore in all these names
+
         f.WriteStartElement("EmbeddedNativeLibrary");
         f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libesqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
@@ -2812,6 +2821,7 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore in name
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -2849,6 +2859,7 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore in name
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -2860,6 +2871,7 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -3082,6 +3094,7 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -3111,6 +3124,7 @@ public static class gen
                             f.WriteStartElement("ItemGroup");
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -3122,6 +3136,7 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore
                             f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
                             f.WriteElementString("Link", "esqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
@@ -3852,7 +3867,7 @@ public static class gen
 	}
 #endif
 
-	public const string NUSPEC_VERSION = "0.9.4-pre1";
+	public const string NUSPEC_VERSION = "0.9.4-pre1-bld2";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_basic(string top, string root, string id)
@@ -4756,7 +4771,7 @@ public static class gen
 
 				f.WriteStartElement("Content");
 				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
@@ -4809,9 +4824,9 @@ public static class gen
 
 				f.WriteStartElement("Content");
 				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
 				// TODO condition/exists ?
-				f.WriteElementString("Link", string.Format("{0}\\esqlite3.dll", other.cpu.ToLower()));
+				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", other.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 				f.WriteEndElement(); // Content
 			}
@@ -5069,7 +5084,7 @@ public static class gen
 					{
 						f.WriteStartElement("Content");
 						// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-						f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "esqlite3.dll")));
+						f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
 						// TODO link
 						// TODO condition/exists ?
 						f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
