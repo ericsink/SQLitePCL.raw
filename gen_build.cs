@@ -680,8 +680,6 @@ public class config_esqlite3 : config_info
 		a.Add(Path.Combine(get_name(), "bin", "release", s));
 	}
 
-	private const string AREA = "lib";
-
 	public string get_nuget_target_path()
 	{
 		return string.Format("build\\native\\e_sqlite3\\{0}\\", toolset);
@@ -845,10 +843,10 @@ public class config_csproj : config_info
     public static config_csproj create_embedded(string what, string env)
     {
         var cfg = new config_csproj();
-        cfg.area = "embedded";
+        cfg.area = "lib";
         cfg.what = what;
-        cfg.name = string.Format("embedded.{0}.{1}", what, env);
-        cfg.assemblyname = string.Format("SQLitePCL.embedded.{0}.{1}", what, env);
+        cfg.name = string.Format("lib.{0}.{1}", what, env);
+        cfg.assemblyname = string.Format("SQLitePCL.lib.{0}.{1}", what, env);
         cfg.env = env;
         switch (cfg.env)
         {
@@ -2544,7 +2542,7 @@ public static class gen
 				f.WriteEndElement(); // ItemGroup
 			}
 
-            if (cfg.area == "embedded")
+            if (cfg.area == "lib")
             {
 			switch (cfg.env)
 			{
@@ -3093,7 +3091,7 @@ public static class gen
 	public const string NUSPEC_VERSION = "0.9.4-pre1-bld5";
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
-	private static void gen_nuspec_basic(string top, string root, string id)
+	private static void gen_nuspec_raw(string top, string root, string id)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3284,6 +3282,55 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_embedded(string top, string root, config_csproj cfg)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = cfg.get_id();
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", id);
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCL.raw as well as SQLitePCL.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("authors", "D. Richard Hipp, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+            write_nuspec_file_entry(
+                    cfg, 
+                    f
+                    );
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+    // TODO this should generate a meta-package
 	private static void gen_nuspec_provider(string top, string root, string what)
     {
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -3393,7 +3440,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_plugin(string top, string root, config_csproj cfg)
+	private static void gen_nuspec_provider(string top, string root, config_csproj cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3413,7 +3460,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCL.raw plugin can be used to instruct SQLitePCL.raw to reference a different implementation of the native SQLite library than it normally would use.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
+			string desc = string.Format("A SQLitePCL.raw provider bridges the gap between SQLitePCL.raw and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
             desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.lib.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
@@ -4423,11 +4470,20 @@ public static class gen
 
 		// --------------------------------
 
-		//gen_nuspec_basic(top, root, "SQLitePCL.raw_basic");
-		gen_nuspec_basic(top, root, "SQLitePCL.raw");
+		gen_nuspec_raw(top, root, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
+
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+            if (cfg.area == "provider" && cfg.env != "wp80")
+            {
+                gen_nuspec_provider(top, root, cfg);
+            }
+		}
+
+        // TODO gen special wp80 provider nuspec
 
         gen_nuspec_provider(top, root, "sqlite3");
         gen_nuspec_provider(top, root, "e_sqlite3");
@@ -4436,7 +4492,10 @@ public static class gen
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
-			gen_nuspec_plugin(top, root, cfg);
+            if (cfg.area == "lib")
+            {
+                gen_nuspec_embedded(top, root, cfg);
+            }
 		}
 
 		foreach (config_esqlite3 cfg in projects.items_esqlite3)
@@ -4467,7 +4526,16 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlcipher.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-                if (cfg.area == "provider")
+                if (cfg.area == "provider" && cfg.env != "wp80")
+                {
+                    string id = cfg.get_id();
+                    tw.WriteLine("../../nuget pack {0}.nuspec", id);
+                }
+			}
+            // TODO special wp80 provider nuspec
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+                if (cfg.area == "lib")
                 {
                     string id = cfg.get_id();
                     tw.WriteLine("../../nuget pack {0}.nuspec", id);
@@ -4499,7 +4567,16 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-                if (cfg.area == "provider")
+                if (cfg.area == "provider" && cfg.env != "wp80")
+                {
+                    string id = cfg.get_id();
+                    tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+                }
+			}
+            // TODO special wp80 provider nuspec
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+                if (cfg.area == "lib")
                 {
                     string id = cfg.get_id();
                     tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
