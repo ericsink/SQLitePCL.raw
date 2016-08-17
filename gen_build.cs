@@ -171,10 +171,13 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3")); // TODO?
-        // TODO profile259?
-        // TODO wp80
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "wp80", "e_sqlite3"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
 
     }
 
@@ -195,88 +198,6 @@ public static class projects
         items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
         // TODO items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
 	}
-
-#if not
-	private static void init_batteries()
-	{
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="android", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="wpa81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="win81", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="uap10.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-
-		// TODO not sure about the following
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="net45", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_ESQLITE3"} });
-
-		// fallback
-		// TODO should this instead throw a "bait" error?
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="profile259", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
-		items_batteries.Add(new config_batteries { name="batteries_green", assemblyname="SQLitePCL.batteries", env="netstandard1.0", csfiles=new List<string>() {"src\\cs\\batteries.cs"}, defines=new List<string>() {"BATTERY_NONE"} });
-	}
-
-	private static void init_plugin()
-	{
-		// esqlite3
-		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlite3", imp="internal" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlite3", imp="internal" });
-		items_plugin.Add(new config_plugin { env="android", what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="net45", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="win8", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="sqlite3", imp="esqlite3" });
-		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="sqlite3", imp="esqlite3" });
-
-		// sqlcipher
-		items_plugin.Add(new config_plugin { env="ios_classic", what="sqlcipher", imp="internal" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="sqlcipher", imp="internal" });
-		items_plugin.Add(new config_plugin { env="android", what="sqlcipher", imp="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net35", empty=true, what="sqlcipher", imp="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net40", empty=true, what="sqlcipher", imp="sqlcipher" });
-		items_plugin.Add(new config_plugin { env="net45", empty=true, what="sqlcipher", imp="sqlcipher" });
-
-#if notyet
-		// plain
-		items_plugin.Add(new config_plugin { env="ios_classic", what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="android", what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="net45", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win8", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="plain", imp="sqlite3" });
-		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="plain", imp="sqlite3" });
-
-		// "custom"
-		items_plugin.Add(new config_plugin { env="ios_classic", what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="ios_unified", what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="android", what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="net35", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="net40", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="net45", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="win8", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="win81", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="wpa81", empty=true, what="custom", imp="custom_sqlite3" });
-		items_plugin.Add(new config_plugin { env="uap10.0", empty=true, what="custom", imp="custom_sqlite3" });
-#endif
-	}
-
-	private static void init_pcl_pinvoke()
-	{
-		items_pcl.Add(new config_pcl { env="android", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="ios_classic", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="ios_unified", api="pinvoke"});
-		//items_pcl.Add(new config_pcl { env="unified_mac", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="net45", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="net40", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="net35", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="win8", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="win81", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="uap10.0", api="pinvoke"});
-		items_pcl.Add(new config_pcl { env="wpa81", api="pinvoke"});
-	}
-#endif
 
 	private static void init_esqlite3()
 	{
@@ -1058,7 +979,14 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("SQLitePCL.batteries");
         cfg.env = env;
         cfg.csfiles_src.Add("batteries.cs");
-        cfg.defines.Add("BATTERY_" + what);
+        if (what != null)
+        {
+            cfg.defines.Add("PROVIDER_" + what);
+        }
+        else
+        {
+            cfg.defines.Add("PROVIDER_none");
+        }
         cfg.ref_raw = true;
         cfg.ref_provider = what;
         return cfg;

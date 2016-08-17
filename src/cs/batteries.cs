@@ -24,21 +24,16 @@ namespace SQLitePCL
     {
 	    public static void Init()
 	    {
-#if BATTERY_ESQLITE3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_esqlite3());
-#elif BATTERY_sqlite3
+#if PROVIDER_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
-#elif BATTERY_e_sqlite3
+#elif PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
-#elif BATTERY_SQLITE3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
-#elif BATTERY_INTERNAL
+#elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif BATTERY_SQLCIPHER
+#elif PROVIDER_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
-#elif BATTERY_NONE
-		    // intentionally don't do anything here
-		    // TODO what is the use case here?
+#elif PROVIDER_none
+		    // intentionally don't do anything here.  (bait)
 #else
 #error batteries.cs built with nothing specified
 #endif
