@@ -190,7 +190,9 @@ public static class projects
         items_test.Add(config_csproj.create_test("wpa81", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("uap10.0", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
+        // TODO need test_cases.cs to call SetProvider properly for ios
+        //items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
+        //items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
 
         //items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
 	}
@@ -990,9 +992,23 @@ public class config_csproj : config_info
         cfg.deps["NUnit"] = "3.4.1";
 
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
-        cfg.deps["SQLitePCL.provider.e_sqlite3"] = gen.NUSPEC_VERSION;
         switch (cfg.env)
         {
+            case "ios_unified":
+            case "ios_classic":
+                cfg.deps[string.Format("SQLitePCL.provider.internal.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                break;
+            default:
+                cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                break;
+        }
+        switch (cfg.env)
+        {
+            case "ios_unified":
+            case "ios_classic":
+            case "android":
+                cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                break;
             case "net35":
             case "net40":
             case "net45":
@@ -3330,6 +3346,7 @@ public static class gen
 		}
 	}
 
+#if not
     // TODO this should generate a meta-package
 	private static void gen_nuspec_provider(string top, string root, string what)
     {
@@ -3439,6 +3456,7 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
+#endif
 
 	private static void gen_nuspec_provider(string top, string root, config_csproj cfg)
 	{
@@ -4485,10 +4503,12 @@ public static class gen
 
         // TODO gen special wp80 provider nuspec
 
+#if not
         gen_nuspec_provider(top, root, "sqlite3");
         gen_nuspec_provider(top, root, "e_sqlite3");
         gen_nuspec_provider(top, root, "custom_sqlite3");
         gen_nuspec_provider(top, root, "sqlcipher");
+#endif
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4520,10 +4540,12 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
+#if not
 			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlite3.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.provider.e_sqlite3.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.provider.custom_sqlite3.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlcipher.nuspec");
+#endif
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
