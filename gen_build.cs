@@ -837,7 +837,6 @@ public class config_csproj : config_info
         cfg.csfiles_src.Add("isqlite3.cs");
         cfg.csfiles_src.Add("sqlite3_bait.cs");
 
-        cfg.defines.Add("USE_PROVIDER_BAIT");
         return cfg;
     }
 
@@ -2729,178 +2728,6 @@ public static class gen
 #endif
 	}
 
-#if not
-	private static void gen_pcl(config_pcl cfg, string root, string top)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			write_toolsversion(f, cfg.env);
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			switch (cfg.env)
-			{
-				case "wp81_sl":
-					break;
-				default:
-					// TODO is this actually needed?
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
-					f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
-					f.WriteEndElement(); // Import
-					break;
-			}
-
-			f.WriteStartElement("PropertyGroup");
-
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			write_project_type_guids_for_env(f, cfg.env);
-
-			f.WriteStartElement("Configuration");
-			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-			f.WriteString("Debug");
-			f.WriteEndElement(); // Configuration
-
-			if (cfg.env == "unified_mac") {
-				f.WriteElementString ("TargetFrameworkVersion", "v2.0");
-				f.WriteElementString ("TargetFrameworkIdentifier", "Xamarin.Mac");
-			}
-
-			f.WriteElementString("SchemaVersion", "2.0");
-			f.WriteElementString("Platform", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", "SQLitePCL.raw"); // match the name in get_products()
-
-			List<string> defines = write_header_properties(f, cfg.env);
-
-			if (cfg.is_portable())
-			{
-				defines.Add("USE_PROVIDER_BAIT");
-			}
-			else if (cfg.is_netstandard())
-			{
-				defines.Add("USE_PROVIDER_BAIT");
-			}
-			else if (cfg.is_cppinterop())
-			{
-				defines.Add("USE_PROVIDER_CPPINTEROP");
-			}
-			else if (cfg.is_pinvoke())
-			{
-				defines.Add("USE_PROVIDER_PINVOKE");
-				switch (cfg.env)
-				{
-					// TODO win81?  uwp?  others?
-					case "net35":
-					case "net40":
-					case "net45":
-						defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
-						break;
-				}
-			}
-
-			f.WriteEndElement(); // PropertyGroup
-
-			write_section(top, cfg, f, true, defines);
-			write_section(top, cfg, f, false, defines);
-
-			f.WriteStartElement("ItemGroup");
-			write_standard_assemblies(f, cfg.env);
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("ItemGroup");
-			write_cs_compile(f, root, "src\\cs\\AssemblyInfo.cs");
-			write_cs_compile(f, root, "src\\cs\\raw.cs");
-			write_cs_compile(f, root, "src\\cs\\intptrs.cs");
-			write_cs_compile(f, root, "src\\cs\\isqlite3.cs");
-			f.WriteEndElement(); // ItemGroup
-
-			if (cfg.is_portable())
-			{
-				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "src\\cs\\sqlite3_bait.cs");
-				f.WriteEndElement(); // ItemGroup
-			}
-			else if (cfg.is_netstandard())
-			{
-				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "src\\cs\\sqlite3_bait.cs");
-				f.WriteEndElement(); // ItemGroup
-			}
-			else if (cfg.is_cppinterop())
-			{
-				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, root, "src\\cs\\sqlite3_cppinterop.cs");
-				write_cs_compile(f, root, "src\\cs\\util.cs");
-				f.WriteEndElement(); // ItemGroup
-			}
-			else if (cfg.is_pinvoke())
-			{
-				f.WriteStartElement("ItemGroup");
-				write_cs_compile(f, top, "pinvoke_sqlite3.cs");
-				write_cs_compile(f, root, "src\\cs\\util.cs");
-				f.WriteEndElement(); // ItemGroup
-			}
-
-			if (cfg.is_cppinterop())
-			{
-				f.WriteStartElement("ItemGroup");
-				f.WriteStartElement("ProjectReference");
-				{
-					config_cppinterop other = cfg.get_cppinterop_item();
-					f.WriteAttributeString("Include", other.get_project_path(top));
-					f.WriteElementString("Project", other.guid);
-					f.WriteElementString("Name", other.get_name());
-					//f.WriteElementString("Private", "true");
-				}
-				f.WriteEndElement(); // ProjectReference
-				f.WriteEndElement(); // ItemGroup
-			}
-
-			write_csproj_footer(f, cfg.env);
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-
-		string subdir = cfg.get_project_subdir(top);
-		switch (cfg.env)
-		{
-			case "uap10.0":
-				write_project_dot_json_uap(subdir);
-				break;
-			case "netstandard1.0":
-				write_project_dot_json_netstandard10(subdir);
-				break;
-			case "netstandard1.1":
-				write_project_dot_json_netstandard11(subdir);
-				break;
-		}
-	}
-#endif
-
-	public static string write_folder(StreamWriter f, string name)
-	{
-		string folder_guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		f.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-				GUID_FOLDER,
-				name,
-				name,
-				folder_guid
-				);
-		f.WriteLine("EndProject");
-		return folder_guid;
-	}
-
 	public static void gen_solution(string top)
 	{
 		using (StreamWriter f = new StreamWriter(Path.Combine(top, "sqlitepcl.sln")))
@@ -2909,14 +2736,6 @@ public static class gen
 			f.WriteLine("# Visual Studio 14");
 			f.WriteLine("VisualStudioVersion = 14.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
-
-			// solution folders
-
-			string folder_sqlite3 = write_folder(f, "sqlite3");
-			string folder_cppinterop = write_folder(f, "cppinterop");
-			string folder_platforms = write_folder(f, "platforms");
-			string folder_portable = write_folder(f, "portable");
-			string folder_plugin = write_folder(f, "plugin");
 
 			foreach (config_sqlite3 cfg in projects.items_sqlite3)
 			{
@@ -3005,17 +2824,6 @@ public static class gen
 
 			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
 			f.WriteLine("\t\tHideSolutionNode = FALSE");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
-			foreach (config_sqlite3 cfg in projects.items_sqlite3)
-			{
-				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_sqlite3);
-			}
-			foreach (config_cppinterop cfg in projects.items_cppinterop)
-			{
-				f.WriteLine("\t\t{0} = {1}", cfg.guid, folder_cppinterop);
-			}
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("EndGlobal");

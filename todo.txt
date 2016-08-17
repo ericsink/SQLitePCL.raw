@@ -4,27 +4,13 @@ so we can add dynamic later
 
 combine net45 libs into one pkg?
 
-that version conflict detected problem with System.Collections.
-not good.
-
 config_esqlite3 should get reworked, because it only
 generates a nuspec
 
 fix all the native libs to have e_ underscore
 
-the two wp80 providers should go in one package
-
 use_provider_bait should be renamed.  maybe the whole
 use_provider_* stuff should go away.
-
-or maybe SQLitePCL.provider.e_sqlite3.nuspec should be
-a metapackage.
-
-can provider.e_sqlite3 have deps on native packages?
-for cases where it is quite clear which lib to use, yes.
-
-config_esqlite3 is weird because it doesn't generate a
-project, only a nuspec.
 
 do we need a copy of the main raw assembly compiled specifically
 for every tfm?  like android?  or is it sufficient to have

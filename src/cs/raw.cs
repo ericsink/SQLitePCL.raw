@@ -34,26 +34,7 @@ namespace SQLitePCL
 
 	static raw()
 	{
-#if USE_PROVIDER_BAIT
 		_imp = new SQLite3Provider_bait();
-		return;
-#elif USE_PROVIDER_CPPINTEROP
-		_imp = new SQLite3Provider_cppinterop();
-		return;
-#elif USE_PROVIDER_PINVOKE
-		try
-		{
-			// try to load the default pinvoke.
-			// if it fails, that's okay, as long as
-			// somebody installs another one.
-			// TODO don't do this on UWP 8.1
-			_imp = new SQLite3Provider_sqlite3();
-		}
-		catch {
-			_imp = null;
-		}
-#endif
-
 	}
 
 	static public void SetProvider(ISQLite3Provider imp)
