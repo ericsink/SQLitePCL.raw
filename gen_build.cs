@@ -688,6 +688,7 @@ public class config_esqlite3 : config_info
 
 	public string get_name()
 	{
+        // TODO could include the word dynamic here
 		return string.Format("lib.e_sqlite3.{0}", toolset);
 	}
 
@@ -844,9 +845,18 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "lib";
+        switch (env)
+        {
+            case "ios_unified":
+            case "ios_classic":
+                cfg.name = string.Format("lib.{0}.{1}.{2}", what, env, "static");
+                break;
+            default:
+                cfg.name = string.Format("lib.{0}.{1}", what, env);
+                break;
+        }
         cfg.what = what;
-        cfg.name = string.Format("lib.{0}.{1}", what, env);
-        cfg.assemblyname = string.Format("SQLitePCL.lib.{0}.{1}", what, env);
+        cfg.assemblyname = string.Format("SQLitePCL.{0}", cfg.name);
         cfg.env = env;
         switch (cfg.env)
         {
@@ -1010,6 +1020,8 @@ public class config_csproj : config_info
         {
             case "ios_unified":
             case "ios_classic":
+                cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}.static", cfg.env)] = gen.NUSPEC_VERSION;
+                break;
             case "android":
                 cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
                 break;
