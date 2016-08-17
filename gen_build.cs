@@ -190,9 +190,8 @@ public static class projects
         items_test.Add(config_csproj.create_test("wpa81", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("uap10.0", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
-        // TODO need test_cases.cs to call SetProvider properly for ios
-        //items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
-        //items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
 
         //items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
 	}
@@ -997,9 +996,11 @@ public class config_csproj : config_info
             case "ios_unified":
             case "ios_classic":
                 cfg.deps[string.Format("SQLitePCL.provider.internal.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                cfg.defines.Add("PROVIDER_internal");
                 break;
             default:
                 cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                cfg.defines.Add("PROVIDER_e_sqlite3");
                 break;
         }
         switch (cfg.env)

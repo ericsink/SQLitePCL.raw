@@ -1,4 +1,7 @@
 
+get the word 'static' into the embedded lib name for ios,
+so we can add dynamic later
+
 combine net45 libs into one pkg?
 
 that version conflict detected problem with System.Collections.
@@ -19,22 +22,6 @@ a metapackage.
 
 can provider.e_sqlite3 have deps on native packages?
 for cases where it is quite clear which lib to use, yes.
-
-can multiple providers be bunched into one npkg?  why not
-just
-	SQLitePCL.provider.e_sqlite3.nuspec
-	SQLitePCL.provider.sqlite3.nuspec
-	SQLitePCL.provider.custom_sqlite3.nuspec
-	SQLitePCL.provider.sqlcipher.nuspec
-
-where would wp80 fit in this?
-
-but this doesn't help.  because a given situation might
-and probably will want to vary based on platform.  for
-example, bundle_green wants "sqlite3" on ios and "e_sqlite3"
-on android.  but it could vary those on platform deps groups.
-but what about net45?  want e_sqlite3 on windows but
-system sqlite on mac and linux.
 
 config_esqlite3 is weird because it doesn't generate a
 project, only a nuspec.
@@ -66,11 +53,6 @@ bundle
 
 need to go to nuget.org and mark some of the older 
 packages deprecated
-
-could/should plugin for android/ios be separated into
-small plugin + native nupkg, like the others?
-
-dislike the name "plain"
 
 e_sqlite3
 custom_sqlite3

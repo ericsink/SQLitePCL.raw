@@ -25,13 +25,35 @@ using NUnit.Framework;
 
 namespace SQLitePCL.Test
 {
+	static class Common
+	{
+		public static void Init()
+		{
+#if PROVIDER_e_sqlite3
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+#elif PROVIDER_custom_sqlite3
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_custom_sqlite3());
+#elif PROVIDER_sqlite3
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
+#elif PROVIDER_internal
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
+#elif PROVIDER_sqlcipher
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
+#elif PROVIDER_batteries
+            Batteries.Init();
+#else
+#error test_cases.cs built with no provider specified
+#endif
+		}
+	}
+
 	[TestFixture]
 	public class test_cases
 	{
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         [Test]
@@ -923,7 +945,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private class row
@@ -1073,7 +1095,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private class work
@@ -1119,7 +1141,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private const int val = 5;
@@ -1282,7 +1304,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private const int val = 5;
@@ -1316,7 +1338,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private const int val = 5;
@@ -1349,7 +1371,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private const int val = 5;
@@ -1387,7 +1409,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private static void count_args(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1418,7 +1440,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private static void count_nulls(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1459,7 +1481,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private static void len_as_blobs(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1499,7 +1521,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private const int val = 5;
@@ -1535,7 +1557,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private class my_state
@@ -1595,7 +1617,7 @@ namespace SQLitePCL.Test
         [OneTimeSetUp]
         public void Init()
         {
-            raw.SetProvider(new SQLite3Provider_e_sqlite3());
+		Common.Init();
         }
 
         private class work
