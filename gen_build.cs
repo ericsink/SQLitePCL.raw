@@ -3644,7 +3644,7 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.bundle_green");
+			f.WriteElementString("title", "SQLitePCL.bundle_e");
 			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3800,6 +3800,50 @@ public static class gen
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v140");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net35"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net35");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net40"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net40");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -4045,6 +4089,50 @@ public static class gen
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v140");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net35"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net35");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net40"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net40");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 

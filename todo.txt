@@ -1,19 +1,20 @@
 
+gen_nuspec_bundle_ green/e should share more code
+
 will we ever wish a lib packaged in nuget v3 had a
 different name?  should the current stuff have "targets"
 in the name?
 
 should all the libs have static/dynamic in the name?
+even though the non-ios ones will probably always be
+dynamic?
 
 general-purpose gen_nuspec function
-
-get the word 'static' into the embedded lib name for ios,
-so we can add dynamic later
 
 combine net45 libs into one pkg?
 
 config_esqlite3 should get reworked, because it only
-generates a nuspec
+generates a nuspec, not a csproj
 
 fix all the native libs to have e_ underscore
 
