@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 public static class projects
@@ -192,8 +193,7 @@ public static class projects
         items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
         items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
-
-        //items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
+        // TODO items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
 	}
 
 #if not
@@ -956,7 +956,7 @@ public class config_csproj : config_info
         cfg.area = "provider";
         cfg.cpu = cpu;
         cfg.env = "wp80";
-        string what = "sqlite3"; // TODO ?
+        string what = "e_sqlite3";
         cfg.name = string.Format("provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
         cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
         cfg.csfiles_src.Add("util.cs");
@@ -998,6 +998,10 @@ public class config_csproj : config_info
                 cfg.deps[string.Format("SQLitePCL.provider.internal.{0}", cfg.env)] = gen.NUSPEC_VERSION;
                 cfg.defines.Add("PROVIDER_internal");
                 break;
+            case "wp80":
+                cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
+                cfg.defines.Add("PROVIDER_cppinterop");
+                break;
             default:
                 cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
                 cfg.defines.Add("PROVIDER_e_sqlite3");
@@ -1010,11 +1014,27 @@ public class config_csproj : config_info
             case "android":
                 cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
                 break;
+            case "wp80":
+                cfg.deps["SQLitePCL.lib.e_sqlite3.v110_wp80"] = gen.NUSPEC_VERSION;
+                break;
+            case "win81":
+                cfg.deps["SQLitePCL.lib.e_sqlite3.v120"] = gen.NUSPEC_VERSION;
+                break;
+            case "wpa81":
+                cfg.deps["SQLitePCL.lib.e_sqlite3.v120_wp81"] = gen.NUSPEC_VERSION;
+                break;
+            case "uap10.0":
+                cfg.deps["SQLitePCL.lib.e_sqlite3.v140"] = gen.NUSPEC_VERSION;
+                break;
             case "net35":
             case "net40":
             case "net45":
                 cfg.deps["SQLitePCL.lib.e_sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
                 break;
+        }
+        if (env == "wp80")
+        {
+            cfg.cpu = "x86";
         }
         return cfg;
     }
@@ -1099,6 +1119,10 @@ public class config_csproj : config_info
 		else if (is_netstandard())
 		{
 			return string.Format("lib\\{0}\\", env);
+		}
+		else if (env == "wp80")
+		{
+			return string.Format("build\\{0}\\{1}\\", env, cpu);
 		}
 		else
 		{
@@ -2675,7 +2699,7 @@ public static class gen
                 cfg.runtimes.Add("win");
                 break;
 			case "uap10.0":
-                cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.0.0";
+                cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.1.0";
                 cfg.runtimes.Add("win10-arm");
                 cfg.runtimes.Add("win10-x86");
                 cfg.runtimes.Add("win10-x64");
@@ -3073,16 +3097,14 @@ public static class gen
 		}
 	}
 
-#if not
 	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_csproj> a, string env, string top, string id)
 	{
 		f.WriteComment(string.Format("platform assemblies for {0}", env));
 
-		write_nuspec_file_entries(
-				f, 
-				"build", 
-				a
-				);
+        foreach (var cfg in a)
+        {
+            write_nuspec_file_entry(cfg, f);
+        }
 
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
 
@@ -3095,7 +3117,7 @@ public static class gen
 
 		f.WriteComment("msbuild .targets file to inject reference for the right cpu");
 
-		string tname = string.Format("{0}.targets", env);
+		string tname = string.Format("{0}.targets", id);
 		gen_nuget_targets_cppinterop(top, tname, a);
 
 		f.WriteStartElement("file");
@@ -3103,7 +3125,6 @@ public static class gen
 		f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(env), id));
 		f.WriteEndElement(); // file
 	}
-#endif
 
 	public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddhhmmss")); 
 
@@ -3339,6 +3360,59 @@ public static class gen
                     cfg, 
                     f
                     );
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_provider_wp80(string top, string root, string what)
+    {
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = string.Format("SQLitePCL.provider.{0}.{1}", what, "wp80");
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", id);
+			string desc = string.Format("A SQLitePCL.raw provider bridges the gap between SQLitePCL.raw and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cppinterop());");
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCL.lib.* packages.";
+			f.WriteElementString("description", desc);
+			f.WriteElementString("authors", "Eric Sink, et al");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+            var a = projects.items_csproj.Where(cfg => (cfg.area == "provider" && cfg.env == "wp80")).ToList();
+
+            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
 
 			f.WriteEndElement(); // files
 
@@ -4502,15 +4576,7 @@ public static class gen
                 gen_nuspec_provider(top, root, cfg);
             }
 		}
-
-        // TODO gen special wp80 provider nuspec
-
-#if not
-        gen_nuspec_provider(top, root, "sqlite3");
-        gen_nuspec_provider(top, root, "e_sqlite3");
-        gen_nuspec_provider(top, root, "custom_sqlite3");
-        gen_nuspec_provider(top, root, "sqlcipher");
-#endif
+        gen_nuspec_provider_wp80(top, root, "e_sqlite3");
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4542,12 +4608,6 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
-#if not
-			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.provider.e_sqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.provider.custom_sqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.provider.sqlcipher.nuspec");
-#endif
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
@@ -4556,7 +4616,7 @@ public static class gen
                     tw.WriteLine("../../nuget pack {0}.nuspec", id);
                 }
 			}
-            // TODO special wp80 provider nuspec
+			tw.WriteLine("../../nuget pack SQLitePCL.provider.e_sqlite3.wp80.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "lib")
@@ -4597,7 +4657,7 @@ public static class gen
                     tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
                 }
 			}
-            // TODO special wp80 provider nuspec
+			tw.WriteLine("../../nuget push SQLitePCL.provider.e_sqlite3.wp80.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "lib")

@@ -35,6 +35,8 @@ namespace SQLitePCL.Test
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_custom_sqlite3());
 #elif PROVIDER_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
+#elif PROVIDER_cppinterop
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cppinterop());
 #elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
 #elif PROVIDER_sqlcipher
