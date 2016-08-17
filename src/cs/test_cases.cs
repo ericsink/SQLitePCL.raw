@@ -41,8 +41,8 @@ namespace SQLitePCL.Test
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
 #elif PROVIDER_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
-#elif PROVIDER_batteries
-            Batteries.Init();
+#elif PROVIDER_bundle
+            SQLitePCL.Batteries.Init();
 #else
 #error test_cases.cs built with no provider specified
 #endif

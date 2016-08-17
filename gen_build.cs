@@ -164,6 +164,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
         items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
+        // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_classic", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
@@ -171,6 +172,8 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net35", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wp80", "e_sqlite3"));
 
@@ -179,6 +182,24 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
 
+        // bundle_e
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "ios_unified", "internal"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "ios_classic", "internal"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "android", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "win8", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "wpa81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "win81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net35", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net40", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net45", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "wp80", "e_sqlite3"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e", "netstandard1.1", null));
+
     }
 
 	private static void init_tests()
@@ -186,17 +207,44 @@ public static class projects
         // TODO need tests where the project referencing our nuget packages
         // is a PCL, and tests where it is not.
 
-        items_test.Add(config_csproj.create_test("net35", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("net40", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("net45", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("win8", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("win81", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("wpa81", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("uap10.0", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("android", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("ios_unified", "e_sqlite3"));
-        items_test.Add(config_csproj.create_test("ios_classic", "e_sqlite3"));
-        // TODO items_test.Add(config_csproj.create_test("wp80", "e_sqlite3"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("net35"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("net40"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("net45"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("win8"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("win81"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("wpa81"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("uap10.0"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("android"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("ios_unified"));
+        items_test.Add(config_csproj.create_test_e_sqlite3("ios_classic"));
+        // TODO items_test.Add(config_csproj.create_test_e_sqlite3("wp80"));
+
+        // bundle_green
+        items_test.Add(config_csproj.create_bundle_test("net35", "green"));
+        items_test.Add(config_csproj.create_bundle_test("net40", "green"));
+        items_test.Add(config_csproj.create_bundle_test("net45", "green"));
+        items_test.Add(config_csproj.create_bundle_test("win8", "green"));
+        items_test.Add(config_csproj.create_bundle_test("win81", "green"));
+        items_test.Add(config_csproj.create_bundle_test("wpa81", "green"));
+        items_test.Add(config_csproj.create_bundle_test("uap10.0", "green"));
+        items_test.Add(config_csproj.create_bundle_test("android", "green"));
+        items_test.Add(config_csproj.create_bundle_test("ios_unified", "green"));
+        items_test.Add(config_csproj.create_bundle_test("ios_classic", "green"));
+        items_test.Add(config_csproj.create_bundle_test("wp80", "green"));
+
+        // bundle_e
+        items_test.Add(config_csproj.create_bundle_test("net35", "e"));
+        items_test.Add(config_csproj.create_bundle_test("net40", "e"));
+        items_test.Add(config_csproj.create_bundle_test("net45", "e"));
+        items_test.Add(config_csproj.create_bundle_test("win8", "e"));
+        items_test.Add(config_csproj.create_bundle_test("win81", "e"));
+        items_test.Add(config_csproj.create_bundle_test("wpa81", "e"));
+        items_test.Add(config_csproj.create_bundle_test("uap10.0", "e"));
+        items_test.Add(config_csproj.create_bundle_test("android", "e"));
+        items_test.Add(config_csproj.create_bundle_test("ios_unified", "e"));
+        items_test.Add(config_csproj.create_bundle_test("ios_classic", "e"));
+        items_test.Add(config_csproj.create_bundle_test("wp80", "e"));
+
 	}
 
 	private static void init_esqlite3()
@@ -908,7 +956,24 @@ public class config_csproj : config_info
         return cfg;
     }
 
-    public static config_csproj create_test(string env, string what)
+    public static config_csproj create_bundle_test(string env, string bundle)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("test.bundle_{0}.{1}", bundle, env);
+        cfg.assemblyname = string.Format("SQLitePCL.test.bundle_{0}", bundle);
+        cfg.env = env;
+        cfg.csfiles_src.Add("test_cases.cs");
+        cfg.defines.Add("PROVIDER_bundle");
+
+        //cfg.deps["xUnit.net"] = "2.1.0";
+        cfg.deps["NUnit"] = "3.4.1";
+        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
+        return cfg;
+    }
+
+    public static config_csproj create_test_e_sqlite3(string env)
     {
         var cfg = new config_csproj();
         cfg.area = "test";
@@ -3559,6 +3624,261 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_bundle_e(string top)
+	{
+		string id = "SQLitePCL.bundle_e";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.bundle_green");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.android");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.android");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_unified"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.internal.ios_unified");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.ios_unified.static");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_classic"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.internal.ios_classic");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.ios_classic.static");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.wpa81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120_wp81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.wp80");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_wp80");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.win81");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.uap10.0");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v140");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net45"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net45");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteComment("TODO support mac and linux (mono) here, not just windows");
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_xp");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            // TODO other pcl profiles for bait
+			f.WriteAttributeString("targetFramework", "netstandard1.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				if (cfg.area == "batteries_e")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_bundle_green(string top)
 	{
 		string id = "SQLitePCL.bundle_green";
@@ -3580,7 +3900,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", "SQLitePCL.bundle_green");
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary plugins for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, Android/wpa81/uwp/win81=SQLite included, net45=Windows SQLite included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, Android/wpa81/uwp/win81=SQLite included, net45=Windows SQLite included.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3598,12 +3918,49 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.provider.sqlite3.android");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.android");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.android");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_unified"));
+
+			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.sqlite3.ios_unified");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_classic"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.sqlite3.ios_classic");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3614,17 +3971,17 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.wpa81");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.wpa81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120_wp81");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3640,6 +3997,11 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.wp80");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v110_wp80");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
@@ -3651,17 +4013,17 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.win81");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.win81");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v120");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3672,17 +4034,17 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.uap10.0");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.uap10.0");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.lib.e_sqlite3.v140");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3693,7 +4055,12 @@ public static class gen
 			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("net45"));
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.plugin.sqlite3.net45");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.e_sqlite3.net45");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3703,25 +4070,21 @@ public static class gen
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.raw");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
 			f.WriteEndElement(); // group
 
 			// --------
 			f.WriteStartElement("group");
+            // TODO other pcl profiles for bait
 			f.WriteAttributeString("targetFramework", "netstandard1.0");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.raw");
 			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
 			f.WriteEndElement(); // dependency
 
 			f.WriteEndElement(); // group
@@ -4316,6 +4679,7 @@ public static class gen
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
+		gen_nuspec_bundle_e(top);
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4356,6 +4720,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
@@ -4397,6 +4762,7 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.bundle_e.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
