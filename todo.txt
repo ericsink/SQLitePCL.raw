@@ -4,8 +4,6 @@ combine net45 libs into one pkg?
 that version conflict detected problem with System.Collections.
 not good.
 
-gen a bld number for every build.
-
 config_esqlite3 should get reworked, because it only
 generates a nuspec
 
