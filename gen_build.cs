@@ -249,6 +249,7 @@ public static class projects
         //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
         
         items_test.Add(config_csproj.create_portable_test_xunit("netstandard1.1"));
+        items_test.Add(config_csproj.create_bundle_test_xunit("net45", "e_sqlite3"));
 	}
 
 	private static void init_esqlite3()
@@ -724,6 +725,7 @@ public class config_csproj : config_info
 	public string guid;
 	public string assemblyname;
 	public string env;
+    public bool CopyNuGetImplementations;
 	public string cpu = "anycpu";
 	public List<string> csfiles_src = new List<string>();
 	public List<string> csfiles_bld = new List<string>();
@@ -916,6 +918,24 @@ public class config_csproj : config_info
 
         //cfg.deps["xUnit.net"] = "2.1.0";
         cfg.deps["NUnit"] = "3.4.1";
+        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
+        return cfg;
+    }
+
+    public static config_csproj create_bundle_test_xunit(string env, string bundle)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("xtest.bundle_{0}.{1}", bundle, env);
+        cfg.assemblyname = string.Format("SQLitePCL.test.bundle_{0}", bundle);
+        cfg.env = env;
+        cfg.CopyNuGetImplementations = true;
+        cfg.csfiles_src.Add("tests_xunit.cs");
+        cfg.defines.Add("PROVIDER_bundle");
+
+        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
+
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
         return cfg;
@@ -2466,6 +2486,10 @@ public static class gen
 
 			f.WriteElementString("ProjectGuid", cfg.guid);
 			write_project_type_guids_for_env(f, cfg.env);
+            if (cfg.CopyNuGetImplementations)
+            {
+                f.WriteElementString("CopyNuGetImplementations", "true");
+            }
 
 			f.WriteStartElement("Configuration");
 			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");

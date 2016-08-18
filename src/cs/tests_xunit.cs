@@ -25,9 +25,15 @@ using Xunit;
 
 namespace SQLitePCL.Test
 {
-	static class Common
+
+    [CollectionDefinition("Init")]
+    public class InitCollection : ICollectionFixture<Init>
+    {
+    }
+
+	public class Init
 	{
-		public static void Init()
+		public Init()
 		{
 #if PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
@@ -51,6 +57,7 @@ namespace SQLitePCL.Test
 		}
 	}
 
+    [Collection("Init")]
 	public class test_cases
 	{
         [Fact]
@@ -936,6 +943,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_row
     {
         private class row
@@ -1079,6 +1087,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_exec_with_callback
     {
         private class work
@@ -1118,6 +1127,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_collation
     {
         private const int val = 5;
@@ -1274,6 +1284,7 @@ namespace SQLitePCL.Test
 
     }
 
+    [Collection("Init")]
     public class class_test_cube
     {
         private const int val = 5;
@@ -1301,6 +1312,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_makeblob
     {
         private const int val = 5;
@@ -1327,6 +1339,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_scalar_mean_double
     {
         private const int val = 5;
@@ -1358,6 +1371,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_countargs
     {
         private static void count_args(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1382,6 +1396,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_countnullargs
     {
         private static void count_nulls(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1416,6 +1431,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_len_as_blobs
     {
         private static void len_as_blobs(sqlite3_context ctx, object user_data, sqlite3_value[] args)
@@ -1449,6 +1465,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_concat
     {
         private const int val = 5;
@@ -1478,6 +1495,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_sum_plus_count
     {
         private class my_state
@@ -1531,6 +1549,7 @@ namespace SQLitePCL.Test
         }
     }
 
+    [Collection("Init")]
     public class class_test_hooks
     {
         private class work
