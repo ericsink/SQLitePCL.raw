@@ -26,10 +26,6 @@ use the one that is compatible with it.
 need to go to nuget.org and mark some of the older 
 packages deprecated
 
-xamarin_sqlite3 ?
-
-winsqlite3 ?
-
 maybe the "first pinvoke set that works" code should
 go somewhere else, higher up?
 
@@ -39,8 +35,6 @@ theory build multiple versions of this, each linked
 against a different library name.
 
 build iOS targetted for older iOS versions
-
-LoadLibraryEx
 
 --------
 
@@ -93,11 +87,7 @@ consider whether maybe the sqlite3 intptr dispose should check
 the version number and call sqlite3_close_v2 when it's supposedly
 available.
 
-switch to xUnit?
-
 switch my env keywords to be the same as the ones nuget uses?
-
-test_cases.cs nuget, nunit vs mstest
 
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
 SDKReference in the .targets file sort of doesn't work, and using

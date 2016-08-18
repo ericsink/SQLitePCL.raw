@@ -867,7 +867,7 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "test";
-        cfg.name = string.Format("xtest.bundle_{0}.{1}", bundle, env);
+        cfg.name = string.Format("test.bundle_{0}.{1}", bundle, env);
         cfg.assemblyname = string.Format("SQLitePCL.tests", bundle);
         cfg.env = env;
         cfg.CopyNuGetImplementations = true;
@@ -885,7 +885,7 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "test";
-        cfg.name = string.Format("xtest.portable.{0}", env);
+        cfg.name = string.Format("test.portable.{0}", env);
         cfg.assemblyname = string.Format("SQLitePCL.tests");
         cfg.env = env;
         cfg.csfiles_src.Add("tests_xunit.cs");
