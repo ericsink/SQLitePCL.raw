@@ -53,17 +53,43 @@ namespace SQLitePCL.Test
 
 	public class test_cases
 	{
-        //[OneTimeSetUp]
-        public void Init()
-        {
-            Common.Init();
-        }
-
         [Fact]
         public void passing()
         {
             Assert.Equal(5-3, 1+1);
         }
+
+        [Fact]
+        public void test_bind_parameter_index()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int, v int, t text, d real, b blob, q blob);");
+                using (sqlite3_stmt stmt = db.prepare("INSERT INTO foo (x,v,t,d,b,q) VALUES (:x,:v,:t,:d,:b,:q)"))
+                {
+					Assert.True(stmt.stmt_readonly() == 0);
+
+					Assert.Equal(stmt.bind_parameter_count(), 6);
+
+                    Assert.Equal(stmt.bind_parameter_index(":m"), 0);
+
+                    Assert.Equal(stmt.bind_parameter_index(":x"), 1);
+                    Assert.Equal(stmt.bind_parameter_index(":v"), 2);
+                    Assert.Equal(stmt.bind_parameter_index(":t"), 3);
+                    Assert.Equal(stmt.bind_parameter_index(":d"), 4);
+                    Assert.Equal(stmt.bind_parameter_index(":b"), 5);
+                    Assert.Equal(stmt.bind_parameter_index(":q"), 6);
+
+                    Assert.Equal(stmt.bind_parameter_name(1), ":x");
+                    Assert.Equal(stmt.bind_parameter_name(2), ":v");
+                    Assert.Equal(stmt.bind_parameter_name(3), ":t");
+                    Assert.Equal(stmt.bind_parameter_name(4), ":d");
+                    Assert.Equal(stmt.bind_parameter_name(5), ":b");
+                    Assert.Equal(stmt.bind_parameter_name(6), ":q");
+                }
+            }
+        }
+
     }
 
 }
