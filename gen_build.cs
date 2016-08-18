@@ -202,6 +202,7 @@ public static class projects
 
 	private static void init_tests()
 	{
+#if not
         // TODO need tests where the project referencing our nuget packages
         // is a PCL, and tests where it is not.
 
@@ -247,9 +248,13 @@ public static class projects
         //items_test.Add(config_csproj.create_portable_test("profile136"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
         //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
+#endif
         
         items_test.Add(config_csproj.create_portable_test_xunit("netstandard1.1"));
+        items_test.Add(config_csproj.create_portable_test_xunit("profile259"));
+
         items_test.Add(config_csproj.create_bundle_test_xunit("net45", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test_xunit("net45", "green"));
 	}
 
 	private static void init_esqlite3()
