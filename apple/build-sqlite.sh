@@ -25,7 +25,7 @@ mkdir -p ./obj/ios/$Z_SQL/armv7
 mkdir -p ./obj/ios/$Z_SQL/armv7s
 mkdir -p ./obj/ios/$Z_SQL/arm64
 mkdir -p ./libs/ios/$Z_SQL
-mkdir -p ./libs/ios/$Z_SQL/esqlite3.framework
+mkdir -p ./libs/ios/$Z_SQL/e_sqlite3.framework
 
 mkdir -p ./obj/mac/$Z_SQL/i386
 mkdir -p ./obj/mac/$Z_SQL/x86_64
@@ -34,11 +34,11 @@ mkdir -p ./libs/mac/$Z_SQL
 xcrun --sdk macosx clang -arch i386 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/mac/$Z_SQL/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun --sdk macosx clang -arch x86_64 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/mac/$Z_SQL/x86_64/sqlite3.c.o ../$Z_SQL/sqlite3.c
 
-libtool -static -o ./libs/mac/$Z_SQL/esqlite3.a \
+libtool -static -o ./libs/mac/$Z_SQL/e_sqlite3.a \
 	./obj/mac/$Z_SQL/i386/sqlite3.c.o \
 	./obj/mac/$Z_SQL/x86_64/sqlite3.c.o
 
-xcrun --sdk macosx clang -dynamiclib -arch i386 -arch x86_64 $Z_CFLAGS $Z_CODEC_ARGS -o ./libs/mac/$Z_SQL/libesqlite3.dylib ../$Z_SQL/sqlite3.c ./libs/mac/libcrypto.a
+xcrun --sdk macosx clang -dynamiclib -arch i386 -arch x86_64 $Z_CFLAGS $Z_CODEC_ARGS -o ./libs/mac/$Z_SQL/libe_sqlite3.dylib ../$Z_SQL/sqlite3.c ./libs/mac/libcrypto.a
 
 xcrun --sdk iphonesimulator clang -arch i386 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/ios/$Z_SQL/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun --sdk iphonesimulator clang -arch x86_64 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/ios/$Z_SQL/x86_64/sqlite3.c.o ../$Z_SQL/sqlite3.c
@@ -46,20 +46,20 @@ xcrun --sdk iphoneos clang -arch arm64 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/ios/$
 xcrun --sdk iphoneos clang -arch armv7 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/ios/$Z_SQL/armv7/sqlite3.c.o ../$Z_SQL/sqlite3.c
 xcrun --sdk iphoneos clang -arch armv7s $Z_CFLAGS $Z_CODEC_ARGS  -c -o ./obj/ios/$Z_SQL/armv7s/sqlite3.c.o ../$Z_SQL/sqlite3.c
 
-libtool -static -o ./libs/ios/$Z_SQL/esqlite3.a \
+libtool -static -o ./libs/ios/$Z_SQL/e_sqlite3.a \
 	./obj/ios/$Z_SQL/i386/sqlite3.c.o \
 	./obj/ios/$Z_SQL/x86_64/sqlite3.c.o \
 	./obj/ios/$Z_SQL/armv7/sqlite3.c.o \
 	./obj/ios/$Z_SQL/armv7s/sqlite3.c.o \
 	./obj/ios/$Z_SQL/arm64/sqlite3.c.o
 
-xcrun --sdk iphoneos clang -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch armv7 -arch armv7s -arch arm64 -o ./obj/ios/$Z_SQL/esqlite3.device -framework Foundation -fapplication-extension ./libs/ios/libcrypto.a
-install_name_tool -id @rpath/esqlite3.framework/esqlite3  ./obj/ios/$Z_SQL/esqlite3.device
+xcrun --sdk iphoneos clang -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch armv7 -arch armv7s -arch arm64 -o ./obj/ios/$Z_SQL/e_sqlite3.device -framework Foundation -fapplication-extension ./libs/ios/libcrypto.a
+install_name_tool -id @rpath/e_sqlite3.framework/e_sqlite3  ./obj/ios/$Z_SQL/e_sqlite3.device
 
-xcrun --sdk iphonesimulator clang -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch i386 -arch x86_64 -o ./obj/ios/$Z_SQL/esqlite3.simulator -framework Foundation -fapplication-extension -mios-simulator-version-min=8.0 ./libs/ios/libcrypto.a
-install_name_tool -id @rpath/esqlite3.framework/esqlite3  ./obj/ios/$Z_SQL/esqlite3.simulator
+xcrun --sdk iphonesimulator clang -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch i386 -arch x86_64 -o ./obj/ios/$Z_SQL/e_sqlite3.simulator -framework Foundation -fapplication-extension -mios-simulator-version-min=8.0 ./libs/ios/libcrypto.a
+install_name_tool -id @rpath/e_sqlite3.framework/e_sqlite3  ./obj/ios/$Z_SQL/e_sqlite3.simulator
 
-lipo -create  ./obj/ios/$Z_SQL/esqlite3.device  ./obj/ios/$Z_SQL/esqlite3.simulator -output  ./libs/ios/$Z_SQL/esqlite3.framework/esqlite3
+lipo -create  ./obj/ios/$Z_SQL/e_sqlite3.device  ./obj/ios/$Z_SQL/e_sqlite3.simulator -output  ./libs/ios/$Z_SQL/e_sqlite3.framework/e_sqlite3
 
 echo ----------------------------------------------------------------
 echo build-sqlite.sh done
