@@ -180,23 +180,23 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
 
-        // bundle_e
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "ios_unified", "internal"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "ios_classic", "internal"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "android", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "win8", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "wpa81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "win81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "uap10.0", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net35", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net40", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "wp80", "e_sqlite3"));
+        // bundle_e_sqlite3
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_classic", "internal"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "android", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wpa81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net35", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net40", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net45", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wp80", "e_sqlite3"));
 
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile111", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile136", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e", "netstandard1.1", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
 
     }
 
@@ -230,18 +230,18 @@ public static class projects
         items_test.Add(config_csproj.create_bundle_test("ios_classic", "green"));
         items_test.Add(config_csproj.create_bundle_test("wp80", "green"));
 
-        // bundle_e
-        items_test.Add(config_csproj.create_bundle_test("net35", "e"));
-        items_test.Add(config_csproj.create_bundle_test("net40", "e"));
-        items_test.Add(config_csproj.create_bundle_test("net45", "e"));
-        items_test.Add(config_csproj.create_bundle_test("win8", "e"));
-        items_test.Add(config_csproj.create_bundle_test("win81", "e"));
-        items_test.Add(config_csproj.create_bundle_test("wpa81", "e"));
-        items_test.Add(config_csproj.create_bundle_test("uap10.0", "e"));
-        items_test.Add(config_csproj.create_bundle_test("android", "e"));
-        items_test.Add(config_csproj.create_bundle_test("ios_unified", "e"));
-        items_test.Add(config_csproj.create_bundle_test("ios_classic", "e"));
-        items_test.Add(config_csproj.create_bundle_test("wp80", "e"));
+        // bundle_e_sqlite3
+        items_test.Add(config_csproj.create_bundle_test("net35", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("net40", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("win8", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("win81", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("wpa81", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("uap10.0", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("android", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("ios_unified", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("ios_classic", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("wp80", "e_sqlite3"));
 
         items_test.Add(config_csproj.create_portable_test("profile111"));
         //items_test.Add(config_csproj.create_portable_test("profile136"));
@@ -3603,9 +3603,9 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_e(string top)
+	private static void gen_nuspec_bundle_e_sqlite3(string top)
 	{
-		string id = "SQLitePCL.bundle_e";
+		string id = "SQLitePCL.bundle_e_sqlite3";
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3623,7 +3623,7 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "SQLitePCL.bundle_e");
+			f.WriteElementString("title", "SQLitePCL.bundle_e_sqlite3");
 			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3885,7 +3885,7 @@ public static class gen
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.area == "batteries_e")
+				if (cfg.area == "batteries_e_sqlite3")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -4758,7 +4758,7 @@ public static class gen
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_bundle_green(top);
-		gen_nuspec_bundle_e(top);
+		gen_nuspec_bundle_e_sqlite3(top);
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4799,7 +4799,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e_sqlite3.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
@@ -4841,7 +4841,7 @@ public static class gen
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push SQLitePCL.bundle_e.{0}.nupkg", NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push SQLitePCL.bundle_e_sqlite3.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
