@@ -23,7 +23,7 @@ using SQLitePCL.Ugly;
 
 using Xunit;
 
-namespace SQLitePCL.Test
+namespace SQLitePCL.Tests
 {
 
     [CollectionDefinition("Init")]

@@ -207,6 +207,10 @@ public static class projects
 
         items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
         items_test.Add(config_csproj.create_bundle_test("net45", "green"));
+
+        // in main
+        items_csproj.Add(config_csproj.create_portable_test_main("netstandard1.1"));
+        items_csproj.Add(config_csproj.create_portable_test_main("profile259"));
 	}
 
 	private static void init_esqlite3()
@@ -893,6 +897,22 @@ public class config_csproj : config_info
 
         cfg.deps["xunit"] = "2.2.0-beta2-build3300";
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        return cfg;
+    }
+
+    public static config_csproj create_portable_test_main(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("mtest.portable.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.tests");
+        cfg.env = env;
+        cfg.csfiles_src.Add("tests_xunit.cs");
+        cfg.defines.Add("PROVIDER_none");
+
+        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
+        cfg.ref_ugly = true;
+        cfg.ref_raw = true;
         return cfg;
     }
 
@@ -3403,6 +3423,102 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_tests(string top)
+	{
+		string id = "SQLitePCL.tests";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.tests");
+			f.WriteElementString("description", "tests");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "tests");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "netstandard1.0");
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "NETStandard.Library");
+			f.WriteAttributeString("version", "1.6.0");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.ugly");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			//f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("profile259"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.ugly");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				if (cfg.area == "test")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_ugly(string top)
 	{
 		string id = "SQLitePCL.ugly";
@@ -4076,62 +4192,6 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_tests(string top, string root)
-	{
-		string id = "SQLitePCL.tests";
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for the unified stuff
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", "Test cases for SQLitePCL.raw");
-			f.WriteElementString("description", "Create a new unit test project.  Add this NuGetPackage.  Build.");
-			f.WriteElementString("authors", "Eric Sink");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "test_cases.cs is a bunch unit tests for SQLitePCL.raw");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteStartElement("dependencies");
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "SQLitePCL.ugly");
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", Path.Combine(root, "src\\cs\\test_cases.cs"));
-			f.WriteAttributeString("target", "content");
-			f.WriteEndElement(); // file
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
 	private static string gen_nuget_targets_sqlite3_itself(string top, string id, string toolset)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -4604,6 +4664,7 @@ public static class gen
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
+
 		foreach (config_csproj cfg in projects.items_test)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -4642,6 +4703,7 @@ public static class gen
 		gen_nuspec_raw(top, root, "SQLitePCL.raw");
 
 		gen_nuspec_ugly(top);
+		gen_nuspec_tests(top);
 		gen_nuspec_bundle_green(top);
 		gen_nuspec_bundle_e_sqlite3(top);
 
@@ -4683,6 +4745,7 @@ public static class gen
 			tw.WriteLine("# TODO");
 			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e_sqlite3.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
@@ -4725,6 +4788,7 @@ public static class gen
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push SQLitePCL.raw.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.ugly.{0}.nupkg", NUSPEC_VERSION);
+            // TODO push SQLitePCL.tests?
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_green.{0}.nupkg", NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push SQLitePCL.bundle_e_sqlite3.{0}.nupkg", NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
