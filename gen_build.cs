@@ -202,59 +202,11 @@ public static class projects
 
 	private static void init_tests()
 	{
-#if not
-        // TODO need tests where the project referencing our nuget packages
-        // is a PCL, and tests where it is not.
-
-        items_test.Add(config_csproj.create_test_e_sqlite3("net35"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("net40"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("net45"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("win8"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("win81"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("wpa81"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("uap10.0"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("android"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("ios_unified"));
-        items_test.Add(config_csproj.create_test_e_sqlite3("ios_classic"));
-        // TODO items_test.Add(config_csproj.create_test_e_sqlite3("wp80"));
-
-        // bundle_green
-        items_test.Add(config_csproj.create_bundle_test("net35", "green"));
-        items_test.Add(config_csproj.create_bundle_test("net40", "green"));
-        items_test.Add(config_csproj.create_bundle_test("net45", "green"));
-        items_test.Add(config_csproj.create_bundle_test("win8", "green"));
-        items_test.Add(config_csproj.create_bundle_test("win81", "green"));
-        items_test.Add(config_csproj.create_bundle_test("wpa81", "green"));
-        items_test.Add(config_csproj.create_bundle_test("uap10.0", "green"));
-        items_test.Add(config_csproj.create_bundle_test("android", "green"));
-        items_test.Add(config_csproj.create_bundle_test("ios_unified", "green"));
-        items_test.Add(config_csproj.create_bundle_test("ios_classic", "green"));
-        items_test.Add(config_csproj.create_bundle_test("wp80", "green"));
-
-        // bundle_e_sqlite3
-        items_test.Add(config_csproj.create_bundle_test("net35", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("net40", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("win8", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("win81", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("wpa81", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("uap10.0", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("android", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("ios_unified", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("ios_classic", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("wp80", "e_sqlite3"));
-
-        items_test.Add(config_csproj.create_portable_test("profile111"));
-        //items_test.Add(config_csproj.create_portable_test("profile136"));
+        items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
-        //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
-#endif
-        
-        items_test.Add(config_csproj.create_portable_test_xunit("netstandard1.1"));
-        items_test.Add(config_csproj.create_portable_test_xunit("profile259"));
 
-        items_test.Add(config_csproj.create_bundle_test_xunit("net45", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test_xunit("net45", "green"));
+        items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
+        items_test.Add(config_csproj.create_bundle_test("net45", "green"));
 	}
 
 	private static void init_esqlite3()
@@ -915,25 +867,8 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "test";
-        cfg.name = string.Format("test.bundle_{0}.{1}", bundle, env);
-        cfg.assemblyname = string.Format("SQLitePCL.test.bundle_{0}", bundle);
-        cfg.env = env;
-        cfg.csfiles_src.Add("test_cases.cs");
-        cfg.defines.Add("PROVIDER_bundle");
-
-        //cfg.deps["xUnit.net"] = "2.1.0";
-        cfg.deps["NUnit"] = "3.4.1";
-        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
-        cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
-        return cfg;
-    }
-
-    public static config_csproj create_bundle_test_xunit(string env, string bundle)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
         cfg.name = string.Format("xtest.bundle_{0}.{1}", bundle, env);
-        cfg.assemblyname = string.Format("SQLitePCL.test.bundle_{0}", bundle);
+        cfg.assemblyname = string.Format("SQLitePCL.tests", bundle);
         cfg.env = env;
         cfg.CopyNuGetImplementations = true;
         cfg.csfiles_src.Add("tests_xunit.cs");
@@ -950,93 +885,14 @@ public class config_csproj : config_info
     {
         var cfg = new config_csproj();
         cfg.area = "test";
-        cfg.name = string.Format("test.portable.{0}", env);
-        cfg.assemblyname = string.Format("SQLitePCL.test");
-        cfg.env = env;
-        cfg.csfiles_src.Add("test_cases.cs");
-        cfg.defines.Add("PROVIDER_none");
-
-        //cfg.deps["xUnit.net"] = "2.1.0";
-        cfg.deps["NUnit"] = "3.4.1";
-        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
-        return cfg;
-    }
-
-    public static config_csproj create_portable_test_xunit(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
         cfg.name = string.Format("xtest.portable.{0}", env);
-        cfg.assemblyname = string.Format("SQLitePCL.test");
+        cfg.assemblyname = string.Format("SQLitePCL.tests");
         cfg.env = env;
         cfg.csfiles_src.Add("tests_xunit.cs");
         cfg.defines.Add("PROVIDER_none");
 
         cfg.deps["xunit"] = "2.2.0-beta2-build3300";
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
-        return cfg;
-    }
-
-    public static config_csproj create_test_e_sqlite3(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
-        cfg.name = string.Format("test.e_sqlite3.{0}", env);
-        cfg.assemblyname = string.Format("SQLitePCL.test.e_sqlite3");
-        cfg.env = env;
-        cfg.csfiles_src.Add("test_cases.cs");
-
-        //cfg.deps["xUnit.net"] = "2.1.0";
-        cfg.deps["NUnit"] = "3.4.1";
-
-        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
-        switch (cfg.env)
-        {
-            case "ios_unified":
-            case "ios_classic":
-                cfg.deps[string.Format("SQLitePCL.provider.internal.{0}", cfg.env)] = gen.NUSPEC_VERSION;
-                cfg.defines.Add("PROVIDER_internal");
-                break;
-            case "wp80":
-                cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
-                cfg.defines.Add("PROVIDER_cppinterop");
-                break;
-            default:
-                cfg.deps[string.Format("SQLitePCL.provider.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
-                cfg.defines.Add("PROVIDER_e_sqlite3");
-                break;
-        }
-        switch (cfg.env)
-        {
-            case "ios_unified":
-            case "ios_classic":
-                cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}.static", cfg.env)] = gen.NUSPEC_VERSION;
-                break;
-            case "android":
-                cfg.deps[string.Format("SQLitePCL.lib.e_sqlite3.{0}", cfg.env)] = gen.NUSPEC_VERSION;
-                break;
-            case "wp80":
-                cfg.deps["SQLitePCL.lib.e_sqlite3.v110_wp80"] = gen.NUSPEC_VERSION;
-                break;
-            case "win81":
-                cfg.deps["SQLitePCL.lib.e_sqlite3.v120"] = gen.NUSPEC_VERSION;
-                break;
-            case "wpa81":
-                cfg.deps["SQLitePCL.lib.e_sqlite3.v120_wp81"] = gen.NUSPEC_VERSION;
-                break;
-            case "uap10.0":
-                cfg.deps["SQLitePCL.lib.e_sqlite3.v140"] = gen.NUSPEC_VERSION;
-                break;
-            case "net35":
-            case "net40":
-            case "net45":
-                cfg.deps["SQLitePCL.lib.e_sqlite3.v110_xp"] = gen.NUSPEC_VERSION;
-                break;
-        }
-        if (env == "wp80")
-        {
-            cfg.cpu = "x86";
-        }
         return cfg;
     }
 
