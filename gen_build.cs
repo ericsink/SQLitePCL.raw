@@ -156,7 +156,9 @@ public static class projects
         items_csproj.Add(config_csproj.create_wp80_provider("x86"));
 
         items_csproj.Add(config_csproj.create_ugly("net35"));
+        items_csproj.Add(config_csproj.create_ugly("profile111"));
         items_csproj.Add(config_csproj.create_ugly("profile136"));
+        items_csproj.Add(config_csproj.create_ugly("profile259"));
         items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
         items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
@@ -241,6 +243,10 @@ public static class projects
         items_test.Add(config_csproj.create_bundle_test("ios_classic", "e"));
         items_test.Add(config_csproj.create_bundle_test("wp80", "e"));
 
+        items_test.Add(config_csproj.create_portable_test("profile111"));
+        //items_test.Add(config_csproj.create_portable_test("profile136"));
+        items_test.Add(config_csproj.create_portable_test("profile259"));
+        //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
 	}
 
 	private static void init_esqlite3()
@@ -910,6 +916,22 @@ public class config_csproj : config_info
         cfg.deps["NUnit"] = "3.4.1";
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
+        return cfg;
+    }
+
+    public static config_csproj create_portable_test(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("test.portable.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.test");
+        cfg.env = env;
+        cfg.csfiles_src.Add("test_cases.cs");
+        cfg.defines.Add("PROVIDER_none");
+
+        //cfg.deps["xUnit.net"] = "2.1.0";
+        cfg.deps["NUnit"] = "3.4.1";
+        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         return cfg;
     }
 

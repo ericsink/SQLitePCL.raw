@@ -43,6 +43,8 @@ namespace SQLitePCL.Test
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
 #elif PROVIDER_bundle
             SQLitePCL.Batteries.Init();
+#elif PROVIDER_none
+	    // used for when the tests are in a PCL
 #else
 #error test_cases.cs built with no provider specified
 #endif
