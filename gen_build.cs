@@ -247,6 +247,8 @@ public static class projects
         //items_test.Add(config_csproj.create_portable_test("profile136"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
         //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
+        
+        items_test.Add(config_csproj.create_portable_test_xunit("netstandard1.1"));
 	}
 
 	private static void init_esqlite3()
@@ -931,6 +933,21 @@ public class config_csproj : config_info
 
         //cfg.deps["xUnit.net"] = "2.1.0";
         cfg.deps["NUnit"] = "3.4.1";
+        cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        return cfg;
+    }
+
+    public static config_csproj create_portable_test_xunit(string env)
+    {
+        var cfg = new config_csproj();
+        cfg.area = "test";
+        cfg.name = string.Format("xtest.portable.{0}", env);
+        cfg.assemblyname = string.Format("SQLitePCL.test");
+        cfg.env = env;
+        cfg.csfiles_src.Add("tests_xunit.cs");
+        cfg.defines.Add("PROVIDER_none");
+
+        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         return cfg;
     }
@@ -4813,7 +4830,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
 		{
-			tw.WriteLine("../../nuget restore -Source . test.sln");
+			tw.WriteLine("../../nuget restore -Source . -Source https://www.nuget.org/api/v2 test.sln");
 			tw.WriteLine("msbuild /p:Configuration=Release test.sln");
 		}
 
