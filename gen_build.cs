@@ -27,12 +27,8 @@ public static class projects
 	//
 	public static List<config_sqlite3> items_sqlite3 = new List<config_sqlite3>();
 	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
-	//public static List<config_pcl> items_pcl = new List<config_pcl>();
-	//public static List<config_higher> items_higher = new List<config_higher>();
-	//public static List<config_tests> items_tests = new List<config_tests>();
-	//public static List<config_plugin> items_plugin = new List<config_plugin>();
-	//public static List<config_batteries> items_batteries = new List<config_batteries>();
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
+
 	public static List<config_csproj> items_test = new List<config_csproj>();
 
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
@@ -43,16 +39,11 @@ public static class projects
 	{
 		init_sqlite3();
 		init_cppinterop();
-		//init_pcl_bait();
-		//init_pcl_pinvoke();
-		//init_plugin();
-		//init_pcl_cppinterop();
-		//init_higher();
-		//init_batteries();
         init_csproj();
-		init_esqlite3();
 
 		init_tests();
+
+		init_esqlite3();
 	}
 
 	private static void init_sqlite3()
@@ -93,6 +84,11 @@ public static class projects
         items_csproj.Add(config_csproj.create_raw("profile259"));
         items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
         items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
+
+        items_csproj.Add(config_csproj.create_provider("sqlite3_xamarin", "android"));
+
+        items_csproj.Add(config_csproj.create_provider("winsqlite3", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("winsqlite3", "net45"));
 
         items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
@@ -333,32 +329,6 @@ public static class projects
 		return result;
 	}
 
-#if not
-	public static config_plugin find_battery_plugin(string env)
-	{
-		foreach (config_plugin cfg in projects.items_plugin)
-		{
-			if ((cfg.env == env) && (cfg.what == "sqlite3"))
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(env);
-	}
-
-	public static config_pcl find_bait(string env)
-	{
-		foreach (config_pcl cfg in projects.items_pcl)
-		{
-			if (cfg.env == env)
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(env);
-	}
-#endif
-
 	public static config_csproj find(string area, string env)
     {
 		foreach (config_csproj cfg in projects.items_csproj)
@@ -444,42 +414,6 @@ public static class projects
         }
 		throw new Exception(string.Format("ugly not found for {0}", env));
 	}
-
-#if not
-	public static List<config_pcl> find_pcls(string env, string api, string cpu)
-	{
-		List<config_pcl> a = new List<config_pcl>();
-		foreach (config_pcl cfg in projects.items_pcl)
-		{
-			if (
-					(env != null)
-					&& (cfg.env != env)
-			   )
-			{
-				continue;
-			}
-
-			if (
-					(api != null)
-					&& (cfg.api != api)
-			   )
-			{
-				continue;
-			}
-
-			if (
-					(cpu != null)
-					&& (cfg.cpu != cpu)
-			   )
-			{
-				continue;
-			}
-
-			a.Add(cfg);
-		}
-		return a;
-	}
-#endif
 
 }
 
@@ -909,6 +843,12 @@ public class config_csproj : config_info
                 {
                     case "sqlite3":
                         cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
+                        break;
+                    case "winsqlite3":
+                        cfg.csfiles_bld.Add("pinvoke_winsqlite3.cs");
+                        break;
+                    case "sqlite3_xamarin":
+                        cfg.csfiles_bld.Add("pinvoke_sqlite3_xamarin.cs");
                         break;
                     case "custom_sqlite3":
                         cfg.csfiles_bld.Add("pinvoke_custom_sqlite3.cs");
@@ -4702,6 +4642,18 @@ public static class gen
 		{
 			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "custom_sqlite3");
 			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "custom_sqlite3");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_winsqlite3.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "winsqlite3");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "winsqlite3");
+			tw.Write(cs2);
+		}
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3_xamarin.cs")))
+		{
+			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3_xamarin");
+			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3_xamarin");
 			tw.Write(cs2);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))
