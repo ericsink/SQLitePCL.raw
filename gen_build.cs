@@ -2060,280 +2060,6 @@ public static class gen
 
     }
 
-#if not
-	private static void gen_plugin(config_plugin cfg, string root, string top)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			write_toolsversion(f, cfg.env);
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			// TODO is this actually needed?
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props");
-			f.WriteAttributeString("Condition", "Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-
-			f.WriteElementString("ProjectGuid", cfg.guid);
-
-			write_project_type_guids_for_env(f, cfg.env);
-
-			f.WriteStartElement("Configuration");
-			f.WriteAttributeString("Condition", " '$(Configuration)' == '' ");
-
-			f.WriteString("Debug");
-
-			f.WriteEndElement(); // Configuration
-
-			f.WriteElementString("SchemaVersion", "2.0");
-			f.WriteElementString("Platform", "AnyCPU");
-			f.WriteElementString("DefaultLanguage", "en-us");
-			//f.WriteElementString("FileAlignment", "512");
-			f.WriteElementString("WarningLevel", "4");
-			//f.WriteElementString("PlatformTarget", cfg.cpu.Replace(" ", ""));
-			f.WriteElementString("OutputType", "Library");
-			f.WriteElementString("RootNamespace", "SQLitePCL");
-			f.WriteElementString("AssemblyName", string.Format("SQLitePCLPlugin_{0}", cfg.imp)); // match the name in get_products()
-
-			List<string> defines = write_header_properties(f, cfg.env);
-
-			switch (cfg.env)
-			{
-				case "net35":
-				case "net40":
-				case "net45":
-					defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
-					break;
-			}
-
-			switch (cfg.env)
-			{
-				case "ios_classic":
-				case "ios_unified":
-					switch (cfg.what)
-					{
-						case "plain":
-							// no define needed
-							break;
-						case "custom":
-							defines.Add("IOS_PACKAGED_CUSTOM");
-							break;
-						case "sqlite3":
-							defines.Add("IOS_PACKAGED_SQLITE3");
-							break;
-						case "sqlcipher":
-							defines.Add("IOS_PACKAGED_SQLCIPHER");
-							break;
-						default:
-							throw new Exception(cfg.what);
-					}
-					break;
-			}
-
-			f.WriteEndElement(); // PropertyGroup
-
-			write_section(top, cfg, f, true, defines);
-			write_section(top, cfg, f, false, defines);
-
-			f.WriteStartElement("ItemGroup");
-			write_standard_assemblies(f, cfg.env);
-			f.WriteEndElement(); // ItemGroup
-
-			switch (cfg.env)
-			{
-				case "ios_unified":
-				case "ios_classic":
-					f.WriteStartElement("ItemGroup");
-					write_cs_compile(f, root, "src\\cs\\imp_ios_internal.cs");
-					write_cs_compile(f, top, "pinvoke_ios_internal.cs");
-					write_cs_compile(f, root, "src\\cs\\util.cs");
-					f.WriteEndElement(); // ItemGroup
-					break;
-				default:
-					f.WriteStartElement("ItemGroup");
-					switch (cfg.what)
-					{
-						case "plain":
-							write_cs_compile(f, top, "pinvoke_sqlite3.cs");
-							break;
-						case "custom":
-							write_cs_compile(f, top, "pinvoke_custom_sqlite3.cs");
-							break;
-						case "sqlite3":
-							write_cs_compile(f, top, "pinvoke_esqlite3.cs");
-							break;
-						case "sqlcipher":
-							write_cs_compile(f, top, "pinvoke_sqlcipher.cs");
-							break;
-						default:
-							throw new Exception(cfg.what);
-					}
-					write_cs_compile(f, root, "src\\cs\\util.cs");
-					f.WriteEndElement(); // ItemGroup
-					break;
-			}
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteStartElement("ProjectReference");
-			{
-				config_pcl other = projects.find_bait(cfg.env);
-				f.WriteAttributeString("Include", other.get_project_path(top));
-				f.WriteElementString("Project", other.guid);
-				f.WriteElementString("Name", other.get_name());
-				//f.WriteElementString("Private", "true");
-			}
-			f.WriteEndElement(); // ProjectReference
-			f.WriteEndElement(); // ItemGroup
-
-			switch (cfg.env)
-			{
-				case "ios_unified":
-                        if (cfg.what == "sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore in name
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
-                            f.WriteElementString("Link", "libsqlcipher.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "plain")
-			{
-				// nothing in resources needed
-			}
-			else if (cfg.what == "custom")
-			{
-				// resource must be provided later
-			}
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
-					break;
-
-					case "ios_classic":
-                        if (cfg.what == "sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore in name
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "plain")
-			{
-				// nothing in resources needed
-			}
-			else if (cfg.what == "custom")
-			{
-				// resource must be provided later
-			}
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
-						break;
-
-					case "android":
-						if (cfg.what == "sqlite3")
-						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
-                            f.WriteEndElement(); // ItemGroup
-						}
-						else if (cfg.what == "sqlcipher")
-						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs_sqlcipher(root, f);
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "plain")
-			{
-				// nothing in resources needed
-				// TODO this should be disallowed as of Android N, right?
-			}
-			else if (cfg.what == "custom")
-			{
-				// dll must be provided later
-			}
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
-
-						break;
-				}
-
-			write_csproj_footer(f, cfg.env);
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-
-		string subdir = cfg.get_project_subdir(top);
-		switch (cfg.env)
-		{
-			case "uap10.0":
-				write_project_dot_json_uap(subdir);
-				break;
-			case "netstandard1.0":
-				write_project_dot_json_netstandard10(subdir);
-				break;
-			case "netstandard1.1":
-				write_project_dot_json_netstandard11(subdir);
-				break;
-		}
-	}
-#endif
-
 	private static void gen_csproj(config_csproj cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2482,8 +2208,8 @@ public static class gen
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
+                            f.WriteElementString("Link", "e_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
@@ -2512,8 +2238,8 @@ public static class gen
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
+                            f.WriteElementString("Link", "e_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
                         }
@@ -2524,8 +2250,8 @@ public static class gen
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlcipher\\esqlite3.a"));
-                            f.WriteElementString("Link", "esqlite3.a");
+                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
+                            f.WriteElementString("Link", "libsqlcipher.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             // TODO warning says this is deprecated
