@@ -1967,46 +1967,46 @@ public static class gen
         // TODO put underscore in all these names
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("x86\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("x86_64\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("armeabi\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("arm64-v8a\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("armeabi-v7a\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("mips\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\libesqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips64\\libesqlite3.so", which));
+        f.WriteElementString("Link", string.Format("mips64\\libe_sqlite3.so", which));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 #endif
 
