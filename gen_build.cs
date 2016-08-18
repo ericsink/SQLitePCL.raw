@@ -872,7 +872,7 @@ public class config_csproj : config_info
         var cfg = new config_csproj();
         cfg.area = "test";
         cfg.name = string.Format("test.bundle_{0}.{1}", bundle, env);
-        cfg.assemblyname = string.Format("SQLitePCL.tests", bundle);
+        cfg.assemblyname = string.Format("SQLitePCL.tests");
         cfg.env = env;
         cfg.CopyNuGetImplementations = true;
         cfg.csfiles_src.Add("tests_xunit.cs");
@@ -3462,6 +3462,11 @@ public static class gen
 			f.WriteAttributeString("targetFramework", "netstandard1.0");
 
 			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "xunit");
+			f.WriteAttributeString("version", "2.2.0-beta2-build3300");
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "NETStandard.Library");
 			f.WriteAttributeString("version", "1.6.0");
 			f.WriteEndElement(); // dependency
@@ -3481,6 +3486,11 @@ public static class gen
 			// --------
 			f.WriteStartElement("group");
 			//f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("profile259"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "xunit");
+			f.WriteAttributeString("version", "2.2.0-beta2-build3300");
+			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "SQLitePCL.ugly");
