@@ -1,4 +1,7 @@
 
+perhaps gen more than one of each test runner
+project so we can use different bundles
+
 should MonoAndroid version be 2.3 or 6.0 ?
 
 new docs

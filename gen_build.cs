@@ -4401,6 +4401,7 @@ public static class gen
         fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.Android", "project.json"));
         fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.WP81", "project.json"));
         fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.UWP10", "project.json"));
+        fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.iOS", "project.json"));
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
