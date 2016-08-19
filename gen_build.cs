@@ -79,6 +79,15 @@ public static class projects
     private static void init_csproj()
     {
         items_csproj.Add(config_csproj.create_raw("net35"));
+        items_csproj.Add(config_csproj.create_raw("net40"));
+        items_csproj.Add(config_csproj.create_raw("net45"));
+        items_csproj.Add(config_csproj.create_raw("ios_unified"));
+        items_csproj.Add(config_csproj.create_raw("ios_classic"));
+        items_csproj.Add(config_csproj.create_raw("android"));
+        items_csproj.Add(config_csproj.create_raw("win8"));
+        items_csproj.Add(config_csproj.create_raw("win81"));
+        items_csproj.Add(config_csproj.create_raw("wpa81"));
+        items_csproj.Add(config_csproj.create_raw("uap10.0"));
         items_csproj.Add(config_csproj.create_raw("profile111"));
         items_csproj.Add(config_csproj.create_raw("profile136"));
         items_csproj.Add(config_csproj.create_raw("profile259"));
@@ -156,6 +165,15 @@ public static class projects
         items_csproj.Add(config_csproj.create_wp80_provider("x86"));
 
         items_csproj.Add(config_csproj.create_ugly("net35"));
+        items_csproj.Add(config_csproj.create_ugly("net40"));
+        items_csproj.Add(config_csproj.create_ugly("net45"));
+        items_csproj.Add(config_csproj.create_ugly("android"));
+        items_csproj.Add(config_csproj.create_ugly("ios_unified"));
+        items_csproj.Add(config_csproj.create_ugly("ios_classic"));
+        items_csproj.Add(config_csproj.create_ugly("win8"));
+        items_csproj.Add(config_csproj.create_ugly("win81"));
+        items_csproj.Add(config_csproj.create_ugly("wpa81"));
+        items_csproj.Add(config_csproj.create_ugly("uap10.0"));
         items_csproj.Add(config_csproj.create_ugly("profile111"));
         items_csproj.Add(config_csproj.create_ugly("profile136"));
         items_csproj.Add(config_csproj.create_ugly("profile259"));
@@ -210,6 +228,9 @@ public static class projects
 
         // in main
         items_csproj.Add(config_csproj.create_portable_test_main("netstandard1.1"));
+        //xunit only supports 259
+        //items_csproj.Add(config_csproj.create_portable_test_main("profile111"));
+        //items_csproj.Add(config_csproj.create_portable_test_main("profile136"));
         items_csproj.Add(config_csproj.create_portable_test_main("profile259"));
 	}
 
