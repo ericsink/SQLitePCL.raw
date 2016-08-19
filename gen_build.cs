@@ -4337,6 +4337,44 @@ public static class gen
 		}
 	}
 
+	private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+    {
+        // Get the subdirectories for the specified directory.
+        DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+        if (!dir.Exists)
+        {
+            throw new DirectoryNotFoundException(
+                "Source directory does not exist or could not be found: "
+                + sourceDirName);
+        }
+
+        DirectoryInfo[] dirs = dir.GetDirectories();
+        // If the destination directory doesn't exist, create it.
+        if (!Directory.Exists(destDirName))
+        {
+            Directory.CreateDirectory(destDirName);
+        }
+
+        // Get the files in the directory and copy them to the new location.
+        FileInfo[] files = dir.GetFiles();
+        foreach (FileInfo file in files)
+        {
+            string temppath = Path.Combine(destDirName, file.Name);
+            file.CopyTo(temppath, false);
+        }
+
+        // If copying subdirectories, copy them and their contents to new location.
+        if (copySubDirs)
+        {
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                string temppath = Path.Combine(destDirName, subdir.Name);
+                DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+            }
+        }
+    }
+
 	public static void Main(string[] args)
 	{
 		projects.init();
@@ -4348,6 +4386,17 @@ public static class gen
 		// create the build directory
 
 		Directory.CreateDirectory(top);
+        DirectoryCopy(Path.Combine(root, "Tests"), Path.Combine(top, "Tests"), true);
+
+        {
+            string path = Path.Combine(top, "Tests", "Tests.Android", "project.json");
+            string txt = File.ReadAllText(path);
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                string cs1 = txt.Replace("__VERSION__", NUSPEC_VERSION);
+                tw.Write(cs1);
+            }
+        }
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
@@ -4524,8 +4573,8 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
 		{
-			tw.WriteLine("../../nuget restore -Source . -Source https://www.nuget.org/api/v2 test.sln");
-			tw.WriteLine("msbuild /p:Configuration=Release test.sln");
+			tw.WriteLine("../../nuget restore -Source . -Source https://www.nuget.org/api/v2 ./Tests/Tests.sln");
+			tw.WriteLine("msbuild /p:Configuration=Release Tests/Tests.sln");
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))

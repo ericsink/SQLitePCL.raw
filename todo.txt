@@ -1,4 +1,8 @@
 
+should MonoAndroid version be 2.3 or 6.0 ?
+
+new docs
+
 why does netstandard.library seem to drag in so much
 stuff?  tried building for specific platforms instead
 of letting netstandard happen and bring in 50 pkgs.
@@ -11,10 +15,15 @@ then fix their project.json/packages.config files
 to reference the newly-built nupkgs.  and then
 nuget restore from current dir.
 
+    ios
+    android
+    uwp
+    wpa81
+
 gen_nuspec_bundle_ green/e should share more code
 
-should bundle_green just use provider_sqlite3 instead
-of e?  on linux/mac, use system sqlite.  on windows,
+for net45, should bundle_green just use provider_sqlite3 
+instead of e?  on linux/mac, use system sqlite.  on windows,
 use the extension sdk.  but does that exist for net45?
 
 will we ever wish a lib packaged in nuget v3 had a
@@ -35,7 +44,8 @@ generates a nuspec, not a csproj
 do we need a copy of the main raw assembly compiled specifically
 for every tfm?  like android?  or is it sufficient to have
 it compiled for each set of compile options, and each platform
-use the one that is compatible with it.
+use the one that is compatible with it.  problem with netstandard
+is that it brings in lots of little deps.
 
 need to go to nuget.org and mark some of the older 
 packages deprecated

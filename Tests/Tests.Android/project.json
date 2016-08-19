@@ -1,0 +1,11 @@
+{
+    "dependencies" : {
+        "xunit.runner.devices" : "2.1.0",
+        "SQLitePCL.tests" : "__VERSION__",
+        "SQLitePCL.bundle_e_sqlite3": "__VERSION__",
+    },
+    "frameworks" : {
+         "MonoAndroid,Version=v6.0": {}
+    },
+    "supports" : {}
+}
