@@ -1,0 +1,16 @@
+﻿{
+  "dependencies": {
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
+        "xunit.runner.devices" : "2.1.0",
+        "SQLitePCL.tests" : "__VERSION__",
+        "SQLitePCL.bundle_e_sqlite3": "__VERSION__",
+  },
+  "frameworks": {
+    "uap10.0": {}
+  },
+  "runtimes": {
+    "win10-arm": {},
+    "win10-x86": {},
+    "win10-x64": {},
+  }
+}

@@ -26,7 +26,6 @@ namespace Tests.Android
 		
 		public static void UpdateIdValues()
 		{
-			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Tests.Android.Resource.Attribute.actionBarSize;
 		}
 		
 		public partial class Attribute
