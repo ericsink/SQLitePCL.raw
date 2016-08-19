@@ -827,6 +827,8 @@ public class config_csproj : config_info
                         cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
                         break;
                     default:
+                        // TODO e_sqlite3 and custom_sqlite3 could be supported here,
+                        // but without dylibs, they don't make much sense.
                         throw new Exception(what);
                 }
                 break;

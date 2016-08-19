@@ -1,12 +1,15 @@
 
+why does netstandard.library seem to drag in so much
+stuff?  tried building for specific platforms instead
+of letting netstandard happen and bring in 50 pkgs.
+xunit still goes that way, but if it's only xunit,
+that's fine for now.
+
 tests.sln wants to have actual device runners in
 it.  generate them?  preconfigure them and unzip?
 then fix their project.json/packages.config files
 to reference the newly-built nupkgs.  and then
 nuget restore from current dir.
-
-why does netstandard.library seem to drag in so much
-stuff?
 
 gen_nuspec_bundle_ green/e should share more code
 
