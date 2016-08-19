@@ -1964,8 +1964,6 @@ public static class gen
 
     private static void write_android_native_libs(string root, XmlWriter f, string which)
     {
-        // TODO put underscore in all these names
-
         f.WriteStartElement("EmbeddedNativeLibrary");
         f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libe_sqlite3.so", which)));
         f.WriteElementString("CopyToOutputDirectory", "Always");
@@ -2304,7 +2302,6 @@ public static class gen
 		}
 
 		string subdir = cfg.get_project_subdir(top);
-#if true
         switch (cfg.env)
         {
             case "net35":
@@ -2317,6 +2314,9 @@ public static class gen
                 cfg.runtimes.Add("win10-arm");
                 cfg.runtimes.Add("win10-x86");
                 cfg.runtimes.Add("win10-x64");
+                cfg.runtimes.Add("win10-arm-aot");
+                cfg.runtimes.Add("win10-x86-aot");
+                cfg.runtimes.Add("win10-x64-aot");
 				break;
 			case "netstandard1.0":
                 cfg.deps["NETStandard.Library"] = "1.6.0";
@@ -2327,20 +2327,6 @@ public static class gen
         }
 
         write_project_dot_json(subdir, config_cs.get_full_framework_name(cfg.env), cfg.deps, cfg.runtimes);
-#else
-		switch (cfg.env)
-		{
-			case "uap10.0":
-				write_project_dot_json_uap(subdir);
-				break;
-			case "netstandard1.0":
-				write_project_dot_json_netstandard10(subdir);
-				break;
-			case "netstandard1.1":
-				write_project_dot_json_netstandard11(subdir);
-				break;
-		}
-#endif
 	}
 
 	public static void gen_solution(string top)
@@ -2551,6 +2537,7 @@ public static class gen
 
 	public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddhhmmss")); 
 
+    // TODO revise this text
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
 	private static void gen_nuspec_raw(string top, string root, string id)

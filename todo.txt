@@ -16,8 +16,6 @@ combine net45 libs into one pkg?
 config_esqlite3 should get reworked, because it only
 generates a nuspec, not a csproj
 
-fix all the native libs to have e_ underscore
-
 do we need a copy of the main raw assembly compiled specifically
 for every tfm?  like android?  or is it sufficient to have
 it compiled for each set of compile options, and each platform
@@ -34,7 +32,7 @@ sqlcipher.  no extension SDK.  although we could in
 theory build multiple versions of this, each linked
 against a different library name.
 
-build iOS targetted for older iOS versions
+build iOS targetted for older iOS versions.  how?
 
 --------
 
@@ -48,12 +46,6 @@ maybe a SQLitePCL.custom.sqlite3.nupkg which does
 nothing but have platform-specific dependencies
 on the others?
 
-need the sqlcipher builds for windows-ish things
-
-and an ios one that uses common crypto
-
-need custom sqlite3 packages in nuget 3.x style
-
 does the native code stuff in nuget 3.x get this
 specific?  can we provide a package which just looks
 at the environment and then has a dependency on
@@ -61,19 +53,6 @@ The Right One?
 
 xamarin.mac shouldn't even need to be built on the Mac.
 just use a compatible build of SQLitePCL.raw.dll
-
-do we need two sets of sqlite3 projects?  one set for
-e, and the other set for the SL cppinterop stuff?
-
-cppinterop is only for SL-flavored WP8.  it does not
-support e.  or it only supports e.
-
-all the custom sqlite builds need to end up called
-esqlite3.  except maybe the ones for SL-flavored WP8?
-
-need a dylib build for ios
-
-need e nuget packages
 
 ----
 
