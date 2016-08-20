@@ -1,0 +1,13 @@
+{
+    "dependencies" : {
+        "xunit.runner.devices" : "2.1.0",
+        "SQLitePCL.tests" : "__VERSION__",
+        "SQLitePCL.bundle_e_sqlite3": "__VERSION__",
+    },
+    "frameworks" : {
+         "wp80": {}
+    },
+    "runtimes" : {
+        "win-x86" : {},
+    },
+}
