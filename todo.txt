@@ -1,4 +1,30 @@
 
+temporarily removed all netstandard stuff so
+the version conflict on xunit.abstractions could
+go away
+
+need a raw compiled to be compat with wp80,
+which doesn't have pinvoke.  maybe just bait?
+it's just so that batteries.cs can compile.
+but doesn't it need SQLiteProvider_cppinterop?
+
+why do the aot runtimes need to be in the
+uwp project.json?  and when they are, the dep
+on netstandard fails.
+
+why does the ios project.json need runtimes : win ?
+
+project.json is a mess.  maybe switch all the
+test runners back to packages.config?  but
+that's a different kind of mess.
+
+is CopyNuGetImplementations causing trouble?
+with project.json : runtimes?
+
+ios build machine needs sdk 9.3
+
+simulator runs, er, on the mac itself.  :-)
+
 perhaps gen more than one of each test runner
 project so we can use different bundles
 

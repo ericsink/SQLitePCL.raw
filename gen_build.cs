@@ -91,15 +91,15 @@ public static class projects
         items_csproj.Add(config_csproj.create_raw("profile111"));
         items_csproj.Add(config_csproj.create_raw("profile136"));
         items_csproj.Add(config_csproj.create_raw("profile259"));
-        items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
-        items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
+        //items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
 
         items_csproj.Add(config_csproj.create_provider("sqlite3_xamarin", "android"));
 
         items_csproj.Add(config_csproj.create_provider("winsqlite3", "uap10.0"));
         items_csproj.Add(config_csproj.create_provider("winsqlite3", "net45"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
@@ -111,7 +111,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "uap10.0"));
 
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net45"));
@@ -135,7 +135,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net45"));
@@ -148,7 +148,7 @@ public static class projects
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net45"));
@@ -177,8 +177,8 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("profile111"));
         items_csproj.Add(config_csproj.create_ugly("profile136"));
         items_csproj.Add(config_csproj.create_ugly("profile259"));
-        items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
-        items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
+        //items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
@@ -191,12 +191,13 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "wp80", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "arm"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "x86"));
 
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
+        //items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
 
         // bundle_e_sqlite3
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
@@ -209,25 +210,26 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wp80", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "arm"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "x86"));
 
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
+        //items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
 
     }
 
 	private static void init_tests()
 	{
-        items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
+        //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
 
         items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
         items_test.Add(config_csproj.create_bundle_test("net45", "green"));
 
         // in main
-        items_csproj.Add(config_csproj.create_portable_test_main("netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_portable_test_main("netstandard1.1"));
         //xunit only supports 259
         //items_csproj.Add(config_csproj.create_portable_test_main("profile111"));
         //items_csproj.Add(config_csproj.create_portable_test_main("profile136"));
@@ -332,11 +334,11 @@ public static class projects
         return null;
     }
 
-	public static config_csproj find(string area, string what, string env)
+	public static config_csproj find(string area, string what, string env, string cpu)
     {
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
-			if (cfg.area == area && cfg.what == what && cfg.env == env)
+			if (cfg.area == area && cfg.what == what && cfg.env == env && cfg.cpu == cpu)
 			{
 				return cfg;
 			}
@@ -363,7 +365,8 @@ public static class projects
                     cfg = find("raw", "profile111");
                     break;
                 default:
-                    cfg = find("raw", "netstandard1.1");
+                    //cfg = find("raw", "netstandard1.1");
+                    cfg = find("raw", "profile259");
                     break;
             }
         }
@@ -374,14 +377,18 @@ public static class projects
 		throw new Exception(string.Format("raw not found for {0}", env));
 	}
 
-    public static config_csproj find_provider(string what, string env)
+    public static config_csproj find_provider(string what, string env, string cpu)
     {
-        config_csproj cfg = find("provider", what, env);
+        config_csproj cfg = find("provider", what, env, cpu);
         if (cfg == null)
         {
-            // TODO need to find a provider that is compatible with env
-            // TODO this should be smarter
-            cfg = find("provider", what, "netstandard1.1");
+            switch (env)
+            {
+                default:
+                    //cfg = find("provider", what, "netstandard1.1", "anycpu");
+                    cfg = find("provider", what, "profile259", "anycpu");
+                    break;
+            }
         }
         if (cfg != null)
         {
@@ -397,7 +404,8 @@ public static class projects
         {
             // TODO need to find one that is compatible with env
             // TODO this should be smarter
-            cfg = find("ugly", "netstandard1.1");
+            //cfg = find("ugly", "netstandard1.1");
+            cfg = find("ugly", "profile259");
         }
         if (cfg != null)
         {
@@ -702,7 +710,7 @@ public static class config_cs
 public class config_csproj : config_info
 {
     public string area;
-    public string what;
+    public string what; // TODO call this provider_name ?
     public string name;
 	public string guid;
 	public string assemblyname;
@@ -868,9 +876,9 @@ public class config_csproj : config_info
         cfg.area = "provider";
         cfg.cpu = cpu;
         cfg.env = "wp80";
-        string what = "e_sqlite3";
-        cfg.name = string.Format("provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
-        cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}.{2}", what, cfg.env, cfg.cpu);
+        cfg.what = "e_sqlite3";
+        cfg.name = string.Format("provider.{0}.{1}.{2}", cfg.what, cfg.env, cfg.cpu);
+        cfg.assemblyname = string.Format("SQLitePCL.provider.{0}.{1}.{2}", cfg.what, cfg.env, cfg.cpu);
         cfg.csfiles_src.Add("util.cs");
         cfg.csfiles_src.Add("sqlite3_cppinterop.cs");
         cfg.ref_raw = true;
@@ -901,7 +909,7 @@ public class config_csproj : config_info
         cfg.csfiles_src.Add("tests_xunit.cs");
         cfg.defines.Add("PROVIDER_bundle");
 
-        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
+        cfg.deps["xunit"] = "2.1.0";
 
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
@@ -918,7 +926,7 @@ public class config_csproj : config_info
         cfg.csfiles_src.Add("tests_xunit.cs");
         cfg.defines.Add("PROVIDER_none");
 
-        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
+        cfg.deps["xunit"] = "2.1.0";
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         return cfg;
     }
@@ -933,7 +941,7 @@ public class config_csproj : config_info
         cfg.csfiles_src.Add("tests_xunit.cs");
         cfg.defines.Add("PROVIDER_none");
 
-        cfg.deps["xunit"] = "2.2.0-beta2-build3300";
+        cfg.deps["xunit"] = "2.1.0";
         cfg.ref_ugly = true;
         cfg.ref_raw = true;
         return cfg;
@@ -957,6 +965,22 @@ public class config_csproj : config_info
         }
         cfg.ref_raw = true;
         cfg.ref_provider = what;
+        return cfg;
+    }
+
+    public static config_csproj create_wp80_batteries(string area, string cpu)
+    {
+        var cfg = new config_csproj();
+        cfg.area = area;
+        cfg.cpu = cpu;
+        cfg.what = "e_sqlite3";
+        cfg.env = "wp80";
+        cfg.name = string.Format("{0}.{1}.{2}.{3}", area, cfg.what, cfg.env, cfg.cpu);
+        cfg.assemblyname = string.Format("SQLitePCL.batteries");
+        cfg.csfiles_src.Add("batteries.cs");
+        cfg.defines.Add("PROVIDER_e_sqlite3");
+        cfg.ref_raw = true;
+        cfg.ref_provider = cfg.what;
         return cfg;
     }
 
@@ -2192,7 +2216,7 @@ public static class gen
 
                 f.WriteStartElement("ProjectReference");
                 {
-                    config_csproj other = projects.find_provider(cfg.ref_provider, cfg.env);
+                    config_csproj other = projects.find_provider(cfg.ref_provider, cfg.env, cfg.cpu);
                     f.WriteAttributeString("Include", other.get_project_path(top));
                     f.WriteElementString("Project", other.guid);
                     f.WriteElementString("Name", other.get_name());
@@ -3199,7 +3223,7 @@ public static class gen
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "xunit");
-			f.WriteAttributeString("version", "2.2.0-beta2-build3300");
+			f.WriteAttributeString("version", "2.1.0");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
@@ -3225,7 +3249,7 @@ public static class gen
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "xunit");
-			f.WriteAttributeString("version", "2.2.0-beta2-build3300");
+			f.WriteAttributeString("version", "2.1.0");
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
