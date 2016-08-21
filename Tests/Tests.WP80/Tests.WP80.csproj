@@ -115,7 +115,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="project.json" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
