@@ -1,0 +1,11 @@
+{
+    "dependencies" : {
+        "xunit.runner.devices" : "2.1.0",
+    },
+    "frameworks" : {
+         "wp80": {}
+    },
+    "runtimes" : {
+        "win-x86" : {},
+    },
+}
