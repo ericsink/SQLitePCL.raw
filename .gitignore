@@ -7,5 +7,10 @@
 *.sdf
 *.user
 *.suo
+project.lock.json
+*.nuget.props
+*.nuget.targets
+/Tests/packages
+/bld
 /gen_build.exe
 
