@@ -4399,12 +4399,12 @@ public static class gen
         }
     }
 
-    static void fix_version_in_project_dot_json(string path)
+    static void fix_version_in_test_app(string path)
     {
         string txt = File.ReadAllText(path);
         using (TextWriter tw = new StreamWriter(path))
         {
-            string cs1 = txt.Replace("__VERSION__", NUSPEC_VERSION);
+            string cs1 = txt.Replace("0.9.4-pre20160822082757", NUSPEC_VERSION);
             tw.Write(cs1);
         }
     }
@@ -4421,11 +4421,14 @@ public static class gen
 
 		Directory.CreateDirectory(top);
         DirectoryCopy(Path.Combine(root, "Tests"), Path.Combine(top, "Tests"), true);
+        // TODO should rm bld/Tests/packages
 
-        fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.Android", "project.json"));
-        fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.WP81", "project.json"));
-        fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.UWP10", "project.json"));
-        fix_version_in_project_dot_json(Path.Combine(top, "Tests", "Tests.iOS", "project.json"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.Android", "project.json"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP81", "project.json"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.UWP10", "project.json"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.iOS", "project.json"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "packages.config"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "Tests..WP80.csproj"));
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))

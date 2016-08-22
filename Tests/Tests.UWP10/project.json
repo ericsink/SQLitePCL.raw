@@ -1,16 +1,19 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
-        "xunit.runner.devices" : "2.1.0",
-        "SQLitePCL.tests" : "__VERSION__",
-        "SQLitePCL.bundle_e_sqlite3": "__VERSION__",
+    "SQLitePCL.bundle_e_sqlite3": "0.9.4-pre20160822082757",
+    "SQLitePCL.tests": "0.9.4-pre20160822082757",
+    "xunit.runner.devices": "2.1.0"
   },
   "frameworks": {
     "uap10.0": {}
   },
   "runtimes": {
     "win10-arm": {},
+    "win10-arm-aot": {},
     "win10-x86": {},
+    "win10-x86-aot": {},
     "win10-x64": {},
+    "win10-x64-aot": { },
   }
 }

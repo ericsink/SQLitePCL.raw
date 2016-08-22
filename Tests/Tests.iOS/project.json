@@ -1,11 +1,11 @@
-{
-    "dependencies" : {
-        "xunit.runner.devices" : "2.1.0",
-        "SQLitePCL.tests" : "__VERSION__",
-        "SQLitePCL.bundle_e_sqlite3": "__VERSION__",
-    },
-    "frameworks" : {
-         "Xamarin.iOS10": {}
-    },
-    "supports" : {}
+﻿{
+  "dependencies": {
+    "SQLitePCL.bundle_e_sqlite3": "0.9.4-pre20160822082757",
+    "SQLitePCL.tests": "0.9.4-pre20160822082757",
+    "xunit.runner.devices": "2.1.0"
+  },
+  "frameworks": {
+    "Xamarin.iOS10": {}
+  },
+  "supports": {}
 }
