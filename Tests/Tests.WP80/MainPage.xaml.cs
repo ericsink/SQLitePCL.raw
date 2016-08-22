@@ -8,6 +8,7 @@ namespace Tests.WP80
         // Constructor
         public MainPage()
         {
+            SQLitePCL.Batteries.Init();
             InitializeComponent();
         }
 
@@ -18,7 +19,7 @@ namespace Tests.WP80
             AddTestAssembly(Assembly.GetExecutingAssembly());
             // otherwise you need to ensure that the test assemblies will 
             // become part of the app bundle
-            //AddTestAssembly(typeof(PortableTests).Assembly);
+            AddTestAssembly(typeof(SQLitePCL.Tests.Init).Assembly);
 
         }
     }
