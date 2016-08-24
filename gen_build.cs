@@ -4373,7 +4373,7 @@ public static class gen
         string txt = File.ReadAllText(path);
         using (TextWriter tw = new StreamWriter(path))
         {
-            string cs1 = txt.Replace("0.9.4-pre20160822082757", NUSPEC_VERSION);
+            string cs1 = txt.Replace("0.9.4-PLACEHOLDER", NUSPEC_VERSION);
             tw.Write(cs1);
         }
     }
