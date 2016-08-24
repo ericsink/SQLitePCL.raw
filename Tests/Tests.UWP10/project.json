@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0",
-    "SQLitePCL.bundle_e_sqlite3": "0.9.4-pre20160822082757",
-    "SQLitePCL.tests": "0.9.4-pre20160822082757",
+    "SQLitePCL.bundle_e_sqlite3": "0.9.4-PLACEHOLDER",
+    "SQLitePCL.tests": "0.9.4-PLACEHOLDER",
     "xunit.runner.devices": "2.1.0"
   },
   "frameworks": {
