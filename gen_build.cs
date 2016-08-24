@@ -2555,8 +2555,6 @@ public static class gen
 
 	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_csproj> a, string env, string top, string id)
 	{
-		f.WriteComment(string.Format("platform assemblies for {0}", env));
-
         foreach (var cfg in a)
         {
             write_nuspec_file_entry(cfg, f);
@@ -3656,7 +3654,7 @@ public static class gen
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.area == "batteries_e_sqlite3")
+				if (cfg.area == "batteries_e_sqlite3" && cfg.env != "wp80")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -3665,6 +3663,10 @@ public static class gen
 				}
 			}
 
+            var a = projects.items_csproj.Where(cfg => (cfg.area == "batteries_e_sqlite3" && cfg.env == "wp80")).ToList();
+
+            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
+            
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
@@ -4298,57 +4300,23 @@ public static class gen
 						break;
 				}
 				
-				bool b_platform_condition = true;
-
-				switch (cfg.env)
-				{
-					// TODO unified?
-					case "ios_classic":
-						b_platform_condition = false;
-						break;
-					case "android":
-						b_platform_condition = false;
-						break;
-
-					default:
-						break;
-				}
-
 				f.WriteComment(string.Format("{0}", cfg.get_name()));
 				f.WriteStartElement("ItemGroup");
-				if (b_platform_condition)
-				{
-					f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
-				}
+                f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
 
 				f.WriteStartElement("Reference");
 				// TODO should Include be the HintPath?
 				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
-				f.WriteAttributeString("Include", "SQLitePCL.raw");
+				f.WriteAttributeString("Include", cfg.assemblyname);
 
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.env, "SQLitePCL.raw.dll")));
+                // TODO the path below seems wrong
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.env, cfg.assemblyname + ".dll")));
 
 				// TODO private?
 
 				// TODO name?
 
 				f.WriteEndElement(); // Reference
-
-#if not
-				{
-					config_sqlite3 other = cfg.get_sqlite3_item();
-					if (other != null)
-					{
-						f.WriteStartElement("Content");
-						// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-						f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
-						// TODO link
-						// TODO condition/exists ?
-						f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-						f.WriteEndElement(); // Content
-					}
-				}
-#endif
 
 				f.WriteEndElement(); // ItemGroup
 			}
@@ -4428,7 +4396,7 @@ public static class gen
         fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.UWP10", "project.json"));
         fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.iOS", "project.json"));
         fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "packages.config"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "Tests..WP80.csproj"));
+        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "Tests.WP80.csproj"));
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
@@ -4605,7 +4573,7 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
 		{
-			tw.WriteLine("../../nuget restore -Source . -Source https://www.nuget.org/api/v2 ./Tests/Tests.sln");
+			tw.WriteLine("../../nuget restore -Source '{0}' -Source https://www.nuget.org/api/v2 ./Tests/Tests.sln", top);
 			tw.WriteLine("msbuild /p:Configuration=Release Tests/Tests.sln");
 		}
 

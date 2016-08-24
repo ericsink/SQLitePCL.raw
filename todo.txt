@@ -1,12 +1,22 @@
 
+bin/release structure under Tests.WP80 is
+messed up
+
+WP80 tests claim SetProvider is never called
+
+path in wp80 targets file seems wrong
+
+looks like for bundle_e_sqlite3, the Tests.WP80
+project is choosing the portable instead of wp8.
+
+nupkg for wp80 has both wp8 and wp80 dirs?
+
+batteries doesn't work right for wp80 in the test
+app project
+
 temporarily removed all netstandard stuff so
 the version conflict on xunit.abstractions could
 go away
-
-need a raw compiled to be compat with wp80,
-which doesn't have pinvoke.  maybe just bait?
-it's just so that batteries.cs can compile.
-but doesn't it need SQLiteProvider_cppinterop?
 
 why do the aot runtimes need to be in the
 uwp project.json?  and when they are, the dep
