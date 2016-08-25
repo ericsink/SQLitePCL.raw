@@ -91,15 +91,15 @@ public static class projects
         items_csproj.Add(config_csproj.create_raw("profile111"));
         items_csproj.Add(config_csproj.create_raw("profile136"));
         items_csproj.Add(config_csproj.create_raw("profile259"));
-        //items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
-        //items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
+        items_csproj.Add(config_csproj.create_raw("netstandard1.0"));
+        items_csproj.Add(config_csproj.create_raw("netstandard1.1"));
 
         items_csproj.Add(config_csproj.create_provider("sqlite3_xamarin", "android"));
 
         items_csproj.Add(config_csproj.create_provider("winsqlite3", "uap10.0"));
         items_csproj.Add(config_csproj.create_provider("winsqlite3", "net45"));
 
-        //items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
@@ -111,7 +111,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "uap10.0"));
 
-        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net45"));
@@ -135,7 +135,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_classic"));
 
-        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net45"));
@@ -148,7 +148,7 @@ public static class projects
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
 
-        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net45"));
@@ -178,7 +178,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("profile136"));
         items_csproj.Add(config_csproj.create_ugly("profile259"));
         //items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
-        //items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
+        items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
@@ -197,7 +197,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
-        //items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
 
         // bundle_e_sqlite3
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
@@ -216,12 +216,15 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
-        //items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
 
     }
 
 	private static void init_tests()
 	{
+        // using netstandard for the tests would require switching to the
+        // xunit pre
+        
         //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
 
@@ -365,8 +368,8 @@ public static class projects
                     cfg = find("raw", "profile111");
                     break;
                 default:
-                    //cfg = find("raw", "netstandard1.1");
-                    cfg = find("raw", "profile259");
+                    cfg = find("raw", "netstandard1.1");
+                    //cfg = find("raw", "profile259");
                     break;
             }
         }
@@ -385,8 +388,8 @@ public static class projects
             switch (env)
             {
                 default:
-                    //cfg = find("provider", what, "netstandard1.1", "anycpu");
-                    cfg = find("provider", what, "profile259", "anycpu");
+                    cfg = find("provider", what, "netstandard1.1", "anycpu");
+                    //cfg = find("provider", what, "profile259", "anycpu");
                     break;
             }
         }
@@ -404,8 +407,8 @@ public static class projects
         {
             // TODO need to find one that is compatible with env
             // TODO this should be smarter
-            //cfg = find("ugly", "netstandard1.1");
-            cfg = find("ugly", "profile259");
+            cfg = find("ugly", "netstandard1.1");
+            //cfg = find("ugly", "profile259");
         }
         if (cfg != null)
         {

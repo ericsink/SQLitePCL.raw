@@ -11,7 +11,29 @@ test runner for net45
 
 check and re-check all names
 
+rm cruft from old sqlcipher builds
+
+add e_sqlite3 build for linux?
+
+in order to get back to netstandard for the tests,
+we would need to switch xunit to the pre
+
+combo build to resolve the net45 win/mac/linux problem
+
+test runner for winsqlite3
 --------
+
+I wish the json generation code was using structures
+instead of text writelines
+
+how many cases are there where we could ditch a
+platform-specific build and just let it use
+netstandard?
+
+problem with current testapps sln is that the
+framework used to resolve is predetermined.
+it would be better to gen the projects from
+scratch and somehow add the nuget packages.
 
 consider creating a new build directory on
 every build
