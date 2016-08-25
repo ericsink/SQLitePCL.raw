@@ -3,10 +3,6 @@ put netstandard back
 
 strong naming
 
-iOS test app build failure:  runtimes: win ?
-
-build sqlite for older ios
-
 docs
 
 test runners for bundle_green as well

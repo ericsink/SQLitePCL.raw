@@ -4395,15 +4395,17 @@ public static class gen
 		// create the build directory
 
 		Directory.CreateDirectory(top);
-        DirectoryCopy(Path.Combine(root, "Tests"), Path.Combine(top, "Tests"), true);
+        string vtests = string.Format("Tests_{0}", NUSPEC_VERSION);
+        DirectoryCopy(Path.Combine(root, "Tests"), Path.Combine(root, vtests), true);
         // TODO should rm bld/Tests/packages
 
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.Android", "project.json"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP81", "project.json"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.UWP10", "project.json"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.iOS", "project.json"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "packages.config"));
-        fix_version_in_test_app(Path.Combine(top, "Tests", "Tests.WP80", "Tests.WP80.csproj"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.Android", "project.json"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.WP81", "project.json"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.UWP10", "project.json"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.iOS", "packages.config"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.iOS", "Tests.iOS.csproj"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.WP80", "packages.config"));
+        fix_version_in_test_app(Path.Combine(root, vtests, "Tests.WP80", "Tests.WP80.csproj"));
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
@@ -4580,8 +4582,8 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
 		{
-			tw.WriteLine("../../nuget restore -Source '{0}' -Source https://www.nuget.org/api/v2 ./Tests/Tests.sln", top);
-			tw.WriteLine("msbuild /p:Configuration=Release Tests/Tests.sln");
+			tw.WriteLine("cd ../{0}", vtests);
+			tw.WriteLine("../../nuget restore -Source '{0}' -Source https://www.nuget.org/api/v2 ./Tests.sln", top);
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
