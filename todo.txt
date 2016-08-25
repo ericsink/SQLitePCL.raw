@@ -1,4 +1,7 @@
 
+consider creating a new build directory on
+every build
+
 bin/release structure under Tests.WP80 is
 messed up
 

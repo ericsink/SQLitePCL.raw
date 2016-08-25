@@ -1039,6 +1039,11 @@ public class config_csproj : config_info
 	public void get_products(List<string> a)
 	{
 		add_product(a, string.Format("{0}.dll", assemblyname));
+		if (ref_cppinterop)
+		{
+			var other = get_cppinterop_item();
+            other.get_products(a);
+		}
 	}
 
 	public string get_nuget_target_path()
@@ -2868,6 +2873,7 @@ public static class gen
 
             var a = projects.items_csproj.Where(cfg => (cfg.area == "provider" && cfg.env == "wp80")).ToList();
 
+			// TODO we need to ref/copy the SQLitePCL.cppinterop assembly
             write_cppinterop_with_targets_file(f, a, "wp80", top, id);
 
 			f.WriteEndElement(); // files
@@ -4311,7 +4317,7 @@ public static class gen
 				f.WriteAttributeString("Include", cfg.assemblyname);
 
                 // TODO the path below seems wrong
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine(cfg.env, cfg.assemblyname + ".dll")));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\{0}", cfg.get_nuget_target_path()));
 
 				// TODO private?
 
