@@ -4316,8 +4316,7 @@ public static class gen
 				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
 				f.WriteAttributeString("Include", cfg.assemblyname);
 
-                // TODO the path below seems wrong
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\{0}", cfg.get_nuget_target_path()));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}\\{1}.dll", cfg.get_nuget_target_path(), cfg.assemblyname));
 
 				// TODO private?
 
