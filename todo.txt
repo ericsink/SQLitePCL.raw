@@ -5,8 +5,6 @@ strong naming
 
 iOS test app build failure:  runtimes: win ?
 
-UWP test app build failure:  aot il emit
-
 build sqlite for older ios
 
 docs
