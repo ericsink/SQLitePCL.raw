@@ -2362,7 +2362,7 @@ public static class gen
                 cfg.runtimes.Add("win");
                 break;
 			case "uap10.0":
-                cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.1.0";
+                cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.2.2";
                 cfg.runtimes.Add("win10-arm");
                 cfg.runtimes.Add("win10-x86");
                 cfg.runtimes.Add("win10-x64");
