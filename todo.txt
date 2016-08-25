@@ -1,21 +1,26 @@
 
+put netstandard back
+
+strong naming
+
+iOS test app build failure:  runtimes: win ?
+
+UWP test app build failure:  aot il emit
+
+build sqlite for older ios
+
+docs
+
+test runners for bundle_green as well
+
+test runner for net45
+
+check and re-check all names
+
+--------
+
 consider creating a new build directory on
 every build
-
-bin/release structure under Tests.WP80 is
-messed up
-
-WP80 tests claim SetProvider is never called
-
-path in wp80 targets file seems wrong
-
-looks like for bundle_e_sqlite3, the Tests.WP80
-project is choosing the portable instead of wp8.
-
-nupkg for wp80 has both wp8 and wp80 dirs?
-
-batteries doesn't work right for wp80 in the test
-app project
 
 temporarily removed all netstandard stuff so
 the version conflict on xunit.abstractions could

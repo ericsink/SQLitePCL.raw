@@ -2585,8 +2585,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	//public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddhhmmss")); 
-	public static string NUSPEC_VERSION = "0.9.4-PLACEHOLDER";
+	public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddhhmmss")); 
+	//public static string NUSPEC_VERSION = "0.9.4-PLACEHOLDER";
+	//public static string NUSPEC_VERSION = "0.9.4";
 
     // TODO revise this text
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
