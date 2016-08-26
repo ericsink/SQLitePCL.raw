@@ -182,6 +182,9 @@ public static class projects
         //items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
         items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
 
+        // bundle_winsqlite3
+        items_csproj.Add(config_csproj.create_batteries("batteries_winsqlite3", "uap10.0", "winsqlite3"));
+        
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_classic", "sqlite3"));
@@ -253,6 +256,7 @@ public static class projects
                 cpu="anycpu", 
                 bundle="bundle_green",
                 });
+
         items_testapp.Add(new config_testapp { 
                 env="wp81", 
                 cpu="x86", 
@@ -263,6 +267,7 @@ public static class projects
                 cpu="x86", 
                 bundle="bundle_green",
                 });
+
         items_testapp.Add(new config_testapp { 
                 env="uwp10", 
                 cpu="x86", 
@@ -272,6 +277,11 @@ public static class projects
                 env="uwp10", 
                 cpu="x86", 
                 bundle="bundle_e_sqlite3",
+                });
+        items_testapp.Add(new config_testapp { 
+                env="uwp10", 
+                cpu="x86", 
+                bundle="bundle_winsqlite3",
                 });
     }
 
@@ -3523,6 +3533,81 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_bundle_winsqlite3(string top)
+    {
+		string id = "SQLitePCL.bundle_winsqlite3";
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", "SQLitePCL.bundle_winsqlite3");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCL.raw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.raw");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", "SQLitePCL.provider.winsqlite3.uap10.0");
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+
+			f.WriteEndElement(); // group
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				if (cfg.area == "batteries_winsqlite3" && cfg.env != "wp80")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_bundle_e_sqlite3(string top)
 	{
 		string id = "SQLitePCL.bundle_e_sqlite3";
@@ -4676,6 +4761,7 @@ public static class gen
 		gen_nuspec_tests(top);
 		gen_nuspec_bundle_green(top);
 		gen_nuspec_bundle_e_sqlite3(top);
+		gen_nuspec_bundle_winsqlite3(top);
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4718,6 +4804,7 @@ public static class gen
 			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e_sqlite3.nuspec");
+			tw.WriteLine("../../nuget pack SQLitePCL.bundle_winsqlite3.nuspec");
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
