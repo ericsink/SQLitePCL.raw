@@ -2738,7 +2738,7 @@ public static class gen
 	}
 
 	//public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss")); 
-	public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddhhmmss")); 
+	public static string NUSPEC_VERSION = string.Format("0.9.4-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "0.9.4-PLACEHOLDER";
 	//public static string NUSPEC_VERSION = "0.9.4";
 
