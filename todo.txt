@@ -1,9 +1,13 @@
 
+problem with uwp app, deploy, id
+
 put netstandard back
 
 strong naming
 
 docs
+
+bundle/test runner for winsqlite3.dll
 
 test runners for bundle_green as well
 
@@ -11,7 +15,7 @@ test runner for net45
 
 check and re-check all names
 
-rm cruft from old sqlcipher builds
+rm cruft for old sqlcipher builds
 
 add e_sqlite3 build for linux?
 
@@ -20,7 +24,6 @@ we would need to switch xunit to the pre
 
 combo build to resolve the net45 win/mac/linux problem
 
-test runner for winsqlite3
 --------
 
 I wish the json generation code was using structures
