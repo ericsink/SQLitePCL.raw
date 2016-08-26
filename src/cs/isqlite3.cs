@@ -95,6 +95,7 @@ namespace SQLitePCL
 
 	int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);
 
+        int sqlite3_threadsafe();
         string sqlite3_libversion();
         int sqlite3_libversion_number();
         string sqlite3_sourceid();

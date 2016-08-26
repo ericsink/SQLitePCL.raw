@@ -324,6 +324,11 @@ int32 SQLite3RuntimeProvider::sqlite3_status(int32 op, int64 current, int64 high
 	return result;
 }
 
+int32 SQLite3RuntimeProvider::sqlite3_threadsafe(void)
+{
+	return (int32)::sqlite3_threadsafe();
+}
+
 int32 SQLite3RuntimeProvider::sqlite3_libversion_number(void)
 {
 	return (int32)::sqlite3_libversion_number();

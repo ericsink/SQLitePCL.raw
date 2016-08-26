@@ -102,6 +102,7 @@ namespace SQLitePCL
 					static int64 sqlite3_sourceid();
 
 					static int32 sqlite3_libversion_number();
+					static int32 sqlite3_threadsafe();
 
 					static int64 sqlite3_memory_used();
 					static int64 sqlite3_memory_highwater(int32 resetFlag);

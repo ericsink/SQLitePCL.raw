@@ -365,6 +365,11 @@ namespace SQLitePCL
             return _imp.sqlite3_libversion_number();
         }
 
+        static public int sqlite3_threadsafe()
+        {
+            return _imp.sqlite3_threadsafe();
+        }
+
         static public string sqlite3_sourceid()
         {
             return _imp.sqlite3_sourceid();

@@ -250,6 +250,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_threadsafe()
+        {
+	    throw new Exception(GRIPE);
+        }
+
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
 	    throw new Exception(GRIPE);

@@ -328,6 +328,13 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_threadsafe()
+        {
+            int ret = raw.sqlite3_threadsafe();
+            Assert.True(ret != 0);
+        }
+
+        [Fact]
         public void test_enable_shared_cache()
         {
             int result = raw.sqlite3_enable_shared_cache(1);

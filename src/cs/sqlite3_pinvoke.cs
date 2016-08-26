@@ -400,6 +400,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_libversion_number();
         }
 
+        int ISQLite3Provider.sqlite3_threadsafe()
+        {
+            return NativeMethods.sqlite3_threadsafe();
+        }
+
         // ----------------------------------------------------------------
 
         // Passing a callback into SQLite is tricky.  The implementation details
@@ -1312,6 +1317,9 @@ namespace SQLitePCL
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_libversion_number();
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_threadsafe();
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_sourceid();

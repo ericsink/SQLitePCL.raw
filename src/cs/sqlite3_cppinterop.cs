@@ -857,6 +857,11 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_libversion_number();
         }
 
+        int ISQLite3Provider.sqlite3_threadsafe()
+        {
+            return SQLite3RuntimeProvider.sqlite3_threadsafe();
+        }
+
         long ISQLite3Provider.sqlite3_memory_used()
         {
             return SQLite3RuntimeProvider.sqlite3_memory_used();
