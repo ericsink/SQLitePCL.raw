@@ -1,19 +1,13 @@
 
 problem with uwp app, deploy, id
 
-put netstandard back
-
 strong naming
 
 docs
 
-bundle/test runner for winsqlite3.dll
-
-test runners for bundle_green as well
-
 test runner for net45
 
-check and re-check all names
+check and re-check all package names
 
 rm cruft for old sqlcipher builds
 

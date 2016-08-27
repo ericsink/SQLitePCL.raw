@@ -280,7 +280,7 @@ public static class projects
                 });
         items_testapp.Add(new config_testapp { 
                 env="uwp10", 
-                cpu="x86", 
+                cpu="x64", 
                 bundle="bundle_winsqlite3",
                 });
     }
@@ -2667,8 +2667,16 @@ public static class gen
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
+                if (cfg.env == "uwp10")
+                {
+                    f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Deploy.0 = Debug|{1}", cfg.guid, cfg.cpu);
+                }
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
+                if (cfg.env == "uwp10")
+                {
+                    f.WriteLine("\t\t{0}.Release|Mixed Platforms.Deploy.0 = Release|{1}", cfg.guid, cfg.cpu);
+                }
 			}
 			f.WriteLine("\tEndGlobalSection");
 
