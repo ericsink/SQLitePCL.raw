@@ -2753,12 +2753,13 @@ public static class gen
     // TODO revise this text
 	private const string NUSPEC_RELEASE_NOTES = "NOTE that 0.9 is a major restructuring of the NuGet packages, and in some cases, upgrading from previous versions will require changes.  The main package (SQLitePCL.raw) no longer has native code embedded in it.  For situations where you do not want to use the default SQLite for your platform, add one of the SQLitePCL.plugin.* packages.  See the SQLitePCL.raw page on GitHub for more info.";
 
-	private static void gen_nuspec_raw(string top, string root, string id)
+	private static void gen_nuspec_raw(string top, string root)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
+        string id = "SQLitePCL.raw";
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -2771,11 +2772,7 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			if (id == "SQLitePCL.raw_basic") {
-				f.WriteElementString("title", "SQLitePCL.raw_basic (deprecated)");
-			} else {
-				f.WriteElementString("title", "SQLitePCL.raw");
-			}
+            f.WriteElementString("title", id);
 			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  On platforms (like Android or iOS) where SQLite is preinstalled, this package may be all you need.  On other platforms, or if you want to use a different SQLite build, see the SQLitePCL.plugin.* packages.  (Note that with the 0.8.0 release, the ID of this package changed from 'SQLitePCL.raw_basic' to 'SQLitePCL.raw'.  Eventually, the old ID will stop getting updates.)");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -4763,7 +4760,7 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_raw(top, root, "SQLitePCL.raw");
+		gen_nuspec_raw(top, root);
 
 		gen_nuspec_ugly(top);
 		gen_nuspec_tests(top);
