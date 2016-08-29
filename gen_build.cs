@@ -569,16 +569,16 @@ public class config_cppinterop : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, "SQLitePCL.cppinterop.dll");
+		add_product(a, string.Format("{0}.cppinterop.dll", gen.get_root_name(strongname)));
 		switch (env)
 		{
 			case "wp80":
-				add_product(a, "SQLitePCL.cppinterop.winmd");
+				add_product(a, string.Format("{0}.cppinterop.winmd", gen.get_root_name(false)));
 				break;
 
 			case "wp81_sl":
-				add_product(a, "SQLitePCL.cppinterop.pri");
-				add_product(a, "SQLitePCL.cppinterop.winmd");
+				add_product(a, string.Format("{0}.cppinterop.pri", gen.get_root_name(false)));
+				add_product(a, string.Format("{0}.cppinterop.winmd", gen.get_root_name(false)));
 				break;
 
 			default:
@@ -1013,7 +1013,9 @@ public class config_csproj : config_info
 
         cfg.deps["xunit"] = "2.1.0";
 
+        // TODO sn
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
+        // TODO sn
         cfg.deps[string.Format("SQLitePCL.bundle_{0}", bundle)] = gen.NUSPEC_VERSION;
         return cfg;
     }
@@ -1030,6 +1032,7 @@ public class config_csproj : config_info
         cfg.defines.Add("PROVIDER_none");
 
         cfg.deps["xunit"] = "2.1.0";
+        // TODO sn
         cfg.deps["SQLitePCL.ugly"] = gen.NUSPEC_VERSION;
         return cfg;
     }
@@ -1280,7 +1283,7 @@ public static class gen
         if (!debug && cfg.strongname)
         {
             f.WriteElementString("SignAssembly", "true");
-            f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", cfg.assemblyname)));
+            f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", cfg.assemblyname)));
         }
 
 		f.WriteEndElement(); // PropertyGroup
@@ -2022,6 +2025,10 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
 			f.WriteElementString("UseDebugLibraries", "false");
+            if (cfg.strongname)
+            {
+                f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
+            }
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("Import");
@@ -2029,7 +2036,7 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
+			f.WriteElementString("TargetName", string.Format("{0}.cppinterop", gen.get_root_name(cfg.strongname)));
 			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
 			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
 			write_cpp_includepath(f, root, "sqlite3\\");
