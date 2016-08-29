@@ -1,4 +1,9 @@
 
+check AssemblyInfo.cs issues with sn
+
+consider tests which reference the _sn packages
+from non-sn tests.  strongname=false, but ref_sn=true.
+
 problem with uwp app, deploy, id
 
 strong naming
@@ -7,7 +12,7 @@ docs
 
 test runner for net45
 
-check and re-check all package names
+check and re-check all package and assemby names
 
 rm cruft for old sqlcipher builds
 
