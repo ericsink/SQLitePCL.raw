@@ -3790,11 +3790,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-            // TODO doesn't wp80 need special handling here like in the e_sqlite3 bundle?
-
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-				if (cfg.strongname == strongname && cfg.area == "batteries_green")
+				if (cfg.strongname == strongname && cfg.area == "batteries_green" && cfg.env != "wp80")
 				{
 					write_nuspec_file_entry(
 							cfg, 
@@ -3802,6 +3800,10 @@ public static class gen
 							);
 				}
 			}
+
+            var a = projects.items_csproj.Where(cfg => (cfg.strongname == strongname && cfg.area == "batteries_green" && cfg.env == "wp80")).ToList();
+
+            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
 
 			f.WriteEndElement(); // files
 
