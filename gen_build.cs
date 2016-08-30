@@ -2784,6 +2784,11 @@ public static class gen
 
 	private const string NUSPEC_RELEASE_NOTES = "The project formerly known as SQLitePCL.raw";
 
+    private static void add_basic_dependency_groups(XmlWriter f)
+    {
+		// TODO
+    }
+
 	private static void gen_nuspec_core(string top, string root)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2816,6 +2821,55 @@ public static class gen
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_unified"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_classic"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "net35");
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "net40");
+			f.WriteEndElement(); // group
+
+			// --------
+			f.WriteStartElement("group");
+			f.WriteAttributeString("targetFramework", "net45");
+			f.WriteEndElement(); // group
 
 			// --------
 			f.WriteStartElement("group");
@@ -2888,7 +2942,7 @@ public static class gen
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-                if (cfg.area == "raw")
+                if (cfg.area == "core")
                 {
                     write_nuspec_file_entry(
                             cfg, 
@@ -3407,7 +3461,7 @@ public static class gen
 
 			// --------
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "netstandard1.0");
+			f.WriteAttributeString("targetFramework", "netstandard1.1");
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", "NETStandard.Library");
@@ -3421,6 +3475,8 @@ public static class gen
 
 			f.WriteEndElement(); // group
 
+            // TODO I think we need dep groups here for all the specific platforms?
+            
 			// --------
 			f.WriteStartElement("group");
 
@@ -4431,13 +4487,19 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
 		{
-			tw.WriteLine("# TODO");
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../../nuget push {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-            // TODO push SQLitePCLRaw.tests?
 			tw.WriteLine("../../nuget push {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("#../../nuget push {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+
+			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
@@ -4446,7 +4508,6 @@ public static class gen
                     tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
                 }
 			}
-			tw.WriteLine("../../nuget push {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "lib")
@@ -4460,9 +4521,6 @@ public static class gen
 				string id = cfg.get_id();
 				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
 			}
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 		}
 	}
 }
