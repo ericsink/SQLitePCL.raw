@@ -1,12 +1,5 @@
 
-check AssemblyInfo.cs issues with sn
-
-consider tests which reference the _sn packages
-from non-sn tests.  strongname=false, but ref_sn=true.
-
-problem with uwp app, deploy, id
-
-strong naming
+problem with uwp app, deploy, id ?
 
 docs
 
@@ -36,19 +29,12 @@ problem with current testapps sln is that the
 framework used to resolve is predetermined.
 it would be better to gen the projects from
 scratch and somehow add the nuget packages.
+problem is specific to packages.config?
 
 consider creating a new build directory on
 every build
 
-temporarily removed all netstandard stuff so
-the version conflict on xunit.abstractions could
-go away
-
-why does the ios project.json need runtimes : win ?
-
-project.json is a mess.  maybe switch all the
-test runners back to packages.config?  but
-that's a different kind of mess.
+why does the error msg say ios project.json need runtimes : win ?
 
 is CopyNuGetImplementations causing trouble?
 with project.json : runtimes?
@@ -57,20 +43,13 @@ ios build machine needs sdk 9.3
 
 simulator runs, er, on the mac itself.  :-)
 
-perhaps gen more than one of each test runner
-project so we can use different bundles
-
 should MonoAndroid version be 2.3 or 6.0 ?
-
-new docs
 
 why does netstandard.library seem to drag in so much
 stuff?  tried building for specific platforms instead
 of letting netstandard happen and bring in 50 pkgs.
 xunit still goes that way, but if it's only xunit,
 that's fine for now.
-
-gen_nuspec_bundle_ green/e should share more code
 
 for net45, should bundle_green just use provider_sqlite3 
 instead of e?  on linux/mac, use system sqlite.  on windows,
@@ -107,8 +86,6 @@ currently wp8-SL support is limited to e_sqlite3.  no
 sqlcipher.  no extension SDK.  although we could in
 theory build multiple versions of this, each linked
 against a different library name.
-
-build iOS targetted for older iOS versions.  how?
 
 --------
 

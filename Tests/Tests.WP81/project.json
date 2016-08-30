@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
-    "SQLitePCL.bundle_e_sqlite3": "0.9.4-PLACEHOLDER",
-    "SQLitePCL.tests": "0.9.4-PLACEHOLDER",
+    "SQLitePCLRaw.bundle_e_sqlite3": "1.0.0-PLACEHOLDER",
+    "SQLitePCLRaw.tests": "1.0.0-PLACEHOLDER",
     "xunit.runner.devices": "2.1.0"
   },
   "frameworks": {
