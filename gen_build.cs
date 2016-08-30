@@ -44,10 +44,12 @@ public static class projects
 		//init_cppinterop(true);
 
         init_csproj(false);
-        init_csproj(true);
+		//SNK
+        //init_csproj(true);
 
 		init_tests(false);
-		init_tests(true);
+		//SNK
+		//init_tests(true);
 
 		init_testapps();
 
@@ -2030,7 +2032,7 @@ public static class gen
             {
                 //f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
                 f.WriteElementString("SignAssembly", "true");
-                f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
+                f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", string.Format("{0}.cppinterop", gen.get_root_name(true)))));
             }
 #endif
 			f.WriteEndElement(); // PropertyGroup
@@ -4372,22 +4374,21 @@ public static class gen
 
 		// --------------------------------
 
-		gen_nuspec_raw(false, top, root);
-		gen_nuspec_raw(true, top, root);
+        {
+            Action<bool> gens = strongname => {
+                gen_nuspec_raw(strongname, top, root);
+                gen_nuspec_ugly(strongname, top);
+                gen_nuspec_bundle_green(strongname, top);
+                gen_nuspec_bundle_e_sqlite3(strongname, top);
+                gen_nuspec_bundle_winsqlite3(strongname, top);
+                gen_nuspec_provider_wp80(strongname, top, root, "e_sqlite3");
+                gen_nuspec_tests(strongname, top);
+            };
 
-		gen_nuspec_ugly(false, top);
-		gen_nuspec_ugly(true, top);
-
-		gen_nuspec_tests(false, top);
-		gen_nuspec_tests(true, top);
-
-		gen_nuspec_bundle_green(false, top);
-		gen_nuspec_bundle_e_sqlite3(false, top);
-		gen_nuspec_bundle_winsqlite3(false, top);
-
-		gen_nuspec_bundle_green(true, top);
-		gen_nuspec_bundle_e_sqlite3(true, top);
-		gen_nuspec_bundle_winsqlite3(true, top);
+            gens(false);
+    		//SNK
+            //gens(true);
+        }
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4396,8 +4397,6 @@ public static class gen
                 gen_nuspec_provider(top, root, cfg);
             }
 		}
-        gen_nuspec_provider_wp80(false, top, root, "e_sqlite3");
-        gen_nuspec_provider_wp80(true, top, root, "e_sqlite3");
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -4424,28 +4423,23 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
-			tw.WriteLine("../../nuget pack SQLitePCL.raw.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.ugly.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.bundle_green.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.bundle_e_sqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.bundle_winsqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL.provider.e_sqlite3.wp80.nuspec");
+            Action<bool> packs = strongname => {
+                tw.WriteLine("../../nuget pack {0}.raw.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.ugly.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.bundle_green.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.bundle_winsqlite3.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.provider.e_sqlite3.wp80.nuspec", gen.get_root_name(strongname));
+                tw.WriteLine("../../nuget pack {0}.tests.nuspec", gen.get_root_name(strongname));
+            };
 
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.raw.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.ugly.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.bundle_green.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.bundle_e_sqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.bundle_winsqlite3.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.provider.e_sqlite3.wp80.nuspec");
+            packs(false);
+    		//SNK
+            //packs(true);
 
 			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.windows.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.osx.nuspec");
 			tw.WriteLine("../../nuget pack SQLitePCL.lib.sqlcipher.linux.nuspec");
-
-            // TODO probably give this a different kind of 
-            // name since it shouldn't be pushed
-			tw.WriteLine("../../nuget pack SQLitePCL.tests.nuspec");
-			tw.WriteLine("../../nuget pack SQLitePCL_sn.tests.nuspec");
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
