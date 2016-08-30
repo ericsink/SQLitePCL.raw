@@ -1283,7 +1283,7 @@ public static class gen
         if (!debug && cfg.strongname)
         {
             f.WriteElementString("SignAssembly", "true");
-            f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", cfg.assemblyname)));
+            f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", cfg.assemblyname)));
         }
 
 		f.WriteEndElement(); // PropertyGroup
