@@ -12,7 +12,7 @@ docs
 
 test runner for net45
 
-check and re-check all package and assemby names
+check and re-check all package and assembly names
 
 rm cruft for old sqlcipher builds
 
