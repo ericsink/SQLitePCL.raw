@@ -41,7 +41,7 @@ public static class projects
 		init_sqlite3();
 
 		init_cppinterop(false);
-		init_cppinterop(true);
+		//init_cppinterop(true);
 
         init_csproj(false);
         init_csproj(true);
@@ -1137,8 +1137,8 @@ public class config_csproj : config_info
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
 		{
 			if (
-                    (cfg.strongname == strongname)
-					&& (cfg.env == env)
+                    //(cfg.strongname == strongname) && 
+                    (cfg.env == env)
 					&& (cfg.cpu == cpu)
 			   )
 			{
@@ -2025,10 +2025,14 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
 			f.WriteElementString("UseDebugLibraries", "false");
+#if not
             if (cfg.strongname)
             {
-                f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
+                //f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
+                f.WriteElementString("SignAssembly", "true");
+                f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", "SQLitePCL_sn.cppinterop")));
             }
+#endif
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("Import");
