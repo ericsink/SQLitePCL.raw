@@ -565,7 +565,7 @@ public class config_cppinterop : config_info
 
 	public void get_products(List<string> a)
 	{
-		add_product(a, string.Format("{0}.cppinterop.dll", gen.ROOT_NAME));
+		add_product(a, "SQLitePCL.cppinterop.dll");
 		switch (env)
 		{
 			case "wp80":
@@ -2009,9 +2009,6 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
 			f.WriteElementString("UseDebugLibraries", "false");
-            {
-                f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", string.Format("{0}.cppinterop", gen.ROOT_NAME))));
-            }
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("Import");
@@ -2019,7 +2016,7 @@ public static class gen
 			f.WriteEndElement(); // Import
 
 			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("TargetName", string.Format("{0}.cppinterop", gen.ROOT_NAME));
+			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
 			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
 			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
 			write_cpp_includepath(f, root, "sqlite3\\");
@@ -2069,7 +2066,6 @@ public static class gen
 			f.WriteElementString("GenerateDebugInformation", "false");
 			//f.WriteElementString("EnableCOMDATFolding", "true");
 			//f.WriteElementString("OptimizeReferences", "true");
-            f.WriteElementString("WindowsMetadataLinkDelaySign", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
