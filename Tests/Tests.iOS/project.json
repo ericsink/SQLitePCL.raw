@@ -1,0 +1,11 @@
+﻿{
+  "dependencies": {
+    "SQLitePCLRaw.bundle_e_sqlite3": "1.0.0-PLACEHOLDER",
+    "SQLitePCLRaw.tests": "1.0.0-PLACEHOLDER",
+    "xunit.runner.devices": "2.1.0"
+  },
+  "frameworks": {
+    "Xamarin.iOS,Version=v1.0": { }
+  },
+  "supports": {}
+}

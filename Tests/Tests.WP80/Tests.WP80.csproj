@@ -143,6 +143,9 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="MainPage.xaml.cs.txt" />
+    <Content Include="MainPage.xaml.txt" />
+    <Content Include="README_FIRST.txt" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
@@ -160,16 +163,16 @@
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SQLitePCL.raw, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCL.raw.0.9.4-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.raw.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.1.0.0-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SQLitePCL.tests, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCL.tests.0.9.4-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.tests.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.tests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=f1ed717862ea0b85, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.tests.1.0.0-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.tests.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SQLitePCL.ugly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCL.ugly.0.9.4-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCL.ugly.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.ugly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e30121e06ccb4fd0, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.ugly.1.0.0-PLACEHOLDER\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.ugly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -230,12 +233,12 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Xamarin.Forms.2.3.0.49\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xamarin.Forms.2.3.0.49\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets'))" />
     <Error Condition="!Exists('..\packages\xunit.runner.devices.2.1.0\build\wp8\xunit.runner.devices.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.devices.2.1.0\build\wp8\xunit.runner.devices.targets'))" />
-    <Error Condition="!Exists('..\packages\SQLitePCL.lib.e_sqlite3.v110_wp80.0.9.4-PLACEHOLDER\build\SQLitePCL.lib.e_sqlite3.v110_wp80.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.lib.e_sqlite3.v110_wp80.0.9.4-PLACEHOLDER\build\SQLitePCL.lib.e_sqlite3.v110_wp80.targets'))" />
-    <Error Condition="!Exists('..\packages\SQLitePCL.provider.e_sqlite3.wp80.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.provider.e_sqlite3.wp80.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.provider.e_sqlite3.wp80.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.provider.e_sqlite3.wp80.targets'))" />
-    <Error Condition="!Exists('..\packages\SQLitePCL.bundle_e_sqlite3.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.bundle_e_sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCL.bundle_e_sqlite3.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.bundle_e_sqlite3.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.1.0.0-PLACEHOLDER\build\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.1.0.0-PLACEHOLDER\build\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.provider.e_sqlite3.wp80.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.provider.e_sqlite3.wp80.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.provider.e_sqlite3.wp80.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.provider.e_sqlite3.wp80.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.bundle_green.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.bundle_green.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.bundle_green.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.bundle_green.targets'))" />
   </Target>
   <Import Project="..\packages\xunit.runner.devices.2.1.0\build\wp8\xunit.runner.devices.targets" Condition="Exists('..\packages\xunit.runner.devices.2.1.0\build\wp8\xunit.runner.devices.targets')" />
-  <Import Project="..\packages\SQLitePCL.lib.e_sqlite3.v110_wp80.0.9.4-PLACEHOLDER\build\SQLitePCL.lib.e_sqlite3.v110_wp80.targets" Condition="Exists('..\packages\SQLitePCL.lib.e_sqlite3.v110_wp80.0.9.4-PLACEHOLDER\build\SQLitePCL.lib.e_sqlite3.v110_wp80.targets')" />
-  <Import Project="..\packages\SQLitePCL.provider.e_sqlite3.wp80.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.provider.e_sqlite3.wp80.targets" Condition="Exists('..\packages\SQLitePCL.provider.e_sqlite3.wp80.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.provider.e_sqlite3.wp80.targets')" />
-  <Import Project="..\packages\SQLitePCL.bundle_e_sqlite3.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.bundle_e_sqlite3.targets" Condition="Exists('..\packages\SQLitePCL.bundle_e_sqlite3.0.9.4-PLACEHOLDER\build\wp8\SQLitePCL.bundle_e_sqlite3.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.1.0.0-PLACEHOLDER\build\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.1.0.0-PLACEHOLDER\build\SQLitePCLRaw.lib.e_sqlite3.v110_wp80.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.provider.e_sqlite3.wp80.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.provider.e_sqlite3.wp80.targets" Condition="Exists('..\packages\SQLitePCLRaw.provider.e_sqlite3.wp80.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.provider.e_sqlite3.wp80.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.bundle_green.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.bundle_green.targets" Condition="Exists('..\packages\SQLitePCLRaw.bundle_green.1.0.0-PLACEHOLDER\build\wp8\SQLitePCLRaw.bundle_green.targets')" />
 </Project>
