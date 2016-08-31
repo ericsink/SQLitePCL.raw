@@ -2009,12 +2009,9 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
 			f.WriteElementString("UseDebugLibraries", "false");
-#if not
             {
-                f.WriteElementString("SignAssembly", "true");
-                f.WriteElementString("AssemblyOriginatorKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", string.Format("{0}.cppinterop", gen.ROOT_NAME))));
+                f.WriteElementString("WindowsMetadataLinkKeyFile", Path.Combine(top, "..", "sn", string.Format("{0}.snk", string.Format("{0}.cppinterop", gen.ROOT_NAME))));
             }
-#endif
 			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteStartElement("Import");
@@ -2072,6 +2069,7 @@ public static class gen
 			f.WriteElementString("GenerateDebugInformation", "false");
 			//f.WriteElementString("EnableCOMDATFolding", "true");
 			//f.WriteElementString("OptimizeReferences", "true");
+            f.WriteElementString("WindowsMetadataLinkDelaySign", "true");
 			f.WriteEndElement(); // Link
 			f.WriteEndElement(); // ItemDefinitionGroup
 
