@@ -1,4 +1,9 @@
 
+cppinterop is now the only assembly which has the
+old name.  grumble.
+
+problem with uwp apps pfx file
+
 problem with uwp app, deploy, id ?
 
 docs
@@ -23,7 +28,8 @@ instead of text writelines
 
 how many cases are there where we could ditch a
 platform-specific build and just let it use
-netstandard?
+netstandard?  but then NetStandard.Library gets
+dragged in, which is a lot of weird stuff.
 
 problem with current testapps sln is that the
 framework used to resolve is predetermined.
@@ -34,7 +40,7 @@ problem is specific to packages.config?
 consider creating a new build directory on
 every build
 
-why does the error msg say ios project.json need runtimes : win ?
+why does the error msg say ios project.json needs runtimes : win ?
 
 is CopyNuGetImplementations causing trouble?
 with project.json : runtimes?
@@ -44,16 +50,6 @@ ios build machine needs sdk 9.3
 simulator runs, er, on the mac itself.  :-)
 
 should MonoAndroid version be 2.3 or 6.0 ?
-
-why does netstandard.library seem to drag in so much
-stuff?  tried building for specific platforms instead
-of letting netstandard happen and bring in 50 pkgs.
-xunit still goes that way, but if it's only xunit,
-that's fine for now.
-
-for net45, should bundle_green just use provider_sqlite3 
-instead of e?  on linux/mac, use system sqlite.  on windows,
-use the extension sdk.  but does that exist for net45?
 
 will we ever wish a lib packaged in nuget v3 had a
 different name?  should the current stuff have "targets"
