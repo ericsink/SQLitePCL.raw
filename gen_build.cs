@@ -569,12 +569,12 @@ public class config_cppinterop : config_info
 		switch (env)
 		{
 			case "wp80":
-				add_product(a, string.Format("{0}.cppinterop.winmd", gen.ROOT_NAME));
+				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 
 			case "wp81_sl":
-				add_product(a, string.Format("{0}.cppinterop.pri", gen.ROOT_NAME));
-				add_product(a, string.Format("{0}.cppinterop.winmd", gen.ROOT_NAME));
+				add_product(a, "SQLitePCL.cppinterop.pri");
+				add_product(a, "SQLitePCL.cppinterop.winmd");
 				break;
 
 			default:
@@ -677,7 +677,6 @@ public static class config_cs
 
 	public static string get_full_framework_name(string env)
 	{
-		// TODO maybe I should just use the TFM names?
 		switch (env)
 		{
 			case "ios_classic":
@@ -723,7 +722,6 @@ public static class config_cs
 					
 	public static string get_nuget_framework_name(string env)
 	{
-		// TODO maybe I should just use the TFM names?
 		switch (env)
 		{
 			case "ios_classic":
@@ -752,6 +750,14 @@ public static class config_cs
 				return "win8";
 			case "win81":
 				return "win81";
+			case "netstandard1.1":
+				return "netstandard1.1";
+			case "netstandard1.0":
+				return "netstandard1.0";
+            case "profile111":
+            case "profile136":
+            case "profile259":
+                return projects.get_portable_nuget_target_string(env);
 			default:
 				throw new Exception(env);
 		}
@@ -1930,7 +1936,7 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 			f.WriteElementString("ProjectGuid", cfg.guid);
 			f.WriteElementString("DefaultLanguage", "en-us");
-			f.WriteElementString("RootNamespace", string.Format("{0}.cppinterop", gen.ROOT_NAME));
+			f.WriteElementString("RootNamespace", "SQLitePCL.cppinterop");
 
 			switch (cfg.env)
 			{
@@ -2784,9 +2790,36 @@ public static class gen
 
 	private const string NUSPEC_RELEASE_NOTES = "The project formerly known as SQLitePCL.raw";
 
-    private static void add_basic_dependency_groups(XmlWriter f)
+    private static void add_dep_core(XmlWriter f)
     {
-		// TODO
+        f.WriteStartElement("dependency");
+        f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
+        f.WriteAttributeString("version", NUSPEC_VERSION);
+        f.WriteEndElement(); // dependency
+    }
+
+    private static void add_dep_ugly(XmlWriter f)
+    {
+        f.WriteStartElement("dependency");
+        f.WriteAttributeString("id", string.Format("{0}.ugly", gen.ROOT_NAME));
+        f.WriteAttributeString("version", NUSPEC_VERSION);
+        f.WriteEndElement(); // dependency
+    }
+
+    private static void add_dep_xunit(XmlWriter f)
+    {
+        f.WriteStartElement("dependency");
+        f.WriteAttributeString("id", "xunit");
+        f.WriteAttributeString("version", "2.1.0");
+        f.WriteEndElement(); // dependency
+    }
+
+    private static void add_dep_netstandard(XmlWriter f)
+    {
+        f.WriteStartElement("dependency");
+        f.WriteAttributeString("id", "NETStandard.Library");
+        f.WriteAttributeString("version", "1.6.0");
+        f.WriteEndElement(); // dependency
     }
 
 	private static void gen_nuspec_core(string top, string root)
@@ -2822,117 +2855,21 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			// --------
-			f.WriteStartElement("group");
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("android"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_unified"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("ios_classic"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("win81"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wpa81"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("wp80"));
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "net35");
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "net40");
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "net45");
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "uap10.0");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Collections");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Collections.Concurrent");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Resources.ResourceManager");
-			f.WriteAttributeString("version", "4.0.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Runtime");
-			f.WriteAttributeString("version", "4.0.20");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Runtime.InteropServices");
-			f.WriteAttributeString("version", "4.0.20");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Text.Encoding");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "System.Threading");
-			f.WriteAttributeString("version", "4.0.10");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "netstandard1.0");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "netstandard1.1");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_dependency_group(f, "android", DEP_NONE);
+            write_dependency_group(f, "ios_unified", DEP_NONE);
+            write_dependency_group(f, "ios_classic", DEP_NONE);
+            write_dependency_group(f, "net35", DEP_NONE);
+            write_dependency_group(f, "net40", DEP_NONE);
+            write_dependency_group(f, "net45", DEP_NONE);
+            write_dependency_group(f, "win81", DEP_NONE);
+            write_dependency_group(f, "wpa81", DEP_NONE);
+            write_dependency_group(f, "wp80", DEP_NONE);
+            write_dependency_group(f, "uap10.0", DEP_NONE);
+            write_dependency_group(f, "profile111", DEP_NONE);
+            write_dependency_group(f, "profile136", DEP_NONE);
+            write_dependency_group(f, "profile259", DEP_NONE);
+            write_dependency_group(f, "netstandard1.1", DEP_NONE);
+            write_dependency_group(f, null, DEP_NONE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -3109,6 +3046,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
+            write_dependency_group(f, "wp80", DEP_CORE);
+
 			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
@@ -3162,52 +3101,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			switch (cfg.env)
-			{
-				case "uap10.0":
-					// --------
-					f.WriteStartElement("group");
-					f.WriteAttributeString("targetFramework", "uap10.0");
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Collections");
-					f.WriteAttributeString("version", "4.0.10");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Collections.Concurrent");
-					f.WriteAttributeString("version", "4.0.10");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Resources.ResourceManager");
-					f.WriteAttributeString("version", "4.0.0");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Runtime");
-					f.WriteAttributeString("version", "4.0.20");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Runtime.InteropServices");
-					f.WriteAttributeString("version", "4.0.20");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Text.Encoding");
-					f.WriteAttributeString("version", "4.0.10");
-					f.WriteEndElement(); // dependency
-
-					f.WriteStartElement("dependency");
-					f.WriteAttributeString("id", "System.Threading");
-					f.WriteAttributeString("version", "4.0.10");
-					f.WriteEndElement(); // dependency
-
-					f.WriteEndElement(); // group
-
-					break;
-			}
+            write_dependency_group(f, cfg.env, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -3353,52 +3247,21 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "netstandard1.0");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "xunit");
-			f.WriteAttributeString("version", "2.1.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.ugly", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-			//f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("profile259"));
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "xunit");
-			f.WriteAttributeString("version", "2.1.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.ugly", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_dependency_group(f, "android", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "ios_unified", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "ios_classic", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "net35", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "net40", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "net45", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "win81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "wpa81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "wp80", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "uap10.0", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "profile111", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "profile136", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "profile259", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "netstandard1.1", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, null, DEP_CORE | DEP_UGLY | DEP_XUNIT);
 
 			f.WriteEndElement(); // dependencies
 
@@ -3459,33 +3322,21 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", "netstandard1.1");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-            // TODO I think we need dep groups here for all the specific platforms?
-            
-			// --------
-			f.WriteStartElement("group");
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_dependency_group(f, "android", DEP_CORE);
+            write_dependency_group(f, "ios_unified", DEP_CORE);
+            write_dependency_group(f, "ios_classic", DEP_CORE);
+            write_dependency_group(f, "net35", DEP_CORE);
+            write_dependency_group(f, "net40", DEP_CORE);
+            write_dependency_group(f, "net45", DEP_CORE);
+            write_dependency_group(f, "win81", DEP_CORE);
+            write_dependency_group(f, "wpa81", DEP_CORE);
+            write_dependency_group(f, "wp80", DEP_CORE);
+            write_dependency_group(f, "uap10.0", DEP_CORE);
+            write_dependency_group(f, "profile111", DEP_CORE);
+            write_dependency_group(f, "profile136", DEP_CORE);
+            write_dependency_group(f, "profile259", DEP_CORE);
+            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -3587,32 +3438,64 @@ public static class gen
 		}
 	}
 
+    private const int DEP_NONE = 0;
+    private const int DEP_CORE = 1;
+    private const int DEP_UGLY = 2;
+    private const int DEP_XUNIT = 4;
+
+    private static void write_dependency_group(XmlWriter f, string env, int flags)
+    {
+        f.WriteStartElement("group");
+        if (env != null)
+        {
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
+            switch (env)
+            {
+                case "uap10.0":
+                case "netstandard1.1":
+                    add_dep_netstandard(f);
+                    break;
+            }
+        }
+        if ((flags & DEP_CORE) != 0)
+        {
+            add_dep_core(f);
+        }
+        if ((flags & DEP_UGLY) != 0)
+        {
+            add_dep_ugly(f);
+        }
+        if ((flags & DEP_XUNIT) != 0)
+        {
+            add_dep_xunit(f);
+        }
+        f.WriteEndElement(); // group
+    }
+
     private static void write_bundle_dependency_group(XmlWriter f, string env, string what)
     {
         // --------
         f.WriteStartElement("group");
         f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
 
-        f.WriteStartElement("dependency");
-        f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-        f.WriteAttributeString("version", NUSPEC_VERSION);
-        f.WriteEndElement(); // dependency
+        add_dep_core(f);
 
-        switch (env)
+        if (
+                ((env == "ios_unified") || (env == "ios_classic"))
+                && (what != "sqlite3")
+           )
         {
-            case "ios_unified":
-            case "ios_classic":
-                f.WriteStartElement("dependency");
-                f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, "internal", env));
-                f.WriteAttributeString("version", NUSPEC_VERSION);
-                f.WriteEndElement(); // dependency
-                break;
-            default:
-                f.WriteStartElement("dependency");
-                f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, env));
-                f.WriteAttributeString("version", NUSPEC_VERSION);
-                f.WriteEndElement(); // dependency
-                break;
+            f.WriteStartElement("dependency");
+            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, "internal", env));
+            f.WriteAttributeString("version", NUSPEC_VERSION);
+            f.WriteEndElement(); // dependency
+        }
+        else
+        {
+            f.WriteStartElement("dependency");
+            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, env));
+            f.WriteAttributeString("version", NUSPEC_VERSION);
+            f.WriteEndElement(); // dependency
         }
 
         if (what == "e_sqlite3")
@@ -3689,32 +3572,11 @@ public static class gen
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
             
-			// --------
-			f.WriteStartElement("group");
-            // TODO other pcl profiles for bait
-			f.WriteAttributeString("targetFramework", "netstandard1.0");
-
-			f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-
-			f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_dependency_group(f, "profile111", DEP_CORE);
+            write_dependency_group(f, "profile136", DEP_CORE);
+            write_dependency_group(f, "profile259", DEP_CORE);
+            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -3790,32 +3652,11 @@ public static class gen
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
 
-			// --------
-			f.WriteStartElement("group");
-            // TODO other pcl profiles for bait
-			f.WriteAttributeString("targetFramework", "netstandard1.0");
-
-			f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", "NETStandard.Library");
-			f.WriteAttributeString("version", "1.6.0");
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
-
-			// --------
-			f.WriteStartElement("group");
-
-			f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_dependency_group(f, "profile111", DEP_CORE);
+            write_dependency_group(f, "profile136", DEP_CORE);
+            write_dependency_group(f, "profile259", DEP_CORE);
+            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
