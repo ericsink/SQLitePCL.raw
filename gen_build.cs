@@ -2782,7 +2782,7 @@ public static class gen
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
 	//public static string NUSPEC_VERSION = "1.0.0";
 
-	private const string NUSPEC_RELEASE_NOTES = "The project formerly known as SQLitePCL.raw";
+	private const string NUSPEC_RELEASE_NOTES = "1.0 release.  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
     private static void add_dep_core(XmlWriter f)
     {
@@ -2836,7 +2836,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
             f.WriteElementString("title", id);
-			f.WriteElementString("description", "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this, you will need to also add one of the SQLitePCLRaw.provider.* packages.");
+			f.WriteElementString("description", "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Most users should just start with one of the packages named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -2910,8 +2910,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
-			f.WriteElementString("authors", "D. Richard Hipp, et al");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
@@ -2977,8 +2977,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
-			f.WriteElementString("authors", "D. Richard Hipp, et al");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
@@ -3025,7 +3025,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cppinterop());");
+			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());");
             desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
@@ -3080,7 +3080,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
+			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
             desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
@@ -3136,7 +3136,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", string.Format("Native code only (sqlcipher, {0}) for SQLitePCLRaw", plat));
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.");
 			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
