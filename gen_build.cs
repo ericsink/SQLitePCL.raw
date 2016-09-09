@@ -831,7 +831,6 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("{0}.core", cfg.root_name);
         cfg.env = env;
 
-        cfg.csfiles_src.Add("AssemblyInfo.cs");
         cfg.csfiles_src.Add("raw.cs");
         cfg.csfiles_src.Add("intptrs.cs");
         cfg.csfiles_src.Add("isqlite3.cs");
@@ -2249,6 +2248,16 @@ public static class gen
 
     }
 
+	private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
+	{
+		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname))))
+		{
+			string cs1 = cs.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + cfg.assemblyname + '"');
+			tw.Write(cs1);
+		}
+	}
+
 	private static void gen_csproj(config_csproj cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2318,6 +2327,7 @@ public static class gen
 			{
 				write_cs_compile(f, top, csfile);
 			}
+			write_cs_compile(f, top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname));
 			f.WriteEndElement(); // ItemGroup
 
             if (cfg.ref_core)
@@ -4198,6 +4208,19 @@ public static class gen
 		foreach (config_testapp cfg in projects.items_testapp)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+		}
+
+		// --------------------------------
+		// generate all the AssemblyInfo files
+
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			gen_assemblyinfo(cfg, root, top);
+		}
+
+		foreach (config_csproj cfg in projects.items_test)
+		{
+			gen_assemblyinfo(cfg, root, top);
 		}
 
 		// --------------------------------
