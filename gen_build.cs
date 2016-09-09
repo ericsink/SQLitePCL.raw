@@ -3126,6 +3126,69 @@ public static class gen
 		}
 	}
 
+	private static void gen_nuspec_e_sqlite3_runtimes(string top, string root)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.runtimes");
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.8.1");
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", string.Format("Native code only (e_sqlite3, for SQLitePCLRaw"));
+			f.WriteElementString("description", "TODO This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.");
+			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
+			f.WriteElementString("tags", "sqlite");
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+            f.WriteStartElement("file");
+            f.WriteAttributeString("src", Path.Combine(top, "sqlite3.v110_xp.x86", "bin", "Release", "e_sqlite3.dll"));
+            f.WriteAttributeString("target", "runtimes\\win7-x86\\native\\e_sqlite3.dll");
+            f.WriteEndElement(); // file
+
+            f.WriteStartElement("file");
+            f.WriteAttributeString("src", Path.Combine(top, "sqlite3.v110_xp.x64", "bin", "Release", "e_sqlite3.dll"));
+            f.WriteAttributeString("target", "runtimes\\win7-x64\\native\\e_sqlite3.dll");
+            f.WriteEndElement(); // file
+
+            f.WriteStartElement("file");
+            f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
+            f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
+            f.WriteEndElement(); // file
+
+            f.WriteStartElement("file");
+            f.WriteAttributeString("src", Path.Combine(root, "linux", "libe_sqlite3.so"));
+            f.WriteAttributeString("target", "runtimes\\linux-x64\\native\\libe_sqlite3.so");
+            f.WriteEndElement(); // file
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_sqlcipher(string top, string root, string plat)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -4288,6 +4351,7 @@ public static class gen
 			gen_nuspec_esqlite3(top, root, cfg);
 		}
 
+		gen_nuspec_e_sqlite3_runtimes(top, root);
 		gen_nuspec_sqlcipher(top, root, "windows");
 		gen_nuspec_sqlcipher(top, root, "osx");
 		gen_nuspec_sqlcipher(top, root, "linux");
@@ -4308,6 +4372,7 @@ public static class gen
             tw.WriteLine("../../nuget pack {0}.provider.e_sqlite3.wp80.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.tests.nuspec", gen.ROOT_NAME);
 
+			tw.WriteLine("../../nuget pack {0}.lib.e_sqlite3.runtimes.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.windows.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.osx.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.linux.nuspec", gen.ROOT_NAME);
@@ -4354,6 +4419,7 @@ public static class gen
 			tw.WriteLine("../../nuget push {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("#../../nuget push {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 
+			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.runtimes.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);

@@ -1,6 +1,4 @@
 
-rebuild sqlite for ios 6
-
 oren says kill the (equiv) platform builds and just use
 netstandard.  and yes, keep NetStandard.Library in
 the deps, even though it drags in tons of transitives.
@@ -10,16 +8,12 @@ use architecture/runtimes instead of targets files
 understand runtime.json and rid-specific deps, even
 if they are not officially supported
 
-assemblyversion for several of these assemblies is
-0.0.0.0.  should probably fix this and set them all
-to 1.0.0.0.
-
 cppinterop is now the only assembly which has the
 old name.  grumble.
 
-problem with uwp apps pfx file
+problem with uwp test apps pfx file
 
-problem with uwp app, deploy, id ?
+problem with uwp test app, deploy, id ?
 
 docs
 
