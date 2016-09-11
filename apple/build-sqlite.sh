@@ -27,6 +27,11 @@ mkdir -p ./obj/ios/$Z_SQL/arm64
 mkdir -p ./libs/ios/$Z_SQL
 mkdir -p ./libs/ios/$Z_SQL/e_sqlite3.framework
 
+mkdir -p ./obj/watchos/$Z_SQL/armv7k
+mkdir -p ./obj/watchos/$Z_SQL/i386
+mkdir -p ./libs/watchos/$Z_SQL
+mkdir -p ./libs/watchos/$Z_SQL/e_sqlite3.framework
+
 mkdir -p ./obj/mac/$Z_SQL/i386
 mkdir -p ./obj/mac/$Z_SQL/x86_64
 mkdir -p ./libs/mac/$Z_SQL
@@ -60,6 +65,23 @@ xcrun --sdk iphonesimulator clang -miphoneos-version-min=6.0 -dynamiclib $Z_CFLA
 install_name_tool -id @rpath/e_sqlite3.framework/e_sqlite3  ./obj/ios/$Z_SQL/e_sqlite3.simulator
 
 lipo -create  ./obj/ios/$Z_SQL/e_sqlite3.device  ./obj/ios/$Z_SQL/e_sqlite3.simulator -output  ./libs/ios/$Z_SQL/e_sqlite3.framework/e_sqlite3
+
+# WatchOS
+
+xcrun --sdk watchsimulator clang -mwatchos-simulator-version-min=3.0 -arch i386 $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/watchos/$Z_SQL/i386/sqlite3.c.o ../$Z_SQL/sqlite3.c
+xcrun --sdk watchos clang -mwatchos-version-min=3.0 -arch armv7k -fembed-bitcode $Z_CFLAGS $Z_CODEC_ARGS -c -o ./obj/watchos/$Z_SQL/armv7k/sqlite3.c.o ../$Z_SQL/sqlite3.c
+
+libtool -static -o ./libs/watchos/$Z_SQL/e_sqlite3.a \
+	./obj/watchos/$Z_SQL/i386/sqlite3.c.o \
+	./obj/watchos/$Z_SQL/armv7k/sqlite3.c.o
+
+xcrun --sdk watchos clang -mwatchos-version-min=3.0 -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch armv7k -fembed-bitcode -o ./obj/watchos/$Z_SQL/e_sqlite3.device -framework Foundation -fapplication-extension ./libs/watchos/libcrypto.a
+install_name_tool -id @rpath/e_sqlite3.framework/e_sqlite3  ./obj/watchos/$Z_SQL/e_sqlite3.device
+
+xcrun --sdk watchsimulator clang -mwatchos-simulator-version-min=3.0 -dynamiclib $Z_CFLAGS $Z_CODEC_ARGS ../$Z_SQL/sqlite3.c -arch i386 -o ./obj/watchos/$Z_SQL/e_sqlite3.simulator -framework Foundation -fapplication-extension -mwatchos-simulator-version-min=3.0 ./libs/watchos/libcrypto.a
+install_name_tool -id @rpath/e_sqlite3.framework/e_sqlite3  ./obj/watchos/$Z_SQL/e_sqlite3.simulator
+
+lipo -create  ./obj/watchos/$Z_SQL/e_sqlite3.device  ./obj/watchos/$Z_SQL/e_sqlite3.simulator -output  ./libs/watchos/$Z_SQL/e_sqlite3.framework/e_sqlite3
 
 echo ----------------------------------------------------------------
 echo build-sqlite.sh done
