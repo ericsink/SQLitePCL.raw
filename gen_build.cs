@@ -3145,9 +3145,9 @@ public static class gen
 
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", string.Format("Native code only (e_sqlite3, for SQLitePCLRaw"));
-			f.WriteElementString("description", "TODO This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.");
-			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
+			f.WriteElementString("title", string.Format("Native code only (e_sqlite3, {0}) for SQLitePCLRaw", plat));
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
 			f.WriteElementString("requireLicenseAcceptance", "false");
