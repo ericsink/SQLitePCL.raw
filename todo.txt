@@ -1,9 +1,27 @@
 
+should we compile android sqlite with 
+SQLITE_TEMP_STORE = 2 or 3
+?
+
+config_esqlite3 should get reworked, because it only
+generates a nuspec, not a csproj.  in fact, it's just
+a string toolset.
+
+maybe the subdirs x86/x64 for loading with anycpu
+should be the rid
+
+several of the targets files are using the name
+InjectReference when really they're just copying
+the native DLL into the bin dir
+
+change all the lib packages to put the binaries
+in runtimes/rid/native, and change the .targets files
+to use that path, and also change the targets files
+to not do the copy when packages.config is present.
+
 oren says kill the (equiv) platform builds and just use
 netstandard.  and yes, keep NetStandard.Library in
 the deps, even though it drags in tons of transitives.
-
-use architecture/runtimes instead of targets files
 
 understand runtime.json and rid-specific deps, even
 if they are not officially supported
@@ -71,9 +89,6 @@ dynamic?
 general-purpose gen_nuspec function
 
 combine net45 libs into one pkg?
-
-config_esqlite3 should get reworked, because it only
-generates a nuspec, not a csproj
 
 do we need a copy of the main raw assembly compiled specifically
 for every tfm?  like android?  or is it sufficient to have

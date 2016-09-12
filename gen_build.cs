@@ -3126,13 +3126,13 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_e_sqlite3_runtimes(string top, string root)
+	private static void gen_nuspec_e_sqlite3(string top, string root, string plat)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.runtimes");
+		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.{0}", plat);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -3161,24 +3161,30 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-            f.WriteStartElement("file");
-            f.WriteAttributeString("src", Path.Combine(top, "sqlite3.v110_xp.x86", "bin", "Release", "e_sqlite3.dll"));
-            f.WriteAttributeString("target", "runtimes\\win7-x86\\native\\e_sqlite3.dll");
-            f.WriteEndElement(); // file
+			string tname = string.Format("{0}.targets", id);
+            switch (plat)
+            {
+                case "osx":
+                    f.WriteStartElement("file");
+                    f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
+                    f.WriteAttributeString("target", "build\\native\\osx\\libe_sqlite3.dylib");
+                    f.WriteEndElement(); // file
+                    gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib");
+                    break;
+                case "linux":
+                    f.WriteStartElement("file");
+                    f.WriteAttributeString("src", Path.Combine(root, "linux", "libe_sqlite3.so"));
+                    f.WriteAttributeString("target", "build\\native\\linux\\libe_sqlite3.so");
+                    f.WriteEndElement(); // file
+                    gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
+                    break;
+                default:
+                    throw new Exception();
+            }
 
             f.WriteStartElement("file");
-            f.WriteAttributeString("src", Path.Combine(top, "sqlite3.v110_xp.x64", "bin", "Release", "e_sqlite3.dll"));
-            f.WriteAttributeString("target", "runtimes\\win7-x64\\native\\e_sqlite3.dll");
-            f.WriteEndElement(); // file
-
-            f.WriteStartElement("file");
-            f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
-            f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
-            f.WriteEndElement(); // file
-
-            f.WriteStartElement("file");
-            f.WriteAttributeString("src", Path.Combine(root, "linux", "libe_sqlite3.so"));
-            f.WriteAttributeString("target", "runtimes\\linux-x64\\native\\libe_sqlite3.so");
+            f.WriteAttributeString("src", tname);
+            f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
             f.WriteEndElement(); // file
 
 			f.WriteEndElement(); // files
@@ -3236,10 +3242,10 @@ public static class gen
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86_64\\sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", "windows", "x86_64"));
+					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", "windows", "x64"));
 					f.WriteEndElement(); // file
 
-					gen_nuget_targets_sqlcipher_windows(top, tname);
+					gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
 					break;
 				case "osx":
 					f.WriteStartElement("file");
@@ -3247,14 +3253,14 @@ public static class gen
 					f.WriteAttributeString("target", string.Format("build\\native\\osx\\libsqlcipher.dylib"));
 					f.WriteEndElement(); // file
 
-					gen_nuget_targets_sqlcipher_osx(top, tname);
+					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib");
 					break;
 				case "linux":
 					// TODO do we need amd64 version here?
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\linux\\x86_64\\libsqlcipher.so"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\libsqlcipher.so", "linux", "x86_64"));
+					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\libsqlcipher.so", "linux", "x64"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
@@ -3262,7 +3268,7 @@ public static class gen
 					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\libsqlcipher.so", "linux", "x86"));
 					f.WriteEndElement(); // file
 
-					gen_nuget_targets_sqlcipher_linux(top, tname);
+					gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
 					break;
 				default:
 					throw new Exception();
@@ -3582,6 +3588,24 @@ public static class gen
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
+                case "net35":
+                case "net40":
+                case "net45":
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.v110_xp", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.osx", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.linux", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
                 default:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env)));
@@ -3860,7 +3884,6 @@ public static class gen
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			f.WriteStartElement("ItemGroup");
-			// TODO problem with net45 on Linux because of the 'e'
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
@@ -3869,10 +3892,7 @@ public static class gen
 					continue;
 				}
 
-				// TODO for net45, handle more than just windows.  deal with mono on mac and linux
-
 				f.WriteStartElement("Content");
-				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
 				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
 				// TODO condition/exists ?
 				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", other.cpu.ToLower()));
@@ -3895,7 +3915,7 @@ public static class gen
 		return tname;
 	}
 
-	private static void gen_nuget_targets_sqlcipher_windows(string top, string tname)
+	private static void gen_nuget_targets_windows(string top, string tname, string filename)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3918,14 +3938,14 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86\\sqlcipher.dll", "windows"));
-			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x86"));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86\\{1}", "windows", filename));
+			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86_64\\sqlcipher.dll", "windows"));
-			f.WriteElementString("Link", string.Format("{0}\\sqlcipher.dll", "x64"));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x64\\{1}", "windows", filename));
+			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
@@ -3944,7 +3964,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_sqlcipher_osx(string top, string tname)
+	private static void gen_nuget_targets_osx(string top, string tname, string filename)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3967,8 +3987,8 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\osx\\libsqlcipher.dylib"));
-			f.WriteElementString("Link", "libsqlcipher.dylib");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\osx\\{0}", filename));
+			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
@@ -3987,7 +4007,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_sqlcipher_linux(string top, string tname)
+	private static void gen_nuget_targets_linux(string top, string tname, string filename)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -4010,8 +4030,8 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\linux\\x86_64\\libsqlcipher.so"));
-			f.WriteElementString("Link", "libsqlcipher.so");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\linux\\x64\\{0}", filename));
+			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
@@ -4351,7 +4371,9 @@ public static class gen
 			gen_nuspec_esqlite3(top, root, cfg);
 		}
 
-		gen_nuspec_e_sqlite3_runtimes(top, root);
+		gen_nuspec_e_sqlite3(top, root, "osx");
+		gen_nuspec_e_sqlite3(top, root, "linux");
+
 		gen_nuspec_sqlcipher(top, root, "windows");
 		gen_nuspec_sqlcipher(top, root, "osx");
 		gen_nuspec_sqlcipher(top, root, "linux");
@@ -4372,7 +4394,9 @@ public static class gen
             tw.WriteLine("../../nuget pack {0}.provider.e_sqlite3.wp80.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.tests.nuspec", gen.ROOT_NAME);
 
-			tw.WriteLine("../../nuget pack {0}.lib.e_sqlite3.runtimes.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../../nuget pack {0}.lib.e_sqlite3.osx.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../../nuget pack {0}.lib.e_sqlite3.linux.nuspec", gen.ROOT_NAME);
+
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.windows.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.osx.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../../nuget pack {0}.lib.sqlcipher.linux.nuspec", gen.ROOT_NAME);
@@ -4419,7 +4443,9 @@ public static class gen
 			tw.WriteLine("../../nuget push {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("#../../nuget push {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 
-			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.runtimes.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
 			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
