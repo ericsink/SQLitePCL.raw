@@ -31,6 +31,9 @@ fi
 OPENSSL_VERSION="openssl-1.0.1p"
 DEVELOPER=`xcode-select -print-path`
 
+OPENSSL_WATCHOS_VERSION="openssl-1.0.2h"
+WATCHOS_MIN_VERSION="3.0"
+
 # TODO
 #EXCLUDES=" no-idea no-camellia no-ec "
 
@@ -93,11 +96,52 @@ buildIOS()
     popd > /dev/null
 }
 
+buildWatchOS()
+{
+    ARCH=$1
+
+    pushd . > /dev/null
+    cd "${OPENSSL_WATCHOS_VERSION}"
+
+    if [[ "${ARCH}" == "i386" ]]; then
+        PLATFORM="WatchSimulator"
+    else
+        PLATFORM="WatchOS"
+        sed -ie "s!static volatile sig_atomic_t intr_signal;!static volatile intr_signal;!" "crypto/ui/ui_openssl.c"
+    fi
+
+    # No fork on watchOS
+    sed -ie "s!define HAVE_FORK 1!define HAVE_FORK 0!" "apps/speed.c"
+    export $PLATFORM
+    export CROSS_TOP="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer"
+    export CROSS_SDK="${PLATFORM}3.0.sdk"
+    export BUILD_TOOLS="${DEVELOPER}"
+    export CC="${BUILD_TOOLS}/usr/bin/gcc -arch ${ARCH}"
+
+    echo "Building ${OPENSSL_WATCHOS_VERSION} for ${PLATFORM} ${SDK_VERSION} ${ARCH}"
+
+    ./Configure no-asm iphoneos-cross ${EXCLUDES} --openssldir="/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}" &> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log"
+
+    if [[ "${ARCH}" == "i386" ]]; then
+        sed -ie "s!^CFLAG=!CFLAG=-isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK} -mwatchos-simulator-version-min=${WATCHOS_MIN_VERSION} !" "Makefile"
+    else
+        sed -ie "s!^CFLAG=!CFLAG=-isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK} -mwatchos-version-min=${WATCHOS_MIN_VERSION} -fembed-bitcode !" "Makefile"
+    fi
+
+    make clean >> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log" 2>&1
+    make depend >> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log" 2>&1
+    make >> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log" 2>&1
+    make install >> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log" 2>&1
+    make clean >> "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-${ARCH}.log" 2>&1
+    popd > /dev/null
+}
+
 echo "Cleaning up"
-rm -rf include/openssl/* libs/ios/libcrypto* libs/mac/libcrypto*
+rm -rf include/openssl/* libs/ios/libcrypto* libs/mac/libcrypto* libs/watchos/libcrypto*
 
 mkdir -p libs/ios
 mkdir -p libs/mac
+mkdir -p libs/watchos
 mkdir -p include/openssl/
 
 rm -rf "/tmp/${OPENSSL_VERSION}-*"
@@ -162,9 +206,24 @@ if [[ $SDK_VERSION == "8.1" ]]; then
 
 fi
 
+# WatchOS libcrypto.a
+echo "Unpacking OpenSSL ${OPENSSL_WATCHOS_VERSION}"
+tar xfz "../tarballs/${OPENSSL_WATCHOS_VERSION}.tar.gz"
+
+buildWatchOS "armv7k"
+buildWatchOS "i386"
+
+echo "Building WatchOS libraries"
+lipo \
+    "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-armv7k/lib/libcrypto.a" \
+    "/tmp/${OPENSSL_WATCHOS_VERSION}-watchOS-i386/lib/libcrypto.a" \
+    -create -output libs/watchos/libcrypto.a
+
 echo "Cleaning up"
 rm -rf /tmp/${OPENSSL_VERSION}-*
 rm -rf ${OPENSSL_VERSION}
+rm -rf /tmp/${OPENSSL_WATCHOS_VERSION}-*
+rm -rf ${OPENSSL_WATCHOS_VERSION}
 
 echo "Done"
 

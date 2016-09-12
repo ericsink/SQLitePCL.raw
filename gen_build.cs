@@ -88,6 +88,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_core("net45"));
         items_csproj.Add(config_csproj.create_core("ios_unified"));
         items_csproj.Add(config_csproj.create_core("ios_classic"));
+        items_csproj.Add(config_csproj.create_core("watchos"));
         items_csproj.Add(config_csproj.create_core("android"));
         items_csproj.Add(config_csproj.create_core("win8"));
         items_csproj.Add(config_csproj.create_core("win81"));
@@ -110,6 +111,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "watchos"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "android")); // bad idea
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
@@ -131,10 +133,12 @@ public static class projects
 
         items_csproj.Add(config_csproj.create_provider("internal", "ios_unified"));
         items_csproj.Add(config_csproj.create_provider("internal", "ios_classic"));
+        items_csproj.Add(config_csproj.create_provider("internal", "watchos"));
 
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "android"));
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_unified"));
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_classic"));
+        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "watchos"));
 
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
@@ -175,6 +179,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("android"));
         items_csproj.Add(config_csproj.create_ugly("ios_unified"));
         items_csproj.Add(config_csproj.create_ugly("ios_classic"));
+        items_csproj.Add(config_csproj.create_ugly("watchos"));
         items_csproj.Add(config_csproj.create_ugly("win8"));
         items_csproj.Add(config_csproj.create_ugly("win81"));
         items_csproj.Add(config_csproj.create_ugly("wpa81"));
@@ -191,6 +196,7 @@ public static class projects
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_classic", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "watchos", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
@@ -210,6 +216,7 @@ public static class projects
         // bundle_e_sqlite3
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_classic", "internal"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "watchos", "internal"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wpa81", "e_sqlite3"));
@@ -685,6 +692,8 @@ public static class config_cs
 				return "Xamarin.iOS10";
 			case "unified_mac":
 				return "Xamarin.Mac20";
+			case "watchos":
+				return "Xamarin.WatchOS";
 			case "android":
 				return "MonoAndroid,Version=v2.3";
 			case "net45":
@@ -730,6 +739,8 @@ public static class config_cs
 				return "Xamarin.iOS10";
 			case "unified_mac":
 				return "Xamarin.Mac20";
+			case "watchos":
+				return "Xamarin.WatchOS";
 			case "android":
 				return "MonoAndroid";
 			case "net45":
@@ -847,6 +858,7 @@ public class config_csproj : config_info
         {
             case "ios_unified":
             case "ios_classic":
+			case "watchos":
                 cfg.name = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, what, env, "static");
                 break;
             default:
@@ -860,6 +872,7 @@ public class config_csproj : config_info
         {
             case "ios_classic":
             case "ios_unified":
+            case "watchos":
                 switch (what)
                 {
                     case "custom_sqlite3":
@@ -880,6 +893,7 @@ public class config_csproj : config_info
         {
             case "ios_unified":
             case "ios_classic":
+            case "watchos":
                 switch (what)
                 {
                     case "custom_sqlite3":
@@ -921,6 +935,7 @@ public class config_csproj : config_info
         {
             case "ios_unified":
             case "ios_classic":
+            case "watchos":
                 switch (what)
                 {
                     case "sqlite3":
@@ -1183,6 +1198,7 @@ public static class gen
 	private const string GUID_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 	private const string GUID_PCL = "{786C830F-07A1-408B-BD7F-6EE04809D6DB}";
 	private const string GUID_IOS = "{6BC8ED88-2882-458C-8E55-DFD12B67127B}";
+	private const string GUID_WATCHOS = "{FC940695-DFE0-4552-9F25-99AF4A5619A1}";
 	private const string GUID_UNIFIED_IOS = "{FEACFBD2-3405-455C-9665-78FE426C6842}";
 	private const string GUID_UNIFIED_MAC = "{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1}";
 	private const string GUID_ANDROID = "{EFBA0AD7-5A72-4C68-AF49-83D382785DCF}";
@@ -1402,6 +1418,12 @@ public static class gen
 					f.WriteEndElement(); // Import
 
 					break;
+				case "watchos":
+					f.WriteStartElement("Import");
+					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\WatchOS\\Xamarin.WatchOS.CSharp.targets");
+					f.WriteEndElement(); // Import
+
+					break;
 				case "unified_mac":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\Mac\\Xamarin.Mac.CSharp.targets");
@@ -1457,6 +1479,7 @@ public static class gen
 			case "ios_classic":
 			case "ios_unified":
 			case "unified_mac":
+			case "watchos":
 			case "android":
 			case "net45":
 			case "net40":
@@ -1469,6 +1492,9 @@ public static class gen
 		{
 			case "ios_unified":
 				write_reference(f, "Xamarin.iOS");
+				break;
+			case "watchos":
+				write_reference(f, "Xamarin.WatchOS");
 				break;
 			case "unified_mac":
 				write_reference(f, "Xamarin.Mac");
@@ -1532,6 +1558,7 @@ public static class gen
 				break;
 			case "ios_unified":
 			case "unified_mac":
+			case "watchos":
 				defines.Add("PLATFORM_UNIFIED");
 				break;
 			case "android":
@@ -1654,6 +1681,9 @@ public static class gen
 					break;
 				case "ios_unified":
 					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
+					break;
+				case "watchos":
+					write_project_type_guids(f, GUID_WATCHOS, GUID_CSHARP);
 					break;
 				case "unified_mac":
 					write_project_type_guids(f, GUID_UNIFIED_MAC, GUID_CSHARP);
@@ -2430,7 +2460,37 @@ public static class gen
 			}
 					break;
 
-					case "ios_classic":
+					case "watchos":
+                        if (cfg.what == "e_sqlite3")
+                        {
+                            f.WriteStartElement("ItemGroup");
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            // TODO underscore
+                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\watchos\\sqlite3\\e_sqlite3.a"));
+                            f.WriteElementString("Link", "e_sqlite3.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+                            f.WriteEndElement(); // ItemGroup
+                        }
+            else if (cfg.what == "sqlcipher")
+                        {
+                            f.WriteStartElement("ItemGroup");
+
+                            // TODO warning says this is deprecated
+                            f.WriteStartElement("ManifestResourceWithNoCulture");
+                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\watchos\\libsqlcipher.a"));
+                            f.WriteElementString("Link", "libsqlcipher.a");
+                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+
+                            f.WriteEndElement(); // ItemGroup
+                        }
+            else
+            {
+                throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+            }
+                    break;
+
+                    case "ios_classic":
                         if (cfg.what == "e_sqlite3")
                         {
                             f.WriteStartElement("ItemGroup");
@@ -2862,6 +2922,7 @@ public static class gen
             write_dependency_group(f, "android", DEP_NONE);
             write_dependency_group(f, "ios_unified", DEP_NONE);
             write_dependency_group(f, "ios_classic", DEP_NONE);
+            write_dependency_group(f, "watchos", DEP_NONE);
             write_dependency_group(f, "net35", DEP_NONE);
             write_dependency_group(f, "net40", DEP_NONE);
             write_dependency_group(f, "net45", DEP_NONE);
@@ -3323,6 +3384,7 @@ public static class gen
             write_dependency_group(f, "android", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "ios_unified", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "ios_classic", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "watchos", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "net35", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "net40", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "net45", DEP_CORE | DEP_UGLY | DEP_XUNIT);
@@ -3398,6 +3460,7 @@ public static class gen
             write_dependency_group(f, "android", DEP_CORE);
             write_dependency_group(f, "ios_unified", DEP_CORE);
             write_dependency_group(f, "ios_classic", DEP_CORE);
+            write_dependency_group(f, "watchos", DEP_CORE);
             write_dependency_group(f, "net35", DEP_CORE);
             write_dependency_group(f, "net40", DEP_CORE);
             write_dependency_group(f, "net45", DEP_CORE);
@@ -3554,7 +3617,7 @@ public static class gen
         add_dep_core(f);
 
         if (
-                ((env == "ios_unified") || (env == "ios_classic"))
+                ((env == "ios_unified") || (env == "ios_classic") || (env == "watchos"))
                 && (what != "sqlite3")
            )
         {
@@ -3583,6 +3646,7 @@ public static class gen
                     break;
                 case "ios_unified":
                 case "ios_classic":
+                case "watchos":
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
@@ -3655,6 +3719,7 @@ public static class gen
             write_bundle_dependency_group(f, "android", "e_sqlite3");
             write_bundle_dependency_group(f, "ios_unified", "e_sqlite3");
             write_bundle_dependency_group(f, "ios_classic", "e_sqlite3");
+            write_bundle_dependency_group(f, "watchos", "e_sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
@@ -3735,6 +3800,7 @@ public static class gen
             write_bundle_dependency_group(f, "android", "e_sqlite3");
             write_bundle_dependency_group(f, "ios_unified", "sqlite3");
             write_bundle_dependency_group(f, "ios_classic", "sqlite3");
+            write_bundle_dependency_group(f, "watchos", "sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
