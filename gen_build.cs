@@ -4501,28 +4501,30 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
 		{
+            const string src = "https://www.nuget.org/api/v2/package";
+
 			tw.WriteLine("ls *.nupkg");
-			tw.WriteLine("../../nuget push {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("#../../nuget push {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("#../../nuget push -Source {2} {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push -Source {2} {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
-			tw.WriteLine("../../nuget push {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION);
+			tw.WriteLine("../../nuget push -Source {2} {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "provider" && cfg.env != "wp80")
                 {
                     string id = cfg.get_id();
-                    tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+                    tw.WriteLine("../../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
                 }
 			}
 			foreach (config_csproj cfg in projects.items_csproj)
@@ -4530,13 +4532,13 @@ public static class gen
                 if (cfg.area == "lib")
                 {
                     string id = cfg.get_id();
-                    tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+                    tw.WriteLine("../../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
                 }
 			}
 			foreach (config_esqlite3 cfg in projects.items_esqlite3)
 			{
 				string id = cfg.get_id();
-				tw.WriteLine("../../nuget push {0}.{1}.nupkg", id, NUSPEC_VERSION);
+				tw.WriteLine("../../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
 			}
 		}
 	}
