@@ -2849,9 +2849,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	public static string NUSPEC_VERSION = string.Format("1.0.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
+	//public static string NUSPEC_VERSION = string.Format("1.0.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	//public static string NUSPEC_VERSION = "1.0.0";
+	public static string NUSPEC_VERSION = "1.0.0";
 
 	private const string NUSPEC_RELEASE_NOTES = "1.0 release.  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 

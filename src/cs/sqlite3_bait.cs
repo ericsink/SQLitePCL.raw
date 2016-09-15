@@ -34,7 +34,7 @@ namespace SQLitePCL
     /// </summary>
     public sealed class SQLite3Provider_bait : ISQLite3Provider
     {
-	private const string GRIPE = "You need to call SQLitePCL.raw.SetProvider().";
+	private const string GRIPE = "You need to call SQLitePCL.raw.SetProvider().  If you are using a bundle package, this is done by calling SQLitePCL.Batteries.Init().";
 
         public SQLite3Provider_bait()
         {

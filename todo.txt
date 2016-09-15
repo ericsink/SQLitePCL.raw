@@ -41,12 +41,8 @@ check and re-check all package and assembly names
 
 rm cruft for old sqlcipher builds
 
-add e_sqlite3 build for linux?
-
 in order to get back to netstandard for the tests,
 we would need to switch xunit to the pre
-
-combo build to resolve the net45 win/mac/linux problem
 
 --------
 
