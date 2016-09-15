@@ -14,6 +14,26 @@ And call this function:
 
     SQLitePCL.Batteries.Init()
 
+# Supported platforms
+
+SQLitePCL.raw should work just about anywhere you want
+it to, including:
+
+- Xamarin.Android
+- Xamarin.iOS
+- UWP
+- Windows Phone 8.1
+- .NET 4.5
+- .NET 4.0
+- .NET 3.5
+- Linux
+- MacOS
+- NetStandard 1.1
+- Windows Phone 8 (with limitations)
+- Windows Phone 8.1 Silverlight (with limitations)
+
+(WatchOS is on the way, but not there yet.)
+
 # New package names for release 1.0
 
 With the release of version 1.0, all the nuget package ids
