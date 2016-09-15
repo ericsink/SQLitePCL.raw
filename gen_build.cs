@@ -93,19 +93,19 @@ public static class projects
         items_csproj.Add(config_csproj.create_core("win8"));
         items_csproj.Add(config_csproj.create_core("win81"));
         items_csproj.Add(config_csproj.create_core("wpa81"));
-        items_csproj.Add(config_csproj.create_core("uap10.0"));
+        items_csproj.Add(config_csproj.create_core("uwp10"));
         items_csproj.Add(config_csproj.create_core("profile111"));
         items_csproj.Add(config_csproj.create_core("profile136"));
         items_csproj.Add(config_csproj.create_core("profile259"));
-        items_csproj.Add(config_csproj.create_core("netstandard1.0"));
-        items_csproj.Add(config_csproj.create_core("netstandard1.1"));
+        items_csproj.Add(config_csproj.create_core("netstandard10"));
+        items_csproj.Add(config_csproj.create_core("netstandard11"));
 
         items_csproj.Add(config_csproj.create_provider("sqlite3_xamarin", "android"));
 
-        items_csproj.Add(config_csproj.create_provider("winsqlite3", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("winsqlite3", "uwp10"));
         items_csproj.Add(config_csproj.create_provider("winsqlite3", "net45"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
@@ -116,9 +116,9 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "uwp10"));
 
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net45"));
@@ -126,7 +126,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win8"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win81"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
         //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_classic"));
@@ -144,7 +144,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net45"));
@@ -152,12 +152,12 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win8"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win81"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard1.1"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net45"));
@@ -165,7 +165,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "win8"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "win81"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "uap10.0"));
+        items_csproj.Add(config_csproj.create_provider("sqlcipher", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
         //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_classic"));
@@ -183,15 +183,15 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("win8"));
         items_csproj.Add(config_csproj.create_ugly("win81"));
         items_csproj.Add(config_csproj.create_ugly("wpa81"));
-        items_csproj.Add(config_csproj.create_ugly("uap10.0"));
+        items_csproj.Add(config_csproj.create_ugly("uwp10"));
         items_csproj.Add(config_csproj.create_ugly("profile111"));
         items_csproj.Add(config_csproj.create_ugly("profile136"));
         items_csproj.Add(config_csproj.create_ugly("profile259"));
-        //items_csproj.Add(config_csproj.create_ugly("netstandard1.0"));
-        items_csproj.Add(config_csproj.create_ugly("netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_ugly("netstandard10"));
+        items_csproj.Add(config_csproj.create_ugly("netstandard11"));
 
         // bundle_winsqlite3
-        items_csproj.Add(config_csproj.create_batteries("batteries_winsqlite3", "uap10.0", "winsqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_winsqlite3", "uwp10", "winsqlite3"));
         
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
@@ -201,7 +201,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "uwp10", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3"));
@@ -211,7 +211,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard1.1", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard11", null));
 
         // bundle_e_sqlite3
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
@@ -221,7 +221,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wpa81", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "uap10.0", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "uwp10", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net45", "e_sqlite3"));
@@ -231,7 +231,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard1.1", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard11", null));
 
     }
 
@@ -240,14 +240,14 @@ public static class projects
         // using netstandard for the tests would require switching to the
         // xunit pre
         
-        //items_test.Add(config_csproj.create_portable_test("netstandard1.1"));
+        //items_test.Add(config_csproj.create_portable_test("netstandard11"));
         items_test.Add(config_csproj.create_portable_test("profile259"));
 
         items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
         items_test.Add(config_csproj.create_bundle_test("net45", "green"));
 
         // in main
-        //items_csproj.Add(config_csproj.create_portable_test_main("netstandard1.1"));
+        //items_csproj.Add(config_csproj.create_portable_test_main("netstandard11"));
         //xunit only supports 259
         //items_csproj.Add(config_csproj.create_portable_test_main("profile111"));
         //items_csproj.Add(config_csproj.create_portable_test_main("profile136"));
@@ -320,7 +320,7 @@ public static class projects
 			return "v120";
 		case "wpa81":
 			return "v120_wp81";
-		case "uap10.0":
+		case "uwp10":
 			return "v140";
 		case "win8":
 			return "v110";
@@ -424,7 +424,7 @@ public static class projects
                     cfg = find("core", "profile111");
                     break;
                 default:
-                    cfg = find("core", "netstandard1.1");
+                    cfg = find("core", "netstandard11");
                     //cfg = find("core", "profile259");
                     break;
             }
@@ -444,7 +444,7 @@ public static class projects
             switch (env)
             {
                 default:
-                    cfg = find("provider", what, "netstandard1.1", "anycpu");
+                    cfg = find("provider", what, "netstandard11", "anycpu");
                     //cfg = find("provider", what, "profile259", "anycpu");
                     break;
             }
@@ -463,7 +463,7 @@ public static class projects
         {
             // TODO need to find one that is compatible with env
             // TODO this should be smarter
-            cfg = find("ugly", "netstandard1.1");
+            cfg = find("ugly", "netstandard11");
             //cfg = find("ugly", "profile259");
         }
         if (cfg != null)
@@ -708,7 +708,7 @@ public static class config_cs
 				return "wp81";
 			case "wpa81":
 				return "wpa81";
-			case "uap10.0":
+			case "uwp10":
 				return "uap10.0";
 			case "win8":
 				return ".NETCore,Version=4.5.1";
@@ -720,9 +720,9 @@ public static class config_cs
                 return ".NETPortable,Version=v4.0,Profile=profile136";
             case "profile259":
                 return ".NETPortable,Version=v4.5,Profile=profile259";
-            case "netstandard1.0":
+            case "netstandard10":
                 return "netstandard1.0";
-            case "netstandard1.1":
+            case "netstandard11":
                 return "netstandard1.1";
 			default:
 				throw new Exception(env);
@@ -755,15 +755,15 @@ public static class config_cs
 				return "wp81";
 			case "wpa81":
 				return "wpa81";
-			case "uap10.0":
+			case "uwp10":
 				return "uap10.0";
 			case "win8":
 				return "win8";
 			case "win81":
 				return "win81";
-			case "netstandard1.1":
+			case "netstandard11":
 				return "netstandard1.1";
-			case "netstandard1.0":
+			case "netstandard10":
 				return "netstandard1.0";
             case "profile111":
             case "profile136":
@@ -1169,10 +1169,6 @@ public class config_csproj : config_info
 		{
 			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
 		}
-		else if (is_netstandard())
-		{
-			return string.Format("lib\\{0}\\", env);
-		}
 		else if (env == "wp80")
 		{
 			return string.Format("build\\{0}\\{1}\\", env, cpu);
@@ -1389,7 +1385,7 @@ public static class gen
 					f.WriteElementString("VisualStudioVersion", "12.0");
 					f.WriteEndElement(); // PropertyGroup
 					break;
-				case "uap10.0":
+				case "uwp10":
 					f.WriteStartElement("PropertyGroup");
 					f.WriteAttributeString("Condition", " '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' < '14.0' ");
 					f.WriteElementString("VisualStudioVersion", "14.0");
@@ -1446,7 +1442,7 @@ public static class gen
 				case "win8":
 				case "win81":
 				case "wpa81":
-				case "uap10.0":
+				case "uwp10":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsXaml\\v$(VisualStudioVersion)\\Microsoft.Windows.UI.Xaml.CSharp.targets");
 					f.WriteEndElement(); // Import
@@ -1540,7 +1536,7 @@ public static class gen
 		}
 		else if (config_cs.env_is_netstandard(env))
 		{
-			if (env == "netstandard1.0")
+			if (env == "netstandard10")
 			{
 				defines.Add("NO_CONCURRENTDICTIONARY");
 			}
@@ -1580,7 +1576,7 @@ public static class gen
 				f.WriteElementString("TargetFrameworkVersion", null);
 				defines.Add("NETFX_CORE");
 				break;
-			case "uap10.0":
+			case "uwp10":
 				f.WriteElementString("TargetPlatformIdentifier", "UAP");
 				f.WriteElementString("TargetPlatformVersion", "10.0.10240.0");
 				f.WriteElementString("TargetPlatformMinVersion", "10.0.10240.0");
@@ -1649,7 +1645,7 @@ public static class gen
 	{
 		switch (env)
 		{
-			case "uap10.0":
+			case "uwp10":
 				f.WriteAttributeString("ToolsVersion", "14.0");
 				break;
 			case "win81":
@@ -1705,7 +1701,7 @@ public static class gen
 				case "wp81_sl":
 					write_project_type_guids(f, GUID_WP8, GUID_CSHARP);
 					break;
-				case "uap10.0":
+				case "uwp10":
 					write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
 					break;
 				default:
@@ -2571,7 +2567,7 @@ public static class gen
             case "net45":
                 cfg.runtimes.Add("win");
                 break;
-			case "uap10.0":
+			case "uwp10":
                 cfg.deps["Microsoft.NETCore.UniversalWindowsPlatform"] = "5.2.2";
                 cfg.runtimes.Add("win10-arm");
                 cfg.runtimes.Add("win10-x86");
@@ -2580,10 +2576,10 @@ public static class gen
                 cfg.runtimes.Add("win10-x86-aot");
                 cfg.runtimes.Add("win10-x64-aot");
 				break;
-			case "netstandard1.0":
+			case "netstandard10":
                 cfg.deps["NETStandard.Library"] = "1.6.0";
 				break;
-			case "netstandard1.1":
+			case "netstandard11":
                 cfg.deps["NETStandard.Library"] = "1.6.0";
 				break;
         }
@@ -2930,11 +2926,11 @@ public static class gen
             write_dependency_group(f, "win81", DEP_NONE);
             write_dependency_group(f, "wpa81", DEP_NONE);
             write_dependency_group(f, "wp80", DEP_NONE);
-            write_dependency_group(f, "uap10.0", DEP_NONE);
+            write_dependency_group(f, "uwp10", DEP_NONE);
             write_dependency_group(f, "profile111", DEP_NONE);
             write_dependency_group(f, "profile136", DEP_NONE);
             write_dependency_group(f, "profile259", DEP_NONE);
-            write_dependency_group(f, "netstandard1.1", DEP_NONE);
+            write_dependency_group(f, "netstandard11", DEP_NONE);
             write_dependency_group(f, null, DEP_NONE);
 
 			f.WriteEndElement(); // dependencies
@@ -3392,11 +3388,11 @@ public static class gen
             write_dependency_group(f, "win81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "wpa81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "wp80", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "uap10.0", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "uwp10", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile111", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile136", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile259", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "netstandard1.1", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "netstandard11", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, null, DEP_CORE | DEP_UGLY | DEP_XUNIT);
 
 			f.WriteEndElement(); // dependencies
@@ -3468,11 +3464,11 @@ public static class gen
             write_dependency_group(f, "win81", DEP_CORE);
             write_dependency_group(f, "wpa81", DEP_CORE);
             write_dependency_group(f, "wp80", DEP_CORE);
-            write_dependency_group(f, "uap10.0", DEP_CORE);
+            write_dependency_group(f, "uwp10", DEP_CORE);
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
             write_dependency_group(f, "profile259", DEP_CORE);
-            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
@@ -3536,7 +3532,7 @@ public static class gen
 
 			// --------
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uap10.0"));
+			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uwp10"));
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
@@ -3544,7 +3540,7 @@ public static class gen
 			f.WriteEndElement(); // dependency
 
 			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.provider.winsqlite3.uap10.0", gen.ROOT_NAME));
+			f.WriteAttributeString("id", string.Format("{0}.provider.winsqlite3.uwp10", gen.ROOT_NAME));
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
@@ -3588,8 +3584,8 @@ public static class gen
             f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
             switch (env)
             {
-                case "uap10.0":
-                case "netstandard1.1":
+                case "uwp10":
+                case "netstandard11":
                     add_dep_netstandard(f);
                     break;
             }
@@ -3724,7 +3720,7 @@ public static class gen
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
-            write_bundle_dependency_group(f, "uap10.0", "e_sqlite3");
+            write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
@@ -3732,7 +3728,7 @@ public static class gen
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
             write_dependency_group(f, "profile259", DEP_CORE);
-            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
@@ -3805,7 +3801,7 @@ public static class gen
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
-            write_bundle_dependency_group(f, "uap10.0", "e_sqlite3");
+            write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
@@ -3813,7 +3809,7 @@ public static class gen
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
             write_dependency_group(f, "profile259", DEP_CORE);
-            write_dependency_group(f, "netstandard1.1", DEP_CORE);
+            write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies

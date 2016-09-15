@@ -14,7 +14,7 @@ And call this function:
 
     SQLitePCL.Batteries.Init()
 
-# Supported platforms
+# Compatibility
 
 SQLitePCL.raw should work just about anywhere you want
 it to, including:
@@ -32,7 +32,10 @@ it to, including:
 - Windows Phone 8 (with limitations)
 - Windows Phone 8.1 Silverlight (with limitations)
 
-(WatchOS is on the way, but not there yet.)
+(I have received a pull request for WatchOS support, but it's not merged yet.)
+
+These packages should be fully compatible with NuGet 2.x or 3.x, either 
+packages.config or project.json.
 
 # New package names for release 1.0
 
@@ -46,13 +49,15 @@ The main package is SQLitePCLRaw.core, previously called SQLitePCL.raw
 Before 1.0, the package ids were
 
 - SQLitePCL.raw
+- SQLitePCL.raw\_basic
+- SQLitePCL.ugly
 - SQLitePCL.plugin.\*
 - SQLitePCL.native.\*
 - SQLitePCL.bundle\*
 
 All of these packages are being deprecated.
 
-Once a package (like sqlite-net-pcl, for example) has migrated to the 1.0 release, 
+Note:  Once a package (like sqlite-net-pcl, for example) has migrated to the 1.0 release, 
 developers using
 that package may need to explicitly remove these old packages
 from their build.
