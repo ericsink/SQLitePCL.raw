@@ -284,6 +284,14 @@ In general, nobody cares about this.  The bundles do the right thing.
 But the options are there for people who need fine-grained control
 over such things.
 
+# e\_sqlite3 builds for Linux and Mac
+
+SQLitePCLRaw.lib.e\_sqlite3 packages are provided for
+Linux and Mac.  Both bundle\_green and bundle\_e\_sqlite3
+have a dependency on these for net35/net40/net45, so
+that these bundles will "do the right thing" when used
+with Mono on Linux and Mac.
+
 # NetStandard
 
 Release 1.0 supports netstandard.  However, it also still
@@ -302,6 +310,8 @@ Two packages are provided for compatibility with Windows Phone 8.0 and Windows P
 These environments do not support pinvoke, so it's a
 special case.  The e\_sqlite3 provider is the only one
 available.
+
+Note that bundle\_green and bundle\_e\_sqlite3 both support Windows Phone Silverlight.
 
 # CONTENT BELOW THIS LINE IS NOT FULLY UPDATED FOR 1.0
 

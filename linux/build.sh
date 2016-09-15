@@ -1,4 +1,3 @@
 #!/bin/sh
-# TODO use same options as other platforms
-gcc -shared -fPIC -O -o libe_sqlite3.so ../sqlite3/sqlite3.c -lc
+gcc -shared -fPIC -O -DNDEBUG -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS4 -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_RTREE -o libe_sqlite3.so ../sqlite3/sqlite3.c 
 
