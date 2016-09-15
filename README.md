@@ -37,6 +37,27 @@ it to, including:
 These packages should be fully compatible with NuGet 2.x or 3.x, either 
 packages.config or project.json.
 
+# What's new in 1.0
+
+In terms of the code, not much. But the builds and packaging have changed a lot.
+
+At a very high level, this is the release that happened because Android N fouled everything up.
+
+At a slightly-less-high level, the fixes and new features are:
+
+- All package names now begin with SQLitePCLRaw. For example, the main package is now called SQLitePCLRaw.core.
+- Support netstandard
+- Switch all the tests to xUnit.net
+- Fix problems with UWP apps failing validation
+- Support winsqlite3.dll (the one built-in to Windows 10)
+- Fix and refactor things where Android N broke my old assumptions
+- Provide an easier way for people to use custom sqlite3 builds
+- Improve my automated tests to test the nuget packaging, not just the code
+- Make the iOS sqlite builds compatible back to iOS 6
+- Be compatible with strong naming
+- sqlite3\_threadsafe (#92)
+- Update e\_sqlite3 (the sqlite builds which I bundle) to 3.14.1
+
 # New package names for release 1.0
 
 With the release of version 1.0, all the nuget package ids
