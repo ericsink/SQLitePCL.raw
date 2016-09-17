@@ -214,9 +214,9 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard11", null));
 
         // bundle_e_sqlite3
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_unified", "internal"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "ios_classic", "internal"));
-        // TODO items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "watchos", "internal"));
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "ios_unified", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "ios_classic", "e_sqlite3"));
+        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "watchos", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wpa81", "e_sqlite3"));
@@ -393,6 +393,18 @@ public static class projects
         return null;
     }
 
+	public static config_csproj find(string name)
+    {
+		foreach (config_csproj cfg in projects.items_csproj)
+		{
+			if (cfg.name == name)
+			{
+				return cfg;
+			}
+		}
+        return null;
+    }
+
 	public static config_csproj find(string area, string what, string env, string cpu)
     {
 		foreach (config_csproj cfg in projects.items_csproj)
@@ -454,6 +466,16 @@ public static class projects
             return cfg;
         }
 		throw new Exception(string.Format("provider not found for {0}/{1}", what, env));
+    }
+
+    public static config_csproj find_name(string name)
+    {
+        config_csproj cfg = find(name);
+        if (cfg != null)
+        {
+            return cfg;
+        }
+		throw new Exception(string.Format("csproj not found {0}", name));
     }
 
 	public static config_csproj find_ugly(string env)
@@ -824,6 +846,7 @@ public class config_csproj : config_info
     public bool ref_core;
     public bool ref_ugly;
     public string ref_provider;
+    public string ref_embedded;
     public bool ref_cppinterop = false;
 
     string root_name
@@ -889,6 +912,7 @@ public class config_csproj : config_info
                 }
                 break;
         }
+        cfg.csfiles_src.Add("embedded_init.cs");
         switch (cfg.env)
         {
             case "ios_unified":
@@ -1082,6 +1106,22 @@ public class config_csproj : config_info
         }
         cfg.ref_core = true;
         cfg.ref_provider = what;
+        return cfg;
+    }
+
+    public static config_csproj create_internal_batteries(string area, string env, string lib)
+    {
+        var cfg = new config_csproj();
+        cfg.env = env;
+        cfg.area = area;
+        cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, "internal", env);
+        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
+        cfg.csfiles_src.Add("batteries.cs");
+        cfg.defines.Add("PROVIDER_internal");
+        cfg.defines.Add("EMBEDDED_INIT");
+        cfg.ref_core = true;
+        cfg.ref_provider = "internal";
+        cfg.ref_embedded = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, lib, env, "static");
         return cfg;
     }
 
@@ -2408,6 +2448,23 @@ public static class gen
                 f.WriteEndElement(); // ItemGroup
             }
 
+            if (cfg.ref_embedded != null)
+            {
+                f.WriteStartElement("ItemGroup");
+
+                f.WriteStartElement("ProjectReference");
+                {
+                    config_csproj other = projects.find_name(cfg.ref_embedded);
+                    f.WriteAttributeString("Include", other.get_project_path(top));
+                    f.WriteElementString("Project", other.guid);
+                    f.WriteElementString("Name", other.get_name());
+                    //f.WriteElementString("Private", "true");
+                }
+                f.WriteEndElement(); // ProjectReference
+
+                f.WriteEndElement(); // ItemGroup
+            }
+
 			if (cfg.ref_cppinterop)
 			{
 				f.WriteStartElement("ItemGroup");
@@ -2845,9 +2902,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	//public static string NUSPEC_VERSION = string.Format("1.0.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
+	public static string NUSPEC_VERSION = string.Format("1.0.1-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	public static string NUSPEC_VERSION = "1.0.0";
+	//public static string NUSPEC_VERSION = "1.0.1";
 
 	private const string NUSPEC_RELEASE_NOTES = "1.0 release.  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 

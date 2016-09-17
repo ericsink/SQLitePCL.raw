@@ -24,6 +24,10 @@ namespace SQLitePCL
     {
 	    public static void Init()
 	    {
+#if EMBEDDED_INIT
+            SQLitePCL.lib.embedded.Init();
+#endif
+
 #if PROVIDER_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 #elif PROVIDER_e_sqlite3
