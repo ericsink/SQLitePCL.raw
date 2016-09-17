@@ -251,13 +251,16 @@ namespace SQLitePCL
         int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
 #endif
 
+#if API_ADDITIONS_WAITING
+        int sqlite3_initialize();
+        int sqlite3_shutdown();
+
+        // sqlite3_config() takes a variable argument list
+        int sqlite3_config(int op);
+        int sqlite3_config(int op, int val);
+#endif
+
 #if not
-        // Since sqlite3_config() takes a variable argument list, we have to overload declarations
-        // for all possible calls that we want to use.
-
-        int sqlite3_config_none(int op);
-        int sqlite3_config_int(int op, int val);
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
 

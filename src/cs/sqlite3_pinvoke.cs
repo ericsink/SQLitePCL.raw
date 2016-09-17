@@ -405,6 +405,28 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_threadsafe();
         }
 
+#if API_ADDITIONS_WAITING
+        int ISQLite3Provider.sqlite3_config(int op)
+        {
+            return NativeMethods.sqlite3_config_none(op);
+        }
+
+        int ISQLite3Provider.sqlite3_config(int op, int val)
+        {
+            return NativeMethods.sqlite3_config_int(op, val);
+        }
+
+        int ISQLite3Provider.sqlite3_initialize()
+        {
+            return NativeMethods.sqlite3_initialize();
+        }
+
+        int ISQLite3Provider.sqlite3_shutdown()
+        {
+            return NativeMethods.sqlite3_shutdown();
+        }
+#endif
+
         // ----------------------------------------------------------------
 
         // Passing a callback into SQLite is tricky.  The implementation details
@@ -1313,6 +1335,12 @@ namespace SQLitePCL
             IntPtr db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_initialize();
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int sqlite3_shutdown();
+
+            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr sqlite3_libversion();
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -1362,9 +1390,6 @@ namespace SQLitePCL
             
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
-
-            [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
-            public static extern int sqlite3_shutdown();
 
             [DllImport(SQLITE_DLL, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_busy_timeout(IntPtr db, int ms);

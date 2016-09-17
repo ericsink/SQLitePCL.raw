@@ -131,6 +131,32 @@ namespace SQLitePCL.Ugly
             if (raw.SQLITE_OK != rc) throw new sqlite3_exception(rc, db.errmsg());
         }
 
+#if API_ADDITIONS_WAITING
+        public static void initialize()
+        {
+            int rc = raw.sqlite3_initialize();
+            check_ok(rc);
+        }
+
+        public static void shutdown()
+        {
+            int rc = raw.sqlite3_shutdown();
+            check_ok(rc);
+        }
+
+        public static void config(int op)
+        {
+            int rc = raw.sqlite3_config(op);
+            check_ok(rc);
+        }
+
+        public static void config(int op, int val)
+        {
+            int rc = raw.sqlite3_config(op, val);
+            check_ok(rc);
+        }
+#endif
+
         public static sqlite3 open(string filename)
         {
             sqlite3 db;

@@ -329,6 +329,28 @@ int32 SQLite3RuntimeProvider::sqlite3_threadsafe(void)
 	return (int32)::sqlite3_threadsafe();
 }
 
+#ifdef API_ADDITIONS_WAITING
+int32 SQLite3RuntimeProvider::sqlite3_initialize(void)
+{
+	return (int32)::sqlite3_initialize();
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_shutdown(void)
+{
+	return (int32)::sqlite3_shutdown();
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_config_none(int32 op)
+{
+	return (int32)::sqlite3_config(op);
+}
+
+int32 SQLite3RuntimeProvider::sqlite3_config_int(int32 op, int32 val)
+{
+	return (int32)::sqlite3_config(op, val);
+}
+#endif
+
 int32 SQLite3RuntimeProvider::sqlite3_libversion_number(void)
 {
 	return (int32)::sqlite3_libversion_number();

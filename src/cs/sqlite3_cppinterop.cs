@@ -862,6 +862,28 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_threadsafe();
         }
 
+#if API_ADDITIONS_WAITING
+        int ISQLite3Provider.sqlite3_initialize()
+        {
+            return SQLite3RuntimeProvider.sqlite3_initialize();
+        }
+
+        int ISQLite3Provider.sqlite3_shutdown()
+        {
+            return SQLite3RuntimeProvider.sqlite3_shutdown();
+        }
+
+        int ISQLite3Provider.sqlite3_config(int op)
+        {
+            return SQLite3RuntimeProvider.sqlite3_config_none(op);
+        }
+
+        int ISQLite3Provider.sqlite3_config(int op, int val)
+        {
+            return SQLite3RuntimeProvider.sqlite3_config_int(op, val);
+        }
+#endif
+
         long ISQLite3Provider.sqlite3_memory_used()
         {
             return SQLite3RuntimeProvider.sqlite3_memory_used();

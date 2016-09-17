@@ -370,6 +370,28 @@ namespace SQLitePCL
             return _imp.sqlite3_threadsafe();
         }
 
+#if API_ADDITIONS_WAITING
+        static public int sqlite3_initialize()
+        {
+            return _imp.sqlite3_initialize();
+        }
+
+        static public int sqlite3_shutdown()
+        {
+            return _imp.sqlite3_shutdown();
+        }
+
+        static public int sqlite3_config(int op)
+        {
+            return _imp.sqlite3_config(op);
+        }
+
+        static public int sqlite3_config(int op, int val)
+        {
+            return _imp.sqlite3_config(op, val);
+        }
+#endif
+
         static public string sqlite3_sourceid()
         {
             return _imp.sqlite3_sourceid();
