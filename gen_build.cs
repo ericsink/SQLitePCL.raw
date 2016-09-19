@@ -305,6 +305,27 @@ public static class projects
 		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
 	}
 
+    public static string rid_front_half(string toolset)
+    {
+        switch (toolset)
+        {
+            case "v110_xp":
+                return "win7";
+            case "v110":
+                return "win8";
+            case "v110_wp80":
+                return "wp80";
+            case "v120":
+                return "win81";
+            case "v120_wp81":
+                return "wpa81";
+            case "v140":
+                return "win10";
+            default:
+                throw new Exception();
+        }
+    }
+
     public static string cs_env_to_toolset(string env)
     {
 	    switch (env) {
@@ -542,9 +563,14 @@ public class config_sqlite3 : config_info
 		return "sqlite3";
 	}
 
+    string rid()
+    {
+        return string.Format("{0}-{1}", projects.rid_front_half(toolset), cpu);
+    }
+
 	public string get_nuget_target_path()
 	{
-		return string.Format("build\\native\\{0}\\{1}\\{2}\\", area(), toolset, cpu);
+		return string.Format("runtimes\\{0}\\native\\", rid());
 	}
 
 	public string get_name()
@@ -662,11 +688,6 @@ public class config_esqlite3 : config_info
 	private void add_product(List<string> a, string s)
 	{
 		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public string get_nuget_target_path()
-	{
-		return string.Format("build\\native\\e_sqlite3\\{0}\\", toolset);
 	}
 
 	public string get_name()
@@ -3282,14 +3303,14 @@ public static class gen
                 case "osx":
                     f.WriteStartElement("file");
                     f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
-                    f.WriteAttributeString("target", "build\\native\\osx\\libe_sqlite3.dylib");
+                    f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
                     f.WriteEndElement(); // file
                     gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib");
                     break;
                 case "linux":
                     f.WriteStartElement("file");
                     f.WriteAttributeString("src", Path.Combine(root, "linux", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "build\\native\\linux\\libe_sqlite3.so");
+                    f.WriteAttributeString("target", "runtimes\\linux-x64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
                     gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
                     break;
@@ -3352,12 +3373,12 @@ public static class gen
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86\\sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", "windows", "x86"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win7-x86\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86_64\\sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\sqlcipher.dll", "windows", "x64"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win7-x64\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
@@ -3365,7 +3386,7 @@ public static class gen
 				case "osx":
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\osx\\libsqlcipher.dylib"));
-					f.WriteAttributeString("target", string.Format("build\\native\\osx\\libsqlcipher.dylib"));
+					f.WriteAttributeString("target", string.Format("runtimes\\osx-x64\\native\\libsqlcipher.dylib"));
 					f.WriteEndElement(); // file
 
 					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib");
@@ -3375,12 +3396,12 @@ public static class gen
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\linux\\x86_64\\libsqlcipher.so"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\libsqlcipher.so", "linux", "x64"));
+					f.WriteAttributeString("target", string.Format("runtimes\\linux-x64\\native\\libsqlcipher.so"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\linux\\x86\\libsqlcipher.so"));
-					f.WriteAttributeString("target", string.Format("build\\native\\{0}\\{1}\\libsqlcipher.so", "linux", "x86"));
+					f.WriteAttributeString("target", string.Format("runtimes\\linux-x86\\native\\libsqlcipher.so"));
 					f.WriteEndElement(); // file
 
 					gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
@@ -4058,13 +4079,13 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x86\\{1}", "windows", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x86\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\{0}\\x64\\{1}", "windows", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
@@ -4107,7 +4128,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\osx\\{0}", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\osx-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
@@ -4149,8 +4170,10 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
 
+            // TODO this needs to handle x86 as well
+
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\build\\native\\linux\\x64\\{0}", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\linux-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 			f.WriteEndElement(); // Content
@@ -4338,7 +4361,7 @@ public static class gen
 		string top = Path.Combine(root, "bld");
 
 		// --------------------------------
-		// create the build directory
+		// create the bld directory
 		Directory.CreateDirectory(top);
 
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));

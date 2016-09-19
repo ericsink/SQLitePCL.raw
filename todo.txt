@@ -1,7 +1,8 @@
 
-should we compile android sqlite with 
-SQLITE_TEMP_STORE = 2 or 3
-?
+is the v140 e_sqlite build compiled for app container only?
+
+the batteries assemblies for wp80 don't need to
+go in build, do they?
 
 config_esqlite3 should get reworked, because it only
 generates a nuspec, not a csproj.  in fact, it's just
