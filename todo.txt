@@ -1,4 +1,17 @@
 
+need the ability to disconnect:
+    1.  the env used to compile an assembly
+    2.  the lib/env dir in nuget
+
+for bundle_e_sqlite3, we want to build two things for netstandard11:
+    1.  e_sqlite3, into netcoreapp
+    2.  none, into netstandard11
+
+enable_shared_cache.  is this present?  does akavache need it?
+
+it's kinda wrong to always build batteries.cs with provider_none
+for portable and netstandard.
+
 is the v140 e_sqlite build compiled for app container only?
 
 the batteries assemblies for wp80 don't need to

@@ -208,6 +208,10 @@ public static class projects
         items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "arm"));
         items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "x86"));
 
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard11", "e_sqlite3", "netcoreapp"));
+
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
@@ -227,6 +231,10 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net45", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "arm"));
         items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "x86"));
+
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard11", "e_sqlite3", "netcoreapp"));
 
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
@@ -303,6 +311,25 @@ public static class projects
 		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
 		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
+	}
+
+	public static string get_nuget_target_path(string env)
+	{
+		if (config_cs.env_is_portable(env))
+		{
+			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
+		}
+		else if (env == "wp80")
+		{
+            // this goes into build/wp80/cpu, but the cpu isn't
+            // a param to this function, so the wp80 case has to
+            // be handled another way
+            throw new NotImplementedException();
+		}
+		else
+		{
+			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
+		}
 	}
 
     public static string rid_front_half(string toolset)
@@ -727,6 +754,8 @@ public static class config_cs
 
 	public static string get_full_framework_name(string env)
 	{
+        // what this function really does is return whatever
+        // framework name is full enough for project.json/frameworks.
 		switch (env)
 		{
 			case "ios_classic":
@@ -812,6 +841,8 @@ public static class config_cs
             case "profile136":
             case "profile259":
                 return projects.get_portable_nuget_target_string(env);
+            case "netcoreapp":
+                return "netcoreapp";
 			default:
 				throw new Exception(env);
 		}
@@ -857,6 +888,7 @@ public class config_csproj : config_info
 	public string guid;
 	public string assemblyname;
 	public string env;
+    public string nuget_override_target_env;
     public bool CopyNuGetImplementations;
 	public string cpu = "anycpu";
 	public List<string> csfiles_src = new List<string>();
@@ -1104,27 +1136,19 @@ public class config_csproj : config_info
 
     public static config_csproj create_batteries(string area, string env, string what)
     {
+        return create_batteries(area, env, what, null);
+    }
+
+    public static config_csproj create_batteries(string area, string env, string what, string nuget_override_target_env)
+    {
         var cfg = new config_csproj();
         cfg.env = env;
         cfg.area = area;
-        if (config_cs.env_is_portable(cfg.env) || config_cs.env_is_netstandard(cfg.env))
-        {
-            cfg.name = string.Format("{0}.{1}.{2}", cfg.root_name, area, env);
-        }
-        else
-        {
-            cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, what, env);
-        }
+        cfg.nuget_override_target_env = nuget_override_target_env;
+        cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, (what!=null)?what:"none", env);
         cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
         cfg.csfiles_src.Add("batteries.cs");
-        if (config_cs.env_is_portable(cfg.env) || config_cs.env_is_netstandard(cfg.env))
-        {
-            cfg.defines.Add("PROVIDER_none");
-        }
-        else
-        {
-            cfg.defines.Add("PROVIDER_" + what);
-        }
+        cfg.defines.Add("PROVIDER_" + ((what!=null)?what:"none"));
         cfg.ref_core = true;
         cfg.ref_provider = what;
         return cfg;
@@ -1221,22 +1245,6 @@ public class config_csproj : config_info
 		{
 			var other = get_cppinterop_item();
             other.get_products(a);
-		}
-	}
-
-	public string get_nuget_target_path()
-	{
-		if (is_portable())
-		{
-			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
-		}
-		else if (env == "wp80")
-		{
-			return string.Format("build\\{0}\\{1}\\", env, cpu);
-		}
-		else
-		{
-			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
 		}
 	}
 
@@ -1728,6 +1736,7 @@ public static class gen
 		}
 		else if (config_cs.env_is_netstandard(env))
 		{
+            // TODO GUID_PCL ?
 			write_project_type_guids(f, GUID_PCL, GUID_CSHARP);
 		}
 		else
@@ -2867,6 +2876,37 @@ public static class gen
 	}
 
 	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
+    {
+        if (cfg.nuget_override_target_env != null)
+        {
+            write_nuspec_file_entry(cfg, cfg.nuget_override_target_env, f);
+        }
+        else
+        {
+            write_nuspec_file_entry(cfg, cfg.env, f);
+        }
+    }
+
+	private static void write_nuspec_file_entry(config_csproj cfg, string target_env, XmlWriter f)
+	{
+        // note that target_env may not be the same as cfg.env
+        // for example we may want to build with netstandard11
+        // settings, and then drop that assembly into more than
+        // one place in the nuget file
+		f.WriteComment(string.Format("{0}", cfg.get_name()));
+		var a = new List<string>();
+		cfg.get_products(a);
+
+		foreach (string s in a)
+		{
+			f.WriteStartElement("file");
+			f.WriteAttributeString("src", s);
+			f.WriteAttributeString("target", projects.get_nuget_target_path(target_env));
+			f.WriteEndElement(); // file
+		}
+	}
+
+	private static void write_nuspec_file_entry_wp80(config_csproj cfg, XmlWriter f)
 	{
 		f.WriteComment(string.Format("{0}", cfg.get_name()));
 		var a = new List<string>();
@@ -2876,7 +2916,7 @@ public static class gen
 		{
 			f.WriteStartElement("file");
 			f.WriteAttributeString("src", s);
-			f.WriteAttributeString("target", cfg.get_nuget_target_path());
+			f.WriteAttributeString("target", string.Format("build\\{0}\\{1}\\", cfg.env, cfg.cpu));
 			f.WriteEndElement(); // file
 		}
 	}
@@ -2900,7 +2940,7 @@ public static class gen
 	{
         foreach (var cfg in a)
         {
-            write_nuspec_file_entry(cfg, f);
+            write_nuspec_file_entry_wp80(cfg, f);
         }
 
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference to the bait");
@@ -3685,33 +3725,38 @@ public static class gen
 
     private static void write_bundle_dependency_group(XmlWriter f, string env, string what)
     {
+        write_bundle_dependency_group(f, env, env, what);
+    }
+
+    private static void write_bundle_dependency_group(XmlWriter f, string env_target, string env_deps, string what)
+    {
         // --------
         f.WriteStartElement("group");
-        f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
+        f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env_target));
 
         add_dep_core(f);
 
         if (
-                ((env == "ios_unified") || (env == "ios_classic") || (env == "watchos"))
+                ((env_deps == "ios_unified") || (env_deps == "ios_classic") || (env_deps == "watchos"))
                 && (what != "sqlite3")
            )
         {
             f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, "internal", env));
+            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, "internal", env_deps));
             f.WriteAttributeString("version", NUSPEC_VERSION);
             f.WriteEndElement(); // dependency
         }
         else
         {
             f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, env));
+            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, env_deps));
             f.WriteAttributeString("version", NUSPEC_VERSION);
             f.WriteEndElement(); // dependency
         }
 
         if (what == "e_sqlite3")
         {
-            switch (env)
+            switch (env_deps)
             {
                 case "android":
                     f.WriteStartElement("dependency");
@@ -3723,13 +3768,14 @@ public static class gen
                 case "ios_classic":
                 case "watchos":
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env_deps));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
                 case "net35":
                 case "net40":
                 case "net45":
+                case "netstandard11": // TODO because this is used for netcoreapp, kinda hackish
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.v110_xp", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
@@ -3747,7 +3793,7 @@ public static class gen
                     break;
                 default:
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env)));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env_deps)));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
@@ -3802,6 +3848,7 @@ public static class gen
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
+            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3");
             
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
@@ -3883,6 +3930,7 @@ public static class gen
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
             write_bundle_dependency_group(f, "net40", "e_sqlite3");
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
+            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3");
 
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
@@ -4262,7 +4310,7 @@ public static class gen
 				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
 				f.WriteAttributeString("Include", cfg.assemblyname);
 
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}\\{1}.dll", cfg.get_nuget_target_path(), cfg.assemblyname));
+				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}\\{1}.dll", string.Format("build\\{0}\\{1}\\", cfg.env, cfg.cpu), cfg.assemblyname));
 
 				// TODO private?
 
