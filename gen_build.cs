@@ -241,6 +241,24 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard11", null));
 
+        // bundle_sqlcipher
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "ios_unified", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "ios_classic", "sqlcipher"));
+        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "watchos", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "android", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net35", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net40", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net45", "sqlcipher"));
+
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "netstandard11", "sqlcipher", "netcoreapp"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "netstandard11", null));
+
     }
 
 	private static void init_tests()
@@ -264,6 +282,11 @@ public static class projects
 
     private static void init_testapps()
     {
+        items_testapp.Add(new config_testapp { 
+                env="android", 
+                cpu="anycpu", 
+                bundle="bundle_sqlcipher",
+                });
         items_testapp.Add(new config_testapp { 
                 env="android", 
                 cpu="anycpu", 
@@ -2967,7 +2990,7 @@ public static class gen
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
 	//public static string NUSPEC_VERSION = "1.0.1";
 
-	private const string NUSPEC_RELEASE_NOTES = "1.0 release.  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
+	private const string NUSPEC_RELEASE_NOTES = "1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
     private static void add_dep_core(XmlWriter f)
     {
@@ -3635,7 +3658,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3799,9 +3822,128 @@ public static class gen
                     break;
             }
         }
+        else if (what == "sqlcipher")
+        {
+            switch (env_deps)
+            {
+                case "android":
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.android", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
+                case "ios_unified":
+                case "ios_classic":
+                case "watchos":
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}.static", gen.ROOT_NAME, env_deps));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
+                case "net35":
+                case "net40":
+                case "net45":
+                case "netstandard11": // TODO because this is used for netcoreapp, kinda hackish
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.osx", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.linux", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
+                default:
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env_deps)));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
+            }
+        }
 
         f.WriteEndElement(); // group
     }
+
+	private static void gen_nuspec_bundle_sqlcipher(string top)
+    {
+		string id = string.Format("{0}.bundle_sqlcipher", gen.ROOT_NAME);
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
+
+			f.WriteElementString("id", id);
+			f.WriteElementString("version", NUSPEC_VERSION);
+			f.WriteElementString("title", id);
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: sqlcipher included.");
+			f.WriteElementString("authors", "Eric Sink");
+			f.WriteElementString("owners", "Eric Sink");
+			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
+			f.WriteElementString("requireLicenseAcceptance", "false");
+			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
+			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCLRaw and dependencies");
+			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+
+			f.WriteStartElement("dependencies");
+
+            write_bundle_dependency_group(f, "android", "sqlcipher");
+            write_bundle_dependency_group(f, "ios_unified", "sqlcipher");
+            write_bundle_dependency_group(f, "ios_classic", "sqlcipher");
+            // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher");
+            write_bundle_dependency_group(f, "net35", "sqlcipher");
+            write_bundle_dependency_group(f, "net40", "sqlcipher");
+            write_bundle_dependency_group(f, "net45", "sqlcipher");
+            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher");
+            
+            write_dependency_group(f, "profile111", DEP_CORE);
+            write_dependency_group(f, "profile136", DEP_CORE);
+            write_dependency_group(f, "profile259", DEP_CORE);
+            write_dependency_group(f, "netstandard11", DEP_CORE);
+            write_dependency_group(f, null, DEP_CORE);
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (config_csproj cfg in projects.items_csproj)
+			{
+				if (cfg.area == "batteries_sqlcipher")
+				{
+					write_nuspec_file_entry(
+							cfg, 
+							f
+							);
+				}
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
 
 	private static void gen_nuspec_bundle_e_sqlite3(string top)
 	{
@@ -3906,7 +4048,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, Android/wpa81/uwp/win81=SQLite included, net45=Windows SQLite included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=SQLite included.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -4538,6 +4680,7 @@ public static class gen
         gen_nuspec_bundle_green(top);
         gen_nuspec_bundle_e_sqlite3(top);
         gen_nuspec_bundle_winsqlite3(top);
+        gen_nuspec_bundle_sqlcipher(top);
         gen_nuspec_provider_wp80(top, root, "e_sqlite3");
         gen_nuspec_tests(top);
 
@@ -4581,6 +4724,7 @@ public static class gen
             tw.WriteLine("../../nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("../../nuget pack {0}.bundle_sqlcipher.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.provider.e_sqlite3.wp80.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../../nuget pack {0}.tests.nuspec", gen.ROOT_NAME);
@@ -4632,6 +4776,7 @@ public static class gen
 			tw.WriteLine("../../nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../../nuget push -Source {2} {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("#../../nuget push -Source {2} {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
