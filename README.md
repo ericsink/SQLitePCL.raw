@@ -8,7 +8,7 @@ access to SQLite. License:  Apache License v2.
 
 Add this package:
 
-    SQLitePCLRaw.bundle\_e\_sqlite3 
+    SQLitePCLRaw.bundle_e_sqlite3 
     
 And call this function:
 
