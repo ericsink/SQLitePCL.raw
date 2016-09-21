@@ -1,4 +1,7 @@
 
+in the readme, explain why iOS lib has static in name.
+and why internal.  and why SQLitePCL.lib.embedded.Init()
+
 need the ability to disconnect:
     1.  the env used to compile an assembly
     2.  the lib/env dir in nuget
