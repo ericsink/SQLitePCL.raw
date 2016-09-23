@@ -1169,7 +1169,7 @@ public class config_csproj : config_info
         cfg.area = area;
         cfg.nuget_override_target_env = nuget_override_target_env;
         cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, (what!=null)?what:"none", env);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
+        cfg.assemblyname = string.Format("{0}.batteries", cfg.root_name);
         cfg.csfiles_src.Add("batteries.cs");
         cfg.defines.Add("PROVIDER_" + ((what!=null)?what:"none"));
         cfg.ref_core = true;
@@ -1183,7 +1183,7 @@ public class config_csproj : config_info
         cfg.env = env;
         cfg.area = area;
         cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, "internal", env);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
+        cfg.assemblyname = string.Format("{0}.batteries", cfg.root_name);
         cfg.csfiles_src.Add("batteries.cs");
         cfg.defines.Add("PROVIDER_internal");
         cfg.defines.Add("EMBEDDED_INIT");
@@ -1201,7 +1201,7 @@ public class config_csproj : config_info
         cfg.what = "e_sqlite3";
         cfg.env = "wp80";
         cfg.name = string.Format("{0}.{1}.{2}.{3}.{4}", cfg.root_name, area, cfg.what, cfg.env, cfg.cpu);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, cfg.area);
+        cfg.assemblyname = string.Format("{0}.batteries", cfg.root_name);
         cfg.csfiles_src.Add("batteries.cs");
         cfg.defines.Add("PROVIDER_e_sqlite3");
         cfg.ref_core = true;
@@ -2986,9 +2986,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	//public static string NUSPEC_VERSION = string.Format("1.0.1-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
+	public static string NUSPEC_VERSION = string.Format("1.0.2-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	public static string NUSPEC_VERSION = "1.0.1";
+	//public static string NUSPEC_VERSION = "1.0.2";
 
 	private const string NUSPEC_RELEASE_NOTES = "1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
