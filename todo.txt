@@ -1,4 +1,9 @@
 
+consider SQLitePCL.Batteries_v2.Init().  same assembly
+name for all bundles.  allows bait-and-switch of the
+Init() method to work across bundle types, under very
+carefully constructed conditions.
+
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
 
