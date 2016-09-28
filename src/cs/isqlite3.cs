@@ -243,7 +243,6 @@ namespace SQLitePCL
 
         // because these are inherently non-portable, and because the SQLite module
         // for WP8 doesn't even compile them in.
-        int sqlite3_enable_load_extension(IntPtr db, int enable);
         int sqlite3_load_extension(IntPtr db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
         // TODO
@@ -251,14 +250,14 @@ namespace SQLitePCL
         int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
 #endif
 
-#if API_ADDITIONS_WAITING
         int sqlite3_initialize();
         int sqlite3_shutdown();
 
         // sqlite3_config() takes a variable argument list
         int sqlite3_config(int op);
         int sqlite3_config(int op, int val);
-#endif
+
+        int sqlite3_enable_load_extension(IntPtr db, int enable);
 
 #if not
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

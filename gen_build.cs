@@ -2976,9 +2976,9 @@ public static class gen
 
 	public static string NUSPEC_VERSION = string.Format("1.1.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	//public static string NUSPEC_VERSION = "1.0.1";
+	//public static string NUSPEC_VERSION = "1.1.0";
 
-	private const string NUSPEC_RELEASE_NOTES = "1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
+	private const string NUSPEC_RELEASE_NOTES = "1.1.0:  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config.  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
     private static void add_dep_core(XmlWriter f)
     {

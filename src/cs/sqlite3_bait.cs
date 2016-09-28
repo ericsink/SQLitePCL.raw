@@ -255,7 +255,6 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
-#if API_ADDITIONS_WAITING
         int ISQLite3Provider.sqlite3_initialize()
         {
 	    throw new Exception(GRIPE);
@@ -273,7 +272,11 @@ namespace SQLitePCL
         {
 	    throw new Exception(GRIPE);
         }
-#endif
+
+        int ISQLite3Provider.sqlite3_enable_load_extension(IntPtr db, int onoff)
+        {
+	    throw new Exception(GRIPE);
+        }
 
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {

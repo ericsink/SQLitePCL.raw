@@ -329,7 +329,6 @@ int32 SQLite3RuntimeProvider::sqlite3_threadsafe(void)
 	return (int32)::sqlite3_threadsafe();
 }
 
-#ifdef API_ADDITIONS_WAITING
 int32 SQLite3RuntimeProvider::sqlite3_initialize(void)
 {
 	return (int32)::sqlite3_initialize();
@@ -349,7 +348,11 @@ int32 SQLite3RuntimeProvider::sqlite3_config_int(int32 op, int32 val)
 {
 	return (int32)::sqlite3_config(op, val);
 }
-#endif
+
+int32 SQLite3RuntimeProvider::sqlite3_enable_load_extension(int64 db, int32 onoff)
+{
+	return (int32)::sqlite3_enable_load_extension((sqlite3*) db, onoff);
+}
 
 int32 SQLite3RuntimeProvider::sqlite3_libversion_number(void)
 {

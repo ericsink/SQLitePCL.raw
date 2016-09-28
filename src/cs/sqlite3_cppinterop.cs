@@ -862,7 +862,6 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_threadsafe();
         }
 
-#if API_ADDITIONS_WAITING
         int ISQLite3Provider.sqlite3_initialize()
         {
             return SQLite3RuntimeProvider.sqlite3_initialize();
@@ -882,7 +881,11 @@ namespace SQLitePCL
         {
             return SQLite3RuntimeProvider.sqlite3_config_int(op, val);
         }
-#endif
+
+        int ISQLite3Provider.sqlite3_enable_load_extension(IntPtr db, int onoff)
+        {
+            return SQLite3RuntimeProvider.sqlite3_enable_load_extension(db.ToInt64(), onoff);
+        }
 
         long ISQLite3Provider.sqlite3_memory_used()
         {

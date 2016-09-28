@@ -1,4 +1,8 @@
 
+add enable_load_extensions
+
+allow getting IntPtr from sqlite3 and sqlite3_stmt
+
 consider SQLitePCL.Batteries_v2.Init().  same assembly
 name for all bundles.  allows bait-and-switch of the
 Init() method to work across bundle types, under very

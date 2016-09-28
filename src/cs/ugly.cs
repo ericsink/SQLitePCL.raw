@@ -131,7 +131,6 @@ namespace SQLitePCL.Ugly
             if (raw.SQLITE_OK != rc) throw new sqlite3_exception(rc, db.errmsg());
         }
 
-#if API_ADDITIONS_WAITING
         public static void initialize()
         {
             int rc = raw.sqlite3_initialize();
@@ -155,7 +154,6 @@ namespace SQLitePCL.Ugly
             int rc = raw.sqlite3_config(op, val);
             check_ok(rc);
         }
-#endif
 
         public static sqlite3 open(string filename)
         {
@@ -292,6 +290,11 @@ namespace SQLitePCL.Ugly
         public static int extended_result_codes(this sqlite3 db, int onoff)
         {
             return raw.sqlite3_extended_result_codes(db, onoff);
+        }
+
+        public static int enable_load_extension(this sqlite3 db, int onoff)
+        {
+            return raw.sqlite3_enable_load_extension(db, onoff);
         }
 
         public static int get_autocommit(this sqlite3 db)

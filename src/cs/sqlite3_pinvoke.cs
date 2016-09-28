@@ -405,7 +405,6 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_threadsafe();
         }
 
-#if API_ADDITIONS_WAITING
         int ISQLite3Provider.sqlite3_config(int op)
         {
             return NativeMethods.sqlite3_config_none(op);
@@ -425,7 +424,11 @@ namespace SQLitePCL
         {
             return NativeMethods.sqlite3_shutdown();
         }
-#endif
+
+        int ISQLite3Provider.sqlite3_enable_load_extension(IntPtr db, int onoff)
+        {
+            return NativeMethods.sqlite3_enable_load_extension(db, onoff);
+        }
 
         // ----------------------------------------------------------------
 

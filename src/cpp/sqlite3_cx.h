@@ -103,12 +103,11 @@ namespace SQLitePCL
 
 					static int32 sqlite3_libversion_number();
 					static int32 sqlite3_threadsafe();
-#ifdef API_ADDITIONS_WAITING
 					static int32 sqlite3_initialize();
 					static int32 sqlite3_shutdown();
 					static int32 sqlite3_config_none(int32 op);
 					static int32 sqlite3_config_int(int32 op, int32 val);
-#endif
+					static int32 sqlite3_enable_load_extension(int64 db, int32 onoff);
 
 					static int64 sqlite3_memory_used();
 					static int64 sqlite3_memory_highwater(int32 resetFlag);

@@ -370,7 +370,6 @@ namespace SQLitePCL
             return _imp.sqlite3_threadsafe();
         }
 
-#if API_ADDITIONS_WAITING
         static public int sqlite3_initialize()
         {
             return _imp.sqlite3_initialize();
@@ -390,7 +389,11 @@ namespace SQLitePCL
         {
             return _imp.sqlite3_config(op, val);
         }
-#endif
+
+        static public int sqlite3_enable_load_extension(sqlite3 db, int onoff)
+        {
+            return _imp.sqlite3_enable_load_extension(db.ptr, onoff);
+        }
 
         static public string sqlite3_sourceid()
         {
