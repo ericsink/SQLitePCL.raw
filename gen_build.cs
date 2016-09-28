@@ -81,6 +81,76 @@ public static class projects
 		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86"});
 	}
 
+    private static void init_bundles(int ver)
+    {
+        // bundle_winsqlite3
+        items_csproj.Add(config_csproj.create_batteries("batteries_winsqlite3", ver, "uwp10", "winsqlite3"));
+        
+        // bundle_green
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"ios_unified", "sqlite3"));
+        // TODO items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"watchos", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"android", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"win8", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"wpa81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"win81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"uwp10", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net35", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net40", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net45", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", ver, "arm"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", ver, "x86"));
+
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"netstandard11", "e_sqlite3", "netcoreapp"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"netstandard11", null));
+
+        // bundle_e_sqlite3
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", ver, "ios_unified", "e_sqlite3"));
+        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "watchos", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "android", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "win8", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "wpa81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "win81", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "uwp10", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net35", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net40", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net45", "e_sqlite3"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "arm"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "x86"));
+
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "netstandard11", "e_sqlite3", "netcoreapp"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "netstandard11", null));
+
+        // bundle_sqlcipher
+        items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", ver, "ios_unified", "sqlcipher"));
+        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "watchos", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "android", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net35", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net40", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net45", "sqlcipher"));
+
+        // the following item builds for netstandard11 
+        // but overrides the nuget target env to place it in netcoreapp
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "netstandard11", "sqlcipher", "netcoreapp"));
+
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "profile111", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "profile136", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "profile259", null));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "netstandard11", null));
+
+    }
+
     private static void init_csproj()
     {
         items_csproj.Add(config_csproj.create_core("net35"));
@@ -181,72 +251,8 @@ public static class projects
         //items_csproj.Add(config_csproj.create_ugly("netstandard10"));
         items_csproj.Add(config_csproj.create_ugly("netstandard11"));
 
-        // bundle_winsqlite3
-        items_csproj.Add(config_csproj.create_batteries("batteries_winsqlite3", "uwp10", "winsqlite3"));
-        
-        // bundle_green
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
-        // TODO items_csproj.Add(config_csproj.create_batteries("batteries_green", "watchos", "sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "win8", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "wpa81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "win81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "uwp10", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net35", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net40", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "arm"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", "x86"));
-
-        // the following item builds for netstandard11 
-        // but overrides the nuget target env to place it in netcoreapp
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard11", "e_sqlite3", "netcoreapp"));
-
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile111", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile136", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "netstandard11", null));
-
-        // bundle_e_sqlite3
-        items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "ios_unified", "e_sqlite3"));
-        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "watchos", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "android", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "wpa81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win81", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "uwp10", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net35", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net40", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "arm"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", "x86"));
-
-        // the following item builds for netstandard11 
-        // but overrides the nuget target env to place it in netcoreapp
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard11", "e_sqlite3", "netcoreapp"));
-
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile111", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile136", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "netstandard11", null));
-
-        // bundle_sqlcipher
-        items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "ios_unified", "sqlcipher"));
-        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "watchos", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "android", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net35", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net40", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net45", "sqlcipher"));
-
-        // the following item builds for netstandard11 
-        // but overrides the nuget target env to place it in netcoreapp
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "netstandard11", "sqlcipher", "netcoreapp"));
-
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile111", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile136", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "profile259", null));
-        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "netstandard11", null));
-
+        init_bundles(1);
+        init_bundles(2);
     }
 
 	private static void init_tests()
@@ -1145,34 +1151,49 @@ public class config_csproj : config_info
         return cfg;
     }
 
-    public static config_csproj create_batteries(string area, string env, string what)
+    public static config_csproj create_batteries(string area, int ver, string env, string what)
     {
-        return create_batteries(area, env, what, null);
+        return create_batteries(area, ver, env, what, null);
     }
 
-    public static config_csproj create_batteries(string area, string env, string what, string nuget_override_target_env)
+    private static void set_batteries_version(config_csproj cfg, int ver)
+    {
+        switch (ver)
+        {
+            case 1:
+                cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, cfg.area);
+                cfg.csfiles_src.Add("batteries.cs");
+                break;
+            case 2:
+                cfg.assemblyname = string.Format("{0}.batteries", cfg.root_name);
+                cfg.csfiles_src.Add("batteries_v2.cs");
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    public static config_csproj create_batteries(string area, int ver, string env, string what, string nuget_override_target_env)
     {
         var cfg = new config_csproj();
         cfg.env = env;
         cfg.area = area;
         cfg.nuget_override_target_env = nuget_override_target_env;
-        cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, (what!=null)?what:"none", env);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
-        cfg.csfiles_src.Add("batteries.cs");
+        cfg.name = string.Format("{0}.v{1}.{2}.{3}.{4}", cfg.root_name, ver, area, (what!=null)?what:"none", env);
+        set_batteries_version(cfg, ver);
         cfg.defines.Add("PROVIDER_" + ((what!=null)?what:"none"));
         cfg.ref_core = true;
         cfg.ref_provider = what;
         return cfg;
     }
 
-    public static config_csproj create_internal_batteries(string area, string env, string lib)
+    public static config_csproj create_internal_batteries(string area, int ver, string env, string lib)
     {
         var cfg = new config_csproj();
         cfg.env = env;
         cfg.area = area;
-        cfg.name = string.Format("{0}.{1}.{2}.{3}", cfg.root_name, area, "internal", env);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, area);
-        cfg.csfiles_src.Add("batteries.cs");
+        cfg.name = string.Format("{0}.v{1}.{2}.{3}.{4}", cfg.root_name, ver, area, "internal", env);
+        set_batteries_version(cfg, ver);
         cfg.defines.Add("PROVIDER_internal");
         cfg.defines.Add("EMBEDDED_INIT");
         cfg.ref_core = true;
@@ -1181,16 +1202,15 @@ public class config_csproj : config_info
         return cfg;
     }
 
-    public static config_csproj create_wp80_batteries(string area, string cpu)
+    public static config_csproj create_wp80_batteries(string area, int ver, string cpu)
     {
         var cfg = new config_csproj();
         cfg.area = area;
         cfg.cpu = cpu;
         cfg.what = "e_sqlite3";
         cfg.env = "wp80";
-        cfg.name = string.Format("{0}.{1}.{2}.{3}.{4}", cfg.root_name, area, cfg.what, cfg.env, cfg.cpu);
-        cfg.assemblyname = string.Format("{0}.{1}", cfg.root_name, cfg.area);
-        cfg.csfiles_src.Add("batteries.cs");
+        cfg.name = string.Format("{0}.{1}.{2}.{3}.{4}.{5}", cfg.root_name, ver, area, cfg.what, cfg.env, cfg.cpu);
+        set_batteries_version(cfg, ver);
         cfg.defines.Add("PROVIDER_e_sqlite3");
         cfg.ref_core = true;
         cfg.ref_provider = cfg.what;
