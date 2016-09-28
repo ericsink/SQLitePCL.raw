@@ -53,7 +53,7 @@ namespace SQLitePCL
 	    _disposed = true;
         }
 
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -94,7 +94,7 @@ namespace SQLitePCL
         // used by raw.sqlite3_result_* (which is internal to the
         // PCL assembly) to fetch the actual context pointer to pass 
         // back to sqlite.
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -134,7 +134,7 @@ namespace SQLitePCL
             _p = p;
         }
 
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -169,7 +169,7 @@ namespace SQLitePCL
 	    _disposed = true;
         }
 
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -209,7 +209,7 @@ namespace SQLitePCL
 	    _disposed = true;
         }
 
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -296,7 +296,7 @@ namespace SQLitePCL
 	    _disposed = true;
         }
 
-        internal IntPtr ptr
+        public IntPtr ptr
         {
             get
             {
@@ -334,7 +334,7 @@ namespace SQLitePCL
 		}
 		else
 		{
-			throw new Exception("The sqlite3_next_stmt() function is disabled by default for performance reasons.  To enable it, call sqlite3.enable_sqlite3_next_stmt() immediately after opening the sqlite3 connection.");
+			throw new Exception("The sqlite3_next_stmt() function is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true) immediately after opening the sqlite3 connection.");
 		}
         }
 
