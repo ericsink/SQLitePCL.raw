@@ -87,7 +87,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_core("net40"));
         items_csproj.Add(config_csproj.create_core("net45"));
         items_csproj.Add(config_csproj.create_core("ios_unified"));
-        items_csproj.Add(config_csproj.create_core("ios_classic"));
         // TODO items_csproj.Add(config_csproj.create_core("watchos"));
         items_csproj.Add(config_csproj.create_core("android"));
         items_csproj.Add(config_csproj.create_core("win8"));
@@ -110,7 +109,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_classic"));
         // TODO items_csproj.Add(config_csproj.create_provider("sqlite3", "watchos"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "android")); // bad idea
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
@@ -129,20 +127,16 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
-        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_provider("internal", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("internal", "ios_classic"));
         // TODO items_csproj.Add(config_csproj.create_provider("internal", "watchos"));
 
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "android"));
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_unified"));
-        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_classic"));
         // TODO items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "watchos"));
 
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
-        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
@@ -155,7 +149,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
-        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
@@ -168,7 +161,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "uwp10"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
-        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_classic"));
 
         items_csproj.Add(config_csproj.create_wp80_provider("arm"));
         items_csproj.Add(config_csproj.create_wp80_provider("x86"));
@@ -178,7 +170,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("net45"));
         items_csproj.Add(config_csproj.create_ugly("android"));
         items_csproj.Add(config_csproj.create_ugly("ios_unified"));
-        items_csproj.Add(config_csproj.create_ugly("ios_classic"));
         // TODO items_csproj.Add(config_csproj.create_ugly("watchos"));
         items_csproj.Add(config_csproj.create_ugly("win8"));
         items_csproj.Add(config_csproj.create_ugly("win81"));
@@ -195,7 +186,6 @@ public static class projects
         
         // bundle_green
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_unified", "sqlite3"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_green", "ios_classic", "sqlite3"));
         // TODO items_csproj.Add(config_csproj.create_batteries("batteries_green", "watchos", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green", "win8", "e_sqlite3"));
@@ -219,7 +209,6 @@ public static class projects
 
         // bundle_e_sqlite3
         items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "ios_unified", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "ios_classic", "e_sqlite3"));
         // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_e_sqlite3", "watchos", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", "win8", "e_sqlite3"));
@@ -243,7 +232,6 @@ public static class projects
 
         // bundle_sqlcipher
         items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "ios_unified", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "ios_classic", "sqlcipher"));
         // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_sqlcipher", "watchos", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "android", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", "net35", "sqlcipher"));
@@ -2986,9 +2974,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	//public static string NUSPEC_VERSION = string.Format("1.0.1-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
+	public static string NUSPEC_VERSION = string.Format("1.1.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	public static string NUSPEC_VERSION = "1.0.1";
+	//public static string NUSPEC_VERSION = "1.0.1";
 
 	private const string NUSPEC_RELEASE_NOTES = "1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
@@ -3059,7 +3047,6 @@ public static class gen
 
             write_dependency_group(f, "android", DEP_NONE);
             write_dependency_group(f, "ios_unified", DEP_NONE);
-            write_dependency_group(f, "ios_classic", DEP_NONE);
             // TODO write_dependency_group(f, "watchos", DEP_NONE);
             write_dependency_group(f, "net35", DEP_NONE);
             write_dependency_group(f, "net40", DEP_NONE);
@@ -3521,7 +3508,6 @@ public static class gen
 
             write_dependency_group(f, "android", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "ios_unified", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "ios_classic", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             // TODO write_dependency_group(f, "watchos", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "net35", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "net40", DEP_CORE | DEP_UGLY | DEP_XUNIT);
@@ -3597,7 +3583,6 @@ public static class gen
 
             write_dependency_group(f, "android", DEP_CORE);
             write_dependency_group(f, "ios_unified", DEP_CORE);
-            write_dependency_group(f, "ios_classic", DEP_CORE);
             // TODO write_dependency_group(f, "watchos", DEP_CORE);
             write_dependency_group(f, "net35", DEP_CORE);
             write_dependency_group(f, "net40", DEP_CORE);
@@ -3907,7 +3892,6 @@ public static class gen
 
             write_bundle_dependency_group(f, "android", "sqlcipher");
             write_bundle_dependency_group(f, "ios_unified", "sqlcipher");
-            write_bundle_dependency_group(f, "ios_classic", "sqlcipher");
             // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher");
             write_bundle_dependency_group(f, "net35", "sqlcipher");
             write_bundle_dependency_group(f, "net40", "sqlcipher");
@@ -3981,7 +3965,6 @@ public static class gen
 
             write_bundle_dependency_group(f, "android", "e_sqlite3");
             write_bundle_dependency_group(f, "ios_unified", "e_sqlite3");
-            write_bundle_dependency_group(f, "ios_classic", "e_sqlite3");
             // TODO write_bundle_dependency_group(f, "watchos", "e_sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
@@ -4063,7 +4046,6 @@ public static class gen
 
             write_bundle_dependency_group(f, "android", "e_sqlite3");
             write_bundle_dependency_group(f, "ios_unified", "sqlite3");
-            write_bundle_dependency_group(f, "ios_classic", "sqlite3");
             // TODO write_bundle_dependency_group(f, "watchos", "sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
