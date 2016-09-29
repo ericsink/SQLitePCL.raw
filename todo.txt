@@ -1,13 +1,4 @@
 
-add enable_load_extensions
-
-allow getting IntPtr from sqlite3 and sqlite3_stmt
-
-consider SQLitePCL.Batteries_v2.Init().  same assembly
-name for all bundles.  allows bait-and-switch of the
-Init() method to work across bundle types, under very
-carefully constructed conditions.
-
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
 
@@ -34,7 +25,8 @@ generates a nuspec, not a csproj.  in fact, it's just
 a string toolset.
 
 maybe the subdirs x86/x64 for loading with anycpu
-should be the rid
+should be the rid.  but this would break things,
+so probably not.
 
 several of the targets files are using the name
 InjectReference when really they're just copying
@@ -59,11 +51,7 @@ problem with uwp test apps pfx file
 
 problem with uwp test app, deploy, id ?
 
-docs
-
 test runner for net45
-
-check and re-check all package and assembly names
 
 rm cruft for old sqlcipher builds
 
@@ -96,17 +84,7 @@ with project.json : runtimes?
 
 ios build machine needs sdk 9.3
 
-simulator runs, er, on the mac itself.  :-)
-
 should MonoAndroid version be 2.3 or 6.0 ?
-
-will we ever wish a lib packaged in nuget v3 had a
-different name?  should the current stuff have "targets"
-in the name?
-
-should all the libs have static/dynamic in the name?
-even though the non-ios ones will probably always be
-dynamic?
 
 general-purpose gen_nuspec function
 
@@ -137,10 +115,6 @@ version numbers on SQLitePCL.custom stuff should
 not need to match SQLitePCL.raw, and might want to
 match the underlying SQLite version number.
 
-maybe a SQLitePCL.custom.sqlite3.nupkg which does
-nothing but have platform-specific dependencies
-on the others?
-
 does the native code stuff in nuget 3.x get this
 specific?  can we provide a package which just looks
 at the environment and then has a dependency on
@@ -160,8 +134,6 @@ Do the collation hook fix thing for config_log
 consider whether maybe the sqlite3 intptr dispose should check
 the version number and call sqlite3_close_v2 when it's supposedly
 available.
-
-switch my env keywords to be the same as the ones nuget uses?
 
 add visual studio 2013 c++ runtime sdkreference.  but injecting an
 SDKReference in the .targets file sort of doesn't work, and using
@@ -211,9 +183,7 @@ sqlite3_create_module
 
 sqlite3_db_config
 
-sqlite3_db_filename
 sqlite3_db_mutex
-sqlite3_db_readonly
 
 sqlite3_get_auxdata
 sqlite3_set_auxdata
@@ -235,7 +205,4 @@ sqlite3_busy_handler
 
 sqlite3_collation_needed -- difficult because of the be handle passed
 to the callback
-
-sqlite3_config
-
 

@@ -2998,7 +2998,7 @@ public static class gen
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
 	//public static string NUSPEC_VERSION = "1.1.0";
 
-	private const string NUSPEC_RELEASE_NOTES = "1.1.0:  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config.  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
+	private const string NUSPEC_RELEASE_NOTES = "1.1.0:  fix problem with winsqlite3 on UWP.  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config/initialize/shutdown.  add Batteries_V2.Init().  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
     private static void add_dep_core(XmlWriter f)
     {
@@ -3052,7 +3052,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
             f.WriteElementString("title", id);
-			f.WriteElementString("description", "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Most users should just start with one of the packages named SQLitePCLRaw.bundle_*.");
+			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3061,7 +3061,7 @@ public static class gen
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+			f.WriteElementString("tags", "sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp");
 
 			f.WriteStartElement("dependencies");
 
@@ -3126,7 +3126,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3135,7 +3135,7 @@ public static class gen
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+			f.WriteElementString("tags", "sqlite");
 
 			f.WriteEndElement(); // metadata
 
@@ -3193,7 +3193,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3202,7 +3202,7 @@ public static class gen
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+			f.WriteElementString("tags", "sqlite xamarin");
 
 			f.WriteEndElement(); // metadata
 
@@ -3241,8 +3241,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());");
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.";
+			string desc = string.Format("A SQLitePCL.raw 'provider' bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());");
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3252,7 +3252,7 @@ public static class gen
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
+			f.WriteElementString("tags", "sqlite wp8");
 
 			f.WriteStartElement("dependencies");
 
@@ -3296,8 +3296,8 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCLRaw provider bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.";
+			string desc = string.Format("A SQLitePCL.raw 'provider' bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
+            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.";
 			f.WriteElementString("description", desc);
 			f.WriteElementString("authors", "Eric Sink, et al");
 			f.WriteElementString("owners", "Eric Sink");
@@ -3352,7 +3352,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", string.Format("Native code only (e_sqlite3, {0}) for SQLitePCLRaw", plat));
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Eric Sink, D. Richard Hipp, et al");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3421,7 +3421,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", string.Format("Native code only (sqlcipher, {0}) for SQLitePCLRaw", plat));
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.");
+			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 			f.WriteElementString("authors", "Couchbase, SQLite, Zetetic");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3588,7 +3588,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "These extension methods for SQLitePCLRaw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
+			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3663,7 +3663,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3671,7 +3671,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCLRaw and dependencies");
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -3897,7 +3897,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: sqlcipher included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: sqlcipher included");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3905,7 +3905,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCLRaw and dependencies");
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -3970,7 +3970,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -3978,7 +3978,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCLRaw and dependencies");
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
@@ -4051,7 +4051,7 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=SQLite included.");
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=SQLite included");
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2016 Zumero, LLC");
@@ -4059,7 +4059,7 @@ public static class gen
 			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
 			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCLRaw and dependencies");
+			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
 			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
 
 			f.WriteStartElement("dependencies");
