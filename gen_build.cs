@@ -2266,8 +2266,20 @@ public static class gen
         File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.nuget.props", cfg.pattern)));
         File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.nuget.targets", cfg.pattern)));
         File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj.user", cfg.pattern)));
-        Directory.Delete(Path.Combine(root, vtests, cfg.name, "bin"), true);
-        Directory.Delete(Path.Combine(root, vtests, cfg.name, "obj"), true);
+	try
+	{
+		Directory.Delete(Path.Combine(root, vtests, cfg.name, "bin"), true);
+	}
+	catch
+	{
+	}
+	try
+	{
+		Directory.Delete(Path.Combine(root, vtests, cfg.name, "obj"), true);
+	}
+	catch
+	{
+	}
 
         string old_csproj = Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj", cfg.pattern));
         string csproj = Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj", cfg.name));
@@ -2994,9 +3006,9 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	//public static string NUSPEC_VERSION = string.Format("1.1.0-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
+	public static string NUSPEC_VERSION = string.Format("1.1.1-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	public static string NUSPEC_VERSION = "1.1.0";
+	//public static string NUSPEC_VERSION = "1.1.0";
 
 	private const string NUSPEC_RELEASE_NOTES = "1.1.0:  fix problem with winsqlite3 on UWP.  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config/initialize/shutdown.  add Batteries_V2.Init().  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
