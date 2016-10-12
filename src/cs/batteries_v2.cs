@@ -22,12 +22,8 @@ namespace SQLitePCL
 {
     public static class Batteries_V2
     {
-        private static bool done = false;
-
 	    public static void Init()
 	    {
-            if (done) return;
-
 #if EMBEDDED_INIT
             SQLitePCL.lib.embedded.Init();
 #endif
@@ -45,14 +41,9 @@ namespace SQLitePCL
 #elif PROVIDER_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
 #elif PROVIDER_none
-            throw new Exception("This is the 'bait'.  You probably need to add one of the SQLitePCLRaw.bundle_* nuget packages to your app project.");
+            throw new Exception("This is the 'bait'.  You probably need to add one of the SQLitePCLRaw.bundle_* nuget packages to your platform project.");
 #else
 #error batteries_v2.cs built with nothing specified
-#endif
-
-#if PROVIDER_none
-#else
-            done = true;
 #endif
 	    }
     }
