@@ -417,7 +417,7 @@ namespace SQLitePCL.Ugly
                 && (rc != raw.SQLITE_DONE)
                 )
             {
-                throw new sqlite3_exception(rc);
+                throw new sqlite3_exception(rc, stmt.db_handle().errmsg());
             }
 
             return rc;
