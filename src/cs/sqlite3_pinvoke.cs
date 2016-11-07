@@ -225,8 +225,12 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
         {
+            var ba_sql = util.to_utf8(sql);
+            GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
+            IntPtr ptr_sql = pinned.AddrOfPinnedObject();
             IntPtr tail;
-            int rc = NativeMethods.sqlite3_prepare_v2(db, util.to_utf8(sql), -1, out stm, out tail);
+            int rc = NativeMethods.sqlite3_prepare_v2(db, ptr_sql, -1, out stm, out tail);
+            pinned_sql.Free();
             if (tail == IntPtr.Zero)
             {
                 remain = null;
