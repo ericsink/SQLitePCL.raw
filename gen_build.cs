@@ -4000,6 +4000,7 @@ public static class gen
             // TODO write_bundle_dependency_group(f, "watchos", "e_sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
+            write_bundle_dependency_group(f, "win8", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
             write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
@@ -4081,6 +4082,7 @@ public static class gen
             // TODO write_bundle_dependency_group(f, "watchos", "sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
+            write_bundle_dependency_group(f, "win8", "e_sqlite3");
             write_bundle_dependency_group(f, "win81", "e_sqlite3");
             write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
             write_bundle_dependency_group(f, "net35", "e_sqlite3");
