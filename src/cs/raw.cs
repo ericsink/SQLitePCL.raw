@@ -40,12 +40,14 @@ namespace SQLitePCL
 	static public void SetProvider(ISQLite3Provider imp)
 	{
 		int version = imp.sqlite3_libversion_number();
+#if not // don't do this, because it ends up calling sqlite3_initialize
 		IntPtr db;
 		int rc;
 	        rc = imp.sqlite3_open(":memory:", out db);
 		if (rc != 0) throw new Exception();
 		rc = imp.sqlite3_close(db);
 		if (rc != 0) throw new Exception();
+#endif
 		_imp = imp;
 	}
 

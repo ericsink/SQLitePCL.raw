@@ -57,6 +57,8 @@ namespace SQLitePCL
 #if NETFX_CORE
             // FYI, the wp8 code does this same thing except using PRAGMAs
 
+        // TODO these two calls are a problem.  they end up calling sqlite3_initialize()
+        // which means the app never gets a chance to call sqlite3_config().
 		NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
 		NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
 #endif
