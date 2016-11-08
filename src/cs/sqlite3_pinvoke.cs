@@ -227,7 +227,7 @@ namespace SQLitePCL
         {
             var ba_sql = util.to_utf8(sql);
             GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
-            IntPtr ptr_sql = pinned.AddrOfPinnedObject();
+            IntPtr ptr_sql = pinned_sql.AddrOfPinnedObject();
             IntPtr tail;
             int rc = NativeMethods.sqlite3_prepare_v2(db, ptr_sql, -1, out stm, out tail);
             pinned_sql.Free();
@@ -1310,7 +1310,7 @@ namespace SQLitePCL
             public static extern int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
             [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.Cdecl)]
-            public static extern int sqlite3_prepare_v2(IntPtr db, byte[] pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+            public static extern int sqlite3_prepare_v2(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
             [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.Cdecl)]
             public static extern int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
