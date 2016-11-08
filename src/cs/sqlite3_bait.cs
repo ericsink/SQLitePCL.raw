@@ -619,5 +619,11 @@ namespace SQLitePCL
         {
             throw new Exception(GRIPE);
         }
+
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
+        {
+            throw new Exception(GRIPE);
+        }
+
     }
 }

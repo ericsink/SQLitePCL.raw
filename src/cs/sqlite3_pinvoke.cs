@@ -64,6 +64,15 @@ namespace SQLitePCL
 #endif
         }
 
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
+        {
+#if NETFX_CORE
+            return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
+#else
+            throw new NotImplementedException();
+#endif
+        }
+
         int ISQLite3Provider.sqlite3_open(string filename, out IntPtr db)
         {
             return NativeMethods.sqlite3_open(util.to_utf8(filename), out db);

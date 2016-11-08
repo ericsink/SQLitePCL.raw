@@ -912,6 +912,11 @@ namespace SQLitePCL
         {
             return _imp.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
         }
+
+        static public int sqlite3_win32_set_directory(int typ, string path)
+        {
+            return _imp.sqlite3_win32_set_directory(typ, path);
+        }
     }
 }
 

@@ -284,6 +284,7 @@ namespace SQLitePCL
         void sqlite3_log(int iErrCode, byte[] zFormat);
 #endif
 
+        int sqlite3_win32_set_directory(int typ, string path);
     }
 }
 

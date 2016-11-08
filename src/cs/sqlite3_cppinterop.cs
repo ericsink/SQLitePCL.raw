@@ -1470,5 +1470,11 @@ namespace SQLitePCL
 
             return result;
         }
+
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
