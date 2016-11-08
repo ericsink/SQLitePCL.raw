@@ -66,6 +66,8 @@ namespace SQLitePCL
 		    }
 	    }
 
+        internal static log_hook_info log;
+
 #if NO_CONCURRENTDICTIONARY
         private static Dictionary<IntPtr,info> _hooks_by_db = new Dictionary<IntPtr,info>();
 #else
@@ -183,6 +185,49 @@ namespace SQLitePCL
             return result;
         }
     }
+
+    internal class log_hook_info
+    {
+        private delegate_log _func;
+        private object _user_data;
+        private GCHandle _h;
+
+        internal log_hook_info(delegate_log func, object v)
+        {
+            _func = func;
+            _user_data = v;
+
+            _h = GCHandle.Alloc(this);
+        }
+
+        internal IntPtr ptr
+        {
+            get
+            {
+                return (IntPtr) _h;
+            }
+        }
+
+        internal static log_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            log_hook_info hi = h.Target as log_hook_info;
+            // TODO assert(hi._h == h)
+            return hi;
+        }
+
+        internal void call(int rc, string msg)
+        {
+            _func(_user_data, rc, msg);
+        }
+
+        internal void free()
+        {
+            _func = null;
+            _user_data = null;
+            _h.Free();
+        }
+    };
 
     internal class commit_hook_info
     {

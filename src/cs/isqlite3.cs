@@ -27,6 +27,7 @@ namespace SQLitePCL
 {
     using System;
 
+    public delegate void delegate_log(object user_data, int errorCode, string msg);
     public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
@@ -169,6 +170,7 @@ namespace SQLitePCL
         int sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset);
         int sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset); // TODO return blob[] ?
 
+        int sqlite3_config_log(delegate_log func, object v);
         void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v);
         void sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v);
         void sqlite3_trace(IntPtr db, delegate_trace func, object v);
@@ -259,12 +261,6 @@ namespace SQLitePCL
 
         int sqlite3_enable_load_extension(IntPtr db, int enable);
 
-#if not
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
-
-        int sqlite3_config_log(int op, callback_log func, IntPtr pvUser);
-#endif
 
 #if not // utf16 versions, not needed since we're using utf8 everywhere
         IntPtr sqlite3_column_database_name16(IntPtr stmt, int index);

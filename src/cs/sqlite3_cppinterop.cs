@@ -872,6 +872,11 @@ namespace SQLitePCL
             return SQLite3RuntimeProvider.sqlite3_shutdown();
         }
 
+        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        {
+            throw new NotImplementedException();
+        }
+
         int ISQLite3Provider.sqlite3_config(int op)
         {
             return SQLite3RuntimeProvider.sqlite3_config_none(op);

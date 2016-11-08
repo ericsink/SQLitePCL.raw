@@ -535,6 +535,38 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_log))] // TODO not xplat
+#endif
+        static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
+        {
+            log_hook_info hi = log_hook_info.from_ptr(p);
+            hi.call(rc, util.from_utf8(s));
+        }
+
+	NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
+        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        {
+            if (hooks.log != null)
+            {
+                // TODO maybe turn off the hook here, for now
+                hooks.log.free();
+                hooks.log = null;
+            }
+
+            if (func != null)
+            {
+                hooks.log = new log_hook_info(func, v);
+                return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, log_hook_bridge, hooks.log.ptr);
+            }
+            else
+            {
+                return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, null, IntPtr.Zero);
+            }
+        }
+
+        // ----------------------------------------------------------------
+
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
