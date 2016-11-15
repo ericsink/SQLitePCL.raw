@@ -241,7 +241,6 @@ namespace SQLitePCL
             IntPtr ptr_sql = pinned_sql.AddrOfPinnedObject();
             IntPtr tail;
             int rc = NativeMethods.sqlite3_prepare_v2(db, ptr_sql, -1, out stm, out tail);
-            pinned_sql.Free();
             if (tail == IntPtr.Zero)
             {
                 remain = null;
@@ -254,6 +253,7 @@ namespace SQLitePCL
                     remain = null;
                 }
             }
+            pinned_sql.Free();
             return rc;
         }
 
