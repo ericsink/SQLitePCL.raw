@@ -31,14 +31,17 @@ namespace SQLitePCL
     public static class raw
     {
         private static ISQLite3Provider _imp;
+        private static bool _frozen;
 
 	static raw()
 	{
 		_imp = new SQLite3Provider_bait();
+        _frozen = false;
 	}
 
 	static public void SetProvider(ISQLite3Provider imp)
 	{
+        if (_frozen) return;
 		int version = imp.sqlite3_libversion_number();
 #if not // don't do this, because it ends up calling sqlite3_initialize
 		IntPtr db;
@@ -50,6 +53,11 @@ namespace SQLitePCL
 #endif
 		_imp = imp;
 	}
+
+	static public void FreezeProvider(bool b = true)
+    {
+        _frozen = b;
+    }
 
         public const int SQLITE_UTF8                = 1;
         public const int SQLITE_UTF16LE             = 2;
