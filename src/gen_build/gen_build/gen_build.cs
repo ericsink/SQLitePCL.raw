@@ -4634,94 +4634,89 @@ public static class gen
 		bool isCustom = args.Length > 0;
 		if (isCustom)
 		{
-			var customNames = args;
-			foreach (var name in customNames)
+			var customName = args[0];
+			writePinvoke(cs_pinvoke, customName, top);
+
+			var customBuild = new CustomBuild(customName);
+			var items_csproj = customBuild.ItemsCsproj;
+
+			// --------------------------------
+			// assign all the guids
+
+			foreach (config_sqlite3 cfg in customBuild.ItemsSqlite3)
 			{
-				writePinvoke(cs_pinvoke, name, top);
-
-				var customBuild = new CustomBuild(name);
-				var items_csproj = customBuild.ItemsCsproj;
-
-				// --------------------------------
-				// assign all the guids
-
-				foreach (config_sqlite3 cfg in customBuild.ItemsSqlite3)
-				{
-					cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-				}
-
-				foreach (config_cppinterop cfg in customBuild.ItemsCppinterop)
-				{
-					cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-				}
-
-				foreach (config_csproj cfg in customBuild.ItemsCsproj)
-				{
-					cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-				}
-
-				// --------------------------------
-				// generate all the AssemblyInfo files
-
-				foreach (config_csproj cfg in customBuild.ItemsCsproj)
-				{
-					gen_assemblyinfo(cfg, root, top);
-				}
-
-				// --------------------------------
-				// generate all the project files
-
-				foreach (config_sqlite3 cfg in customBuild.ItemsSqlite3)
-				{
-					gen_sqlite3(cfg, root, top);
-				}
-
-				foreach (config_cppinterop cfg in customBuild.ItemsCppinterop)
-				{
-					gen_cppinterop(cfg, root, top);
-				}
-
-				foreach (config_csproj cfg in customBuild.ItemsCsproj)
-				{
-					gen_csproj(cfg, root, top);
-				}
-
-				// --------------------------------
-
-				gen_solution(top, customBuild.ItemsSqlite3, customBuild.ItemsCppinterop, customBuild.ItemsCsproj);
-
-				using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
-				{
-					tw.WriteLine("../../nuget restore sqlitepcl.sln");
-					tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
-				}
-
-				using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
-				{
-					tw.WriteLine("../../nuget pack {0}.core.nuspec", gen.ROOT_NAME);
-
-					foreach (config_csproj cfg in items_csproj)
-					{
-						if (cfg.area == "provider" && cfg.env != "wp80")
-						{
-							string id = cfg.get_id();
-							tw.WriteLine("../../nuget pack {0}.nuspec", id);
-						}
-					}
-					foreach (config_csproj cfg in items_csproj)
-					{
-						if (cfg.area == "lib")
-						{
-							string id = cfg.get_id();
-							tw.WriteLine("../../nuget pack {0}.nuspec", id);
-						}
-					}
-					tw.WriteLine("ls *.nupkg");
-				}
-
-
-
+				cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 			}
+
+			foreach (config_cppinterop cfg in customBuild.ItemsCppinterop)
+			{
+				cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+			}
+
+			foreach (config_csproj cfg in customBuild.ItemsCsproj)
+			{
+				cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+			}
+
+			// --------------------------------
+			// generate all the AssemblyInfo files
+
+			foreach (config_csproj cfg in customBuild.ItemsCsproj)
+			{
+				gen_assemblyinfo(cfg, root, top);
+			}
+
+			// --------------------------------
+			// generate all the project files
+
+			foreach (config_sqlite3 cfg in customBuild.ItemsSqlite3)
+			{
+				gen_sqlite3(cfg, root, top);
+			}
+
+			foreach (config_cppinterop cfg in customBuild.ItemsCppinterop)
+			{
+				gen_cppinterop(cfg, root, top);
+			}
+
+			foreach (config_csproj cfg in customBuild.ItemsCsproj)
+			{
+				gen_csproj(cfg, root, top);
+			}
+
+			// --------------------------------
+
+			gen_solution(top, customBuild.ItemsSqlite3, customBuild.ItemsCppinterop, customBuild.ItemsCsproj);
+
+			using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
+			{
+				tw.WriteLine("../../nuget restore sqlitepcl.sln");
+				tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
+			}
+
+			using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
+			{
+				tw.WriteLine("../../nuget pack {0}.core.nuspec", gen.ROOT_NAME);
+
+				foreach (config_csproj cfg in items_csproj)
+				{
+					if (cfg.area == "provider" && cfg.env != "wp80")
+					{
+						string id = cfg.get_id();
+						tw.WriteLine("../../nuget pack {0}.nuspec", id);
+					}
+				}
+				foreach (config_csproj cfg in items_csproj)
+				{
+					if (cfg.area == "lib")
+					{
+						string id = cfg.get_id();
+						tw.WriteLine("../../nuget pack {0}.nuspec", id);
+					}
+				}
+				tw.WriteLine("ls *.nupkg");
+			}
+			
 		}
 		else
 		{
