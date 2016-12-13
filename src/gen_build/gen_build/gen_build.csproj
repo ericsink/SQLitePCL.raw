@@ -7,7 +7,7 @@
     <ProjectGuid>{FFB95CCC-EE63-4F80-8E3C-84BFAD309BF8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>gen_build</RootNamespace>
+    <RootNamespace>GenBuild</RootNamespace>
     <AssemblyName>gen_build</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomBuild.cs" />
     <Compile Include="gen_build.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
