@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="config_csproj.cs" />
     <Compile Include="CustomBuild.cs" />
     <Compile Include="gen_build.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
