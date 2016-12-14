@@ -2327,51 +2327,23 @@ public static class gen
 
     private static void write_android_native_libs_sqlcipher(string root, XmlWriter f)
     {
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86_64\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\arm64-v8a\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi-v7a\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
+		var archs = new List<string> {
+			"x86", "x86_64",
+			"armeabi", "armeabi-v7a", "arm64-v8",
 #if not
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips64\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips64\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+			"mips", "mips64"
 #endif
+		};
 
-    }
+		foreach (var arch in archs)
+		{
+			f.WriteStartElement("EmbeddedNativeLibrary");
+			f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\{0}\\libsqlcipher.so", arch)));
+			f.WriteElementString("CopyToOutputDirectory", "Always");
+			f.WriteElementString("Link", string.Format("{0}\\libsqlcipher.so", arch));
+			f.WriteEndElement(); // EmbeddedNativeLibrary
+		}
+	}
 
 	private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
 	{
