@@ -2305,44 +2305,44 @@ public static class gen
         fix_version(project_dot_json);
     }
 
-	private static void write_android_native_libs(string root, XmlWriter f, string what, string which)
-	{
-		var archs = new List<string> {
-			"x86", "x86_64",
-			"armeabi", "armeabi-v7a", "arm64-v8",
+    private static void write_android_native_libs(string root, XmlWriter f, string what, string which)
+    {
+        var archs = new List<string> {
+            "x86", "x86_64",
+            "armeabi", "armeabi-v7a", "arm64-v8",
 #if not
-			"mips", "mips64"
+            "mips", "mips64"
 #endif
-		};
+        };
 
-		foreach (var arch in archs)
-		{
-			string lib = string.Format("lib{0}.so", what);
-			string libPath;
+        foreach (var arch in archs)
+        {
+            string lib = string.Format("lib{0}.so", what);
+            string libPath;
 
-			switch (what)
-			{
-				case "e_sqlite3":
-					libPath = string.Format("android\\{0}\\libs\\{1}\\{2}", which, arch, lib);
-					break;
-				case "sqlcipher":
-					libPath = string.Format("{0}\\libs\\android\\{1}\\{2}", which, arch, lib);
-					break;
-				default:
-					// e.g., sqlite3\android\x86\lib\libcustom_sqlite3.so for which=sqlite3, what=custom_sqlite3
-					libPath = string.Format("{0}\\android\\{1}\\lib\\{2}", which, arch, lib);
-					break;
-			}
+            switch (what)
+            {
+                case "e_sqlite3":
+                    libPath = string.Format("android\\{0}\\libs\\{1}\\{2}", which, arch, lib);
+                    break;
+                case "sqlcipher":
+                    libPath = string.Format("{0}\\libs\\android\\{1}\\{2}", which, arch, lib);
+                    break;
+                default:
+                    // e.g., sqlite3\android\x86\lib\libcustom_sqlite3.so for which=sqlite3, what=custom_sqlite3
+                    libPath = string.Format("{0}\\android\\{1}\\lib\\{2}", which, arch, lib);
+                    break;
+            }
 
-			f.WriteStartElement("EmbeddedNativeLibrary");
-			f.WriteAttributeString("Include", Path.Combine(root, libPath));
-			f.WriteElementString("CopyToOutputDirectory", "Always");
-			f.WriteElementString("Link", string.Format("{0}\\{1}", arch, lib));
-			f.WriteEndElement(); // EmbeddedNativeLibrary
-		}
-	}
+            f.WriteStartElement("EmbeddedNativeLibrary");
+            f.WriteAttributeString("Include", Path.Combine(root, libPath));
+            f.WriteElementString("CopyToOutputDirectory", "Always");
+            f.WriteElementString("Link", string.Format("{0}\\{1}", arch, lib));
+            f.WriteEndElement(); // EmbeddedNativeLibrary
+        }
+    }
 
-	private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
+    private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
 	{
 		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname))))
