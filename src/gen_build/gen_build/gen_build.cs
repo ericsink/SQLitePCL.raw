@@ -1917,37 +1917,59 @@ public static class gen
         fix_version(project_dot_json);
     }
 
-    private static void write_android_native_libs(string root, XmlWriter f, string which)
+    private static void write_android_native_libs(string root, XmlWriter f, string which, string what = "e_sqlite3")
     {
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+		var archs = new List<string> { "x86", "x86_64", "armeabi", "arm64-v8a", "armeabi-v7a" };
+		var lib = string.Format("lib{0}.so", what);
 
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+		foreach (var arch in archs)
+		{
+			var linkPath = string.Format("{0}\\{1}", arch, lib);
 
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+			string libPath;
+			if (what == "e_sqlite3")
+			{
+				libPath = string.Format("android\\{0}\\libs\\{1}\\{2}", which, arch, lib);
+			}
+			else
+			{
+				// TODO: switch to match ericsink
+				// e,g, $libRoot\sqlite\android\arm64-v8a\lib
+				libPath = string.Format("{0}\\android\\{1}\\lib\\{2}", which, arch, lib);
+			}
 
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+			f.WriteStartElement("EmbeddedNativeLibrary");
+			f.WriteAttributeString("Include", Path.Combine(root, libPath));
+			f.WriteElementString("CopyToOutputDirectory", "Always");
+			f.WriteElementString("Link", string.Format(linkPath, which));
+			f.WriteEndElement(); // EmbeddedNativeLibrary
+		}
 
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+
+
+		//f.WriteStartElement("EmbeddedNativeLibrary");
+  //      f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libe_sqlite3.so", which)));
+  //      f.WriteElementString("CopyToOutputDirectory", "Always");
+  //      f.WriteElementString("Link", string.Format("x86_64\\libe_sqlite3.so", which));
+  //      f.WriteEndElement(); // EmbeddedNativeLibrary
+
+  //      f.WriteStartElement("EmbeddedNativeLibrary");
+  //      f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libe_sqlite3.so", which)));
+  //      f.WriteElementString("CopyToOutputDirectory", "Always");
+  //      f.WriteElementString("Link", string.Format("armeabi\\libe_sqlite3.so", which));
+  //      f.WriteEndElement(); // EmbeddedNativeLibrary
+
+  //      f.WriteStartElement("EmbeddedNativeLibrary");
+  //      f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libe_sqlite3.so", which)));
+  //      f.WriteElementString("CopyToOutputDirectory", "Always");
+  //      f.WriteElementString("Link", string.Format("arm64-v8a\\libe_sqlite3.so", which));
+  //      f.WriteEndElement(); // EmbeddedNativeLibrary
+
+  //      f.WriteStartElement("EmbeddedNativeLibrary");
+  //      f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libe_sqlite3.so", which)));
+  //      f.WriteElementString("CopyToOutputDirectory", "Always");
+  //      f.WriteElementString("Link", string.Format("armeabi-v7a\\libe_sqlite3.so", which));
+  //      f.WriteEndElement(); // EmbeddedNativeLibrary
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
@@ -2247,64 +2269,75 @@ public static class gen
             }
                     break;
 
-                    case "ios_classic":
-                        if (cfg.what == "e_sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(libRoot, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
-                            f.WriteElementString("Link", "e_sqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
+					case "ios_classic":
+						if (cfg.what == "e_sqlite3")
+						{
+							f.WriteStartElement("ItemGroup");
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							// TODO underscore
+							f.WriteAttributeString("Include", Path.Combine(libRoot, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
+							f.WriteElementString("Link", "e_sqlite3.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
+							f.WriteEndElement(); // ItemGroup
+						}
+						else if (cfg.what == "sqlcipher")
+						{
+							f.WriteStartElement("ItemGroup");
 
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(libRoot, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
-                            f.WriteElementString("Link", "libsqlcipher.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							// TODO underscore
+							f.WriteAttributeString("Include", Path.Combine(libRoot, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
+							f.WriteElementString("Link", "libsqlcipher.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
 
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(libRoot, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
+							// TODO warning says this is deprecated
+							f.WriteStartElement("ManifestResourceWithNoCulture");
+							f.WriteAttributeString("Include", Path.Combine(libRoot, "apple\\libs\\ios\\libcrypto.a"));
+							f.WriteElementString("Link", "libcrypto.a");
+							f.WriteEndElement(); // ManifestResourceWithNoCulture
 
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
+							f.WriteEndElement(); // ItemGroup
+						}
+						else
+						{
+							throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+						}
 						break;
 
 					case "android":
 						if (cfg.what == "e_sqlite3")
 						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
-                            f.WriteEndElement(); // ItemGroup
+							f.WriteStartElement("ItemGroup");
+							write_android_native_libs(libRoot, f, "sqlite3");
+							f.WriteEndElement(); // ItemGroup
 						}
 						else if (cfg.what == "sqlcipher")
 						{
-                            f.WriteStartElement("ItemGroup");
-                            write_android_native_libs_sqlcipher(root, f);
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
-
+							f.WriteStartElement("ItemGroup");
+							write_android_native_libs_sqlcipher(libRoot, f);
+							f.WriteEndElement(); // ItemGroup
+						}						
+						else
+						{
+							// check libroot for android - expect $libRoot/sqlite/android/x86, etc.
+							var di = new DirectoryInfo(Path.Combine(libRoot, "sqlite", "android"));
+							Console.WriteLine("Checking {0}", di.ToString());
+							if (di.Exists)
+							{
+								f.WriteStartElement("ItemGroup");
+								write_android_native_libs(libRoot, f, "sqlite", cfg.what);
+								f.WriteEndElement(); // ItemGroup
+							}
+							else
+							{
+								throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
+							}
+						}
 						break;
-            }
-            }
+				}
+			}
 
             f.WriteStartElement("ItemGroup");
             f.WriteStartElement("None");
@@ -4279,7 +4312,7 @@ public static class gen
 
 			foreach (config_csproj cfg in customBuild.ItemsCsproj)
 			{
-				gen_csproj(cfg, root, top);
+				gen_csproj(cfg, root, top, libRoot);
 			}
 
 			// --------------------------------
