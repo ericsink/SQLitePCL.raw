@@ -2305,8 +2305,8 @@ public static class gen
         fix_version(project_dot_json);
     }
 
-    private static void write_android_native_libs(string root, XmlWriter f, string which)
-    {
+	private static void write_android_native_libs(string root, XmlWriter f, string what, string which)
+	{
 		var archs = new List<string> {
 			"x86", "x86_64",
 			"armeabi", "armeabi-v7a", "arm64-v8",
@@ -2317,30 +2317,27 @@ public static class gen
 
 		foreach (var arch in archs)
 		{
-			f.WriteStartElement("EmbeddedNativeLibrary");
-			f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\{1}\\libe_sqlite3.so", which, arch)));
-			f.WriteElementString("CopyToOutputDirectory", "Always");
-			f.WriteElementString("Link", string.Format("{0}\\libe_sqlite3.so", arch));
-			f.WriteEndElement(); // EmbeddedNativeLibrary
-		}
-    }
+			string lib = string.Format("lib{0}.so", what);
+			string libPath;
 
-    private static void write_android_native_libs_sqlcipher(string root, XmlWriter f)
-    {
-		var archs = new List<string> {
-			"x86", "x86_64",
-			"armeabi", "armeabi-v7a", "arm64-v8",
-#if not
-			"mips", "mips64"
-#endif
-		};
+			switch (what)
+			{
+				case "e_sqlite3":
+					libPath = string.Format("android\\{0}\\libs\\{1}\\{2}", which, arch, lib);
+					break;
+				case "sqlcipher":
+					libPath = string.Format("{0}\\libs\\android\\{1}\\{2}", which, arch, lib);
+					break;
+				default:
+					// e.g., sqlite3\android\x86\lib\libcustom_sqlite3.so for which=sqlite3, what=custom_sqlite3
+					libPath = string.Format("{0}\\android\\{1}\\lib\\{2}", which, arch, lib);
+					break;
+			}
 
-		foreach (var arch in archs)
-		{
 			f.WriteStartElement("EmbeddedNativeLibrary");
-			f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\{0}\\libsqlcipher.so", arch)));
+			f.WriteAttributeString("Include", Path.Combine(root, libPath));
 			f.WriteElementString("CopyToOutputDirectory", "Always");
-			f.WriteElementString("Link", string.Format("{0}\\libsqlcipher.so", arch));
+			f.WriteElementString("Link", string.Format("{0}\\{1}", arch, lib));
 			f.WriteEndElement(); // EmbeddedNativeLibrary
 		}
 	}
@@ -2615,13 +2612,13 @@ public static class gen
 						if (cfg.what == "e_sqlite3")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
+                            write_android_native_libs(root, f, cfg.what, "sqlite3");
                             f.WriteEndElement(); // ItemGroup
 						}
 						else if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs_sqlcipher(root, f);
+							write_android_native_libs(root, f, cfg.what, "couchbase-lite-libsqlcipher");
                             f.WriteEndElement(); // ItemGroup
                         }
 			else
