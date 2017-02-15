@@ -3023,7 +3023,7 @@ public static class gen
 	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
 	//public static string NUSPEC_VERSION = "1.1.3";
 
-	private const string NUSPEC_RELEASE_NOTES = "1.1.3:  add 32-bit linux build for e_sqlite3.  update to latest libcrypto builds from couchbase folks.  1.1.2:  ability to FreezeProvider().  update e_sqlite3 builds to 3.16.1.  1.1.1:  add support for config_log.  update e_sqlite3 builds to 3.15.2.  fix possible memory corruption when using prepare_v2() with multiple statements.  better errmsg from ugly.step().  add win8 dep groups in bundles.  fix batteries_v2.Init() to be 'last call wins' like the v1 version is.  chg raw.SetProvider() to avoid calling sqlite3_initialize() so that sqlite3_config() can be used.  better support for Xamarin.Mac.  1.1.0:  fix problem with winsqlite3 on UWP.  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config/initialize/shutdown.  add Batteries_V2.Init().  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
+	private const string NUSPEC_RELEASE_NOTES = "1.1.3:  fix targets files for better compat with VS 2017 nuget pack.  add 32-bit linux build for e_sqlite3.  update to latest libcrypto builds from couchbase folks.  1.1.2:  ability to FreezeProvider().  update e_sqlite3 builds to 3.16.1.  1.1.1:  add support for config_log.  update e_sqlite3 builds to 3.15.2.  fix possible memory corruption when using prepare_v2() with multiple statements.  better errmsg from ugly.step().  add win8 dep groups in bundles.  fix batteries_v2.Init() to be 'last call wins' like the v1 version is.  chg raw.SetProvider() to avoid calling sqlite3_initialize() so that sqlite3_config() can be used.  better support for Xamarin.Mac.  1.1.0:  fix problem with winsqlite3 on UWP.  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config/initialize/shutdown.  add Batteries_V2.Init().  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 
     private static void add_dep_core(XmlWriter f)
     {
@@ -4232,6 +4232,7 @@ public static class gen
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteElementString("Pack", "false");
 				f.WriteEndElement(); // Content
 
 				f.WriteEndElement(); // ItemGroup
@@ -4281,6 +4282,7 @@ public static class gen
 				// TODO condition/exists ?
 				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", other.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteElementString("Pack", "false");
 				f.WriteEndElement(); // Content
 			}
 			f.WriteEndElement(); // ItemGroup
@@ -4325,12 +4327,14 @@ public static class gen
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x86\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
 			f.WriteStartElement("Content");
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
 			f.WriteEndElement(); // ItemGroup
@@ -4374,6 +4378,7 @@ public static class gen
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\osx-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
 			f.WriteEndElement(); // ItemGroup
@@ -4419,6 +4424,7 @@ public static class gen
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\linux-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", filename);
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
 			f.WriteEndElement(); // ItemGroup

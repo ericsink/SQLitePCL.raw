@@ -1,4 +1,9 @@
 
+worry about Batteries_V2 bait and switch across
+bundle types with project.json or new csproj, where
+the "better" support for transitive dependencies
+might break things.
+
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
 
