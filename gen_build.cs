@@ -90,6 +90,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"ios_unified", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"macos", "sqlite3"));
         // TODO items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"watchos", "sqlite3"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"tizen", "sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"android", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"win8", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"wpa81", "e_sqlite3"));
@@ -167,6 +168,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_core("win81"));
         items_csproj.Add(config_csproj.create_core("wpa81"));
         items_csproj.Add(config_csproj.create_core("uwp10"));
+        items_csproj.Add(config_csproj.create_core("tizen"));
         items_csproj.Add(config_csproj.create_core("profile111"));
         items_csproj.Add(config_csproj.create_core("profile136"));
         items_csproj.Add(config_csproj.create_core("profile259"));
@@ -190,6 +192,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
         items_csproj.Add(config_csproj.create_provider("sqlite3", "uwp10"));
+        items_csproj.Add(config_csproj.create_provider("sqlite3", "tizen"));
 
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
@@ -254,6 +257,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_ugly("win81"));
         items_csproj.Add(config_csproj.create_ugly("wpa81"));
         items_csproj.Add(config_csproj.create_ugly("uwp10"));
+        items_csproj.Add(config_csproj.create_ugly("tizen"));
         items_csproj.Add(config_csproj.create_ugly("profile111"));
         items_csproj.Add(config_csproj.create_ugly("profile136"));
         items_csproj.Add(config_csproj.create_ugly("profile259"));
@@ -812,6 +816,8 @@ public static class config_cs
 				return ".NETCore,Version=4.5.1";
 			case "win81":
 				return ".NETCore,Version=4.5.1";
+            case "tizen":
+                return "tizen40";
             case "profile111":
                 return ".NETPortable,Version=v4.5,Profile=profile111";
             case "profile136":
@@ -859,6 +865,8 @@ public static class config_cs
 				return "win8";
 			case "win81":
 				return "win81";
+			case "tizen":
+				return "tizen40";
 			case "netstandard11":
 				return "netstandard1.1";
 			case "netstandard10":
@@ -1312,6 +1320,7 @@ public static class gen
 	private const string GUID_WP81RT = "{76F1466A-8B6D-4E39-A767-685A06062A39}";
 	private const string GUID_TEST = "{3AC096D0-A1C2-E12C-1390-A8335801FDAB}";
 	private const string GUID_UAP = "{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A}";
+	private const string GUID_TIZEN = "{2F98DAC9-6F16-457B-AED7-D43CAC379341}";
 
     public const string ROOT_NAME = "SQLitePCLRaw";
 
@@ -1559,6 +1568,7 @@ public static class gen
 				case "net45":
 				case "net40":
 				case "net35":
+				case "tizen":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildToolsPath)\\Microsoft.CSharp.targets");
 					f.WriteEndElement(); // Import
@@ -1586,6 +1596,7 @@ public static class gen
 			case "ios_unified":
 			case "macos":
 			case "watchos":
+			case "tizen":
 			case "android":
 			case "net45":
 			case "net40":
@@ -1607,6 +1618,9 @@ public static class gen
 				break;
 			case "ios_classic":
 				write_reference(f, "monotouch");
+				break;
+			case "tizen":
+				write_reference(f, "tizen40");
 				break;
 			case "android":
 				write_reference(f, "Mono.Android");
@@ -1670,6 +1684,9 @@ public static class gen
 			case "ios_unified":
 			case "watchos":
 				defines.Add("PLATFORM_UNIFIED");
+				break;
+			case "tizen":
+				f.WriteElementString("TargetFrameworkIdentifier", "tizen40");
 				break;
 			case "android":
 				defines.Add("__MOBILE__");
@@ -1817,6 +1834,9 @@ public static class gen
 					break;
 				case "uwp10":
 					write_project_type_guids(f, GUID_UAP, GUID_CSHARP);
+					break;
+				case "tizen":
+					write_project_type_guids(f, GUID_TIZEN, GUID_CSHARP);
 					break;
 				default:
 					write_project_type_guids(f, GUID_CSHARP);
@@ -3101,6 +3121,7 @@ public static class gen
             write_dependency_group(f, "wpa81", DEP_NONE);
             write_dependency_group(f, "wp80", DEP_NONE);
             write_dependency_group(f, "uwp10", DEP_NONE);
+            write_dependency_group(f, "tizen", DEP_NONE);
             write_dependency_group(f, "profile111", DEP_NONE);
             write_dependency_group(f, "profile136", DEP_NONE);
             write_dependency_group(f, "profile259", DEP_NONE);
@@ -3569,6 +3590,7 @@ public static class gen
             write_dependency_group(f, "wpa81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "wp80", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "uwp10", DEP_CORE | DEP_UGLY | DEP_XUNIT);
+            write_dependency_group(f, "tizen", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile111", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile136", DEP_CORE | DEP_UGLY | DEP_XUNIT);
             write_dependency_group(f, "profile259", DEP_CORE | DEP_UGLY | DEP_XUNIT);
@@ -3645,6 +3667,7 @@ public static class gen
             write_dependency_group(f, "wpa81", DEP_CORE);
             write_dependency_group(f, "wp80", DEP_CORE);
             write_dependency_group(f, "uwp10", DEP_CORE);
+            write_dependency_group(f, "tizen", DEP_CORE);
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
             write_dependency_group(f, "profile259", DEP_CORE);
@@ -3799,7 +3822,7 @@ public static class gen
         add_dep_core(f);
 
         if (
-                ((env_deps == "ios_unified") || (env_deps == "ios_classic") || (env_deps == "watchos"))
+                ((env_deps == "ios_unified") || (env_deps == "ios_classic") || (env_deps == "watchos") || (env_deps == "tizen"))
                 && (what != "sqlite3")
            )
         {
@@ -4117,6 +4140,7 @@ public static class gen
             write_bundle_dependency_group(f, "ios_unified", "sqlite3");
             write_bundle_dependency_group(f, "macos", "e_sqlite3");
             // TODO write_bundle_dependency_group(f, "watchos", "sqlite3");
+            write_bundle_dependency_group(f, "tizen", "sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
             write_bundle_dependency_group(f, "wp80", "e_sqlite3");
             write_bundle_dependency_group(f, "win8", "e_sqlite3");
