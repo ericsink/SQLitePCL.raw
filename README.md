@@ -12,7 +12,7 @@ Add this package:
     
 And call this function:
 
-    SQLitePCL.Batteries.Init()
+    SQLitePCL.Batteries_V2.Init()
 
 # Compatibility
 
@@ -271,7 +271,7 @@ Think of a bundle as way of giving a "batteries included" experience.
 So for example, SQLitePCLRaw.bundle\_e\_sqlite3 is a bundle that
 uses e\_sqlite3 in all cases.  Just add this package, and call:
 
-    SQLitePCL.Batteries.Init();
+    SQLitePCL.Batteries_V2.Init();
 
 SQLitePCLRaw.bundle\_green is a bundle that
 uses e\_sqlite3 everywhere except iOS, where the system-provided
