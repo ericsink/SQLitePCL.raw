@@ -539,7 +539,12 @@ namespace SQLitePCL.Ugly
 
         public static void bind_blob(this sqlite3_stmt stmt, int index, byte[] b)
         {
-            int rc = raw.sqlite3_bind_blob(stmt, index, b);
+            bind_blob(stmt, index, b, b.Length);
+        }
+
+        public static void bind_blob(this sqlite3_stmt stmt, int index, byte[] b, int nSize)
+        {
+            int rc = raw.sqlite3_bind_blob(stmt, index, b, nSize);
             check_ok(rc);
         }
 
