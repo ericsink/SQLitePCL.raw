@@ -238,6 +238,7 @@ namespace SQLitePCL
         public const int SQLITE_CHECKPOINT_PASSIVE    = 0;
         public const int SQLITE_CHECKPOINT_FULL       = 1;
         public const int SQLITE_CHECKPOINT_RESTART    = 2;
+        public const int SQLITE_CHECKPOINT_TRUNCATE   = 3;
         
         public const int SQLITE_DBSTATUS_LOOKASIDE_USED      = 0;
         public const int SQLITE_DBSTATUS_CACHE_USED          = 1;
