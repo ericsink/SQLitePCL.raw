@@ -4616,45 +4616,66 @@ public static class gen
 		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e_sqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e_sqlite3");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "e_sqlite3");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e_sqlite3")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "e_sqlite3")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlcipher.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_custom_sqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "custom_sqlite3");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "custom_sqlite3");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "custom_sqlite3")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "custom_sqlite3")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_winsqlite3.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "winsqlite3");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "winsqlite3");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "winsqlite3")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "winsqlite3")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "StdCall")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3_xamarin.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3_xamarin");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3_xamarin");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3_xamarin")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3_xamarin")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))
 		{
-			string cs1 = cs_pinvoke.Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "internal");
-			string cs2 = cs1.Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "__Internal");
-			tw.Write(cs2);
+			string cs = cs_pinvoke
+                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "internal")
+                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "__Internal")
+                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
+                ;
+			tw.Write(cs);
 		}
 
 		// --------------------------------
