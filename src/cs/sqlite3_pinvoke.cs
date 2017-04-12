@@ -1135,6 +1135,27 @@ namespace SQLitePCL
             return result;
         }
 
+        int ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset)
+        {
+            if (result == null || offset >= result.Length)
+            {
+                return raw.SQLITE_ERROR;
+            }
+            IntPtr blobPointer = NativeMethods.sqlite3_column_blob(stm, columnIndex);
+            if (blobPointer == IntPtr.Zero)
+            {
+                return raw.SQLITE_ERROR;
+            }
+
+            var length = NativeMethods.sqlite3_column_bytes(stm, columnIndex);
+            if (offset + length >= result.Length)
+            {
+                return raw.SQLITE_ERROR;
+            }
+            Marshal.Copy(blobPointer, (byte[])result, offset, length);
+            return raw.SQLITE_OK;
+        }
+
         int ISQLite3Provider.sqlite3_column_type(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_type(stm, columnIndex);

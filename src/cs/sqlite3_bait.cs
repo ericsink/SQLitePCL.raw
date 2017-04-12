@@ -545,6 +545,11 @@ namespace SQLitePCL
 	    throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset)
+        {
+	    throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_column_type(IntPtr stm, int columnIndex)
         {
 	    throw new Exception(GRIPE);

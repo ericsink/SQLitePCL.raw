@@ -151,6 +151,7 @@ namespace SQLitePCL
         int sqlite3_column_int(IntPtr stmt, int index);
         long sqlite3_column_int64(IntPtr stmt, int index);
         byte[] sqlite3_column_blob(IntPtr stmt, int index);
+        int sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset);
         int sqlite3_column_bytes(IntPtr stmt, int index);
         int sqlite3_column_type(IntPtr stmt, int index);
         string sqlite3_column_decltype(IntPtr stmt, int index);
