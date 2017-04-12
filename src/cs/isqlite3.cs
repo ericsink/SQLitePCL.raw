@@ -131,6 +131,7 @@ namespace SQLitePCL
         int sqlite3_bind_zeroblob(IntPtr stmt, int index, int size);
         string sqlite3_bind_parameter_name(IntPtr stmt, int index);
         int sqlite3_bind_blob(IntPtr stmt, int index, byte[] blob);
+        int sqlite3_bind_blob(IntPtr stmt, int index, byte[] blob, int nSize);
         int sqlite3_bind_double(IntPtr stmt, int index, double val);
         int sqlite3_bind_int(IntPtr stmt, int index, int val);
         int sqlite3_bind_int64(IntPtr stmt, int index, long val);
