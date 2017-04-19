@@ -1280,9 +1280,17 @@ namespace SQLitePCL
 	    }
 
 	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+	    try
+	    {
 
-            var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
-            return ptr != IntPtr.Zero;
+	            var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+	            return ptr != IntPtr.Zero;
+	    }
+	    catch (Exception e)
+	    {
+	            System.Diagnostics.Debug.WriteLine(e);
+	            return false;
+	    }
         }
 #endif
 
