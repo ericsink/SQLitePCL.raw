@@ -1236,20 +1236,41 @@ namespace SQLitePCL
         private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
 
 #if PRELOAD_FROM_ARCH_DIRECTORY
-	// TODO on which Windows platforms is LoadLibraryEx available?
+        enum MyPlatform
+        {
+            WINDOWS,
+            DLOPEN,
+        }
 
         [DllImport("kernel32")]
         private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+
+	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
+        [DllImport("libdl.so")]
+        private static extern IntPtr dlopen(string filename, int flags);
+
+        const int RTLD_NOW = 2; // for dlopen's flags 
 
         // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
         // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
 
-
         private static bool TryLoadFromArchDirectory()
         {
 	    var dllName = string.Format("{0}.dll", SQLITE_DLL);
 
+        MyPlatform plat;
+		if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
+        {
+            plat = MyPlatform.WINDOWS;
+        }
+        else
+        {
+            plat = MyPlatform.DLOPEN;
+        }
+
+        // TODO we need a way for the app to specify this base path
 		string baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
 		if (baseDirectory == null)
 		{
@@ -1279,9 +1300,19 @@ namespace SQLitePCL
                 return false;
 	    }
 
-	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+        IntPtr ptr;
+        switch (plat)
+        {
+            case MyPlatform.WINDOWS:
+                ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+                break;
+            case MyPlatform.DLOPEN:
+                ptr = dlopen(dllPath, RTLD_NOW);
+                break;
+            default:
+                throw new NotImplementedException();
+        }
 
-            var ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
             return ptr != IntPtr.Zero;
         }
 #endif
@@ -1289,15 +1320,10 @@ namespace SQLitePCL
         static NativeMethods()
         {
 #if PRELOAD_FROM_ARCH_DIRECTORY
-	    // TODO the check below is intended to prevent the LoadLibraryEx call
-	    // from happening when using the net45 build on Mono on non-Windows
-	    // platforms.  this approach is almost certainly wrong-ish for .NET Core.
-	    if (
-		(System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
-		&& (TryLoadFromArchDirectory())
-	       )
+        // TODO do we need a try/catch around this?
+		if (TryLoadFromArchDirectory())
 	    {
-		return;
+            return;
 	    }
 #endif
 
