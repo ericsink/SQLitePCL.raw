@@ -4418,11 +4418,16 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
 
-            // TODO this needs to handle x86 as well
-
 			f.WriteStartElement("Content");
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\linux-x64\\native\\{0}", filename));
-			f.WriteElementString("Link", filename);
+			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
+			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
+			f.WriteEndElement(); // Content
+
+			f.WriteStartElement("Content");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\linux-x86\\native\\{0}", filename));
+			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
             f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
