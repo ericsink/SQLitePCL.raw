@@ -4282,6 +4282,7 @@ public static class gen
 				// TODO condition/exists ?
 				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", other.cpu.ToLower()));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteElementString("CopyToPublishDirectory", "Never");
 				f.WriteElementString("Pack", "false");
 				f.WriteEndElement(); // Content
 			}
@@ -4327,6 +4328,7 @@ public static class gen
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x86\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("CopyToPublishDirectory", "Never");
             f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
@@ -4334,6 +4336,7 @@ public static class gen
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\win7-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("CopyToPublishDirectory", "Never");
             f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
