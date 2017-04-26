@@ -34,6 +34,11 @@ namespace SQLitePCL
     using ObjCRuntime;
 #endif
 
+    public static class Settings
+    {
+        public static string BaseDirectoryForDynamicLoad = null;
+    }
+
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface
     /// </summary>
@@ -1256,39 +1261,30 @@ namespace SQLitePCL
         // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
         // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
 
-        private static bool TryLoadFromArchDirectory()
+        private static bool TryLoadFromArchDirectory(string baseDirectory)
         {
-	    var dllName = string.Format("{0}.dll", SQLITE_DLL);
+            if (baseDirectory == null)
+            {
+                return false;
+            }
+            System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
+            if (!System.IO.Directory.Exists(baseDirectory))
+            {
+                return false;
+            }
 
+        string dllName;
         MyPlatform plat;
 		if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
         {
             plat = MyPlatform.WINDOWS;
+            dllName = string.Format("{0}.dll", SQLITE_DLL);
         }
         else
         {
             plat = MyPlatform.DLOPEN;
+            dllName = string.Format("lib{0}.so", SQLITE_DLL);
         }
-
-        // TODO we need a way for the app to specify this base path
-		string baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
-		if (baseDirectory == null)
-		{
-#if OLD_REFLECTION
-			var currentAssembly = typeof(NativeMethods).Assembly;
-#else
-			var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
-#endif
-			var codeBase = currentAssembly.CodeBase;
-			var uri = new UriBuilder(codeBase);
-			baseDirectory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
-
-		}
-		if (baseDirectory == null)
-		{
-			return false;
-		}
-            System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
 
             var architecture = IntPtr.Size == 4
                 ? "x86"
@@ -1321,12 +1317,38 @@ namespace SQLitePCL
         {
 #if PRELOAD_FROM_ARCH_DIRECTORY
         // TODO do we need a try/catch around this?
-		if (TryLoadFromArchDirectory())
-	    {
-            return;
-	    }
-#endif
 
+        {
+            var baseDirectory = Settings.BaseDirectoryForDynamicLoad;
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+        }
+
+        {
+            var baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+        }
+
+        {
+#if OLD_REFLECTION
+			var currentAssembly = typeof(NativeMethods).Assembly;
+#else
+			var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
+#endif
+			var codeBase = currentAssembly.CodeBase;
+			var uri = new UriBuilder(codeBase);
+			var baseDirectory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+		}
+#endif
         }
 
             [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
