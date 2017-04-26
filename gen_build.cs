@@ -3178,18 +3178,26 @@ public static class gen
 			switch (cfg.toolset) {
 				case "v110_xp":
 					tname = gen_nuget_targets_pinvoke_anycpu(top, cfg.get_id(), cfg.toolset);
+                    if (tname != null) 
+                    {
+                        f.WriteStartElement("file");
+                        f.WriteAttributeString("src", tname);
+                        f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
+                        f.WriteEndElement(); // file
+                    }
 					break;
 				default:
 					tname = gen_nuget_targets_sqlite3_itself(top, cfg.get_id(), cfg.toolset);
+                    if (tname != null) 
+                    {
+                        f.WriteStartElement("file");
+                        f.WriteAttributeString("src", tname);
+                        f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
+                        f.WriteEndElement(); // file
+                    }
 					break;
 			}
 
-			if (tname != null) {
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", tname);
-				f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
-				f.WriteEndElement(); // file
-			}
 
 			f.WriteEndElement(); // files
 
@@ -3422,7 +3430,7 @@ public static class gen
 
             f.WriteStartElement("file");
             f.WriteAttributeString("src", tname);
-            f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
+            f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
             f.WriteEndElement(); // file
 
 			f.WriteEndElement(); // files
@@ -3513,7 +3521,7 @@ public static class gen
 			}
 			f.WriteStartElement("file");
 			f.WriteAttributeString("src", tname);
-			f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
+			f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
 			f.WriteEndElement(); // file
 
 			f.WriteEndElement(); // files
