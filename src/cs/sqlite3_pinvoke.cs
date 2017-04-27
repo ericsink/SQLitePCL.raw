@@ -36,7 +36,7 @@ namespace SQLitePCL
 
     public static class Settings
     {
-        public static string BaseDirectoryForDynamicLoad = null;
+        public static string BaseDirectoryForDynamicLoadNativeLibrary = null;
     }
 
     /// <summary>
@@ -1318,8 +1318,9 @@ namespace SQLitePCL
 #if PRELOAD_FROM_ARCH_DIRECTORY
         // TODO do we need a try/catch around this?
 
+        // first try the directory provided by the app, if any
         {
-            var baseDirectory = Settings.BaseDirectoryForDynamicLoad;
+            var baseDirectory = Settings.BaseDirectoryForDynamicLoadNativeLibrary;
             if (TryLoadFromArchDirectory(baseDirectory))
             {
                 return;
