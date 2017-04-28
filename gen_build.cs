@@ -4426,6 +4426,7 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
 
+#if TODO // load library before dllimport doesn't seem to work on linux
 			f.WriteStartElement("Content");
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\linux-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
@@ -4439,6 +4440,14 @@ public static class gen
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
             f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
+#else
+			f.WriteStartElement("Content");
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\linux-x64\\native\\{0}", filename));
+			f.WriteElementString("Link", filename);
+			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+            f.WriteElementString("Pack", "false");
+			f.WriteEndElement(); // Content
+#endif
 
 			f.WriteEndElement(); // ItemGroup
 

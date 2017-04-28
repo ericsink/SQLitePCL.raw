@@ -1252,7 +1252,7 @@ namespace SQLitePCL
 
 	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
 
-        [DllImport("libdl.so")]
+        [DllImport("dl")]
         private static extern IntPtr dlopen(string filename, int flags);
 
         const int RTLD_NOW = 2; // for dlopen's flags 
@@ -1303,7 +1303,10 @@ namespace SQLitePCL
                 ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
                 break;
             case MyPlatform.DLOPEN:
-                ptr = dlopen(dllPath, RTLD_NOW);
+                // load library before DllImport doesn't seem to work on Linux
+                // disable for now
+                // TODO ptr = dlopen(dllPath, RTLD_NOW);
+				ptr = IntPtr.Zero;
                 break;
             default:
                 throw new NotImplementedException();
