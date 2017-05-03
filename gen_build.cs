@@ -2305,103 +2305,44 @@ public static class gen
         fix_version(project_dot_json);
     }
 
-    private static void write_android_native_libs(string root, XmlWriter f, string which)
+    private static void write_android_native_libs(string root, XmlWriter f, string what, string which)
     {
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
+        var archs = new List<string> {
+            "x86", "x86_64",
+            "armeabi", "armeabi-v7a", "arm64-v8",
 #if not
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\libe_sqlite3.so", which)));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips64\\libe_sqlite3.so", which));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
+            "mips", "mips64"
 #endif
+        };
 
+        foreach (var arch in archs)
+        {
+            string lib = string.Format("lib{0}.so", what);
+            string libPath;
+
+            switch (what)
+            {
+                case "e_sqlite3":
+                    libPath = string.Format("android\\{0}\\libs\\{1}\\{2}", which, arch, lib);
+                    break;
+                case "sqlcipher":
+                    libPath = string.Format("{0}\\libs\\android\\{1}\\{2}", which, arch, lib);
+                    break;
+                default:
+                    // e.g., sqlite3\android\x86\lib\libcustom_sqlite3.so for which=sqlite3, what=custom_sqlite3
+                    libPath = string.Format("{0}\\android\\{1}\\lib\\{2}", which, arch, lib);
+                    break;
+            }
+
+            f.WriteStartElement("EmbeddedNativeLibrary");
+            f.WriteAttributeString("Include", Path.Combine(root, libPath));
+            f.WriteElementString("CopyToOutputDirectory", "Always");
+            f.WriteElementString("Link", string.Format("{0}\\{1}", arch, lib));
+            f.WriteEndElement(); // EmbeddedNativeLibrary
+        }
     }
 
-    private static void write_android_native_libs_sqlcipher(string root, XmlWriter f)
-    {
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86_64\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\arm64-v8a\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi-v7a\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-#if not
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-
-        f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips64\\libsqlcipher.so")));
-        f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips64\\libsqlcipher.so"));
-        f.WriteEndElement(); // EmbeddedNativeLibrary
-#endif
-
-    }
-
-	private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
+    private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
 	{
 		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname))))
@@ -2671,13 +2612,13 @@ public static class gen
 						if (cfg.what == "e_sqlite3")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
+                            write_android_native_libs(root, f, cfg.what, "sqlite3");
                             f.WriteEndElement(); // ItemGroup
 						}
 						else if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs_sqlcipher(root, f);
+							write_android_native_libs(root, f, cfg.what, "couchbase-lite-libsqlcipher");
                             f.WriteEndElement(); // ItemGroup
                         }
 			else
