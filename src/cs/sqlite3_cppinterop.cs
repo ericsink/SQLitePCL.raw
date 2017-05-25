@@ -1278,13 +1278,18 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob)
         {
-            return ((ISQLite3Provider)this).sqlite3_bind_blob(stm, paramIndex, blob, blob.Length);
+            return ((ISQLite3Provider)this).sqlite3_bind_blob(stm, paramIndex, blob, 0, blob.Length);
         }
 
         int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int nSize)
         {
+            return ((ISQLite3Provider)this).sqlite3_bind_blob(stm, paramIndex, blob, 0, nSize);
+        }
+
+        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int offset, int nSize)
+        {
             GCHandle pinned = GCHandle.Alloc(blob, GCHandleType.Pinned);
-            IntPtr ptr = pinned.AddrOfPinnedObject();
+            IntPtr ptr = IntPtr.Add(pinned.AddrOfPinnedObject(), offset);
             int rc = SQLite3RuntimeProvider.sqlite3_bind_blob(stm.ToInt64(), paramIndex, ptr.ToInt64(), nSize, -1);
             pinned.Free();
             return rc;

@@ -475,6 +475,11 @@ namespace SQLitePCL
             throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int offset, int nSize)
+        {
+            throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_bind_zeroblob(IntPtr stm, int paramIndex, int size)
         {
 	    throw new Exception(GRIPE);

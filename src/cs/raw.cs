@@ -714,12 +714,17 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob)
         {
-            return sqlite3_bind_blob(stmt, index, blob, blob.Length);
+            return sqlite3_bind_blob(stmt, index, blob, 0, blob.Length);
         }
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int nSize)
         {
-            return _imp.sqlite3_bind_blob(stmt.ptr, index, blob, nSize);
+            return sqlite3_bind_blob(stmt, index, blob, 0, nSize);
+        }
+
+        static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int offset, int nSize)
+        {
+            return _imp.sqlite3_bind_blob(stmt.ptr, index, blob, offset, nSize);
         }
 
         static public int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)

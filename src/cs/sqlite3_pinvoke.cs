@@ -1061,6 +1061,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, nSize, new IntPtr(-1));
         }
 
+        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int offset, int nSize)
+        {
+            return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, offset, nSize, new IntPtr(-1));
+        }
+
         int ISQLite3Provider.sqlite3_bind_zeroblob(IntPtr stm, int paramIndex, int size)
         {
             return NativeMethods.sqlite3_bind_zeroblob(stm, paramIndex, size);
