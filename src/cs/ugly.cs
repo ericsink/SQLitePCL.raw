@@ -86,13 +86,13 @@ namespace SQLitePCL.Ugly
             int _errcode;
             string _errmsg;
 
-            public sqlite3_exception(int rc)
+            public sqlite3_exception(int rc) : base(string.Format("rc={0}", rc))
             {
                 _errcode = rc;
                 _errmsg = null;
             }
 
-            public sqlite3_exception(int rc, string msg)
+            public sqlite3_exception(int rc, string msg) : base(string.Format("rc={0}: {1}", rc, msg))
             {
                 _errcode = rc;
                 _errmsg = msg;
