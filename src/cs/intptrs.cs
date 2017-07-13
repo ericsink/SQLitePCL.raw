@@ -31,7 +31,7 @@ namespace SQLitePCL
     public class sqlite3_backup : IDisposable
     {
         private readonly IntPtr _p;
-	private bool _disposed = false;
+        private bool _disposed = false;
 
         internal sqlite3_backup(IntPtr p)
         {
@@ -41,16 +41,16 @@ namespace SQLitePCL
         public void Dispose()
         {
             if (_disposed)
-	    {
-		    return;
-	    }
+            {
+                return;
+            }
             raw.sqlite3_backup_finish(this);
-	    _disposed = true;
+            _disposed = true;
         }
 
         internal void set_already_disposed()
         {
-	    _disposed = true;
+            _disposed = true;
         }
 
         public IntPtr ptr
@@ -147,7 +147,7 @@ namespace SQLitePCL
     public class sqlite3_blob : IDisposable
     {
         private readonly IntPtr _p;
-	private bool _disposed = false;
+        private bool _disposed = false;
 
         internal sqlite3_blob(IntPtr p)
         {
@@ -157,16 +157,16 @@ namespace SQLitePCL
         public void Dispose()
         {
             if (_disposed)
-	    {
-		    return;
-	    }
+            {
+                return;
+            }
             raw.sqlite3_blob_close(this);
-	    _disposed = true;
+            _disposed = true;
         }
 
         internal void set_already_disposed()
         {
-	    _disposed = true;
+            _disposed = true;
         }
 
         public IntPtr ptr
@@ -182,7 +182,7 @@ namespace SQLitePCL
     public class sqlite3_stmt : IDisposable
     {
         private readonly IntPtr _p;
-	private bool _disposed = false;
+        private bool _disposed = false;
         private readonly sqlite3 _db;
 
         internal sqlite3_stmt(IntPtr p, sqlite3 db)
@@ -195,18 +195,18 @@ namespace SQLitePCL
         public void Dispose()
         {
             if (_disposed)
-	    {
-		    return;
-	    }
+            {
+                return;
+            }
             raw.sqlite3_finalize(this);
             _db.remove_stmt(this);
-	    _disposed = true;
+            _disposed = true;
         }
 
         internal void set_already_disposed()
         {
             _db.remove_stmt(this);
-	    _disposed = true;
+            _disposed = true;
         }
 
         public IntPtr ptr
@@ -223,7 +223,7 @@ namespace SQLitePCL
         // and then wrap it in a new instance of our sqlite3 class, we would end
         // up with two instances of that class having the same wrapped IntPtr.
         // This seems bad.  So we implement it here at this layer as well.
-        
+
         internal sqlite3 db
         {
             get
@@ -237,9 +237,9 @@ namespace SQLitePCL
     public class sqlite3 : IDisposable
     {
         private readonly IntPtr _p;
-	private bool _disposed = false;
+        private bool _disposed = false;
 
-	// this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
+        // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
 #if NO_CONCURRENTDICTIONARY
         private System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt> _stmts = null;
 #else
@@ -249,38 +249,38 @@ namespace SQLitePCL
         internal sqlite3(IntPtr p)
         {
             _p = p;
-	    enable_sqlite3_next_stmt(true);
+            enable_sqlite3_next_stmt(true);
         }
 
-	public void enable_sqlite3_next_stmt(bool enabled)
-	{
-		if (enabled)
-		{
-		if (_stmts == null)
-		{
+        public void enable_sqlite3_next_stmt(bool enabled)
+        {
+            if (enabled)
+            {
+                if (_stmts == null)
+                {
 #if NO_CONCURRENTDICTIONARY
 		_stmts = new System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt>();
 #else
-		_stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+                    _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
 #endif
-		}
-		}
-		else
-		{
-			_stmts = null;
-		}
-	}
+                }
+            }
+            else
+            {
+                _stmts = null;
+            }
+        }
 
         public void Dispose()
         {
             if (_disposed)
-	    {
-		    return;
-	    }
+            {
+                return;
+            }
             // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
             // The latter is not supported on the sqlite3 library which is preinstalled
             // with iOS.
-            
+
             // Note, however, that sqlite3_close() can fail.  And we are ignoring the
             // return code, because the only thing we could do with it is to throw,
             // which is somewhat forbidden from within Dispose().
@@ -288,12 +288,12 @@ namespace SQLitePCL
             // http://msdn.microsoft.com/en-us/library/bb386039.aspx
 
             raw.sqlite3_close(this);
-	    _disposed = true;
+            _disposed = true;
         }
 
         internal void set_already_disposed()
         {
-	    _disposed = true;
+            _disposed = true;
         }
 
         public IntPtr ptr
@@ -306,54 +306,53 @@ namespace SQLitePCL
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
-		if (_stmts != null)
-		{
+            if (_stmts != null)
+            {
 #if NO_CONCURRENTDICTIONARY
 		lock(_stmts)
 		{
 		    _stmts[stmt.ptr] = stmt;
 		}
 #else
-            _stmts[stmt.ptr] = stmt;
+                _stmts[stmt.ptr] = stmt;
 #endif
-		}
+            }
         }
 
         internal sqlite3_stmt find_stmt(IntPtr p)
         {
-		if (_stmts != null)
-		{
+            if (_stmts != null)
+            {
 #if NO_CONCURRENTDICTIONARY
 			lock(_stmts)
 			{
 			    return _stmts[p];
 			}
 #else
-		    return _stmts[p];
+                return _stmts[p];
 #endif
-		}
-		else
-		{
-			throw new Exception("The sqlite3_next_stmt() function is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true) immediately after opening the sqlite3 connection.");
-		}
+            }
+            else
+            {
+                throw new Exception("The sqlite3_next_stmt() function is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true) immediately after opening the sqlite3 connection.");
+            }
         }
 
         internal void remove_stmt(sqlite3_stmt s)
         {
-		if (_stmts != null)
-		{
+            if (_stmts != null)
+            {
 #if NO_CONCURRENTDICTIONARY
 		lock(_stmts)
 		{
 		    _stmts.Remove(s.ptr);
 		}
 #else
-		sqlite3_stmt stmt;
-            _stmts.TryRemove(s.ptr, out stmt);
+                sqlite3_stmt stmt;
+                _stmts.TryRemove(s.ptr, out stmt);
 #endif
-		}
+            }
         }
     }
-
 }
 
