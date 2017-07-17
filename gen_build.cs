@@ -3440,12 +3440,16 @@ public static class gen
                     f.WriteAttributeString("target", "runtimes\\linux-x86\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
-#if TODO
                     f.WriteStartElement("file");
                     f.WriteAttributeString("src", Path.Combine(root, "linux", "armhf", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-arm\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
-#endif
+
+                    f.WriteStartElement("file");
+                    f.WriteAttributeString("src", Path.Combine(root, "linux", "armsf", "libe_sqlite3.so"));
+                    f.WriteAttributeString("target", "runtimes\\linux-armel\\native\\libe_sqlite3.so");
+                    f.WriteEndElement(); // file
+
 
                     gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
                     break;
