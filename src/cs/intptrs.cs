@@ -38,19 +38,30 @@ namespace SQLitePCL
             _p = p;
         }
 
+        ~sqlite3_backup()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        void Dispose(bool disposing)
         {
             if (_disposed)
             {
                 return;
             }
             raw.sqlite3_backup_finish(this);
-            _disposed = true;
+            // prev line calls set_already_disposed()
         }
 
         internal void set_already_disposed()
         {
             _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         public IntPtr ptr
@@ -154,19 +165,30 @@ namespace SQLitePCL
             _p = p;
         }
 
+        ~sqlite3_blob()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        void Dispose(bool disposing)
         {
             if (_disposed)
             {
                 return;
             }
             raw.sqlite3_blob_close(this);
-            _disposed = true;
+            // prev line calls set_already_disposed()
         }
 
         internal void set_already_disposed()
         {
             _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         public IntPtr ptr
@@ -192,21 +214,31 @@ namespace SQLitePCL
             _db.add_stmt(this);
         }
 
+        ~sqlite3_stmt()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        void Dispose(bool disposing)
         {
             if (_disposed)
             {
                 return;
             }
             raw.sqlite3_finalize(this);
-            _db.remove_stmt(this);
-            _disposed = true;
+            // prev line calls set_already_disposed()
         }
 
         internal void set_already_disposed()
         {
             _db.remove_stmt(this);
             _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         public IntPtr ptr
@@ -271,29 +303,51 @@ namespace SQLitePCL
             }
         }
 
+        ~sqlite3()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        void Dispose(bool disposing)
         {
             if (_disposed)
             {
                 return;
             }
-            // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
-            // The latter is not supported on the sqlite3 library which is preinstalled
-            // with iOS.
 
-            // Note, however, that sqlite3_close() can fail.  And we are ignoring the
-            // return code, because the only thing we could do with it is to throw,
-            // which is somewhat forbidden from within Dispose().
-            //
-            // http://msdn.microsoft.com/en-us/library/bb386039.aspx
+            if (disposing)
+            {
+                // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
+                // The latter is not supported on the sqlite3 library which is preinstalled
+                // with iOS.
 
-            raw.sqlite3_close(this);
-            _disposed = true;
+                // Note, however, that sqlite3_close() can fail.  And we are ignoring the
+                // return code, because the only thing we could do with it is to throw,
+                // which is somewhat forbidden from within Dispose().
+                //
+                // http://msdn.microsoft.com/en-us/library/bb386039.aspx
+
+                raw.sqlite3_close(this);
+                // prev line calls set_already_disposed()
+            }
+            else
+            {
+                // on old versions of SQLite, this will fail.
+                // this includes iOS versions prior to 8.2.
+                raw.sqlite3_close_v2(this);
+                // prev line calls set_already_disposed()
+            }
         }
 
         internal void set_already_disposed()
         {
             _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         public IntPtr ptr
