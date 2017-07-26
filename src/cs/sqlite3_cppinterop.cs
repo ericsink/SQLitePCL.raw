@@ -1387,7 +1387,7 @@ namespace SQLitePCL
             }
 
             var length = SQLite3RuntimeProvider.sqlite3_column_bytes(stm.ToInt64(), columnIndex);
-            if (offset + length >= result.Length)
+            if (offset + length > result.Length)
             {
                 return raw.SQLITE_ERROR;
             }
