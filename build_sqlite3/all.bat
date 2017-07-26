@@ -31,6 +31,8 @@ cmd /c b.bat
 
 SET LIBS=
 
+SET MANIFEST_OPTIONS=/MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed
+
 SET VCVARSBAT="C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat"
 
 echo "-------- Win XP"
