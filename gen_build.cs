@@ -3188,6 +3188,13 @@ public static class gen
 						f
 						);
 			}
+            if (cfg.toolset == "v110_xp")
+            {
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", "..\\build_sqlite3\\bin\\v140\\plain\\arm\\e_sqlite3.dll");
+                f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
+                f.WriteEndElement(); // file
+            }
 			string tname;
 			switch (cfg.toolset) {
 				case "v110_xp":
