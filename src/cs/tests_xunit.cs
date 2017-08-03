@@ -121,6 +121,35 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_column_blob_overload_167()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                const int len = 100;
+
+                db.exec("CREATE TABLE foo (b blob);");
+                db.exec("INSERT INTO foo (b) VALUES (randomblob(?))", len);
+
+                using (sqlite3_stmt stmt = db.prepare("SELECT b FROM foo;"))
+                {
+                    stmt.step();
+
+                    var ba1 = stmt.column_blob(0);
+
+                    const int offset = 7;
+
+                    var ba2 = new byte[len + offset];
+                    stmt.column_blob(0, ba2, offset);
+                    for (int i=0; i<ba1.Length; i++)
+                    {
+                        Assert.Equal(ba1[i], ba2[i + offset]);
+                    }
+                }
+            }
+
+        }
+
+        [Fact]
         public void test_blob_read()
         {
             using (sqlite3 db = ugly.open(":memory:"))
