@@ -139,7 +139,8 @@ namespace SQLitePCL.Tests
                     const int offset = 7;
 
                     var ba2 = new byte[len + offset];
-                    stmt.column_blob(0, ba2, offset);
+                    int rc = stmt.column_blob(0, ba2, offset);
+                    Assert.Equal(rc, 0);
                     for (int i=0; i<ba1.Length; i++)
                     {
                         Assert.Equal(ba1[i], ba2[i + offset]);
