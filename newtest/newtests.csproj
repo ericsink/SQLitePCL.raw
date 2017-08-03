@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <DefineConstants>$(DefineConstants);PROVIDER_e_sqlite3</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="microsoft.net.test.sdk" Version="15.0.0" />
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="1.1.8-pre20170803091937" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="1.1.8-pre20170803091937" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\cs\tests_xunit.cs" />
+  </ItemGroup>
+</Project>
