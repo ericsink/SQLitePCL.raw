@@ -1153,7 +1153,7 @@ namespace SQLitePCL
             }
 
             var length = NativeMethods.sqlite3_column_bytes(stm, columnIndex);
-            if (offset + length >= result.Length)
+            if (offset + length > result.Length)
             {
                 return raw.SQLITE_ERROR;
             }
