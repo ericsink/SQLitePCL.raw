@@ -96,7 +96,8 @@ public static class cb
         trio t,
         IList<string> cfiles,
         Dictionary<string,string> defines,
-        IList<string> includes
+        IList<string> includes,
+        IList<string> libs
         )
     {
         var vcversion = t.v;
@@ -149,6 +150,7 @@ public static class cb
                     case Flavor.wp81:
                         tw.Write(" /D WINAPI_FAMILY=WINAPI_FAMILY_PHONE_APP");
                         tw.Write(" /D SQLITE_OS_WINRT");
+                        tw.Write(" /D MBEDTLS_NO_PLATFORM_ENTROPY");
                         break;
                 }
                 if (flavor == Flavor.xp)
@@ -225,6 +227,10 @@ public static class cb
             {
                 tw.Write(" WindowsPhoneCore.lib RuntimeObject.lib PhoneAppModelHost.lib");
             }
+            foreach (var s in libs)
+            {
+                tw.Write(" {0}", s);
+            }
             foreach (var s in cfiles)
             {
                 var b = Path.GetFileNameWithoutExtension(s);
@@ -247,9 +253,14 @@ public static class cb
             m = am;
         }
 
+        public string basename(string libname)
+        {
+            var dest = string.Format("{0}_{1}_{2}_{3}", libname, v, f, m);
+            return dest;
+        }
         public string bat(string libname)
         {
-            var dest = string.Format("{0}_{1}_{2}_{3}.bat", libname, v, f, m);
+            var dest = string.Format("{0}.bat", basename(libname));
             return dest;
         }
         public string subdir(string libname)
@@ -264,7 +275,8 @@ public static class cb
         IList<trio> trios,
         IList<string> cfiles,
         Dictionary<string,string> defines,
-        IList<string> includes
+        IList<string> includes,
+        IList<string> libs
         )
     {
         foreach (var t in trios)
@@ -274,29 +286,34 @@ public static class cb
                 t,
                 cfiles,
                 defines,
-                includes
+                includes,
+                libs
                 );
         }
 
 		using (TextWriter tw = new StreamWriter(string.Format("{0}.bat", libname)))
         {
+            tw.WriteLine("@echo on");
             foreach (var t in trios)
             {
-                tw.WriteLine("cmd /c {0}", t.bat(libname));
+                tw.WriteLine("cmd /c {0} > err_{1}.txt 2>&1", t.bat(libname), t.basename(libname));
             }
         }
     }
 
-    public static void Main()
+    static void write_e_sqlite3(
+        )
     {
         var cfiles = new string[]
         {
             "..\\sqlite3\\sqlite3.c",
         };
+        // TODO most of these defines could be shared with the sqlcipher code
         var defines = new Dictionary<string,string>
         {
             { "SQLITE_ENABLE_COLUMN_METADATA", null },
             { "SQLITE_ENABLE_FTS4", null },
+            { "SQLITE_ENABLE_FTS5", null },
             { "SQLITE_ENABLE_JSON1", null },
             { "SQLITE_ENABLE_RTREE", null },
             { "SQLITE_DEFAULT_FOREIGN_KEYS", "1" },
@@ -304,6 +321,9 @@ public static class cb
             { "SQLITE_WIN32_FILEMAPPING_API", "1" },
         };
         var includes = new string[]
+        {
+        };
+        var libs = new string[]
         {
         };
 
@@ -352,9 +372,190 @@ public static class cb
             trios,
             cfiles,
             defines,
-            includes
+            includes,
+            libs
             );
 
+    }
+
+    static void write_sqlcipher(
+        )
+    {
+        var mbedtls_dir =  "..\\..\\couchbase-lite-libsqlcipher\\vendor\\mbedtls";
+        var sqlcipher_dir = "..\\..\\couchbase-lite-libsqlcipher\\vendor\\sqlcipher";
+        var borden_dir = "..\\..\\couchbase-lite-libsqlcipher\\src\\c";
+
+        var mbedtls_cfiles = new string[]
+        {
+            "aes.c",
+            "aesni.c",
+            "arc4.c",
+            "asn1parse.c",
+            "asn1write.c",
+            "base64.c",
+            "bignum.c",
+            "blowfish.c",
+            "camellia.c",
+            "ccm.c",
+            "certs.c",
+            "cipher.c",
+            "cipher_wrap.c",
+            "cmac.c",
+            "ctr_drbg.c",
+            "debug.c",
+            "des.c",
+            "dhm.c",
+            "ecdh.c",
+            "ecdsa.c",
+            "ecjpake.c",
+            "ecp.c",
+            "ecp_curves.c",
+            "entropy.c",
+            "entropy_poll.c",
+            "error.c",
+            "gcm.c",
+            "havege.c",
+            "hmac_drbg.c",
+            "md2.c",
+            "md4.c",
+            "md5.c",
+            "md.c",
+            "md_wrap.c",
+            "memory_buffer_alloc.c",
+            "net_sockets.c",
+            "oid.c",
+            "padlock.c",
+            "pem.c",
+            "pk.c",
+            "pkcs11.c",
+            "pkcs12.c",
+            "pkcs5.c",
+            "pkparse.c",
+            "pk_wrap.c",
+            "pkwrite.c",
+            "platform.c",
+            "ripemd160.c",
+            "rsa.c",
+            "sha1.c",
+            "sha256.c",
+            "sha512.c",
+            "ssl_cache.c",
+            "ssl_ciphersuites.c",
+            "ssl_cli.c",
+            "ssl_cookie.c",
+            "ssl_srv.c",
+            "ssl_ticket.c",
+            "ssl_tls.c",
+            "threading.c",
+            "timing.c",
+            "version.c",
+            "version_features.c",
+            "x509.c",
+            "x509_create.c",
+            "x509_crl.c",
+            "x509_crt.c",
+            "x509_csr.c",
+            "x509write_crt.c",
+            "x509write_csr.c",
+            "xtea.c",
+        };
+
+        var cfiles = new List<string>();
+        cfiles.Add(Path.Combine(borden_dir, "sqlite3.c"));
+        cfiles.Add(Path.Combine(borden_dir, "crypto_mbedtls.c"));
+        foreach (var s in mbedtls_cfiles)
+        {
+            cfiles.Add(Path.Combine(mbedtls_dir, "library", s));
+        }
+
+        var defines = new Dictionary<string,string>
+        {
+            { "SQLITE_ENABLE_COLUMN_METADATA", null },
+            { "SQLITE_ENABLE_FTS4", null },
+            { "SQLITE_ENABLE_FTS5", null },
+            { "SQLITE_ENABLE_JSON1", null },
+            { "SQLITE_ENABLE_RTREE", null },
+            { "SQLITE_DEFAULT_FOREIGN_KEYS", "1" },
+            { "SQLITE_API", "__declspec(dllexport)" },
+            { "SQLITE_WIN32_FILEMAPPING_API", "1" },
+            { "SQLITE_HAS_CODEC", null },
+            { "SQLCIPHER_CRYPTO_MBEDTLS", null },
+            { "CIPHER", "\\\"AES-256-CBC\\\"" },
+        };
+
+        var includes = new List<string>();
+        includes.Add(Path.Combine(mbedtls_dir, "include"));
+        includes.Add(Path.Combine(sqlcipher_dir, "src"));
+        includes.Add(sqlcipher_dir);
+
+        var libs = new string[]
+        {
+            "advapi32.lib",
+        };
+
+        var trios = new trio[]
+        {
+#if not
+            new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
+            new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
+
+            new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
+            new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
+
+            new trio(VCVersion.v110, Flavor.xp, Machine.x86),
+            new trio(VCVersion.v110, Flavor.xp, Machine.x64),
+            new trio(VCVersion.v110, Flavor.xp, Machine.arm),
+
+            new trio(VCVersion.v110, Flavor.plain, Machine.x86),
+            new trio(VCVersion.v110, Flavor.plain, Machine.x64),
+            new trio(VCVersion.v110, Flavor.plain, Machine.arm),
+
+            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
+            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
+            new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
+#endif
+
+#if not
+            new trio(VCVersion.v120, Flavor.plain, Machine.x86),
+            new trio(VCVersion.v120, Flavor.plain, Machine.x64),
+            new trio(VCVersion.v120, Flavor.plain, Machine.arm),
+
+            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
+            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
+            new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
+#endif
+
+            new trio(VCVersion.v140, Flavor.plain, Machine.x86),
+            new trio(VCVersion.v140, Flavor.plain, Machine.x64),
+            new trio(VCVersion.v140, Flavor.plain, Machine.arm),
+
+            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
+            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
+            new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
+
+        };
+
+        write_multibat(
+            "sqlcipher",
+            trios,
+            cfiles,
+            defines,
+            includes,
+            libs
+            );
+
+    }
+
+    public static void Main()
+    {
+        write_e_sqlite3();
+        write_sqlcipher();
+
+		using (TextWriter tw = new StreamWriter("all.bat"))
+        {
+            tw.WriteLine("cmd /c e_sqlite3.bat");
+            tw.WriteLine("cmd /c sqlcipher.bat");
+        }
     }
 }
 
