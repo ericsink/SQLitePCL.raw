@@ -1236,6 +1236,30 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
         }
 
+        string ISQLite3Provider.sqlite3__mprintf_q(string s)
+        {
+            var p = NativeMethods.sqlite3__mprintf_2("%q", s);
+            var res = util.from_utf8(p);
+            NativeMethods.sqlite3_free(p);
+            return res;
+        }
+
+        string ISQLite3Provider.sqlite3__mprintf_Q(string s)
+        {
+            var p = NativeMethods.sqlite3__mprintf_2("%Q", s);
+            var res = util.from_utf8(p);
+            NativeMethods.sqlite3_free(p);
+            return res;
+        }
+
+        string ISQLite3Provider.sqlite3__mprintf_w(string s)
+        {
+            var p = NativeMethods.sqlite3__mprintf_2("%w", s);
+            var res = util.from_utf8(p);
+            NativeMethods.sqlite3_free(p);
+            return res;
+        }
+
         private static class NativeMethods
         {
         private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
@@ -1825,6 +1849,9 @@ namespace SQLitePCL
             [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_win32_set_directory", CallingConvention=CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet=CharSet.Unicode)]
             public static extern int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 #endif
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_mprintf", CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3__mprintf_2(string f, string s);
 
         }
     }
