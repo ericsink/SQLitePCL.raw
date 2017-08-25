@@ -3470,6 +3470,15 @@ public static class gen
             f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
             f.WriteEndElement(); // file
 
+            if (plat == "osx")
+            {
+                write_empty(f, top, "Xamarin.Mac20");
+                f.WriteStartElement("file");
+                f.WriteAttributeString("src", tname);
+                f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
+                f.WriteEndElement(); // file
+            }
+
             write_empty(f, top, "net35");
             write_empty(f, top, "netstandard1.0");
             write_empty(f, top, "netstandard2.0");
