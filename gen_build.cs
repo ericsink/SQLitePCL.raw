@@ -4507,12 +4507,11 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
 
-			f.WriteStartElement("Content");
+			f.WriteStartElement("NativeReference");
 			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
-			f.WriteElementString("Link", filename);
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
+			f.WriteElementString("Kind", "Dynamic");
+			f.WriteElementString("SmartLink", "False");
+			f.WriteEndElement(); // NativeReference
 
 			f.WriteEndElement(); // ItemGroup
 
