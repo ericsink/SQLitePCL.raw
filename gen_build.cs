@@ -142,6 +142,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net35", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net40", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net45", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "uwp10", "sqlcipher"));
 
         // bundle_zetetic
         items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", ver, "ios_unified", "sqlcipher"));
@@ -3993,6 +3994,12 @@ public static class gen
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
+                case "uwp10":
+                    f.WriteStartElement("dependency");
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
+                    f.WriteAttributeString("version", NUSPEC_VERSION);
+                    f.WriteEndElement(); // dependency
+                    break;
                 default:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env_deps)));
@@ -4116,6 +4123,7 @@ public static class gen
             write_bundle_dependency_group(f, "net40", "sqlcipher");
             write_bundle_dependency_group(f, "net45", "sqlcipher");
             write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", true);
+            write_bundle_dependency_group(f, "uwp10", "sqlcipher");
             
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
