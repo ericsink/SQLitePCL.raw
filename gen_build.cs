@@ -3192,7 +3192,7 @@ public static class gen
             if (cfg.toolset == "v110_xp")
             {
                 f.WriteStartElement("file");
-                f.WriteAttributeString("src", "..\\build_sqlite3\\bin\\v140\\plain\\arm\\e_sqlite3.dll");
+                f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\arm\\e_sqlite3.dll");
                 f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
                 f.WriteEndElement(); // file
             }
@@ -3529,16 +3529,34 @@ public static class gen
 			string tname = string.Format("{0}.targets", id);
 			switch (plat) {
 				case "windows":
-					// TODO do we need amd64 version here?
-
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x86\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win7-x86\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\windows\\x86_64\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x64\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win7-x64\\native\\sqlcipher.dll"));
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win8-arm\\native\\sqlcipher.dll"));
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\x64\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win10-x64\\nativeassets\\uap10.0\\sqlcipher.dll"));
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win10-x86\\nativeassets\\uap10.0\\sqlcipher.dll"));
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win10-arm\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
@@ -3575,6 +3593,7 @@ public static class gen
 			f.WriteEndElement(); // file
 
             write_empty(f, top, "net35");
+            write_empty(f, top, "uap10.0");
             write_empty(f, top, "netstandard1.0");
             write_empty(f, top, "netstandard2.0");
 
