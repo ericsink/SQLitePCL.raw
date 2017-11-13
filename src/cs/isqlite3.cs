@@ -287,10 +287,6 @@ namespace SQLitePCL
 #endif
 
         int sqlite3_win32_set_directory(int typ, string path);
-
-        string sqlite3__mprintf_q(string s);
-        string sqlite3__mprintf_Q(string s);
-        string sqlite3__mprintf_w(string s);
     }
 }
 

@@ -1674,42 +1674,6 @@ namespace SQLitePCL.Tests
             }
         }
 
-        static string do_q(string s)
-        {
-            return s.Replace("'", "''");
-        }
-
-        static string do_Q(string s)
-        {
-            return "'" + do_q(s) + "'";
-        }
-
-        static string do_w(string s)
-        {
-            return s.Replace("\"", "\"\"");
-        }
-
-        [Theory]
-        [InlineData("hello")]
-        [InlineData("don't stop believin'")]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("your code is \"suboptimal\"")]
-        [InlineData("''")]
-        [InlineData("'hello'")]
-        [InlineData("'hello")]
-        [InlineData("\"hello")]
-        [InlineData("\"hello\"")]
-        [InlineData("hello\"")]
-        [InlineData(" hello ")]
-        [InlineData("this is a test (of) the emergency [broadcast] system")]
-        public void test_mprintf(string v)
-        {
-            Assert.Equal(do_q(v), raw.sqlite3__mprintf_q(v));
-            Assert.Equal(do_Q(v), raw.sqlite3__mprintf_Q(v));
-            Assert.Equal(do_w(v), raw.sqlite3__mprintf_w(v));
-        }
-
         [Fact]
         public void test_hooks()
         {

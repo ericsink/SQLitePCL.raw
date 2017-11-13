@@ -935,22 +935,6 @@ namespace SQLitePCL
         {
             return _imp.sqlite3_win32_set_directory(typ, path);
         }
-
-        static public string sqlite3__mprintf_q(string s)
-        {
-            return _imp.sqlite3__mprintf_q(s);
-        }
-
-        static public string sqlite3__mprintf_Q(string s)
-        {
-            return _imp.sqlite3__mprintf_Q(s);
-        }
-
-        static public string sqlite3__mprintf_w(string s)
-        {
-            return _imp.sqlite3__mprintf_w(s);
-        }
-
     }
 }
 

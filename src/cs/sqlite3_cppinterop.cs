@@ -1502,20 +1502,5 @@ namespace SQLitePCL
             throw new NotImplementedException();
         }
 
-        string ISQLite3Provider.sqlite3__mprintf_q(string s)
-        {
-            throw new NotImplementedException();
-        }
-
-        string ISQLite3Provider.sqlite3__mprintf_Q(string s)
-        {
-            throw new NotImplementedException();
-        }
-
-        string ISQLite3Provider.sqlite3__mprintf_w(string s)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
