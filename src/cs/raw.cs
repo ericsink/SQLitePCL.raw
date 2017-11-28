@@ -869,6 +869,14 @@ namespace SQLitePCL
             return _imp.sqlite3_backup_pagecount(backup.ptr);
         }
 
+        static public int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
+        {
+            IntPtr p;
+            int rc = _imp.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out p);
+            blob = new sqlite3_blob(p);
+            return rc;
+        }
+
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
         {
             IntPtr p;

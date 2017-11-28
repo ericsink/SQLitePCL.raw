@@ -1137,6 +1137,36 @@ namespace SQLitePCL
             return util.from_utf8(new IntPtr(SQLite3RuntimeProvider.sqlite3_value_text(p.ToInt64())));
         }
 
+        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out IntPtr blob)
+        {
+            // TODO null string?
+            GCHandle sdb_pinned = GCHandle.Alloc(db_utf8, GCHandleType.Pinned);
+            IntPtr sdb_ptr = sdb_pinned.AddrOfPinnedObject();
+
+            // TODO null string?
+            GCHandle table_pinned = GCHandle.Alloc(table_utf8, GCHandleType.Pinned);
+            IntPtr table_ptr = table_pinned.AddrOfPinnedObject();
+
+            // TODO null string?
+            GCHandle col_pinned = GCHandle.Alloc(col_utf8, GCHandleType.Pinned);
+            IntPtr col_ptr = col_pinned.AddrOfPinnedObject();
+
+            byte[] buf8 = new byte[8];
+            GCHandle buf8_pinned = GCHandle.Alloc(buf8, GCHandleType.Pinned);
+            IntPtr buf8_ptr = buf8_pinned.AddrOfPinnedObject();
+
+            int result = SQLite3RuntimeProvider.sqlite3_blob_open(db.ToInt64(), sdb_ptr.ToInt64(), table_ptr.ToInt64(), col_ptr.ToInt64(), rowid, flags, buf8_ptr.ToInt64());
+
+            sdb_pinned.Free();
+            table_pinned.Free();
+            col_pinned.Free();
+
+            blob = new IntPtr(Marshal.ReadInt64(buf8_ptr));
+            buf8_pinned.Free();
+
+            return result;
+        }
+
         int ISQLite3Provider.sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out IntPtr blob)
         {
             // TODO null string?
