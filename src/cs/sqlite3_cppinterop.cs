@@ -251,7 +251,7 @@ namespace SQLitePCL
 
         callback_scalar_function scalar_function_hook_bridge = new callback_scalar_function(scalar_function_hook_bridge_impl);
 
-        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
+        int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
         {
         // the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
@@ -272,10 +272,11 @@ namespace SQLitePCL
             int rc;
 
             // 1 is SQLITE_UTF8
+			int arg4 = 1 | flags;
             if (func != null)
             {
                 scalar_function_hook_info hi = new scalar_function_hook_info(func, v);
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(scalar_function_hook_bridge).ToInt64(), 0, 0, 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, arg4, hi.ptr.ToInt64(), Marshal.GetFunctionPointerForDelegate(scalar_function_hook_bridge).ToInt64(), 0, 0, 0);
                 if (rc == 0)
                 {
                     info.scalar[key] = hi;
@@ -283,13 +284,23 @@ namespace SQLitePCL
             }
             else
             {
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, 0, 0, 0, 0, 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, arg4, 0, 0, 0, 0, 0);
             }
 
             pinned.Free();
 
             return rc;
         }
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
+		{
+			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
+		}
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+		{
+			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
+		}
 
         // ----------------------------------------------------------------
 
@@ -326,7 +337,7 @@ namespace SQLitePCL
         callback_agg_function_step agg_function_hook_bridge_step = new callback_agg_function_step(agg_function_hook_bridge_step_impl);
         callback_agg_function_final agg_function_hook_bridge_final = new callback_agg_function_final(agg_function_hook_bridge_final_impl);
 
-        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
         // the keys for this dictionary are nargs.name, not just the name
 
@@ -348,11 +359,12 @@ namespace SQLitePCL
             int rc;
 
             // 1 is SQLITE_UTF8
+			int arg4 = 1 | flags;
             if (func_step != null)
             {
                 // TODO both func_step and func_final must be non-null
                 agg_function_hook_info hi = new agg_function_hook_info(func_step, func_final, v);
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, hi.ptr.ToInt64(), 0, Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_step).ToInt64(), Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_final).ToInt64(), 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, arg4, hi.ptr.ToInt64(), 0, Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_step).ToInt64(), Marshal.GetFunctionPointerForDelegate(agg_function_hook_bridge_final).ToInt64(), 0);
                 if (rc == 0)
                 {
                     info.agg[key] = hi;
@@ -360,13 +372,23 @@ namespace SQLitePCL
             }
             else
             {
-                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, 1, 0, 0, 0, 0, 0);
+                rc = SQLite3RuntimeProvider.sqlite3_create_function_v2(db.ToInt64(), ptr.ToInt64(), nargs, arg4, 0, 0, 0, 0, 0);
             }
 
             pinned.Free();
 
             return rc;
         }
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+		{
+			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
+		}
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+		{
+			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
+		}
 
         // ----------------------------------------------------------------
 

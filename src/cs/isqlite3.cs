@@ -183,6 +183,8 @@ namespace SQLitePCL
         int sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func);
         int sqlite3_create_function(IntPtr db, string name, int nArg, object v, delegate_function_scalar func);
         int sqlite3_create_function(IntPtr db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
+        int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_scalar func);
+        int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 
         int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
 

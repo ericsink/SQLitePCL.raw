@@ -66,6 +66,8 @@ namespace SQLitePCL
         public const int SQLITE_ANY = 5;  /* sqlite3_create_function only */
         public const int SQLITE_UTF16_ALIGNED = 8;  /* sqlite3_create_function only */
 
+        public const int SQLITE_DETERMINISTIC = 0x800;
+		
         public const int SQLITE_CONFIG_SINGLETHREAD = 1;  /* nil */
         public const int SQLITE_CONFIG_MULTITHREAD = 2;  /* nil */
         public const int SQLITE_CONFIG_SERIALIZED = 3;  /* nil */

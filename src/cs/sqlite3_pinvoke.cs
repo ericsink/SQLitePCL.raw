@@ -520,7 +520,8 @@ namespace SQLitePCL
         }
 
 	NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
+
+        int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
         {
         // the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
@@ -536,10 +537,11 @@ namespace SQLitePCL
             }
 
             // 1 is SQLITE_UTF8
+			int arg4 = 1 | flags;
             if (func != null)
             {
                 scalar_function_hook_info hi = new scalar_function_hook_info(func, v);
-                int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, 1, hi.ptr, scalar_function_hook_bridge, null, null, null);
+                int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi.ptr, scalar_function_hook_bridge, null, null, null);
                 if (rc == 0)
                 {
                     info.scalar[key] = hi;
@@ -548,9 +550,19 @@ namespace SQLitePCL
             }
             else
             {
-                return NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, 1, IntPtr.Zero, null, null, null, null);
+                return NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, IntPtr.Zero, null, null, null, null);
             }
         }
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
+		{
+			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
+		}
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+		{
+			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
+		}
 
         // ----------------------------------------------------------------
 
@@ -617,7 +629,8 @@ namespace SQLitePCL
 
 	NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
 	NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
-        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+
+        int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
         // the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
@@ -633,11 +646,12 @@ namespace SQLitePCL
             }
 
             // 1 is SQLITE_UTF8
+			int arg4 = 1 | flags;
             if (func_step != null)
             {
                 // TODO both func_step and func_final must be non-null
                 agg_function_hook_info hi = new agg_function_hook_info(func_step, func_final, v);
-                int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, 1, hi.ptr, null, agg_function_hook_bridge_step, agg_function_hook_bridge_final, null);
+                int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi.ptr, null, agg_function_hook_bridge_step, agg_function_hook_bridge_final, null);
                 if (rc == 0)
                 {
                     info.agg[key] = hi;
@@ -646,9 +660,19 @@ namespace SQLitePCL
             }
             else
             {
-                return NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, 1, IntPtr.Zero, null, null, null, null);
+                return NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, IntPtr.Zero, null, null, null, null);
             }
         }
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+		{
+			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
+		}
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+		{
+			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
+		}
 
         // ----------------------------------------------------------------
 

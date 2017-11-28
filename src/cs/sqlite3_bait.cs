@@ -293,6 +293,16 @@ namespace SQLitePCL
             throw new Exception(GRIPE);
         }
 
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+        {
+            throw new Exception(GRIPE);
+        }
+
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        {
+            throw new Exception(GRIPE);
+        }
+
         int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
         {
             throw new Exception(GRIPE);
