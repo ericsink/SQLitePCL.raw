@@ -324,7 +324,7 @@ public static class cb
         defines["SQLITE_ENABLE_FTS5"] = null;
         defines["SQLITE_ENABLE_JSON1"] = null;
         defines["SQLITE_ENABLE_RTREE"] = null;
-        defines["SQLITE_ENABLE_FOREIGN_KEYS"] = "1";
+        defines["SQLITE_DEFAULT_FOREIGN_KEYS"] = "1";
         defines["SQLITE_WIN32_FILEMAPPING_API"] = "1";
         defines["SQLITE_API"] = "__declspec(dllexport)";
     }
