@@ -489,6 +489,7 @@ public static class cb
         var defines = new Dictionary<string,string>
         {
             { "SQLITE_HAS_CODEC", null },
+            { "SQLITE_TEMP_STORE", "2" },
             { "SQLCIPHER_CRYPTO_MBEDTLS", null },
             { "CIPHER", "\\\"AES-256-CBC\\\"" },
         };
