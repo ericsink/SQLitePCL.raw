@@ -37,14 +37,7 @@ public static class cb
             case Flavor.wp81:
                 return "/MD";
             case Flavor.appcontainer:
-                if (v == VCVersion.v120)
-                {
-                    return "/MD";
-                }
-                else
-                {
-                    return "/MT";
-                }
+			    return "/MD";
             default:
                 return "/MT";
         }
@@ -115,7 +108,14 @@ public static class cb
             tw.WriteLine("SET VCVARSBAT=\"{0}\"", vcvarsbat);
             tw.WriteLine("SET TOOLCHAIN={0}", toolchain);
             tw.WriteLine("SET SUBDIR={0}", subdir);
-            tw.WriteLine("call %VCVARSBAT% %TOOLCHAIN%");
+		    if ((flavor == Flavor.appcontainer) && (vcversion == VCVersion.v140))
+		    {
+				tw.WriteLine("call %VCVARSBAT% %TOOLCHAIN% store");
+		    }
+			else
+		    {
+				tw.WriteLine("call %VCVARSBAT% %TOOLCHAIN%");
+		    }
             tw.WriteLine("@echo on");
             tw.WriteLine("mkdir .\\obj\\%SUBDIR%");
             tw.WriteLine("mkdir .\\bin\\%SUBDIR%");
@@ -152,6 +152,12 @@ public static class cb
                         tw.Write(" /D SQLITE_OS_WINRT");
                         tw.Write(" /D MBEDTLS_NO_PLATFORM_ENTROPY");
                         break;
+					case Flavor.appcontainer:
+                        tw.Write(" /D WINAPI_FAMILY=WINAPI_FAMILY_APP");
+                        tw.Write(" /D __WRL_NO_DEFAULT_LIB__");
+                        tw.Write(" /D SQLITE_OS_WINRT");
+                        tw.Write(" /D MBEDTLS_NO_PLATFORM_ENTROPY");
+						break;
                 }
                 if (flavor == Flavor.xp)
                 {
@@ -167,6 +173,7 @@ public static class cb
                 tw.Write(" /Gy");
                 tw.Write(" /fp:precise");
                 tw.Write(" /Zc:wchar_t");
+                tw.Write(" /Zc:inline");
                 tw.Write(" /Zc:forScope");
                 tw.Write(" /Fo\".\\obj\\%SUBDIR%\\\\\"");
                 tw.Write(" /Gd");
@@ -219,13 +226,21 @@ public static class cb
                 default:
                     break;
             }
-            if (flavor != Flavor.wp80)
-            {
-                tw.Write(" /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed");
-            }
             if (flavor == Flavor.wp80)
             {
                 tw.Write(" WindowsPhoneCore.lib RuntimeObject.lib PhoneAppModelHost.lib");
+            }
+			else if (flavor == Flavor.appcontainer)
+			{
+                tw.Write(" /MANIFEST:NO");
+			}
+			else
+            {
+                tw.Write(" /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed");
+            }
+		    if ((flavor == Flavor.appcontainer) && (vcversion == VCVersion.v140))
+            {
+                tw.Write(" WindowsApp.lib");
             }
             foreach (var s in libs)
             {
@@ -301,6 +316,19 @@ public static class cb
         }
     }
 
+    static void add_basic_sqlite3_defines(Dictionary<string,string> defines)
+    {
+        defines["SQLITE_ENABLE_COLUMN_METADATA"] = null;
+        defines["SQLITE_ENABLE_FTS3_PARENTHESIS"] = null;
+        defines["SQLITE_ENABLE_FTS4"] = null;
+        defines["SQLITE_ENABLE_FTS5"] = null;
+        defines["SQLITE_ENABLE_JSON1"] = null;
+        defines["SQLITE_ENABLE_RTREE"] = null;
+        defines["SQLITE_DEFAULT_FOREIGN_KEYS"] = "1";
+        defines["SQLITE_WIN32_FILEMAPPING_API"] = "1";
+        defines["SQLITE_API"] = "__declspec(dllexport)";
+    }
+
     static void write_e_sqlite3(
         )
     {
@@ -308,18 +336,8 @@ public static class cb
         {
             "..\\sqlite3\\sqlite3.c",
         };
-        // TODO most of these defines could be shared with the sqlcipher code
-        var defines = new Dictionary<string,string>
-        {
-            { "SQLITE_ENABLE_COLUMN_METADATA", null },
-            { "SQLITE_ENABLE_FTS4", null },
-            { "SQLITE_ENABLE_FTS5", null },
-            { "SQLITE_ENABLE_JSON1", null },
-            { "SQLITE_ENABLE_RTREE", null },
-            { "SQLITE_DEFAULT_FOREIGN_KEYS", "1" },
-            { "SQLITE_API", "__declspec(dllexport)" },
-            { "SQLITE_WIN32_FILEMAPPING_API", "1" },
-        };
+        var defines = new Dictionary<string,string>();
+		add_basic_sqlite3_defines(defines);
         var includes = new string[]
         {
         };
@@ -422,7 +440,7 @@ public static class cb
             "md.c",
             "md_wrap.c",
             "memory_buffer_alloc.c",
-            "net_sockets.c",
+            //"net_sockets.c",
             "oid.c",
             "padlock.c",
             "pem.c",
@@ -470,18 +488,12 @@ public static class cb
 
         var defines = new Dictionary<string,string>
         {
-            { "SQLITE_ENABLE_COLUMN_METADATA", null },
-            { "SQLITE_ENABLE_FTS4", null },
-            { "SQLITE_ENABLE_FTS5", null },
-            { "SQLITE_ENABLE_JSON1", null },
-            { "SQLITE_ENABLE_RTREE", null },
-            { "SQLITE_DEFAULT_FOREIGN_KEYS", "1" },
-            { "SQLITE_API", "__declspec(dllexport)" },
-            { "SQLITE_WIN32_FILEMAPPING_API", "1" },
             { "SQLITE_HAS_CODEC", null },
+            { "SQLITE_TEMP_STORE", "2" },
             { "SQLCIPHER_CRYPTO_MBEDTLS", null },
             { "CIPHER", "\\\"AES-256-CBC\\\"" },
         };
+		add_basic_sqlite3_defines(defines);
 
         var includes = new List<string>();
         includes.Add(Path.Combine(mbedtls_dir, "include"));
@@ -491,6 +503,7 @@ public static class cb
         var libs = new string[]
         {
             "advapi32.lib",
+			"bcrypt.lib",
         };
 
         var trios = new trio[]
