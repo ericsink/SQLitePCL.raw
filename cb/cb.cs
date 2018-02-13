@@ -101,10 +101,81 @@ public static class cb
         var toolchain = get_toolchain(machine);
         var crt_option = get_crt_option(vcversion, flavor);
         var subdir = t.subdir(libname);
-        var dest = t.bat(libname);
-		using (TextWriter tw = new StreamWriter(dest))
+        var dest_bat = t.bat(libname);
+        var dest_linkargs = t.linkargs(libname);
+		using (TextWriter tw = new StreamWriter(dest_linkargs))
+		{
+            tw.Write(" /nologo");
+            tw.Write(" /OUT:\"bin\\{1}\\{0}.dll\"", libname, subdir);
+            if (flavor == Flavor.xp)
+            {
+                switch (machine)
+                {
+                    case Machine.x86:
+                        tw.Write(" /SUBSYSTEM:CONSOLE,\"5.01\"");
+                        break;
+                    case Machine.x64:
+                        tw.Write(" /SUBSYSTEM:CONSOLE,\"5.02\"");
+                        break;
+                    case Machine.arm:
+                        tw.Write(" /SUBSYSTEM:CONSOLE,\"6.02\"");
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                tw.Write(" /SUBSYSTEM:CONSOLE");
+            }
+            tw.Write(" /OPT:REF");
+            tw.Write(" /OPT:ICF");
+            tw.Write(" /TLBID:1");
+            tw.Write(" /WINMD:NO");
+            tw.Write(" /DYNAMICBASE");
+            tw.Write(" /NXCOMPAT");
+            tw.Write(" /MACHINE:{0}", machine.ToString().ToUpper());
+            tw.Write(" /DLL");
+            switch (flavor)
+            {
+                case Flavor.appcontainer:
+                case Flavor.wp81:
+                    tw.Write(" /APPCONTAINER");
+                    break;
+                default:
+                    break;
+            }
+            if (flavor == Flavor.wp80)
+            {
+                tw.Write(" WindowsPhoneCore.lib RuntimeObject.lib PhoneAppModelHost.lib");
+            }
+			else if (flavor == Flavor.appcontainer)
+			{
+                tw.Write(" /MANIFEST:NO");
+			}
+			else
+            {
+                tw.Write(" /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed");
+            }
+		    if ((flavor == Flavor.appcontainer) && (vcversion == VCVersion.v140))
+            {
+                tw.Write(" WindowsApp.lib");
+            }
+            foreach (var s in libs)
+            {
+                tw.Write(" {0}", s);
+            }
+            foreach (var s in cfiles)
+            {
+                var b = Path.GetFileNameWithoutExtension(s);
+                tw.Write(" obj\\{1}\\{0}.obj", b, subdir);
+            }
+            tw.WriteLine();
+		}
+		using (TextWriter tw = new StreamWriter(dest_bat))
         {
             tw.WriteLine("@echo on");
+			tw.WriteLine("SETLOCAL");
             tw.WriteLine("SET VCVARSBAT=\"{0}\"", vcvarsbat);
             tw.WriteLine("SET TOOLCHAIN={0}", toolchain);
             tw.WriteLine("SET SUBDIR={0}", subdir);
@@ -186,72 +257,9 @@ public static class cb
                 tw.WriteLine(" {0}", s);
             }
             tw.Write("link.exe");
-            tw.Write(" /nologo");
-            tw.Write(" /OUT:\"bin\\%SUBDIR%\\{0}.dll\"", libname);
-            if (flavor == Flavor.xp)
-            {
-                switch (machine)
-                {
-                    case Machine.x86:
-                        tw.Write(" /SUBSYSTEM:CONSOLE,\"5.01\"");
-                        break;
-                    case Machine.x64:
-                        tw.Write(" /SUBSYSTEM:CONSOLE,\"5.02\"");
-                        break;
-                    case Machine.arm:
-                        tw.Write(" /SUBSYSTEM:CONSOLE,\"6.02\"");
-                        break;
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-            else
-            {
-                tw.Write(" /SUBSYSTEM:CONSOLE");
-            }
-            tw.Write(" /OPT:REF");
-            tw.Write(" /OPT:ICF");
-            tw.Write(" /TLBID:1");
-            tw.Write(" /WINMD:NO");
-            tw.Write(" /DYNAMICBASE");
-            tw.Write(" /NXCOMPAT");
-            tw.Write(" /MACHINE:{0}", machine.ToString().ToUpper());
-            tw.Write(" /DLL");
-            switch (flavor)
-            {
-                case Flavor.appcontainer:
-                case Flavor.wp81:
-                    tw.Write(" /APPCONTAINER");
-                    break;
-                default:
-                    break;
-            }
-            if (flavor == Flavor.wp80)
-            {
-                tw.Write(" WindowsPhoneCore.lib RuntimeObject.lib PhoneAppModelHost.lib");
-            }
-			else if (flavor == Flavor.appcontainer)
-			{
-                tw.Write(" /MANIFEST:NO");
-			}
-			else
-            {
-                tw.Write(" /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed");
-            }
-		    if ((flavor == Flavor.appcontainer) && (vcversion == VCVersion.v140))
-            {
-                tw.Write(" WindowsApp.lib");
-            }
-            foreach (var s in libs)
-            {
-                tw.Write(" {0}", s);
-            }
-            foreach (var s in cfiles)
-            {
-                var b = Path.GetFileNameWithoutExtension(s);
-                tw.Write(" obj\\%SUBDIR%\\{0}.obj", b);
-            }
-            tw.WriteLine();
+			tw.Write(" @{0}", dest_linkargs);
+			tw.WriteLine();
+			tw.WriteLine("ENDLOCAL");
         }
     }
 
@@ -276,6 +284,11 @@ public static class cb
         public string bat(string libname)
         {
             var dest = string.Format("{0}.bat", basename(libname));
+            return dest;
+        }
+        public string linkargs(string libname)
+        {
+            var dest = string.Format("{0}.linkargs", basename(libname));
             return dest;
         }
         public string subdir(string libname)
@@ -311,7 +324,7 @@ public static class cb
             tw.WriteLine("@echo on");
             foreach (var t in trios)
             {
-                tw.WriteLine("cmd /c {0} > err_{1}.txt 2>&1", t.bat(libname), t.basename(libname));
+                tw.WriteLine("cmd /c {0} > err_{1}.buildoutput.txt 2>&1", t.bat(libname), t.basename(libname));
             }
         }
     }
@@ -399,106 +412,467 @@ public static class cb
     static void write_sqlcipher(
         )
     {
-        var mbedtls_dir =  "..\\..\\couchbase-lite-libsqlcipher\\vendor\\mbedtls";
-        var sqlcipher_dir = "..\\..\\couchbase-lite-libsqlcipher\\vendor\\sqlcipher";
-        var borden_dir = "..\\..\\couchbase-lite-libsqlcipher\\src\\c";
+		var tomcrypt_src_dir = "..\\..\\libtomcrypt\\src";
+		var tomcrypt_include_dir = "..\\..\\libtomcrypt\\src\\headers";
+        var sqlcipher_dir = "..\\sqlcipher_new";
+        var tomcrypt_cfiles = new string[]
+		{
+"modes\\cbc\\cbc_decrypt.c",
+"modes\\cbc\\cbc_done.c",
+"modes\\cbc\\cbc_encrypt.c",
+"modes\\cbc\\cbc_getiv.c",
+"modes\\cbc\\cbc_setiv.c",
+"modes\\cbc\\cbc_start.c",
+"prngs\\fortuna.c",
+"mac\\hmac\\hmac_done.c",
+"mac\\hmac\\hmac_file.c",
+"mac\\hmac\\hmac_init.c",
+"mac\\hmac\\hmac_memory.c",
+"mac\\hmac\\hmac_memory_multi.c",
+"mac\\hmac\\hmac_process.c",
+"hashes\\sha2\\sha256.c",
+"ciphers\\aes\\aes.c",
+"misc\\crypt\\crypt_argchk.c",
+"misc\\crypt\\crypt_hash_is_valid.c",
+"misc\\zeromem.c",
+"misc\\crypt\\crypt_hash_descriptor.c",
+"hashes\\helper\\hash_memory.c",
+"misc\\crypt\\crypt_cipher_descriptor.c",
+"misc\\crypt\\crypt_cipher_is_valid.c",
+"misc\\crypt\\crypt_find_cipher.c",
+"misc\\crypt\\crypt_register_hash.c",
+"misc\\crypt\\crypt_register_cipher.c",
+"misc\\crypt\\crypt_find_hash.c",
+"misc\\compare_testvector.c",
+"misc\\pkcs5\\pkcs_5_2.c",
+"misc\\crypt\\crypt_register_prng.c",
+"hashes\\sha1.c",
+"misc\\crypt\\crypt_prng_descriptor.c",
+		};
 
-        var mbedtls_cfiles = new string[]
+        var other_tomcrypt_cfiles = new string[]
         {
-            "aes.c",
-            "aesni.c",
-            "arc4.c",
-            "asn1parse.c",
-            "asn1write.c",
-            "base64.c",
-            "bignum.c",
-            "blowfish.c",
-            "camellia.c",
-            "ccm.c",
-            "certs.c",
-            "cipher.c",
-            "cipher_wrap.c",
-            "cmac.c",
-            "ctr_drbg.c",
-            "debug.c",
-            "des.c",
-            "dhm.c",
-            "ecdh.c",
-            "ecdsa.c",
-            "ecjpake.c",
-            "ecp.c",
-            "ecp_curves.c",
-            "entropy.c",
-            "entropy_poll.c",
-            "error.c",
-            "gcm.c",
-            "havege.c",
-            "hmac_drbg.c",
-            "md2.c",
-            "md4.c",
-            "md5.c",
-            "md.c",
-            "md_wrap.c",
-            "memory_buffer_alloc.c",
-            //"net_sockets.c",
-            "oid.c",
-            "padlock.c",
-            "pem.c",
-            "pk.c",
-            "pkcs11.c",
-            "pkcs12.c",
-            "pkcs5.c",
-            "pkparse.c",
-            "pk_wrap.c",
-            "pkwrite.c",
-            "platform.c",
-            "ripemd160.c",
-            "rsa.c",
-            "sha1.c",
-            "sha256.c",
-            "sha512.c",
-            "ssl_cache.c",
-            "ssl_ciphersuites.c",
-            "ssl_cli.c",
-            "ssl_cookie.c",
-            "ssl_srv.c",
-            "ssl_ticket.c",
-            "ssl_tls.c",
-            "threading.c",
-            "timing.c",
-            "version.c",
-            "version_features.c",
-            "x509.c",
-            "x509_create.c",
-            "x509_crl.c",
-            "x509_crt.c",
-            "x509_csr.c",
-            "x509write_crt.c",
-            "x509write_csr.c",
-            "xtea.c",
-        };
 
+"ciphers\\aes\\aes_tab.c",
+"ciphers\\anubis.c",
+"ciphers\\blowfish.c",
+"ciphers\\camellia.c",
+"ciphers\\cast5.c",
+"ciphers\\des.c",
+"ciphers\\idea.c",
+"ciphers\\kasumi.c",
+"ciphers\\khazad.c",
+"ciphers\\kseed.c",
+"ciphers\\multi2.c",
+"ciphers\\noekeon.c",
+"ciphers\\rc2.c",
+"ciphers\\rc5.c",
+"ciphers\\rc6.c",
+"ciphers\\safer\\safer.c",
+"ciphers\\safer\\saferp.c",
+"ciphers\\safer\\safer_tab.c",
+"ciphers\\serpent.c",
+"ciphers\\skipjack.c",
+"ciphers\\twofish\\twofish.c",
+"ciphers\\twofish\\twofish_tab.c",
+"ciphers\\xtea.c",
+"encauth\\ccm\\ccm_add_aad.c",
+"encauth\\ccm\\ccm_add_nonce.c",
+"encauth\\ccm\\ccm_done.c",
+"encauth\\ccm\\ccm_init.c",
+"encauth\\ccm\\ccm_memory.c",
+"encauth\\ccm\\ccm_process.c",
+"encauth\\ccm\\ccm_reset.c",
+"encauth\\ccm\\ccm_test.c",
+"encauth\\chachapoly\\chacha20poly1305_add_aad.c",
+"encauth\\chachapoly\\chacha20poly1305_decrypt.c",
+"encauth\\chachapoly\\chacha20poly1305_done.c",
+"encauth\\chachapoly\\chacha20poly1305_encrypt.c",
+"encauth\\chachapoly\\chacha20poly1305_init.c",
+"encauth\\chachapoly\\chacha20poly1305_memory.c",
+"encauth\\chachapoly\\chacha20poly1305_setiv.c",
+"encauth\\chachapoly\\chacha20poly1305_setiv_rfc7905.c",
+"encauth\\chachapoly\\chacha20poly1305_test.c",
+"encauth\\eax\\eax_addheader.c",
+"encauth\\eax\\eax_decrypt.c",
+"encauth\\eax\\eax_decrypt_verify_memory.c",
+"encauth\\eax\\eax_done.c",
+"encauth\\eax\\eax_encrypt.c",
+"encauth\\eax\\eax_encrypt_authenticate_memory.c",
+"encauth\\eax\\eax_init.c",
+"encauth\\eax\\eax_test.c",
+"encauth\\gcm\\gcm_add_aad.c",
+"encauth\\gcm\\gcm_add_iv.c",
+"encauth\\gcm\\gcm_done.c",
+"encauth\\gcm\\gcm_gf_mult.c",
+"encauth\\gcm\\gcm_init.c",
+"encauth\\gcm\\gcm_memory.c",
+"encauth\\gcm\\gcm_mult_h.c",
+"encauth\\gcm\\gcm_process.c",
+"encauth\\gcm\\gcm_reset.c",
+"encauth\\gcm\\gcm_test.c",
+"encauth\\ocb\\ocb_decrypt.c",
+"encauth\\ocb\\ocb_decrypt_verify_memory.c",
+"encauth\\ocb\\ocb_done_decrypt.c",
+"encauth\\ocb\\ocb_done_encrypt.c",
+"encauth\\ocb\\ocb_encrypt.c",
+"encauth\\ocb\\ocb_encrypt_authenticate_memory.c",
+"encauth\\ocb\\ocb_init.c",
+"encauth\\ocb\\ocb_ntz.c",
+"encauth\\ocb\\ocb_shift_xor.c",
+"encauth\\ocb\\ocb_test.c",
+"encauth\\ocb\\s_ocb_done.c",
+"encauth\\ocb3\\ocb3_add_aad.c",
+"encauth\\ocb3\\ocb3_decrypt.c",
+"encauth\\ocb3\\ocb3_decrypt_last.c",
+"encauth\\ocb3\\ocb3_decrypt_verify_memory.c",
+"encauth\\ocb3\\ocb3_done.c",
+"encauth\\ocb3\\ocb3_encrypt.c",
+"encauth\\ocb3\\ocb3_encrypt_authenticate_memory.c",
+"encauth\\ocb3\\ocb3_encrypt_last.c",
+"encauth\\ocb3\\ocb3_init.c",
+"encauth\\ocb3\\ocb3_int_ntz.c",
+"encauth\\ocb3\\ocb3_int_xor_blocks.c",
+"encauth\\ocb3\\ocb3_test.c",
+"hashes\\blake2b.c",
+"hashes\\blake2s.c",
+"hashes\\chc\\chc.c",
+"hashes\\helper\\hash_file.c",
+"hashes\\helper\\hash_filehandle.c",
+"hashes\\helper\\hash_memory_multi.c",
+"hashes\\md2.c",
+"hashes\\md4.c",
+"hashes\\md5.c",
+"hashes\\rmd128.c",
+"hashes\\rmd160.c",
+"hashes\\rmd256.c",
+"hashes\\rmd320.c",
+"hashes\\sha2\\sha224.c",
+"hashes\\sha2\\sha384.c",
+"hashes\\sha2\\sha512.c",
+"hashes\\sha2\\sha512_224.c",
+"hashes\\sha2\\sha512_256.c",
+"hashes\\sha3.c",
+"hashes\\sha3_test.c",
+"hashes\\tiger.c",
+"hashes\\whirl\\whirl.c",
+"hashes\\whirl\\whirltab.c",
+"mac\\blake2\\blake2bmac.c",
+"mac\\blake2\\blake2bmac_file.c",
+"mac\\blake2\\blake2bmac_memory.c",
+"mac\\blake2\\blake2bmac_memory_multi.c",
+"mac\\blake2\\blake2bmac_test.c",
+"mac\\blake2\\blake2smac.c",
+"mac\\blake2\\blake2smac_file.c",
+"mac\\blake2\\blake2smac_memory.c",
+"mac\\blake2\\blake2smac_memory_multi.c",
+"mac\\blake2\\blake2smac_test.c",
+"mac\\f9\\f9_done.c",
+"mac\\f9\\f9_file.c",
+"mac\\f9\\f9_init.c",
+"mac\\f9\\f9_memory.c",
+"mac\\f9\\f9_memory_multi.c",
+"mac\\f9\\f9_process.c",
+"mac\\f9\\f9_test.c",
+"mac\\hmac\\hmac_test.c",
+"mac\\omac\\omac_done.c",
+"mac\\omac\\omac_file.c",
+"mac\\omac\\omac_init.c",
+"mac\\omac\\omac_memory.c",
+"mac\\omac\\omac_memory_multi.c",
+"mac\\omac\\omac_process.c",
+"mac\\omac\\omac_test.c",
+"mac\\pelican\\pelican.c",
+"mac\\pelican\\pelican_memory.c",
+"mac\\pelican\\pelican_test.c",
+"mac\\pmac\\pmac_done.c",
+"mac\\pmac\\pmac_file.c",
+"mac\\pmac\\pmac_init.c",
+"mac\\pmac\\pmac_memory.c",
+"mac\\pmac\\pmac_memory_multi.c",
+"mac\\pmac\\pmac_ntz.c",
+"mac\\pmac\\pmac_process.c",
+"mac\\pmac\\pmac_shift_xor.c",
+"mac\\pmac\\pmac_test.c",
+"mac\\poly1305\\poly1305.c",
+"mac\\poly1305\\poly1305_file.c",
+"mac\\poly1305\\poly1305_memory.c",
+"mac\\poly1305\\poly1305_memory_multi.c",
+"mac\\poly1305\\poly1305_test.c",
+"mac\\xcbc\\xcbc_done.c",
+"mac\\xcbc\\xcbc_file.c",
+"mac\\xcbc\\xcbc_init.c",
+"mac\\xcbc\\xcbc_memory.c",
+"mac\\xcbc\\xcbc_memory_multi.c",
+"mac\\xcbc\\xcbc_process.c",
+"mac\\xcbc\\xcbc_test.c",
+"math\\fp\\ltc_ecc_fp_mulmod.c",
+"math\\gmp_desc.c",
+"math\\ltm_desc.c",
+"math\\multi.c",
+"math\\radix_to_bin.c",
+"math\\rand_bn.c",
+"math\\rand_prime.c",
+"math\\tfm_desc.c",
+"misc\\adler32.c",
+"misc\\base32\\base32_decode.c",
+"misc\\base32\\base32_encode.c",
+"misc\\base64\\base64_decode.c",
+"misc\\base64\\base64_encode.c",
+"misc\\burn_stack.c",
+"misc\\copy_or_zeromem.c",
+"misc\\crc32.c",
+"misc\\crypt\\crypt.c",
+"misc\\crypt\\crypt_constants.c",
+"misc\\crypt\\crypt_find_cipher_any.c",
+"misc\\crypt\\crypt_find_cipher_id.c",
+"misc\\crypt\\crypt_find_hash_any.c",
+"misc\\crypt\\crypt_find_hash_id.c",
+"misc\\crypt\\crypt_find_hash_oid.c",
+"misc\\crypt\\crypt_find_prng.c",
+"misc\\crypt\\crypt_fsa.c",
+"misc\\crypt\\crypt_inits.c",
+"misc\\crypt\\crypt_ltc_mp_descriptor.c",
+"misc\\crypt\\crypt_prng_is_valid.c",
+"misc\\crypt\\crypt_prng_rng_descriptor.c",
+"misc\\crypt\\crypt_register_all_ciphers.c",
+"misc\\crypt\\crypt_register_all_hashes.c",
+"misc\\crypt\\crypt_register_all_prngs.c",
+"misc\\crypt\\crypt_sizes.c",
+"misc\\crypt\\crypt_unregister_cipher.c",
+"misc\\crypt\\crypt_unregister_hash.c",
+"misc\\crypt\\crypt_unregister_prng.c",
+"misc\\error_to_string.c",
+"misc\\hkdf\\hkdf.c",
+"misc\\hkdf\\hkdf_test.c",
+"misc\\mem_neq.c",
+"misc\\pkcs5\\pkcs_5_1.c",
+"misc\\pkcs5\\pkcs_5_test.c",
+"misc\\pk_get_oid.c",
+"modes\\cfb\\cfb_decrypt.c",
+"modes\\cfb\\cfb_done.c",
+"modes\\cfb\\cfb_encrypt.c",
+"modes\\cfb\\cfb_getiv.c",
+"modes\\cfb\\cfb_setiv.c",
+"modes\\cfb\\cfb_start.c",
+"modes\\ctr\\ctr_decrypt.c",
+"modes\\ctr\\ctr_done.c",
+"modes\\ctr\\ctr_encrypt.c",
+"modes\\ctr\\ctr_getiv.c",
+"modes\\ctr\\ctr_setiv.c",
+"modes\\ctr\\ctr_start.c",
+"modes\\ctr\\ctr_test.c",
+"modes\\ecb\\ecb_decrypt.c",
+"modes\\ecb\\ecb_done.c",
+"modes\\ecb\\ecb_encrypt.c",
+"modes\\ecb\\ecb_start.c",
+"modes\\f8\\f8_decrypt.c",
+"modes\\f8\\f8_done.c",
+"modes\\f8\\f8_encrypt.c",
+"modes\\f8\\f8_getiv.c",
+"modes\\f8\\f8_setiv.c",
+"modes\\f8\\f8_start.c",
+"modes\\f8\\f8_test_mode.c",
+"modes\\lrw\\lrw_decrypt.c",
+"modes\\lrw\\lrw_done.c",
+"modes\\lrw\\lrw_encrypt.c",
+"modes\\lrw\\lrw_getiv.c",
+"modes\\lrw\\lrw_process.c",
+"modes\\lrw\\lrw_setiv.c",
+"modes\\lrw\\lrw_start.c",
+"modes\\lrw\\lrw_test.c",
+"modes\\ofb\\ofb_decrypt.c",
+"modes\\ofb\\ofb_done.c",
+"modes\\ofb\\ofb_encrypt.c",
+"modes\\ofb\\ofb_getiv.c",
+"modes\\ofb\\ofb_setiv.c",
+"modes\\ofb\\ofb_start.c",
+"modes\\xts\\xts_decrypt.c",
+"modes\\xts\\xts_done.c",
+"modes\\xts\\xts_encrypt.c",
+"modes\\xts\\xts_init.c",
+"modes\\xts\\xts_mult_x.c",
+"modes\\xts\\xts_test.c",
+"pk\\asn1\\der\\bit\\der_decode_bit_string.c",
+"pk\\asn1\\der\\bit\\der_decode_raw_bit_string.c",
+"pk\\asn1\\der\\bit\\der_encode_bit_string.c",
+"pk\\asn1\\der\\bit\\der_encode_raw_bit_string.c",
+"pk\\asn1\\der\\bit\\der_length_bit_string.c",
+"pk\\asn1\\der\\boolean\\der_decode_boolean.c",
+"pk\\asn1\\der\\boolean\\der_encode_boolean.c",
+"pk\\asn1\\der\\boolean\\der_length_boolean.c",
+"pk\\asn1\\der\\choice\\der_decode_choice.c",
+"pk\\asn1\\der\\generalizedtime\\der_decode_generalizedtime.c",
+"pk\\asn1\\der\\generalizedtime\\der_encode_generalizedtime.c",
+"pk\\asn1\\der\\generalizedtime\\der_length_generalizedtime.c",
+"pk\\asn1\\der\\ia5\\der_decode_ia5_string.c",
+"pk\\asn1\\der\\ia5\\der_encode_ia5_string.c",
+"pk\\asn1\\der\\ia5\\der_length_ia5_string.c",
+"pk\\asn1\\der\\integer\\der_decode_integer.c",
+"pk\\asn1\\der\\integer\\der_encode_integer.c",
+"pk\\asn1\\der\\integer\\der_length_integer.c",
+"pk\\asn1\\der\\object_identifier\\der_decode_object_identifier.c",
+"pk\\asn1\\der\\object_identifier\\der_encode_object_identifier.c",
+"pk\\asn1\\der\\object_identifier\\der_length_object_identifier.c",
+"pk\\asn1\\der\\octet\\der_decode_octet_string.c",
+"pk\\asn1\\der\\octet\\der_encode_octet_string.c",
+"pk\\asn1\\der\\octet\\der_length_octet_string.c",
+"pk\\asn1\\der\\printable_string\\der_decode_printable_string.c",
+"pk\\asn1\\der\\printable_string\\der_encode_printable_string.c",
+"pk\\asn1\\der\\printable_string\\der_length_printable_string.c",
+"pk\\asn1\\der\\sequence\\der_decode_sequence_ex.c",
+"pk\\asn1\\der\\sequence\\der_decode_sequence_flexi.c",
+"pk\\asn1\\der\\sequence\\der_decode_sequence_multi.c",
+"pk\\asn1\\der\\sequence\\der_decode_subject_public_key_info.c",
+"pk\\asn1\\der\\sequence\\der_encode_sequence_ex.c",
+"pk\\asn1\\der\\sequence\\der_encode_sequence_multi.c",
+"pk\\asn1\\der\\sequence\\der_encode_subject_public_key_info.c",
+"pk\\asn1\\der\\sequence\\der_length_sequence.c",
+"pk\\asn1\\der\\sequence\\der_sequence_free.c",
+"pk\\asn1\\der\\sequence\\der_sequence_shrink.c",
+"pk\\asn1\\der\\set\\der_encode_set.c",
+"pk\\asn1\\der\\set\\der_encode_setof.c",
+"pk\\asn1\\der\\short_integer\\der_decode_short_integer.c",
+"pk\\asn1\\der\\short_integer\\der_encode_short_integer.c",
+"pk\\asn1\\der\\short_integer\\der_length_short_integer.c",
+"pk\\asn1\\der\\teletex_string\\der_decode_teletex_string.c",
+"pk\\asn1\\der\\teletex_string\\der_length_teletex_string.c",
+"pk\\asn1\\der\\utctime\\der_decode_utctime.c",
+"pk\\asn1\\der\\utctime\\der_encode_utctime.c",
+"pk\\asn1\\der\\utctime\\der_length_utctime.c",
+"pk\\asn1\\der\\utf8\\der_decode_utf8_string.c",
+"pk\\asn1\\der\\utf8\\der_encode_utf8_string.c",
+"pk\\asn1\\der\\utf8\\der_length_utf8_string.c",
+"pk\\dh\\dh.c",
+"pk\\dh\\dh_check_pubkey.c",
+"pk\\dh\\dh_export.c",
+"pk\\dh\\dh_export_key.c",
+"pk\\dh\\dh_free.c",
+"pk\\dh\\dh_generate_key.c",
+"pk\\dh\\dh_import.c",
+"pk\\dh\\dh_set.c",
+"pk\\dh\\dh_set_pg_dhparam.c",
+"pk\\dh\\dh_shared_secret.c",
+"pk\\dsa\\dsa_decrypt_key.c",
+"pk\\dsa\\dsa_encrypt_key.c",
+"pk\\dsa\\dsa_export.c",
+"pk\\dsa\\dsa_free.c",
+"pk\\dsa\\dsa_generate_key.c",
+"pk\\dsa\\dsa_generate_pqg.c",
+"pk\\dsa\\dsa_import.c",
+"pk\\dsa\\dsa_make_key.c",
+"pk\\dsa\\dsa_set.c",
+"pk\\dsa\\dsa_set_pqg_dsaparam.c",
+"pk\\dsa\\dsa_shared_secret.c",
+"pk\\dsa\\dsa_sign_hash.c",
+"pk\\dsa\\dsa_verify_hash.c",
+"pk\\dsa\\dsa_verify_key.c",
+"pk\\ecc\\ecc.c",
+"pk\\ecc\\ecc_ansi_x963_export.c",
+"pk\\ecc\\ecc_ansi_x963_import.c",
+"pk\\ecc\\ecc_decrypt_key.c",
+"pk\\ecc\\ecc_encrypt_key.c",
+"pk\\ecc\\ecc_export.c",
+"pk\\ecc\\ecc_free.c",
+"pk\\ecc\\ecc_get_size.c",
+"pk\\ecc\\ecc_import.c",
+"pk\\ecc\\ecc_make_key.c",
+"pk\\ecc\\ecc_shared_secret.c",
+"pk\\ecc\\ecc_sign_hash.c",
+"pk\\ecc\\ecc_sizes.c",
+"pk\\ecc\\ecc_test.c",
+"pk\\ecc\\ecc_verify_hash.c",
+"pk\\ecc\\ltc_ecc_is_valid_idx.c",
+"pk\\ecc\\ltc_ecc_map.c",
+"pk\\ecc\\ltc_ecc_mul2add.c",
+"pk\\ecc\\ltc_ecc_mulmod.c",
+"pk\\ecc\\ltc_ecc_mulmod_timing.c",
+"pk\\ecc\\ltc_ecc_points.c",
+"pk\\ecc\\ltc_ecc_projective_add_point.c",
+"pk\\ecc\\ltc_ecc_projective_dbl_point.c",
+"pk\\katja\\katja_decrypt_key.c",
+"pk\\katja\\katja_encrypt_key.c",
+"pk\\katja\\katja_export.c",
+"pk\\katja\\katja_exptmod.c",
+"pk\\katja\\katja_free.c",
+"pk\\katja\\katja_import.c",
+"pk\\katja\\katja_make_key.c",
+"pk\\pkcs1\\pkcs_1_i2osp.c",
+"pk\\pkcs1\\pkcs_1_mgf1.c",
+"pk\\pkcs1\\pkcs_1_oaep_decode.c",
+"pk\\pkcs1\\pkcs_1_oaep_encode.c",
+"pk\\pkcs1\\pkcs_1_os2ip.c",
+"pk\\pkcs1\\pkcs_1_pss_decode.c",
+"pk\\pkcs1\\pkcs_1_pss_encode.c",
+"pk\\pkcs1\\pkcs_1_v1_5_decode.c",
+"pk\\pkcs1\\pkcs_1_v1_5_encode.c",
+"pk\\rsa\\rsa_decrypt_key.c",
+"pk\\rsa\\rsa_encrypt_key.c",
+"pk\\rsa\\rsa_export.c",
+"pk\\rsa\\rsa_exptmod.c",
+"pk\\rsa\\rsa_free.c",
+"pk\\rsa\\rsa_get_size.c",
+"pk\\rsa\\rsa_import.c",
+"pk\\rsa\\rsa_import_pkcs8.c",
+"pk\\rsa\\rsa_import_x509.c",
+"pk\\rsa\\rsa_make_key.c",
+"pk\\rsa\\rsa_set.c",
+"pk\\rsa\\rsa_sign_hash.c",
+"pk\\rsa\\rsa_sign_saltlen_get.c",
+"pk\\rsa\\rsa_verify_hash.c",
+"prngs\\chacha20.c",
+"prngs\\rc4.c",
+"prngs\\rng_get_bytes.c",
+"prngs\\rng_make_prng.c",
+"prngs\\sober128.c",
+"prngs\\sprng.c",
+"prngs\\yarrow.c",
+"stream\\chacha\\chacha_crypt.c",
+"stream\\chacha\\chacha_done.c",
+"stream\\chacha\\chacha_ivctr32.c",
+"stream\\chacha\\chacha_ivctr64.c",
+"stream\\chacha\\chacha_keystream.c",
+"stream\\chacha\\chacha_setup.c",
+"stream\\chacha\\chacha_test.c",
+"stream\\rabbit\\rabbit.c",
+"stream\\rc4\\rc4_stream.c",
+"stream\\rc4\\rc4_test.c",
+"stream\\salsa20\\salsa20_crypt.c",
+"stream\\salsa20\\salsa20_done.c",
+"stream\\salsa20\\salsa20_ivctr64.c",
+"stream\\salsa20\\salsa20_keystream.c",
+"stream\\salsa20\\salsa20_setup.c",
+"stream\\salsa20\\salsa20_test.c",
+"stream\\sober128\\sober128tab.c",
+"stream\\sober128\\sober128_stream.c",
+"stream\\sober128\\sober128_test.c",
+"stream\\sosemanuk\\sosemanuk.c",
+"stream\\sosemanuk\\sosemanuk_test.c",
+		};
+ 
         var cfiles = new List<string>();
-        cfiles.Add(Path.Combine(borden_dir, "sqlite3.c"));
-        cfiles.Add(Path.Combine(borden_dir, "crypto_mbedtls.c"));
-        foreach (var s in mbedtls_cfiles)
+        cfiles.Add(Path.Combine(sqlcipher_dir, "sqlite3.c"));
+        foreach (var s in tomcrypt_cfiles)
         {
-            cfiles.Add(Path.Combine(mbedtls_dir, "library", s));
+            cfiles.Add(Path.Combine(tomcrypt_src_dir, s));
         }
 
         var defines = new Dictionary<string,string>
         {
+            { "_WIN32", null }, // for tomcrypt
+            { "ENDIAN_LITTLE", null }, // for tomcrypt arm
+            { "LTC_NO_PROTOTYPES", null },
+            { "LTC_SOURCE", null },
             { "SQLITE_HAS_CODEC", null },
             { "SQLITE_TEMP_STORE", "2" },
-            { "SQLCIPHER_CRYPTO_MBEDTLS", null },
+            { "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
             { "CIPHER", "\\\"AES-256-CBC\\\"" },
         };
 		add_basic_sqlite3_defines(defines);
 
         var includes = new List<string>();
-        includes.Add(Path.Combine(mbedtls_dir, "include"));
-        includes.Add(Path.Combine(sqlcipher_dir, "src"));
         includes.Add(sqlcipher_dir);
+        includes.Add(tomcrypt_include_dir);
 
         var libs = new string[]
         {
