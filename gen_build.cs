@@ -147,10 +147,10 @@ public static class projects
         // bundle_zetetic
         items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", ver, "ios_unified", "sqlcipher"));
         // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", "watchos", "sqlcipher"));
-        //items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "macos", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "macos", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "android", "sqlcipher"));
-        //items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net35", "sqlcipher"));
-        //items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net40", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net35", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net40", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net45", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "uwp10", "sqlcipher"));
 
@@ -4058,6 +4058,12 @@ public static class gen
 
             write_bundle_dependency_group(f, "android", "android", "sqlcipher", false);
             write_bundle_dependency_group(f, "ios_unified", "ios_unified", "sqlcipher", false);
+            write_bundle_dependency_group(f, "macos", "macos", "sqlcipher", false);
+            write_bundle_dependency_group(f, "net35", "net35", "sqlcipher", false);
+            write_bundle_dependency_group(f, "net40", "net40", "sqlcipher", false);
+            write_bundle_dependency_group(f, "net45", "net45", "sqlcipher", false);
+            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", false);
+            write_bundle_dependency_group(f, "uwp10", "uwp10", "sqlcipher", false);
             
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
