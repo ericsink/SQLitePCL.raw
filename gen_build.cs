@@ -374,7 +374,7 @@ public static class projects
         switch (toolset)
         {
             case "v110_xp":
-                return "win7";
+                return "win";
             case "v110":
                 return "win8";
             case "v110_wp80":
@@ -3532,12 +3532,12 @@ public static class gen
 				case "windows":
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x86\\sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win7-x86\\native\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win-x86\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x64\\sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win7-x64\\native\\sqlcipher.dll"));
+					f.WriteAttributeString("target", string.Format("runtimes\\win-x64\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
@@ -4499,14 +4499,14 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win7-x86\\native\\{0}", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win-x86\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
             f.WriteElementString("Pack", "false");
 			f.WriteEndElement(); // Content
 
 			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win7-x64\\native\\{0}", filename));
+			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win-x64\\native\\{0}", filename));
 			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
 			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
             f.WriteElementString("Pack", "false");
