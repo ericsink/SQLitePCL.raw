@@ -153,6 +153,13 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net40", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net45", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "uwp10", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "win8", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "wpa81", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "win81", "sqlcipher"));
+#if not
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "arm"));
+        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "x86"));
+#endif
 
         // the following item builds for netstandard11 
         // but overrides the nuget target env to place it in netcoreapp
@@ -4064,6 +4071,12 @@ public static class gen
             write_bundle_dependency_group(f, "net45", "net45", "sqlcipher", false);
             write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", false);
             write_bundle_dependency_group(f, "uwp10", "uwp10", "sqlcipher", false);
+            write_bundle_dependency_group(f, "wpa81", "wpa81", "sqlcipher", false);
+            write_bundle_dependency_group(f, "win8", "win8", "sqlcipher", false);
+            write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", false);
+#if not
+            write_bundle_dependency_group(f, "wp80", "sqlcipher", false);
+#endif
             
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
