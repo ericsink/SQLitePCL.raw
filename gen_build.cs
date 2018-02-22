@@ -2424,7 +2424,10 @@ public static class gen
 		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname))))
 		{
-			string cs1 = cs.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + cfg.assemblyname + '"');
+			string cs1 = cs
+				.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + cfg.assemblyname + '"')
+				.Replace("REPLACE_WITH_ASSEMBLY_VERSION", '"' + ASSEMBLY_VERSION + '"')
+				;
 			tw.Write(cs1);
 		}
 	}
@@ -3042,9 +3045,27 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	public static string NUSPEC_VERSION = string.Format("1.1.10-pre{0}", DateTime.Now.ToString("yyyyMMddHHmmss")); 
-	//public static string NUSPEC_VERSION = "1.0.0-PLACEHOLDER";
-	//public static string NUSPEC_VERSION = "1.1.9";
+	public const int MAJOR_VERSION = 1;
+	public const int MINOR_VERSION = 1;
+	public const int PATCH_VERSION = 10;
+	public static string NUSPEC_VERSION_PRE = string.Format("{0}.{1}.{2}-pre{3}", 
+		MAJOR_VERSION,
+		MINOR_VERSION,
+		PATCH_VERSION,
+		DateTime.Now.ToString("yyyyMMddHHmmss")
+		); 
+	public static string NUSPEC_VERSION_RELEASE = string.Format("{0}.{1}.{2}",
+		MAJOR_VERSION,
+		MINOR_VERSION,
+		PATCH_VERSION
+		);
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
+	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
+		MAJOR_VERSION,
+		MINOR_VERSION,
+		PATCH_VERSION,
+		(int) ((DateTime.Now - new DateTime(2018,1,1)).TotalDays) 
+		); 
 
 	private const string NUSPEC_RELEASE_NOTES = "1.1.10:  TODO.  1.1.9:  bug fixes for Xamarin.Mac.  add a sqlcipher build for UWP.  1.1.8:  SQLite builds for .NET Core ARM, linux and Windows IoT.  Finalizers.  Fix Xam.Mac issue with bundle_green.  Fix edge case in one of the sqlite3_column_blob() overloads.  New 'bundle_zetetic' for use with official SQLCipher builds from Zetetic.  1.1.7:  Drop SQLite down to 3.18.2.  1.1.6:  AssetTargetFallback fixes.  update sqlite builds to 3.19.3.  1.1.5:  bug fix path in lib.foo.linux targets file.  1.1.4:  tweak use of nuget .targets files for compat with .NET Core.  1.1.3:  add SQLITE_CHECKPOINT_TRUNCATE symbol definition.  add new blob overloads to enable better performance in certain cases.  chg winsqlite3 to use StdCall.  fix targets files for better compat with VS 2017 nuget pack.  add 32-bit linux build for e_sqlite3.  update to latest libcrypto builds from couchbase folks.  1.1.2:  ability to FreezeProvider().  update e_sqlite3 builds to 3.16.1.  1.1.1:  add support for config_log.  update e_sqlite3 builds to 3.15.2.  fix possible memory corruption when using prepare_v2() with multiple statements.  better errmsg from ugly.step().  add win8 dep groups in bundles.  fix batteries_v2.Init() to be 'last call wins' like the v1 version is.  chg raw.SetProvider() to avoid calling sqlite3_initialize() so that sqlite3_config() can be used.  better support for Xamarin.Mac.  1.1.0:  fix problem with winsqlite3 on UWP.  remove iOS Classic support.  add sqlite3_enable_load_extension.  add sqlite3_config/initialize/shutdown.  add Batteries_V2.Init().  1.0.1:  fix problem with bundle_e_sqlite3 on iOS.  fix issues with .NET Core.  add bundle_sqlcipher.  1.0.0 release:  Contains minor breaking changes since 0.9.x.  All package names now begin with SQLitePCLRaw.  Now supports netstandard.  Fixes for UWP and Android N.  Change all unit tests to xunit.  Support for winsqlite3.dll and custom SQLite builds.";
 

@@ -6,13 +6,12 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Zumero, LLC")]
 [assembly: AssemblyProduct("SQLitePCLRaw")]
-[assembly: AssemblyCopyright("Copyright 2014-2016 Zumero, LLC.")]
+[assembly: AssemblyCopyright("Copyright 2014-2018 Zumero, LLC.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
 
-// NEVER CHANGE THIS
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion(REPLACE_WITH_ASSEMBLY_VERSION)]
 
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
