@@ -32,6 +32,7 @@ namespace SQLitePCL
     {
         private readonly IntPtr _p;
         private bool _disposed = false;
+		internal bool already_disposed => _disposed;
 
         internal sqlite3_backup(IntPtr p)
         {
@@ -159,6 +160,7 @@ namespace SQLitePCL
     {
         private readonly IntPtr _p;
         private bool _disposed = false;
+		internal bool already_disposed => _disposed;
 
         internal sqlite3_blob(IntPtr p)
         {
@@ -241,6 +243,8 @@ namespace SQLitePCL
             GC.SuppressFinalize(this);
         }
 
+		internal bool already_disposed => _disposed;
+
         public IntPtr ptr
         {
             get
@@ -270,6 +274,7 @@ namespace SQLitePCL
     {
         private readonly IntPtr _p;
         private bool _disposed = false;
+		internal bool already_disposed => _disposed;
 
         // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
 #if NO_CONCURRENTDICTIONARY

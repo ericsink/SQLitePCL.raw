@@ -296,6 +296,7 @@ namespace SQLitePCL
 
         static public int sqlite3_close_v2(sqlite3 db)
         {
+			if (db.already_disposed) return 0;
             int rc = _imp.sqlite3_close_v2(db.ptr);
             db.set_already_disposed();
             return rc;
@@ -303,6 +304,7 @@ namespace SQLitePCL
 
         static public int sqlite3_close(sqlite3 db)
         {
+			if (db.already_disposed) return 0;
             int rc = _imp.sqlite3_close(db.ptr);
             db.set_already_disposed();
             return rc;
@@ -530,6 +532,7 @@ namespace SQLitePCL
 
         static public int sqlite3_finalize(sqlite3_stmt stmt)
         {
+			if (stmt.already_disposed) return 0;
             int rc = _imp.sqlite3_finalize(stmt.ptr);
             stmt.set_already_disposed();
             return rc;
@@ -856,6 +859,7 @@ namespace SQLitePCL
 
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
+			if (backup.already_disposed) return 0;
             int rc = _imp.sqlite3_backup_finish(backup.ptr);
             backup.set_already_disposed();
             return rc;
@@ -894,6 +898,7 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
+			if (blob.already_disposed) return 0;
             int rc = _imp.sqlite3_blob_close(blob.ptr);
             blob.set_already_disposed();
             return rc;
