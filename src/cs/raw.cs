@@ -370,6 +370,16 @@ namespace SQLitePCL
             return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func_step, func_final);
         }
 
+        static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
+        {
+            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func);
+        }
+
+        static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        {
+            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func_step, func_final);
+        }
+
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             return _imp.sqlite3_db_status(db.ptr, op, out current, out highest, resetFlg);

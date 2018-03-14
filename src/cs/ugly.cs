@@ -248,6 +248,18 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
+        public static void create_function(this sqlite3 db, string name, int nargs, int flags, object v, delegate_function_scalar f)
+        {
+            int rc = raw.sqlite3_create_function(db, name, nargs, flags, v, f);
+            check_ok(rc);
+        }
+
+        public static void create_function(this sqlite3 db, string name, int nargs, int flags, object v, delegate_function_aggregate_step f_step, delegate_function_aggregate_final f_final)
+        {
+            int rc = raw.sqlite3_create_function(db, name, nargs, flags, v, f_step, f_final);
+            check_ok(rc);
+        }
+
         public static sqlite3_stmt prepare(this sqlite3 db, string sql)
         {
             sqlite3_stmt stmt;

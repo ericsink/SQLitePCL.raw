@@ -1376,6 +1376,20 @@ namespace SQLitePCL.Tests
                 Assert.Equal(c2, val * val * val);
             }
         }
+
+        [Fact]
+       public void test_cube_with_flags()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("cube", 1, raw.SQLITE_DETERMINISTIC, null, cube);
+                long c = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(c, val * val * val);
+		GC.Collect();
+                long c2 = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(c2, val * val * val);
+            }
+        }
     }
 
     [Collection("Init")]
