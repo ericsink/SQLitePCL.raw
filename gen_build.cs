@@ -145,7 +145,7 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "uwp10", "sqlcipher"));
 
         // bundle_zetetic
-        items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", ver, "ios_unified", "sqlcipher"));
+        items_csproj.Add(config_csproj.create_internal_batteries_zetetic("batteries_zetetic", ver, "ios_unified"));
         // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", "watchos", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "macos", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "android", "sqlcipher"));
@@ -1227,6 +1227,19 @@ public class config_csproj : config_info
         cfg.ref_core = true;
         cfg.ref_provider = "internal";
         cfg.ref_embedded = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, lib, env, "static");
+        return cfg;
+    }
+
+    public static config_csproj create_internal_batteries_zetetic(string area, int ver, string env)
+    {
+        var cfg = new config_csproj();
+        cfg.env = env;
+        cfg.area = area;
+        cfg.name = string.Format("{0}.v{1}.{2}.{3}.{4}", cfg.root_name, ver, area, "internal", env);
+        set_batteries_version(cfg, ver);
+        cfg.defines.Add("PROVIDER_internal");
+        cfg.ref_core = true;
+        cfg.ref_provider = "internal";
         return cfg;
     }
 
