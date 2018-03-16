@@ -3478,7 +3478,7 @@ public static class gen
                     f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
                     f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
                     f.WriteEndElement(); // file
-                    gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib");
+                    gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
                     break;
                 case "linux":
                     f.WriteStartElement("file");
@@ -3525,6 +3525,9 @@ public static class gen
             if (plat == "osx")
             {
                 write_empty(f, top, "Xamarin.Mac20");
+                tname = string.Format("{0}.Xamarin.Mac20.targets", id);
+                gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: true);
+
                 f.WriteStartElement("file");
                 f.WriteAttributeString("src", tname);
                 f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
@@ -3619,7 +3622,7 @@ public static class gen
 					f.WriteAttributeString("target", string.Format("runtimes\\osx-x64\\native\\libsqlcipher.dylib"));
 					f.WriteEndElement(); // file
 
-					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib");
+					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: false);
 					break;
 				case "linux":
 					// TODO do we need amd64 version here?
@@ -3647,6 +3650,9 @@ public static class gen
             if (plat == "osx")
             {
                 write_empty(f, top, "Xamarin.Mac20");
+                tname = string.Format("{0}.Xamarin.Mac20.targets", id);
+                gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: true);
+
                 f.WriteStartElement("file");
                 f.WriteAttributeString("src", tname);
                 f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
@@ -4584,7 +4590,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuget_targets_osx(string top, string tname, string filename)
+	private static void gen_nuget_targets_osx(string top, string tname, string filename, bool forxammac)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -4606,11 +4612,23 @@ public static class gen
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
 
-			f.WriteStartElement("NativeReference");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
-			f.WriteElementString("Kind", "Dynamic");
-			f.WriteElementString("SmartLink", "False");
-			f.WriteEndElement(); // NativeReference
+			if (forxammac)
+			{
+				f.WriteStartElement("NativeReference");
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
+				f.WriteElementString("Kind", "Dynamic");
+				f.WriteElementString("SmartLink", "False");
+				f.WriteEndElement(); // NativeReference
+			}
+			else
+			{
+				f.WriteStartElement("Content");
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
+				f.WriteElementString("Link", filename);
+				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteElementString("Pack", "false");
+				f.WriteEndElement(); // Content
+			}
 
 			f.WriteEndElement(); // ItemGroup
 
