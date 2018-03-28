@@ -3073,7 +3073,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
