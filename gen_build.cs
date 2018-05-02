@@ -3503,7 +3503,7 @@ public static class gen
 
                     f.WriteStartElement("file");
                     f.WriteAttributeString("src", Path.Combine(root, "linux", "musl-x64", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\alpine-x64\\native\\libe_sqlite3.so");
+                    f.WriteAttributeString("target", "runtimes\\linux-musl-x64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
