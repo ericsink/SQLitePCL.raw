@@ -25,7 +25,6 @@ public static class projects
 	// Each item in these Lists corresponds to a project file that will be
 	// generated.
 	//
-	public static List<config_sqlite3> items_sqlite3 = new List<config_sqlite3>();
 	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
@@ -38,8 +37,6 @@ public static class projects
 	//
 	public static void init()
 	{
-		init_sqlite3();
-
 		init_cppinterop();
 
         init_csproj();
@@ -49,32 +46,6 @@ public static class projects
 		init_testapps();
 
 		init_esqlite3();
-	}
-
-	private static void init_sqlite3()
-	{
-#if not
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x86" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x64" });
-
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="arm" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x64" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110", cpu="x86" });
-
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="arm" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x64" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120", cpu="x86" });
-
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="arm" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x64" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v140", cpu="x86" });
-
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="arm" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v110_wp80", cpu="x86" });
-
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="arm" });
-		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="x86" });
-#endif
 	}
 
 	private static void init_cppinterop()
@@ -445,37 +416,6 @@ public static class projects
 		}
 	}
 
-	public static config_sqlite3 find_sqlite3(string toolset, string cpu)
-	{
-		foreach (config_sqlite3 cfg in projects.items_sqlite3)
-		{
-			if (
-					(cfg.toolset == toolset)
-					&& (cfg.cpu == cpu)
-			   )
-			{
-				return cfg;
-			}
-		}
-		//throw new Exception();
-		return null;
-	}
-
-	public static List<config_sqlite3> find_sqlite3(string toolset)
-	{
-		var result = new List<config_sqlite3>();
-		foreach (config_sqlite3 cfg in projects.items_sqlite3)
-		{
-			if (
-					(cfg.toolset == toolset)
-			   )
-			{
-				result.Add(cfg);
-			}
-		}
-		return result;
-	}
-
 	public static config_csproj find(string area, string env)
     {
 		foreach (config_csproj cfg in projects.items_csproj)
@@ -614,60 +554,6 @@ public static class config_info_ext
 		return proj;
 	}
 
-}
-
-public class config_sqlite3 : config_info
-{
-	public string toolset;
-	public string cpu;
-	public string guid;
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, "e_sqlite3.dll");
-	}
-
-	private string area()
-	{
-		return "sqlite3";
-	}
-
-    string rid()
-    {
-        return string.Format("{0}-{1}", projects.rid_front_half(toolset), cpu);
-    }
-
-	public string get_nuget_target_path()
-	{
-		return string.Format("runtimes\\{0}\\native\\", rid());
-	}
-
-	public string get_name()
-	{
-		return string.Format("{0}.{1}.{2}", area(), toolset, cpu);
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.vcxproj", get_name());
-	}
-
-	public string fixed_cpu()
-	{
-		if (cpu == "x86")
-		{
-			return "Win32";
-		}
-		else
-		{
-			return cpu;
-		}
-	}
 }
 
 public class config_cppinterop : config_info
@@ -1839,210 +1725,6 @@ public static class gen
 
 	}
 
-	private static void gen_sqlite3(config_sqlite3 cfg, string root, string top)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteAttributeString("Label", "ProjectConfigurations");
-
-			f.WriteStartElement("ProjectConfiguration");
-			f.WriteAttributeString("Include", string.Format("Debug|{0}", cfg.fixed_cpu()));
-			f.WriteElementString("Configuration", "Debug");
-			f.WriteElementString("Platform", cfg.fixed_cpu());
-			f.WriteEndElement(); // ProjectConfiguration
-
-			f.WriteStartElement("ProjectConfiguration");
-			f.WriteAttributeString("Include", string.Format("Release|{0}", cfg.fixed_cpu()));
-			f.WriteElementString("Configuration", "Release");
-			f.WriteElementString("Platform", cfg.fixed_cpu());
-			f.WriteEndElement(); // ProjectConfiguration
-
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			f.WriteElementString("Keyword", "Win32Proj");
-			f.WriteElementString("DefaultLanguage", "en-us");
-
-			switch (cfg.toolset)
-			{
-				case "v110_xp":
-					break;
-				case "v110":
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					f.WriteElementString("WindowsAppContainer", "true");
-					f.WriteElementString("AppContainerApplication", "true");
-					break;
-				case "v120":
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("WindowsAppContainer", "true");
-					f.WriteElementString("AppContainerApplication", "true");
-					break;
-				case "v140":
-					f.WriteElementString("MinimumVisualStudioVersion", "14.0");
-					f.WriteElementString("ApplicationType", "Windows Store");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationTypeRevision", "10.0");
-					f.WriteElementString("WindowsTargetPlatformMinVersion", "10.0.10240.0");
-					f.WriteElementString("WindowsTargetPlatformVersion", "10.0.10586.0");
-					break;
-				case "v110_wp80":
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					break;
-				case "v120_wp81":
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
-				default:
-					throw new Exception("unknown toolset");
-			}
-
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.Default.props");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ConfigurationType", "DynamicLibrary");
-			f.WriteElementString("TargetName", "e_sqlite3");
-
-			f.WriteElementString("PlatformToolset", cfg.toolset);
-
-			f.WriteEndElement(); // PropertyGroup
-
-			switch (cfg.toolset)
-			{
-				case "v110_xp":
-					break;
-				case "v110":
-				case "v120":
-				case "v110_wp80":
-				case "v120_wp81":
-				case "v140":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "SQLITE_OS_WINRT");
-					f.WriteEndElement(); // ClCompile
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				default:
-					throw new Exception("unknown toolset");
-			}
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteStartElement("ClCompile");
-			write_cpp_define(f, "SQLITE_WIN32_FILEMAPPING_API=1");
-			f.WriteEndElement(); // ClCompile
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Debug' "));
-			f.WriteElementString("UseDebugLibraries", "true");
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
-			f.WriteElementString("UseDebugLibraries", "false");
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.props");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
-			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteStartElement("ClCompile");
-			write_cpp_define(f, "_USRDLL");
-			write_cpp_define(f, "SQLITE_API=__declspec(dllexport)");
-			//write_cpp_define(f, "SQLITE_OMIT_LOAD_EXTENSION");
-			// TODO write_cpp_define(f, "SQLITE_THREADSAFE=whatever");
-			//write_cpp_define(f, "SQLITE_TEMP_STORE=whatever");
-			write_cpp_define(f, "SQLITE_DEFAULT_FOREIGN_KEYS=1");
-			write_cpp_define(f, "SQLITE_ENABLE_RTREE");
-			write_cpp_define(f, "SQLITE_ENABLE_JSON1");
-			write_cpp_define(f, "SQLITE_ENABLE_FTS4");
-			write_cpp_define(f, "SQLITE_ENABLE_FTS5");
-			write_cpp_define(f, "SQLITE_ENABLE_FTS3_PARENTHESIS");
-			write_cpp_define(f, "SQLITE_ENABLE_COLUMN_METADATA");
-			f.WriteElementString("PrecompiledHeader", "NotUsing");
-			f.WriteElementString("CompileAsWinRT", "false");
-			f.WriteElementString("SDLCheck", "false");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("SubSystem", "Console");
-			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			f.WriteElementString("GenerateWindowsMetadata", "false");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteAttributeString("Condition", string.Format("'$(Configuration)'=='{0}' ", "Debug"));
-			f.WriteStartElement("ClCompile");
-			f.WriteElementString("Optimization", "Disabled");
-			write_cpp_define(f, "_DEBUG");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("GenerateDebugInformation", "true");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteStartElement("ClCompile");
-			f.WriteAttributeString("Condition", string.Format("'$(Configuration)'=='{0}' ", "Release"));
-			f.WriteElementString("Optimization", "MaxSpeed");
-			f.WriteElementString("FunctionLevelLinking", "true");
-			f.WriteElementString("IntrinsicFunctions", "true");
-			if (cfg.toolset == "v110_xp") {
-				f.WriteElementString("RuntimeLibrary", "MultiThreaded");
-			}
-			write_cpp_define(f, "NDEBUG");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("GenerateDebugInformation", "false");
-			f.WriteElementString("EnableCOMDATFolding", "true");
-			f.WriteElementString("OptimizeReferences", "true");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemGroup");
-			{
-				string path = Path.Combine(root, "sqlite3\\sqlite3.c");
-				f.WriteStartElement("ClCompile");
-				f.WriteAttributeString("Include", path);
-				f.WriteEndElement(); // ClCompile
-			}
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.targets");
-			f.WriteEndElement(); // Import
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
 	private static void gen_cppinterop(config_cppinterop cfg, string root, string top)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -2747,17 +2429,6 @@ public static class gen
 			f.WriteLine("VisualStudioVersion = 14.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
 
-			foreach (config_sqlite3 cfg in projects.items_sqlite3)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CPP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("EndProject");
-			}
-
 			foreach (config_cppinterop cfg in projects.items_cppinterop)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
@@ -2804,13 +2475,6 @@ public static class gen
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_sqlite3 cfg in projects.items_sqlite3)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
 			foreach (config_cppinterop cfg in projects.items_cppinterop)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
@@ -2976,21 +2640,6 @@ public static class gen
 			f.WriteStartElement("file");
 			f.WriteAttributeString("src", s);
 			f.WriteAttributeString("target", string.Format("build\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteEndElement(); // file
-		}
-	}
-
-	private static void write_nuspec_file_entry(config_sqlite3 cfg, XmlWriter f)
-	{
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", s);
-			f.WriteAttributeString("target", cfg.get_nuget_target_path());
 			f.WriteEndElement(); // file
 		}
 	}
@@ -4978,11 +4627,6 @@ public static class gen
 		// --------------------------------
 		// assign all the guids
 
-		foreach (config_sqlite3 cfg in projects.items_sqlite3)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -5018,11 +4662,6 @@ public static class gen
 
 		// --------------------------------
 		// generate all the project files
-
-		foreach (config_sqlite3 cfg in projects.items_sqlite3)
-		{
-			gen_sqlite3(cfg, root, top);
-		}
 
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
 		{
