@@ -3041,7 +3041,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -4455,19 +4455,15 @@ public static class gen
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
-			foreach (config_sqlite3 other in projects.items_sqlite3)
+			var front = projects.rid_front_half(toolset);
+			Action<string> write_item = (cpu) =>
 			{
-				if (other.toolset != toolset)
-				{
-					continue;
-				}
-
 				f.WriteStartElement("ItemGroup");
-				f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", other.cpu.ToLower()));
+				f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cpu.ToLower()));
 
 				f.WriteStartElement("Content");
 				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\{0}-{1}\\native\\e_sqlite3.dll", front, cpu));
 				// TODO link
 				// TODO condition/exists ?
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
@@ -4475,6 +4471,40 @@ public static class gen
 				f.WriteEndElement(); // Content
 
 				f.WriteEndElement(); // ItemGroup
+			};
+
+			switch (toolset)
+			{
+				case "v110_xp":
+					write_item("x86");
+					write_item("x64");
+					write_item("arm");
+					break;
+				case "v110":
+					write_item("arm");
+					write_item("x64");
+					write_item("x86");
+					break;
+				case "v120":
+					write_item("arm");
+					write_item("x64");
+					write_item("x86");
+					break;
+				case "v140":
+					write_item("arm");
+					write_item("x64");
+					write_item("x86");
+					break;
+				case "v110_wp80":
+					write_item("arm");
+					write_item("x86");
+					break;
+				case "v120_wp81":
+					write_item("arm");
+					write_item("x86");
+					break;
+				default:
+					throw new NotImplementedException();
 			}
 
 			f.WriteEndElement(); // Target
@@ -4509,17 +4539,20 @@ public static class gen
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-			foreach (config_sqlite3 other in projects.items_sqlite3)
 			{
-				if (toolset != other.toolset)
-				{
-					continue;
-				}
-
 				f.WriteStartElement("Content");
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine(other.get_nuget_target_path(), "e_sqlite3.dll")));
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine("runtimes\\win-x86\\native", "e_sqlite3.dll")));
 				// TODO condition/exists ?
-				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", other.cpu.ToLower()));
+				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", "x86"));
+				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+				f.WriteElementString("Pack", "false");
+				f.WriteEndElement(); // Content
+			}
+			{
+				f.WriteStartElement("Content");
+				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine("runtimes\\win-x64\\native", "e_sqlite3.dll")));
+				// TODO condition/exists ?
+				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", "x64"));
 				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 				f.WriteElementString("Pack", "false");
 				f.WriteEndElement(); // Content
