@@ -293,7 +293,7 @@ public static class cb
         }
         public string subdir(string libname)
         {
-            var s = string.Format("{0}\\{1}\\{2}\\{3}", libname, v, f, m);
+            var s = string.Format("{0}\\win\\{1}\\{2}\\{3}", libname, v, f, m);
             return s;
         }
     }

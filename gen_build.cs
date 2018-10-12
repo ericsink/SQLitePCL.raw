@@ -1875,6 +1875,7 @@ public static class gen
 					"cb",
                     "bin",
 					"e_sqlite3",
+                    "win",
 					"v110",
 					"wp80",
 					cfg.cpu,
@@ -2690,7 +2691,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -2845,7 +2846,7 @@ public static class gen
 			Action<string,string,string,string> write_file_entry = (toolset, flavor, arch, rid) =>
 			{
 				f.WriteStartElement("file");
-				f.WriteAttributeString("src", string.Format("..\\cb\\bin\\e_sqlite3\\{0}\\{1}\\{2}\\e_sqlite3.dll", toolset, flavor, arch));
+				f.WriteAttributeString("src", string.Format("..\\cb\\bin\\e_sqlite3\\win\\{0}\\{1}\\{2}\\e_sqlite3.dll", toolset, flavor, arch));
 				f.WriteAttributeString("target", string.Format("runtimes\\{0}\\native\\", rid));
 				f.WriteEndElement(); // file
 			};
@@ -3235,32 +3236,32 @@ public static class gen
 			switch (plat) {
 				case "windows":
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\x86\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-x86\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\x64\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\x64\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-x64\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\plain\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\arm\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-arm\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\x64\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\x64\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-x64\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\x86\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-x86\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\v140\\appcontainer\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\arm\\sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-arm\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
