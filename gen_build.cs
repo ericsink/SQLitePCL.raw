@@ -53,6 +53,7 @@ public static class projects
 
 	private static void init_sqlite3()
 	{
+#if not
 		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x86" });
 		items_sqlite3.Add(new config_sqlite3 { toolset="v110_xp", cpu="x64" });
 
@@ -73,6 +74,7 @@ public static class projects
 
 		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="arm" });
 		items_sqlite3.Add(new config_sqlite3 { toolset="v120_wp81", cpu="x86" });
+#endif
 	}
 
 	private static void init_cppinterop()
@@ -674,17 +676,6 @@ public class config_cppinterop : config_info
 	public string cpu;
 	public string guid;
 
-	public config_sqlite3 get_sqlite3_item()
-	{
-		string toolset = projects.cs_env_to_toolset(env);
-		config_sqlite3 other = projects.find_sqlite3(toolset, cpu);
-		if (other == null)
-		{
-			throw new Exception(get_name());
-		}
-		return other;
-	}
-
 	private void add_product(List<string> a, string s)
 	{
 		a.Add(Path.Combine(get_name(), "bin", "release", s));
@@ -746,16 +737,6 @@ public class config_esqlite3 : config_info
 {
 	public string guid;
 	public string toolset;
-
-	public List<config_sqlite3> get_sqlite3_items()
-	{
-		List<config_sqlite3> other = projects.find_sqlite3(toolset);
-		if (other == null)
-		{
-			throw new Exception(get_name());
-		}
-		return other;
-	}
 
 	private void add_product(List<string> a, string s)
 	{
@@ -2206,10 +2187,17 @@ public static class gen
 			f.WriteStartElement("Link");
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			string sqlite3_item_path = Path.Combine(top, cfg.get_sqlite3_item().get_name(),
+			string sqlite3_item_path = Path.Combine(
+					top,
+					"..",
+					"cb",
                     "bin",
-                    "release",
-                    "e_sqlite3.lib");
+					"e_sqlite3",
+					"v110",
+					"wp80",
+					cfg.cpu,
+                    "e_sqlite3.lib"
+					);
 			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
 			//f.WriteElementString("GenerateWindowsMetadata", "false");
 			f.WriteEndElement(); // Link
@@ -2261,21 +2249,6 @@ public static class gen
 				case "wp81_sl":
 					break;
 			}
-
-#if not
-			// TODO if this supported other ways of getting sqlite, like
-			// _dynamic_sqlite3 or _static_sqlcipher, the following would be different
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteStartElement("ProjectReference");
-			{
-				config_sqlite3 other = cfg.get_sqlite3_item();
-				f.WriteAttributeString("Include", other.get_project_filename());
-				f.WriteElementString("Project", other.guid);
-			}
-			f.WriteEndElement(); // ProjectReference
-			f.WriteEndElement(); // ItemGroup
-#endif
 
 			f.WriteStartElement("Import");
 			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.targets");
@@ -2793,11 +2766,6 @@ public static class gen
 						cfg.get_project_filename(),
 						cfg.guid
 						);
-				f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-				config_sqlite3 other = cfg.get_sqlite3_item();
-				f.WriteLine("\t\t{0} = {0}", other.guid);
-				f.WriteLine("\tEndProjectSection");
-
 				f.WriteLine("EndProject");
 			}
 
@@ -3073,7 +3041,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -3225,20 +3193,28 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_sqlite3 other in cfg.get_sqlite3_items()) 
+			switch (cfg.toolset)
 			{
-				write_nuspec_file_entry(
-						other, 
-						f
-						);
+				case "v110_xp":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-x86\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\x64\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-x64\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
+					f.WriteEndElement(); // file
+					break;
+				default:
+					throw new NotImplementedException(string.Format("esqlite3 nuspec: ", cfg.toolset));
 			}
-            if (cfg.toolset == "v110_xp")
-            {
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\arm\\e_sqlite3.dll");
-                f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
-                f.WriteEndElement(); // file
-            }
+
 			string tname;
 			switch (cfg.toolset) {
 				case "v110_xp":
