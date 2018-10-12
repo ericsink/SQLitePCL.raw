@@ -3197,13 +3197,13 @@ public static class gen
 			{
 				case "v110_xp":
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-x86\\native\\");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\xp\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win-x86\\native\\");
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\x64\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-x64\\native\\");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\xp\\x64\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win-x64\\native\\");
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
@@ -3211,8 +3211,78 @@ public static class gen
 					f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
 					f.WriteEndElement(); // file
 					break;
+				case "v110":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\x64\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-x64\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win8-x86\\native\\");
+					f.WriteEndElement(); // file
+					break;
+				case "v120":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win81-arm\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\x64\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win81-x64\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win81-x86\\native\\");
+					f.WriteEndElement(); // file
+					break;
+				case "v140":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win10-arm\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\x64\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win10-x64\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\win10-x86\\native\\");
+					f.WriteEndElement(); // file
+					break;
+				case "v110_wp80":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\wp80\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\wp80-arm\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\wp80\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\wp80-x86\\native\\");
+					f.WriteEndElement(); // file
+					break;
+				case "v120_wp81":
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\wp81\\arm\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\wpa81-arm\\native\\");
+					f.WriteEndElement(); // file
+
+					f.WriteStartElement("file");
+					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\wp81\\x86\\e_sqlite3.dll");
+					f.WriteAttributeString("target", "runtimes\\wpa81-x86\\native\\");
+					f.WriteEndElement(); // file
+					break;
 				default:
-					throw new NotImplementedException(string.Format("esqlite3 nuspec: ", cfg.toolset));
+					throw new NotImplementedException(string.Format("esqlite3 nuspec: {0}", cfg.toolset));
 			}
 
 			string tname;
