@@ -3193,93 +3193,43 @@ public static class gen
 
 			f.WriteStartElement("files");
 
+			Action<string,string,string,string> write_file_entry = (toolset, flavor, arch, rid) =>
+			{
+				f.WriteStartElement("file");
+				f.WriteAttributeString("src", string.Format("..\\cb\\bin\\e_sqlite3\\{0}\\{1}\\{2}\\e_sqlite3.dll", toolset, flavor, arch));
+				f.WriteAttributeString("target", string.Format("runtimes\\{0}\\native\\", rid));
+				f.WriteEndElement(); // file
+			};
+
 			switch (cfg.toolset)
 			{
 				case "v110_xp":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\xp\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win-x86\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\xp\\x64\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win-x64\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\plain\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v110", "xp", "x86", "win-x86");
+					write_file_entry("v110", "xp", "x64", "win-x64");
+					write_file_entry("v140", "plain", "arm", "win8-arm");
 					break;
 				case "v110":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-arm\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\x64\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-x64\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\appcontainer\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win8-x86\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v110", "appcontainer", "arm", "win8-arm");
+					write_file_entry("v110", "appcontainer", "x64", "win8-x64");
+					write_file_entry("v110", "appcontainer", "x86", "win8-x86");
 					break;
 				case "v120":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win81-arm\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\x64\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win81-x64\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\appcontainer\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win81-x86\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v120", "appcontainer", "arm", "win81-arm");
+					write_file_entry("v120", "appcontainer", "x64", "win81-x64");
+					write_file_entry("v120", "appcontainer", "x86", "win81-x86");
 					break;
 				case "v140":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win10-arm\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\x64\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win10-x64\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v140\\appcontainer\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\win10-x86\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v140", "appcontainer", "arm", "win10-arm");
+					write_file_entry("v140", "appcontainer", "x64", "win10-x64");
+					write_file_entry("v140", "appcontainer", "x86", "win10-x86");
 					break;
 				case "v110_wp80":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\wp80\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\wp80-arm\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v110\\wp80\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\wp80-x86\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v110", "wp80", "arm", "wp80-arm");
+					write_file_entry("v110", "wp80", "x86", "wp80-x86");
 					break;
 				case "v120_wp81":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\wp81\\arm\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\wpa81-arm\\native\\");
-					f.WriteEndElement(); // file
-
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", "..\\cb\\bin\\e_sqlite3\\v120\\wp81\\x86\\e_sqlite3.dll");
-					f.WriteAttributeString("target", "runtimes\\wpa81-x86\\native\\");
-					f.WriteEndElement(); // file
+					write_file_entry("v120", "wp81", "arm", "wpa81-arm");
+					write_file_entry("v120", "wp81", "x86", "wpa81-x86");
 					break;
 				default:
 					throw new NotImplementedException(string.Format("esqlite3 nuspec: {0}", cfg.toolset));
