@@ -84,6 +84,90 @@ public static class cb
         }
     }
 
+    static void write_linux(
+        string libname,
+		linux_target t,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+	{
+        var subdir = t.subdir(libname);
+        var dest_sh = t.sh(libname);
+        var dest_gccargs = t.gccargs(libname);
+		string compiler;
+		using (TextWriter tw = new StreamWriter(dest_gccargs))
+		{
+			switch (t.target)
+			{
+				case "x64":
+					compiler = "gcc";
+					tw.Write(" -m64\n");
+					break;
+
+				case "x86":
+					compiler = "gcc";
+					tw.Write(" -m32\n");
+					break;
+
+				case "arm64":
+					compiler = "aarch64-linux-gnu-gcc";
+					break;
+
+				case "armhf":
+					compiler = "arm-linux-gnueabihf-gcc";
+					break;
+
+				case "armsf":
+					compiler = "arm-linux-gnueabi-gcc";
+					break;
+
+				case "musl-x64":
+					compiler = "musl-gcc";
+					tw.Write(" -m64\n");
+					break;
+
+				default:
+					throw new NotImplementedException();
+			}
+			tw.Write(" -shared\n");
+			tw.Write(" -fPIC\n");
+			tw.Write(" -O\n");
+			foreach (var d in defines.Keys.OrderBy(q => q))
+			{
+				var v = defines[d];
+				tw.Write(" -D{0}", d);
+				if (v != null)
+				{
+					tw.Write("={0}", v);
+				}
+				tw.Write("\n");
+			}
+			tw.Write(" -DNDEBUG\n");
+			foreach (var p in includes.Select(x => x.Replace("\\", "/")))
+			{
+				tw.Write(" -I{0}\n", p);
+			}
+            tw.Write(" -o \"bin/{1}/lib{0}.so\"", libname, subdir);
+            foreach (var s in cfiles.Select(x => x.Replace("\\", "/")))
+            {
+                tw.Write(" {0}\n", s);
+            }
+            foreach (var s in libs.Select(x => x.Replace("\\", "/")))
+            {
+                tw.Write(" {0}\n", s);
+            }
+		}
+		using (TextWriter tw = new StreamWriter(dest_sh))
+        {
+			tw.Write("#!/bin/sh\n");
+            tw.Write("mkdir -p \"./obj/{0}\"\n", subdir);
+            tw.Write("mkdir -p \"./bin/{0}\"\n", subdir);
+			tw.Write("{0} @{1}\n", compiler, dest_gccargs);
+        }
+    }
+
     static void write_bat(
         string libname,
         trio t,
@@ -298,6 +382,37 @@ public static class cb
         }
     }
 
+    class linux_target
+    {
+        public string target { get; private set; }
+
+        public linux_target(string t)
+        {
+			target = t;
+        }
+
+        public string basename(string libname)
+        {
+            var dest = string.Format("linux_{0}_{1}", libname, target);
+            return dest;
+        }
+        public string sh(string libname)
+        {
+            var dest = string.Format("{0}.sh", basename(libname));
+            return dest;
+        }
+        public string gccargs(string libname)
+        {
+            var dest = string.Format("{0}.gccargs", basename(libname));
+            return dest;
+        }
+        public string subdir(string libname)
+        {
+            var s = string.Format("{0}/linux/{1}", libname, target);
+            return s;
+        }
+    }
+
     static void write_multibat(
         string libname,
         IList<trio> trios,
@@ -329,6 +444,37 @@ public static class cb
         }
     }
 
+    static void write_linux_multi(
+        string libname,
+        IList<linux_target> targets,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+    {
+        foreach (var t in targets)
+        {
+            write_linux(
+                libname,
+                t,
+                cfiles,
+                defines,
+                includes,
+                libs
+                );
+        }
+
+		using (TextWriter tw = new StreamWriter(string.Format("linux_{0}.sh", libname)))
+        {
+			tw.Write("#!/bin/sh\n");
+            foreach (var t in targets)
+            {
+                tw.Write("./{0} > err_{1}.buildoutput.txt 2>&1\n", t.sh(libname), t.basename(libname));
+            }
+        }
+    }
+
     static void add_basic_sqlite3_defines(Dictionary<string,string> defines)
     {
         defines["SQLITE_ENABLE_COLUMN_METADATA"] = null;
@@ -338,8 +484,18 @@ public static class cb
         defines["SQLITE_ENABLE_JSON1"] = null;
         defines["SQLITE_ENABLE_RTREE"] = null;
         defines["SQLITE_DEFAULT_FOREIGN_KEYS"] = "1";
+    }
+
+    static void add_win_sqlite3_defines(Dictionary<string,string> defines)
+    {
+        defines["SQLITE_OS_WIN"] = null;
         defines["SQLITE_WIN32_FILEMAPPING_API"] = "1";
         defines["SQLITE_API"] = "__declspec(dllexport)";
+    }
+
+    static void add_linux_sqlite3_defines(Dictionary<string,string> defines)
+    {
+        defines["SQLITE_OS_UNIX"] = null;
     }
 
     static void write_e_sqlite3(
@@ -349,64 +505,97 @@ public static class cb
         {
             "..\\sqlite3\\sqlite3.c",
         };
-        var defines = new Dictionary<string,string>();
-		add_basic_sqlite3_defines(defines);
-        var includes = new string[]
-        {
-        };
-        var libs = new string[]
-        {
-        };
 
-        var trios = new trio[]
-        {
-            new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
-            new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
+		{
+			var trios = new trio[]
+			{
+				new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
+				new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
 
-            new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
-            new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
+				new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
+				new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.xp, Machine.x86),
-            new trio(VCVersion.v110, Flavor.xp, Machine.x64),
-            new trio(VCVersion.v110, Flavor.xp, Machine.arm),
+				new trio(VCVersion.v110, Flavor.xp, Machine.x86),
+				new trio(VCVersion.v110, Flavor.xp, Machine.x64),
+				new trio(VCVersion.v110, Flavor.xp, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v110, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v110, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v110, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v110, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v110, Flavor.plain, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
 
 #if not
-            new trio(VCVersion.v120, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v120, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v120, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v120, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v120, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v120, Flavor.plain, Machine.arm),
 #endif
 
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
 
-            new trio(VCVersion.v140, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v140, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v140, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v140, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v140, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v140, Flavor.plain, Machine.arm),
 
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
 
-        };
+			};
 
-        write_multibat(
-            "e_sqlite3",
-            trios,
-            cfiles,
-            defines,
-            includes,
-            libs
-            );
+			var defines = new Dictionary<string,string>();
+			add_basic_sqlite3_defines(defines);
+			add_win_sqlite3_defines(defines);
+			var includes = new string[]
+			{
+			};
+			var libs = new string[]
+			{
+			};
+			write_multibat(
+				"e_sqlite3",
+				trios,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
 
+		{
+			var defines = new Dictionary<string,string>();
+			add_basic_sqlite3_defines(defines);
+			add_linux_sqlite3_defines(defines);
+			var includes = new string[]
+			{
+			};
+			var libs = new string[]
+			{
+			};
+
+			var targets = new linux_target[]
+			{
+				new linux_target("x64"),
+				new linux_target("x86"),
+				new linux_target("musl-x64"),
+				new linux_target("arm64"),
+				new linux_target("armhf"),
+				new linux_target("armsf"),
+			};
+
+			write_linux_multi(
+				"e_sqlite3",
+				targets,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
     }
 
     static void write_sqlcipher(
