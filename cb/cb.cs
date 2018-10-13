@@ -153,7 +153,7 @@ public static class cb
 			{
 				tw.Write(" -I{0}\n", p);
 			}
-            tw.Write(" -o \"bin/{1}/lib{0}.so\"", libname, subdir);
+            tw.Write(" -o \"bin/{1}/lib{0}.so\"\n", libname, subdir);
             foreach (var s in cfiles.Select(x => x.Replace("\\", "/")))
             {
                 tw.Write(" {0}\n", s);
