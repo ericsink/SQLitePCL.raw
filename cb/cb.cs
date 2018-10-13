@@ -84,6 +84,10 @@ public static class cb
         }
     }
 
+// sudo apt-get install gcc-arm-linux-gnueabihf
+// sudo apt-get install musl-dev musl-tools
+// sudo apt-get install gcc-aarch64-linux-gnu
+
     static void write_linux(
         string libname,
 		linux_target t,
@@ -1046,80 +1050,123 @@ public static class cb
             cfiles.Add(Path.Combine(tomcrypt_src_dir, s));
         }
 
-        var defines = new Dictionary<string,string>
-        {
-            { "_WIN32", null }, // for tomcrypt
-            { "ENDIAN_LITTLE", null }, // for tomcrypt arm
-            { "LTC_NO_PROTOTYPES", null },
-            { "LTC_SOURCE", null },
-            { "SQLITE_HAS_CODEC", null },
-            { "SQLITE_TEMP_STORE", "2" },
-            { "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
-            { "CIPHER", "\\\"AES-256-CBC\\\"" },
-        };
-		add_basic_sqlite3_defines(defines);
-
         var includes = new List<string>();
         includes.Add(sqlcipher_dir);
         includes.Add(tomcrypt_include_dir);
 
-        var libs = new string[]
-        {
-            "advapi32.lib",
-			"bcrypt.lib",
-        };
+		{
+			var defines = new Dictionary<string,string>
+			{
+				{ "_WIN32", null }, // for tomcrypt
+				{ "ENDIAN_LITTLE", null }, // for tomcrypt arm
+				{ "LTC_NO_PROTOTYPES", null },
+				{ "LTC_SOURCE", null },
+				{ "SQLITE_HAS_CODEC", null },
+				{ "SQLITE_TEMP_STORE", "2" },
+				{ "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
+				{ "CIPHER", "\\\"AES-256-CBC\\\"" },
+			};
+			add_basic_sqlite3_defines(defines);
+			add_win_sqlite3_defines(defines);
 
-        var trios = new trio[]
-        {
+			var libs = new string[]
+			{
+				"advapi32.lib",
+				"bcrypt.lib",
+			};
+
+			var trios = new trio[]
+			{
 #if not
-            new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
-            new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
+				new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
+				new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
 
-            new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
-            new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
+				new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
+				new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.xp, Machine.x86),
-            new trio(VCVersion.v110, Flavor.xp, Machine.x64),
-            new trio(VCVersion.v110, Flavor.xp, Machine.arm),
+				new trio(VCVersion.v110, Flavor.xp, Machine.x86),
+				new trio(VCVersion.v110, Flavor.xp, Machine.x64),
+				new trio(VCVersion.v110, Flavor.xp, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v110, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v110, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v110, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v110, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v110, Flavor.plain, Machine.arm),
 
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
 #endif
 
 #if not
-            new trio(VCVersion.v120, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v120, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v120, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v120, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v120, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v120, Flavor.plain, Machine.arm),
 
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
 #endif
 
-            new trio(VCVersion.v140, Flavor.plain, Machine.x86),
-            new trio(VCVersion.v140, Flavor.plain, Machine.x64),
-            new trio(VCVersion.v140, Flavor.plain, Machine.arm),
+				new trio(VCVersion.v140, Flavor.plain, Machine.x86),
+				new trio(VCVersion.v140, Flavor.plain, Machine.x64),
+				new trio(VCVersion.v140, Flavor.plain, Machine.arm),
 
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
-            new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
+				new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
 
-        };
+			};
 
-        write_multibat(
-            "sqlcipher",
-            trios,
-            cfiles,
-            defines,
-            includes,
-            libs
-            );
+			write_multibat(
+				"sqlcipher",
+				trios,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
 
+		{
+			var defines = new Dictionary<string,string>
+			{
+				//{ "_WIN32", null }, // for tomcrypt
+				{ "ENDIAN_LITTLE", null }, // for tomcrypt arm
+				{ "LTC_NO_PROTOTYPES", null },
+				{ "LTC_SOURCE", null },
+				{ "SQLITE_HAS_CODEC", null },
+				{ "SQLITE_TEMP_STORE", "2" },
+				{ "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
+				{ "CIPHER", "\\\"AES-256-CBC\\\"" },
+			};
+			add_basic_sqlite3_defines(defines);
+			add_linux_sqlite3_defines(defines);
+
+			var libs = new string[]
+			{
+				//"advapi32.lib",
+				//"bcrypt.lib",
+			};
+
+			var targets = new linux_target[]
+			{
+				new linux_target("x64"),
+				new linux_target("x86"),
+				new linux_target("musl-x64"),
+				new linux_target("arm64"),
+				new linux_target("armhf"),
+				new linux_target("armsf"),
+			};
+
+			write_linux_multi(
+				"sqlcipher",
+				targets,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
     }
 
     public static void Main()
