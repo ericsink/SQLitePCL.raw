@@ -249,9 +249,9 @@ public static class cb
         }
     }
 
-    static void write_bat(
+    static void write_win(
         string libname,
-        trio t,
+        win_target t,
         IList<string> cfiles,
         Dictionary<string,string> defines,
         IList<string> includes,
@@ -428,13 +428,13 @@ public static class cb
         }
     }
 
-    class trio
+    class win_target
     {
         public VCVersion v { get; private set; }
         public Flavor f { get; private set; }
         public Machine m { get; private set; }
 
-        public trio(VCVersion av, Flavor af, Machine am)
+        public win_target(VCVersion av, Flavor af, Machine am)
         {
             v = av;
             f = af;
@@ -525,9 +525,9 @@ public static class cb
         }
     }
 
-    static void write_multibat(
+    static void write_win_multi(
         string libname,
-        IList<trio> trios,
+        IList<win_target> trios,
         IList<string> cfiles,
         Dictionary<string,string> defines,
         IList<string> includes,
@@ -536,7 +536,7 @@ public static class cb
     {
         foreach (var t in trios)
         {
-            write_bat(
+            write_win(
                 libname,
                 t,
                 cfiles,
@@ -659,43 +659,43 @@ public static class cb
         };
 
 		{
-			var trios = new trio[]
+			var trios = new win_target[]
 			{
-				new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
-				new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.wp80, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.wp80, Machine.arm),
 
-				new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
-				new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.wp81, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.wp81, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.xp, Machine.x86),
-				new trio(VCVersion.v110, Flavor.xp, Machine.x64),
-				new trio(VCVersion.v110, Flavor.xp, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v110, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v110, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.arm),
 
 #if not
-				new trio(VCVersion.v120, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v120, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v120, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.arm),
 #endif
 
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.arm),
 
-				new trio(VCVersion.v140, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v140, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v140, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.arm),
 
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.arm),
 
 			};
 
@@ -708,7 +708,7 @@ public static class cb
 			var libs = new string[]
 			{
 			};
-			write_multibat(
+			write_win_multi(
 				"e_sqlite3",
 				trios,
 				cfiles,
@@ -1252,49 +1252,49 @@ public static class cb
 				"bcrypt.lib",
 			};
 
-			var trios = new trio[]
+			var trios = new win_target[]
 			{
 #if not
-				new trio(VCVersion.v110, Flavor.wp80, Machine.x86),
-				new trio(VCVersion.v110, Flavor.wp80, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.wp80, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.wp80, Machine.arm),
 
-				new trio(VCVersion.v120, Flavor.wp81, Machine.x86),
-				new trio(VCVersion.v120, Flavor.wp81, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.wp81, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.wp81, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.xp, Machine.x86),
-				new trio(VCVersion.v110, Flavor.xp, Machine.x64),
-				new trio(VCVersion.v110, Flavor.xp, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.xp, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v110, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v110, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.plain, Machine.arm),
 
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v110, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v110, Flavor.appcontainer, Machine.arm),
 #endif
 
 #if not
-				new trio(VCVersion.v120, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v120, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v120, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v120, Flavor.plain, Machine.arm),
 
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v120, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v120, Flavor.appcontainer, Machine.arm),
 #endif
 
-				new trio(VCVersion.v140, Flavor.plain, Machine.x86),
-				new trio(VCVersion.v140, Flavor.plain, Machine.x64),
-				new trio(VCVersion.v140, Flavor.plain, Machine.arm),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.x86),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.x64),
+				new win_target(VCVersion.v140, Flavor.plain, Machine.arm),
 
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x86),
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.x64),
-				new trio(VCVersion.v140, Flavor.appcontainer, Machine.arm),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.x86),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.x64),
+				new win_target(VCVersion.v140, Flavor.appcontainer, Machine.arm),
 
 			};
 
-			write_multibat(
+			write_win_multi(
 				"sqlcipher",
 				trios,
 				cfiles,
