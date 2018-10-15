@@ -249,7 +249,7 @@ public static class cb
         }
     }
 
-    static void write_mac(
+    static void write_mac_dynamic(
         string libname,
         IList<string> cfiles,
         Dictionary<string,string> defines,
@@ -257,7 +257,51 @@ public static class cb
         IList<string> libs
         )
 	{
-        var dest_sh = string.Format("mac_{0}.sh", libname);
+        var dest_sh = string.Format("mac_dynamic_{0}.sh", libname);
+		using (TextWriter tw = new StreamWriter(dest_sh))
+        {
+			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
+		    tw.Write("mkdir -p \"./bin/{0}/mac\"\n", libname);
+			tw.Write("xcrun");
+			tw.Write(" --sdk macosx");
+			tw.Write(" clang");
+			tw.Write(" -dynamiclib");
+			tw.Write(" -O");
+			tw.Write(" -arch i386");
+			tw.Write(" -arch x86_64");
+			foreach (var d in defines.Keys.OrderBy(q => q))
+			{
+				var v = defines[d];
+				tw.Write(" -D{0}", d);
+				if (v != null)
+				{
+					tw.Write("={0}", v);
+				}
+			}
+			foreach (var p in includes)
+			{
+				tw.Write(" -I{0}", p);
+			}
+			tw.Write(" -o ./bin/{0}/mac/lib{0}.dylib", libname);
+			foreach (var s in cfiles)
+			{
+				tw.Write(" {0}", s);
+			}
+			tw.Write(" \n");
+		}
+	}
+
+    static void write_mac_static(
+        string libname,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+	{
+        var dest_sh = string.Format("mac_static_{0}.sh", libname);
 		var arches = new string[] {
 			"i386",
 			"x86_64",
@@ -953,7 +997,15 @@ public static class cb
 				libs
 				);
 
-			write_mac(
+			write_mac_dynamic(
+				"e_sqlite3",
+				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+				defines,
+				includes,
+				libs
+				);
+
+			write_mac_static(
 				"e_sqlite3",
 				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 				defines,
@@ -1600,7 +1652,15 @@ public static class cb
 			libs
 			);
 
-		write_mac(
+		write_mac_dynamic(
+			"sqlcipher",
+			cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+			defines,
+			includes,
+			libs
+			);
+
+		write_mac_static(
 			"sqlcipher",
 			cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 			defines,
