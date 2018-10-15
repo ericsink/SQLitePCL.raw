@@ -993,7 +993,7 @@ public static class cb
 				"e_sqlite3",
 				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 				defines,
-				includes,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
 				libs
 				);
 
@@ -1001,7 +1001,7 @@ public static class cb
 				"e_sqlite3",
 				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 				defines,
-				includes,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
 				libs
 				);
 
@@ -1009,7 +1009,7 @@ public static class cb
 				"e_sqlite3",
 				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 				defines,
-				includes,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
 				libs
 				);
 		}
@@ -1619,6 +1619,54 @@ public static class cb
 				libs
 				);
 		}
+
+		{
+			var defines = new Dictionary<string,string>
+			{
+				//{ "_WIN32", null }, // for tomcrypt
+				{ "ENDIAN_LITTLE", null }, // for tomcrypt arm
+				{ "LTC_NO_PROTOTYPES", null },
+				{ "LTC_SOURCE", null },
+				{ "SQLITE_HAS_CODEC", null },
+				{ "SQLITE_TEMP_STORE", "2" },
+				{ "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
+				{ "CIPHER", "\\\"AES-256-CBC\\\"" },
+			};
+			add_basic_sqlite3_defines(defines);
+			add_ios_sqlite3_defines(defines);
+
+			var libs = new string[]
+			{
+				//"advapi32.lib",
+				//"bcrypt.lib",
+			};
+
+			write_ios(
+				"sqlcipher",
+				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+				defines,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
+				libs
+				);
+
+#if not
+			write_mac_dynamic(
+				"sqlcipher",
+				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+				defines,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
+				libs
+				);
+#endif
+
+			write_mac_static(
+				"sqlcipher",
+				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+				defines,
+				includes.Select(x => x.Replace("\\", "/")).ToArray(),
+				libs
+				);
+		}
     }
 
 	static void write_sqlcipher_ios()
@@ -1673,7 +1721,7 @@ public static class cb
     {
         write_e_sqlite3();
         write_sqlcipher();
-        write_sqlcipher_ios();
+        //write_sqlcipher_ios();
     }
 }
 
