@@ -166,6 +166,8 @@ public static class cb
 		using (TextWriter tw = new StreamWriter(dest_sh))
         {
 			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
             tw.Write("mkdir -p \"./obj/{0}\"\n", subdir);
             tw.Write("mkdir -p \"./bin/{0}\"\n", subdir);
 			tw.Write("{0} @{1}\n", compiler, dest_gccargs);
@@ -472,6 +474,8 @@ public static class cb
 		using (TextWriter tw = new StreamWriter(string.Format("linux_{0}.sh", libname)))
         {
 			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
             foreach (var t in targets)
             {
                 tw.Write("./{0} > err_{1}.buildoutput.txt 2>&1\n", t.sh(libname), t.basename(libname));
