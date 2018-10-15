@@ -265,7 +265,7 @@ public static class cb
 			"armv7",
 			"armv7s",
 		};
-        var dest_filelist = string.Format("ios_{0}.files", libname);
+        var dest_filelist = string.Format("ios_{0}.libtoolfiles", libname);
 		using (TextWriter tw = new StreamWriter(dest_filelist))
 		{
 			foreach (var arch in arches)
@@ -527,7 +527,7 @@ public static class cb
 
         public string basename(string libname)
         {
-            var dest = string.Format("{0}_{1}_{2}_{3}", libname, v, f, m);
+            var dest = string.Format("win_{0}_{1}_{2}_{3}", libname, v, f, m);
             return dest;
         }
         public string bat(string libname)
@@ -630,7 +630,7 @@ public static class cb
                 );
         }
 
-		using (TextWriter tw = new StreamWriter(string.Format("{0}.bat", libname)))
+		using (TextWriter tw = new StreamWriter(string.Format("win_{0}.bat", libname)))
         {
             tw.WriteLine("@echo on");
             foreach (var t in trios)
@@ -1337,9 +1337,9 @@ public static class cb
             cfiles.Add(Path.Combine(tomcrypt_src_dir, s));
         }
 
-        var includes = new List<string>();
-        includes.Add(sqlcipher_dir);
-        includes.Add(tomcrypt_include_dir);
+	var includes = new List<string>();
+	includes.Add(sqlcipher_dir);
+	includes.Add(tomcrypt_include_dir);
 
 		{
 			var defines = new Dictionary<string,string>
@@ -1495,16 +1495,43 @@ public static class cb
 		}
     }
 
+	static void write_sqlcipher_ios()
+	{
+		var sqlcipher_dir = "..\\sqlcipher_new";
+
+		var cfiles = new List<string>();
+		cfiles.Add(Path.Combine(sqlcipher_dir, "sqlite3.c"));
+
+		var includes = new List<string>();
+		includes.Add(sqlcipher_dir);
+
+		var defines = new Dictionary<string,string>
+		{
+			{ "SQLITE_HAS_CODEC", null },
+			{ "SQLITE_TEMP_STORE", "2" },
+			{ "SQLCIPHER_CRYPTO_CC", null },
+			{ "CIPHER", "\\\"AES-256-CBC\\\"" },
+		};
+		add_basic_sqlite3_defines(defines);
+		add_ios_sqlite3_defines(defines);
+		var libs = new string[]
+		{
+		};
+
+		write_ios(
+			"sqlcipher",
+			cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
+			defines,
+			includes,
+			libs
+			);
+	}
+
     public static void Main()
     {
         write_e_sqlite3();
         write_sqlcipher();
-
-		using (TextWriter tw = new StreamWriter("all.bat"))
-        {
-            tw.WriteLine("cmd /c e_sqlite3.bat");
-            tw.WriteLine("cmd /c sqlcipher.bat");
-        }
+        write_sqlcipher_ios();
     }
 }
 

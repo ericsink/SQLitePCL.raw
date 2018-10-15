@@ -1,11 +1,12 @@
 #!/bin/bash
-rm ./*.bat
 rm ./*.linkargs
 rm ./*.gccargs
+rm ./*.libtoolfiles
+rm ./win_*.bat
+rm ./*.buildoutput.txt
 rm ./linux_*.sh
 rm ./android_*.sh
 rm ./ios_*.sh
-rm ./*.buildoutput.txt
 #rm -rf ./obj
 #rm -rf ./bin
 
