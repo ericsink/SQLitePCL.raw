@@ -174,6 +174,81 @@ public static class cb
         }
     }
 
+    static void write_android(
+        string libname,
+		android_target t,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+	{
+        var subdir = t.subdir(libname);
+        var dest_sh = t.sh(libname);
+        var dest_gccargs = t.gccargs(libname);
+		string compiler;
+		using (TextWriter tw = new StreamWriter(dest_gccargs))
+		{
+			switch (t.target)
+			{
+				case "arm64":
+					compiler = "/Users/eric/android_toolchains/arm64/bin/aarch64-linux-android-gcc";
+					break;
+
+				case "arm":
+					compiler = "/Users/eric/android_toolchains/arm/bin/arm-linux-androideabi-gcc";
+					break;
+
+				case "x86":
+					compiler = "/Users/eric/android_toolchains/x86/bin/i686-linux-android-gcc";
+					break;
+
+				case "x86_64":
+					compiler = "/Users/eric/android_toolchains/x86_64/bin/x86_64-linux-android-gcc";
+					break;
+
+				default:
+					throw new NotImplementedException();
+			}
+			tw.Write(" -shared\n");
+			tw.Write(" -fPIC\n");
+			tw.Write(" -O\n");
+			foreach (var d in defines.Keys.OrderBy(q => q))
+			{
+				var v = defines[d];
+				tw.Write(" -D{0}", d);
+				if (v != null)
+				{
+					tw.Write("={0}", v);
+				}
+				tw.Write("\n");
+			}
+			tw.Write(" -DNDEBUG\n");
+			foreach (var p in includes.Select(x => x.Replace("\\", "/")))
+			{
+				tw.Write(" -I{0}\n", p);
+			}
+            tw.Write(" -o \"bin/{1}/lib{0}.so\"\n", libname, subdir);
+            foreach (var s in cfiles.Select(x => x.Replace("\\", "/")))
+            {
+                tw.Write(" {0}\n", s);
+            }
+            foreach (var s in libs.Select(x => x.Replace("\\", "/")))
+            {
+                tw.Write(" {0}\n", s);
+            }
+		}
+		using (TextWriter tw = new StreamWriter(dest_sh))
+        {
+			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
+            tw.Write("mkdir -p \"./obj/{0}\"\n", subdir);
+            tw.Write("mkdir -p \"./bin/{0}\"\n", subdir);
+			tw.Write("{0} @{1}\n", compiler, dest_gccargs);
+        }
+    }
+
     static void write_bat(
         string libname,
         trio t,
@@ -419,6 +494,37 @@ public static class cb
         }
     }
 
+    class android_target
+    {
+        public string target { get; private set; }
+
+        public android_target(string t)
+        {
+			target = t;
+        }
+
+        public string basename(string libname)
+        {
+            var dest = string.Format("android_{0}_{1}", libname, target);
+            return dest;
+        }
+        public string sh(string libname)
+        {
+            var dest = string.Format("{0}.sh", basename(libname));
+            return dest;
+        }
+        public string gccargs(string libname)
+        {
+            var dest = string.Format("{0}.gccargs", basename(libname));
+            return dest;
+        }
+        public string subdir(string libname)
+        {
+            var s = string.Format("{0}/android/{1}", libname, target);
+            return s;
+        }
+    }
+
     static void write_multibat(
         string libname,
         IList<trio> trios,
@@ -483,6 +589,39 @@ public static class cb
         }
     }
 
+    static void write_android_multi(
+        string libname,
+        IList<android_target> targets,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+    {
+        foreach (var t in targets)
+        {
+            write_android(
+                libname,
+                t,
+                cfiles,
+                defines,
+                includes,
+                libs
+                );
+        }
+
+		using (TextWriter tw = new StreamWriter(string.Format("android_{0}.sh", libname)))
+        {
+			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
+            foreach (var t in targets)
+            {
+                tw.Write("./{0} > err_{1}.buildoutput.txt 2>&1\n", t.sh(libname), t.basename(libname));
+            }
+        }
+    }
+
     static void add_basic_sqlite3_defines(Dictionary<string,string> defines)
     {
         defines["SQLITE_ENABLE_COLUMN_METADATA"] = null;
@@ -502,6 +641,11 @@ public static class cb
     }
 
     static void add_linux_sqlite3_defines(Dictionary<string,string> defines)
+    {
+        defines["SQLITE_OS_UNIX"] = null;
+    }
+
+    static void add_android_sqlite3_defines(Dictionary<string,string> defines)
     {
         defines["SQLITE_OS_UNIX"] = null;
     }
@@ -596,6 +740,35 @@ public static class cb
 			};
 
 			write_linux_multi(
+				"e_sqlite3",
+				targets,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
+
+		{
+			var defines = new Dictionary<string,string>();
+			add_basic_sqlite3_defines(defines);
+			add_android_sqlite3_defines(defines);
+			var includes = new string[]
+			{
+			};
+			var libs = new string[]
+			{
+			};
+
+			var targets = new android_target[]
+			{
+				new android_target("arm"),
+				new android_target("arm64"),
+				new android_target("x86"),
+				new android_target("x86_64"),
+			};
+
+			write_android_multi(
 				"e_sqlite3",
 				targets,
 				cfiles,
@@ -1163,6 +1336,45 @@ public static class cb
 			};
 
 			write_linux_multi(
+				"sqlcipher",
+				targets,
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
+
+		{
+			var defines = new Dictionary<string,string>
+			{
+				//{ "_WIN32", null }, // for tomcrypt
+				{ "ENDIAN_LITTLE", null }, // for tomcrypt arm
+				{ "LTC_NO_PROTOTYPES", null },
+				{ "LTC_SOURCE", null },
+				{ "SQLITE_HAS_CODEC", null },
+				{ "SQLITE_TEMP_STORE", "2" },
+				{ "SQLCIPHER_CRYPTO_LIBTOMCRYPT", null },
+				{ "CIPHER", "\\\"AES-256-CBC\\\"" },
+			};
+			add_basic_sqlite3_defines(defines);
+			add_android_sqlite3_defines(defines);
+
+			var libs = new string[]
+			{
+				//"advapi32.lib",
+				//"bcrypt.lib",
+			};
+
+			var targets = new android_target[]
+			{
+				new android_target("arm"),
+				new android_target("arm64"),
+				new android_target("x86"),
+				new android_target("x86_64"),
+			};
+
+			write_android_multi(
 				"sqlcipher",
 				targets,
 				cfiles,
