@@ -356,7 +356,8 @@ public static class cb
 					tw.Write(" {0}\n", s);
 				}
 			}
-			tw.Write("libtool -static -o ./bin/{0}/mac/e_sqlite3.a -filelist {1}", libname, dest_filelist);
+			tw.Write("libtool -static -o ./bin/{0}/mac/e_sqlite3.a -filelist {1}\n", libname, dest_filelist);
+			tw.Write("libtool -dynamic -o ./bin/{0}/mac/libe_sqlite3.dylib -filelist {1}\n", libname, dest_filelist);
 		}
 	}
 
@@ -440,7 +441,7 @@ public static class cb
 					tw.Write(" {0}\n", s);
 				}
 			}
-			tw.Write("libtool -static -o ./bin/{0}/ios/e_sqlite3.a -filelist {1}", libname, dest_filelist);
+			tw.Write("libtool -static -o ./bin/{0}/ios/e_sqlite3.a -filelist {1}\n", libname, dest_filelist);
 		}
 	}
 
