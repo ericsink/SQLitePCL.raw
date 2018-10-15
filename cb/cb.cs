@@ -265,6 +265,19 @@ public static class cb
 			"armv7",
 			"armv7s",
 		};
+        var dest_filelist = string.Format("ios_{0}.files", libname);
+		using (TextWriter tw = new StreamWriter(dest_filelist))
+		{
+			foreach (var arch in arches)
+			{
+				var subdir = string.Format("{0}/ios/{1}", libname, arch);
+				foreach (var s in cfiles)
+				{
+					var o = string.Format("./obj/{0}/{1}.o", subdir, s);
+					tw.Write("{0}\n", o);
+				}
+			}
+		}
 		using (TextWriter tw = new StreamWriter(dest_sh))
         {
 			tw.Write("#!/bin/sh\n");
@@ -311,9 +324,10 @@ public static class cb
 					}
 					tw.Write(" -c");
 					tw.Write(" -o ./obj/{0}/{1}.o", subdir, s);
-					tw.WriteLine(" {0}", s);
+					tw.Write(" {0}\n", s);
 				}
 			}
+			tw.Write("libtool -static -o ./bin/{0}/ios/e_sqlite3.a -filelist {1}", libname, dest_filelist);
 		}
 	}
 
