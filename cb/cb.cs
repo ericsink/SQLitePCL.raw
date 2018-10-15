@@ -273,7 +273,8 @@ public static class cb
 				var subdir = string.Format("{0}/ios/{1}", libname, arch);
 				foreach (var s in cfiles)
 				{
-					var o = string.Format("./obj/{0}/{1}.o", subdir, s);
+                var b = Path.GetFileNameWithoutExtension(s);
+					var o = string.Format("./obj/{0}/{1}.o", subdir, b);
 					tw.Write("{0}\n", o);
 				}
 			}
@@ -283,12 +284,12 @@ public static class cb
 			tw.Write("#!/bin/sh\n");
 			tw.Write("set -e\n");
 			tw.Write("set -x\n");
-            // TODO tw.Write("mkdir -p \"./bin/{0}\"\n", subdir);
+		    tw.Write("mkdir -p \"./bin/{0}/ios\"\n", libname);
 			foreach (var arch in arches)
 			{
 				var subdir = string.Format("{0}/ios/{1}", libname, arch);
 				tw.Write("mkdir -p \"./obj/{0}\"\n", subdir);
-				foreach (var s in cfiles)
+				    foreach (var s in cfiles)
 				{
 					tw.Write("xcrun");
 					switch (arch)
@@ -308,7 +309,7 @@ public static class cb
 					tw.Write(" clang");
 					tw.Write(" -O");
 					tw.Write(" -miphoneos-version-min=6.0");
-					tw.Write(" -arch ", arch);
+					tw.Write(" -arch {0}", arch);
 					foreach (var d in defines.Keys.OrderBy(q => q))
 					{
 						var v = defines[d];
@@ -318,12 +319,13 @@ public static class cb
 							tw.Write("={0}", v);
 						}
 					}
-					foreach (var p in includes.Select(x => x.Replace("\\", "/")))
+					foreach (var p in includes)
 					{
 						tw.Write(" -I{0}", p);
 					}
 					tw.Write(" -c");
-					tw.Write(" -o ./obj/{0}/{1}.o", subdir, s);
+                var b = Path.GetFileNameWithoutExtension(s);
+					tw.Write(" -o ./obj/{0}/{1}.o", subdir, b);
 					tw.Write(" {0}\n", s);
 				}
 			}
@@ -878,7 +880,7 @@ public static class cb
 
 			write_ios(
 				"e_sqlite3",
-				cfiles,
+				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
 				defines,
 				includes,
 				libs
