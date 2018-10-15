@@ -249,6 +249,74 @@ public static class cb
         }
     }
 
+    static void write_ios(
+        string libname,
+        IList<string> cfiles,
+        Dictionary<string,string> defines,
+        IList<string> includes,
+        IList<string> libs
+        )
+	{
+        var dest_sh = string.Format("ios_{0}.sh", libname);
+		var arches = new string[] {
+			"i386",
+			"x86_64",
+			"arm64",
+			"armv7",
+			"armv7s",
+		};
+		using (TextWriter tw = new StreamWriter(dest_sh))
+        {
+			tw.Write("#!/bin/sh\n");
+			tw.Write("set -e\n");
+			tw.Write("set -x\n");
+            // TODO tw.Write("mkdir -p \"./bin/{0}\"\n", subdir);
+			foreach (var arch in arches)
+			{
+				var subdir = string.Format("{0}/ios/{1}", libname, arch);
+				tw.Write("mkdir -p \"./obj/{0}\"\n", subdir);
+				foreach (var s in cfiles)
+				{
+					tw.Write("xcrun");
+					switch (arch)
+					{
+						case "i386":
+						case "x86_64":
+							tw.Write(" --sdk iphonesimulator");
+							break;
+						case "arm64":
+						case "armv7":
+						case "armv7s":
+							tw.Write(" --sdk iphoneos");
+							break;
+						default:
+							throw new NotImplementedException();
+					}
+					tw.Write(" clang");
+					tw.Write(" -O");
+					tw.Write(" -miphoneos-version-min=6.0");
+					tw.Write(" -arch ", arch);
+					foreach (var d in defines.Keys.OrderBy(q => q))
+					{
+						var v = defines[d];
+						tw.Write(" -D{0}", d);
+						if (v != null)
+						{
+							tw.Write("={0}", v);
+						}
+					}
+					foreach (var p in includes.Select(x => x.Replace("\\", "/")))
+					{
+						tw.Write(" -I{0}", p);
+					}
+					tw.Write(" -c");
+					tw.Write(" -o ./obj/{0}/{1}.o", subdir, s);
+					tw.WriteLine(" {0}", s);
+				}
+			}
+		}
+	}
+
     static void write_win(
         string libname,
         win_target t,
@@ -650,6 +718,11 @@ public static class cb
         defines["SQLITE_OS_UNIX"] = null;
     }
 
+    static void add_ios_sqlite3_defines(Dictionary<string,string> defines)
+    {
+        defines["SQLITE_OS_UNIX"] = null;
+    }
+
     static void write_e_sqlite3(
         )
     {
@@ -777,6 +850,27 @@ public static class cb
 				libs
 				);
 		}
+
+		{
+			var defines = new Dictionary<string,string>();
+			add_basic_sqlite3_defines(defines);
+			add_ios_sqlite3_defines(defines);
+			var includes = new string[]
+			{
+			};
+			var libs = new string[]
+			{
+			};
+
+			write_ios(
+				"e_sqlite3",
+				cfiles,
+				defines,
+				includes,
+				libs
+				);
+		}
+
     }
 
     static void write_sqlcipher(
