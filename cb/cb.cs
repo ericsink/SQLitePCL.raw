@@ -356,8 +356,8 @@ public static class cb
 					tw.Write(" {0}\n", s);
 				}
 			}
-			tw.Write("libtool -static -o ./bin/{0}/mac/e_sqlite3.a -filelist {1}\n", libname, dest_filelist);
-			tw.Write("libtool -dynamic -o ./bin/{0}/mac/libe_sqlite3.dylib -filelist {1}\n", libname, dest_filelist);
+			tw.Write("libtool -static -o ./bin/{0}/mac/{0}.a -filelist {1}\n", libname, dest_filelist);
+			//tw.Write("libtool -dynamic -o ./bin/{0}/mac/lib{0}.dylib -filelist {1}\n", libname, dest_filelist);
 		}
 	}
 
@@ -1650,7 +1650,6 @@ public static class cb
 				libs
 				);
 
-#if not
 			write_mac_dynamic(
 				"sqlcipher",
 				cfiles.Select(x => x.Replace("\\", "/")).ToArray(),
@@ -1658,7 +1657,6 @@ public static class cb
 				includes.Select(x => x.Replace("\\", "/")).ToArray(),
 				libs
 				);
-#endif
 
 			write_mac_static(
 				"sqlcipher",
@@ -1670,7 +1668,7 @@ public static class cb
 		}
     }
 
-	static void write_sqlcipher_ios()
+	static void write_sqlcipher_apple_cc()
 	{
 		var sqlcipher_dir = "..\\sqlcipher_new";
 
@@ -1722,7 +1720,7 @@ public static class cb
     {
         write_e_sqlite3();
         write_sqlcipher();
-        //write_sqlcipher_ios();
+        //write_sqlcipher_apple_cc();
     }
 }
 
