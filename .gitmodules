@@ -1,3 +1,0 @@
-[submodule "couchbase-lite-libsqlcipher"]
-	path = couchbase-lite-libsqlcipher
-	url = https://github.com/couchbaselabs/couchbase-lite-libsqlcipher.git
