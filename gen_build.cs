@@ -3239,7 +3239,7 @@ public static class gen
 					// TODO do we need amd64 version here?
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x86_64", "libsqlcipher.so"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x64", "libsqlcipher.so"));
 					f.WriteAttributeString("target", string.Format("runtimes\\linux-x64\\native\\libsqlcipher.so"));
 					f.WriteEndElement(); // file
 
