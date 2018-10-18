@@ -1105,7 +1105,6 @@ public class config_csproj : config_info
         cfg.name = string.Format("{0}.v{1}.{2}.{3}.{4}", cfg.root_name, ver, area, "internal", env);
         set_batteries_version(cfg, ver);
         cfg.defines.Add("PROVIDER_internal");
-        cfg.defines.Add("EMBEDDED_INIT");
         cfg.ref_core = true;
         cfg.ref_provider = "internal";
         return cfg;
