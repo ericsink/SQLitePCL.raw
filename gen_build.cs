@@ -1726,7 +1726,7 @@ public static class gen
 
 	}
 
-	private static void gen_cppinterop(config_cppinterop cfg, string root, string top)
+	private static void gen_cppinterop(config_cppinterop cfg, string root, string top, string cb_bin)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -1871,10 +1871,7 @@ public static class gen
 			f.WriteElementString("SubSystem", "Console");
 			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
 			string sqlite3_item_path = Path.Combine(
-					top,
-					"..",
-					"cb",
-                    "bin",
+					cb_bin,
 					"e_sqlite3",
                     "win",
 					"v110",
@@ -1994,95 +1991,95 @@ public static class gen
         fix_version(project_dot_json);
     }
 
-    private static void write_android_native_libs(string root, XmlWriter f, string which)
+    private static void write_android_native_libs(string cb_bin, XmlWriter f)
     {
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "e_sqlite3", "android", "x86", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "x86\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\x86_64\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "x86_64", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("x86_64\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "x86_64\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "armeabi", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "armeabi\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\arm64-v8a\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "arm64-v8a", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("arm64-v8a\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "arm64-v8a\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\armeabi-v7a\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "armeabi-v7a", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("armeabi-v7a\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "armeabi-v7a\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "mips", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "mips\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("android\\{0}\\libs\\mips64\\libe_sqlite3.so", which)));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin,  "e_sqlite3", "android", "mips64", "libe_sqlite3.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
-        f.WriteElementString("Link", string.Format("mips64\\libe_sqlite3.so", which));
+        f.WriteElementString("Link", "mips64\\libe_sqlite3.so");
         f.WriteEndElement(); // EmbeddedNativeLibrary
 #endif
 
     }
 
-    private static void write_android_native_libs_sqlcipher(string root, XmlWriter f)
+    private static void write_android_native_libs_sqlcipher(string cb_bin, XmlWriter f)
     {
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "x86", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\x86_64\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "x86_64", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("x86_64\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "armeabi", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\arm64-v8a\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "arm64-v8a", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("arm64-v8a\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\armeabi-v7a\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "armeabi-v7a", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("armeabi-v7a\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
 #if not
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "mips", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
 
         f.WriteStartElement("EmbeddedNativeLibrary");
-        f.WriteAttributeString("Include", Path.Combine(root, string.Format("couchbase-lite-libsqlcipher\\libs\\android\\mips64\\libsqlcipher.so")));
+        f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "android", "mips64", "libsqlcipher.so"));
         f.WriteElementString("CopyToOutputDirectory", "Always");
         f.WriteElementString("Link", string.Format("mips64\\libsqlcipher.so"));
         f.WriteEndElement(); // EmbeddedNativeLibrary
@@ -2103,7 +2100,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_csproj(config_csproj cfg, string root, string top)
+	private static void gen_csproj(config_csproj cfg, string root, string top, string cb_bin)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2269,7 +2266,7 @@ public static class gen
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
+                            f.WriteAttributeString("Include", Path.Combine(cb_bin, "e_sqlite3", "ios", "e_sqlite3.a"));
                             f.WriteElementString("Link", "e_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
@@ -2280,8 +2277,8 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
-                            f.WriteElementString("Link", "libsqlcipher.a");
+                            f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "ios", "sqlcipher.a"));
+                            f.WriteElementString("Link", "sqlcipher.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             f.WriteEndElement(); // ItemGroup
@@ -2299,7 +2296,7 @@ public static class gen
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
                             // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\watchos\\sqlite3\\e_sqlite3.a"));
+                            f.WriteAttributeString("Include", Path.Combine(cb_bin, "e_sqlite3", "watchos", "e_sqlite3.a"));
                             f.WriteElementString("Link", "e_sqlite3.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
                             f.WriteEndElement(); // ItemGroup
@@ -2310,8 +2307,8 @@ public static class gen
 
                             // TODO warning says this is deprecated
                             f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\watchos\\libsqlcipher.a"));
-                            f.WriteElementString("Link", "libsqlcipher.a");
+                            f.WriteAttributeString("Include", Path.Combine(cb_bin, "sqlcipher", "watchos", "sqlcipher.a"));
+                            f.WriteElementString("Link", "sqlcipher.a");
                             f.WriteEndElement(); // ManifestResourceWithNoCulture
 
                             f.WriteEndElement(); // ItemGroup
@@ -2322,54 +2319,17 @@ public static class gen
             }
                     break;
 
-                    case "ios_classic":
-                        if (cfg.what == "e_sqlite3")
-                        {
-                            f.WriteStartElement("ItemGroup");
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\sqlite3\\e_sqlite3.a"));
-                            f.WriteElementString("Link", "e_sqlite3.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else if (cfg.what == "sqlcipher")
-                        {
-                            f.WriteStartElement("ItemGroup");
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            // TODO underscore
-                            f.WriteAttributeString("Include", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\ios\\libsqlcipher.a"));
-                            f.WriteElementString("Link", "libsqlcipher.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            // TODO warning says this is deprecated
-                            f.WriteStartElement("ManifestResourceWithNoCulture");
-                            f.WriteAttributeString("Include", Path.Combine(root, "apple\\libs\\ios\\libcrypto.a"));
-                            f.WriteElementString("Link", "libcrypto.a");
-                            f.WriteEndElement(); // ManifestResourceWithNoCulture
-
-                            f.WriteEndElement(); // ItemGroup
-                        }
-			else
-			{
-				throw new NotImplementedException(string.Format("{0}, {1}", cfg.env, cfg.what));
-			}
-						break;
-
 					case "android":
 						if (cfg.what == "e_sqlite3")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs(root, f, "sqlite3");
+                            write_android_native_libs(cb_bin, f);
                             f.WriteEndElement(); // ItemGroup
 						}
 						else if (cfg.what == "sqlcipher")
 						{
                             f.WriteStartElement("ItemGroup");
-                            write_android_native_libs_sqlcipher(root, f);
+                            write_android_native_libs_sqlcipher(cb_bin, f);
                             f.WriteEndElement(); // ItemGroup
                         }
 			else
@@ -3082,7 +3042,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_e_sqlite3(string top, string root, string plat)
+	private static void gen_nuspec_e_sqlite3(string top, string cb_bin, string plat)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3122,44 +3082,44 @@ public static class gen
             {
                 case "osx":
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "apple", "libs", "mac", "sqlite3", "libe_sqlite3.dylib"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "mac", "libe_sqlite3.dylib"));
                     f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
                     f.WriteEndElement(); // file
                     gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
                     break;
                 case "linux":
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "x64", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "x64", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-x64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "x86", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "x86", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-x86\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "armhf", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "armhf", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-arm\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "armsf", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "armsf", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-armel\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "musl-x64", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "musl-x64", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-musl-x64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "musl-x64", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "musl-x64", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\alpine-x64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
                     f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(root, "linux", "arm64", "libe_sqlite3.so"));
+                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "arm64", "libe_sqlite3.so"));
                     f.WriteAttributeString("target", "runtimes\\linux-arm64\\native\\libe_sqlite3.so");
                     f.WriteEndElement(); // file
 
@@ -3198,7 +3158,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_sqlcipher(string top, string root, string plat)
+	private static void gen_nuspec_sqlcipher(string top, string cb_bin, string plat)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3237,32 +3197,32 @@ public static class gen
 			switch (plat) {
 				case "windows":
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x86", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-x86\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\x64\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x64", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-x64\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\plain\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "arm", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-arm\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\x64\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x64", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-x64\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\x86\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x86", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-x86\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "cb\\bin\\sqlcipher\\win\\v140\\appcontainer\\arm\\sqlcipher.dll"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "arm", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-arm\\nativeassets\\uap10.0\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
@@ -3270,7 +3230,7 @@ public static class gen
 					break;
 				case "osx":
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\osx\\libsqlcipher.dylib"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "mac", "libsqlcipher.dylib"));
 					f.WriteAttributeString("target", string.Format("runtimes\\osx-x64\\native\\libsqlcipher.dylib"));
 					f.WriteEndElement(); // file
 
@@ -3280,12 +3240,12 @@ public static class gen
 					// TODO do we need amd64 version here?
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\linux\\x86_64\\libsqlcipher.so"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x86_64", "libsqlcipher.so"));
 					f.WriteAttributeString("target", string.Format("runtimes\\linux-x64\\native\\libsqlcipher.so"));
 					f.WriteEndElement(); // file
 
 					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(root, "couchbase-lite-libsqlcipher\\libs\\linux\\x86\\libsqlcipher.so"));
+					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x86", "libsqlcipher.so"));
 					f.WriteAttributeString("target", string.Format("runtimes\\linux-x86\\native\\libsqlcipher.so"));
 					f.WriteEndElement(); // file
 
@@ -4556,6 +4516,7 @@ public static class gen
 
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		string top = Path.Combine(root, "bld");
+		var cb_bin = Path.Combine(root, "..", "cb", "bld", "bin");
 
 		// --------------------------------
 		// create the bld directory
@@ -4667,17 +4628,17 @@ public static class gen
 
 		foreach (config_cppinterop cfg in projects.items_cppinterop)
 		{
-			gen_cppinterop(cfg, root, top);
+			gen_cppinterop(cfg, root, top, cb_bin);
 		}
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
-			gen_csproj(cfg, root, top);
+			gen_csproj(cfg, root, top, cb_bin);
 		}
 
 		foreach (config_csproj cfg in projects.items_test)
 		{
-			gen_csproj(cfg, root, top);
+			gen_csproj(cfg, root, top, cb_bin);
 		}
 
 		foreach (config_testapp cfg in projects.items_testapp)
@@ -4724,12 +4685,12 @@ public static class gen
 			gen_nuspec_esqlite3(top, root, cfg);
 		}
 
-		gen_nuspec_e_sqlite3(top, root, "osx");
-		gen_nuspec_e_sqlite3(top, root, "linux");
+		gen_nuspec_e_sqlite3(top, cb_bin, "osx");
+		gen_nuspec_e_sqlite3(top, cb_bin, "linux");
 
-		gen_nuspec_sqlcipher(top, root, "windows");
-		gen_nuspec_sqlcipher(top, root, "osx");
-		gen_nuspec_sqlcipher(top, root, "linux");
+		gen_nuspec_sqlcipher(top, cb_bin, "windows");
+		gen_nuspec_sqlcipher(top, cb_bin, "osx");
+		gen_nuspec_sqlcipher(top, cb_bin, "linux");
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
