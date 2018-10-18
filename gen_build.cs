@@ -1229,11 +1229,6 @@ public static class gen
 		f.WriteEndElement(); // Compile
 	}
 
-	private static void write_cpp_includepath(XmlWriter f, string root, string s)
-	{
-		f.WriteElementString("IncludePath", string.Format("{0};$(IncludePath)", Path.Combine(root, s)));
-	}
-
 	private static void write_cpp_define(XmlWriter f, string s)
 	{
 		f.WriteElementString("PreprocessorDefinitions", string.Format("{0};%(PreprocessorDefinitions)", s));
@@ -1854,7 +1849,7 @@ public static class gen
 			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
 			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
 			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
-			write_cpp_includepath(f, root, "sqlite3\\");
+			f.WriteElementString("IncludePath", string.Format("{0};$(IncludePath)", Path.Combine(root, "..", "cb", "sqlite3")));
 			f.WriteElementString("LinkIncremental", "false");
 			f.WriteElementString("GenerateManifest", "false");
 			f.WriteEndElement(); // PropertyGroup
@@ -2768,7 +2763,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_esqlite3(string top, string root, config_esqlite3 cfg)
+	private static void gen_nuspec_esqlite3(string top, string cb_bin, config_esqlite3 cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -2806,7 +2801,7 @@ public static class gen
 			Action<string,string,string,string> write_file_entry = (toolset, flavor, arch, rid) =>
 			{
 				f.WriteStartElement("file");
-				f.WriteAttributeString("src", string.Format("..\\cb\\bin\\e_sqlite3\\win\\{0}\\{1}\\{2}\\e_sqlite3.dll", toolset, flavor, arch));
+				f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "win", toolset, flavor, arch, "e_sqlite3.dll"));
 				f.WriteAttributeString("target", string.Format("runtimes\\{0}\\native\\", rid));
 				f.WriteEndElement(); // file
 			};
@@ -2882,7 +2877,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_embedded(string top, string root, config_csproj cfg)
+	private static void gen_nuspec_embedded(string top, config_csproj cfg)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -4675,13 +4670,13 @@ public static class gen
 		{
             if (cfg.area == "lib")
             {
-                gen_nuspec_embedded(top, root, cfg);
+                gen_nuspec_embedded(top, cfg);
             }
 		}
 
 		foreach (config_esqlite3 cfg in projects.items_esqlite3)
 		{
-			gen_nuspec_esqlite3(top, root, cfg);
+			gen_nuspec_esqlite3(top, cb_bin, cfg);
 		}
 
 		gen_nuspec_e_sqlite3(top, cb_bin, "osx");
