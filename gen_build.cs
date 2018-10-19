@@ -4421,7 +4421,7 @@ public static class gen
 
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		string top = Path.Combine(root, "bld");
-		var cb_bin = Path.Combine(root, "..", "cb", "bld", "bin");
+		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
 
 		// --------------------------------
 		// create the bld directory
