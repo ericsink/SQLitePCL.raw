@@ -117,23 +117,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "net45", "sqlcipher"));
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "uwp10", "sqlcipher"));
 
-        // bundle_zetetic
-        items_csproj.Add(config_csproj.create_internal_batteries_zetetic("batteries_zetetic", ver, "ios_unified"));
-        // TODO items_csproj.Add(config_csproj.create_internal_batteries("batteries_zetetic", "watchos", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "macos", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "android", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net35", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net40", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "net45", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "uwp10", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "win8", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "wpa81", "sqlcipher"));
-        items_csproj.Add(config_csproj.create_batteries("batteries_zetetic", ver, "win81", "sqlcipher"));
-#if not
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "arm"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "x86"));
-#endif
-
         // the following item builds for netstandard11 
         // but overrides the nuget target env to place it in netcoreapp
         items_csproj.Add(config_csproj.create_batteries("batteries_sqlcipher", ver, "netstandard11", "sqlcipher", "netcoreapp"));
@@ -1094,19 +1077,6 @@ public class config_csproj : config_info
         cfg.ref_core = true;
         cfg.ref_provider = "internal";
         cfg.ref_embedded = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, lib, env, "static");
-        return cfg;
-    }
-
-    public static config_csproj create_internal_batteries_zetetic(string area, int ver, string env)
-    {
-        var cfg = new config_csproj();
-        cfg.env = env;
-        cfg.area = area;
-        cfg.name = string.Format("{0}.v{1}.{2}.{3}.{4}", cfg.root_name, ver, area, "internal", env);
-        set_batteries_version(cfg, ver);
-        cfg.defines.Add("PROVIDER_internal");
-        cfg.ref_core = true;
-        cfg.ref_provider = "internal";
         return cfg;
     }
 
@@ -3544,6 +3514,11 @@ public static class gen
         write_bundle_dependency_group(f, env, env, what, true);
     }
 
+    private static void write_bundle_dependency_group(XmlWriter f, string env, string what, bool lib)
+    {
+        write_bundle_dependency_group(f, env, env, what, lib);
+    }
+
     private static void write_bundle_dependency_group(XmlWriter f, string env_target, string env_deps, string what, bool lib)
     {
         // --------
@@ -3685,89 +3660,26 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-	private static void gen_nuspec_bundle_zetetic(string top)
-    {
-		string id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: reference the official SQLCipher builds from Zetetic, which are not included in this package");
-			f.WriteElementString("authors", "Eric Sink");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2018 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			f.WriteElementString("licenseUrl", "https://raw.github.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT");
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "Batteries-included package to bring in SQLitePCL.raw and dependencies");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteStartElement("dependencies");
-
-            write_bundle_dependency_group(f, "android", "android", "sqlcipher", false);
-            write_bundle_dependency_group(f, "ios_unified", "ios_unified", "sqlcipher", false);
-            write_bundle_dependency_group(f, "macos", "macos", "sqlcipher", false);
-            write_bundle_dependency_group(f, "net35", "net35", "sqlcipher", false);
-            write_bundle_dependency_group(f, "net40", "net40", "sqlcipher", false);
-            write_bundle_dependency_group(f, "net45", "net45", "sqlcipher", false);
-            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", false);
-            write_bundle_dependency_group(f, "uwp10", "uwp10", "sqlcipher", false);
-            write_bundle_dependency_group(f, "wpa81", "wpa81", "sqlcipher", false);
-            write_bundle_dependency_group(f, "win8", "win8", "sqlcipher", false);
-            write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", false);
-#if not
-            write_bundle_dependency_group(f, "wp80", "sqlcipher", false);
-#endif
-            
-            write_dependency_group(f, "profile111", DEP_CORE);
-            write_dependency_group(f, "profile136", DEP_CORE);
-            write_dependency_group(f, "profile259", DEP_CORE);
-            write_dependency_group(f, "netstandard11", DEP_CORE);
-            write_dependency_group(f, null, DEP_CORE);
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
-				if (cfg.area == "batteries_zetetic")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
-			}
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
+	enum SQLCipherBundleKind
+	{
+		Unofficial,
+		Zetetic,
 	}
 
-	private static void gen_nuspec_bundle_sqlcipher(string top)
+	private static void gen_nuspec_bundle_sqlcipher(string top, SQLCipherBundleKind kind)
     {
-		string id = string.Format("{0}.bundle_sqlcipher", gen.ROOT_NAME);
+		string id;
+		switch (kind)
+		{
+			case SQLCipherBundleKind.Unofficial:
+				id = string.Format("{0}.bundle_sqlcipher", gen.ROOT_NAME);
+				break;
+			case SQLCipherBundleKind.Zetetic:
+				id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
+				break;
+			default:
+				throw new NotImplementedException();
+		}
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -3786,7 +3698,17 @@ public static class gen
 			f.WriteElementString("id", id);
 			f.WriteElementString("version", NUSPEC_VERSION);
 			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.");
+			switch (kind)
+			{
+				case SQLCipherBundleKind.Unofficial:
+					f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.");
+					break;
+				case SQLCipherBundleKind.Zetetic:
+					f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: reference the official SQLCipher builds from Zetetic, which are not included in this package");
+					break;
+				default:
+					throw new NotImplementedException();
+			}
 			f.WriteElementString("authors", "Eric Sink");
 			f.WriteElementString("owners", "Eric Sink");
 			f.WriteElementString("copyright", "Copyright 2014-2018 Zumero, LLC");
@@ -3799,14 +3721,30 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, "android", "sqlcipher");
-            write_bundle_dependency_group(f, "ios_unified", "sqlcipher");
-            write_bundle_dependency_group(f, "macos", "sqlcipher");
-            // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher");
-            write_bundle_dependency_group(f, "net35", "sqlcipher");
-            write_bundle_dependency_group(f, "net40", "sqlcipher");
-            write_bundle_dependency_group(f, "net45", "sqlcipher");
-            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", true);
+			bool lib_deps;
+			switch (kind)
+			{
+				case SQLCipherBundleKind.Unofficial:
+					lib_deps = true;
+					break;
+				case SQLCipherBundleKind.Zetetic:
+					lib_deps = false;
+					break;
+				default:
+					throw new NotImplementedException();
+			}
+
+            write_bundle_dependency_group(f, "android", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "ios_unified", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "macos", "sqlcipher", lib_deps);
+            // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "net35", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "net40", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "net45", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "wpa81", "wpa81", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "win8", "win8", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "uwp10", "sqlcipher");
             
             write_dependency_group(f, "profile111", DEP_CORE);
@@ -4653,8 +4591,8 @@ public static class gen
         gen_nuspec_bundle_green(top);
         gen_nuspec_bundle_e_sqlite3(top);
         gen_nuspec_bundle_winsqlite3(top);
-        gen_nuspec_bundle_sqlcipher(top);
-        gen_nuspec_bundle_zetetic(top);
+        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
+        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
         gen_nuspec_provider_wp80(top, root, "e_sqlite3");
         gen_nuspec_tests(top);
 
