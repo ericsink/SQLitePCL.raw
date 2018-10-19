@@ -653,8 +653,6 @@ public static class config_cs
         // framework name is full enough for project.json/frameworks.
 		switch (env)
 		{
-			case "ios_classic":
-				return "MonoTouch,Version=v1.0";
 			case "ios_unified":
 				return "Xamarin.iOS10";
 			case "macos":
@@ -700,8 +698,6 @@ public static class config_cs
 	{
 		switch (env)
 		{
-			case "ios_classic":
-				return "MonoTouch";
 			case "ios_unified":
 				return "Xamarin.iOS10";
 			case "macos":
@@ -828,7 +824,6 @@ public class config_csproj : config_info
         switch (env)
         {
             case "ios_unified":
-            case "ios_classic":
 			case "watchos":
                 cfg.name = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, what, env, "static");
                 break;
@@ -841,7 +836,6 @@ public class config_csproj : config_info
         cfg.env = env;
         switch (cfg.env)
         {
-            case "ios_classic":
             case "ios_unified":
             case "watchos":
                 switch (what)
@@ -864,7 +858,6 @@ public class config_csproj : config_info
         switch (cfg.env)
         {
             case "ios_unified":
-            case "ios_classic":
             case "watchos":
                 switch (what)
                 {
@@ -906,7 +899,6 @@ public class config_csproj : config_info
         switch (cfg.env)
         {
             case "ios_unified":
-            case "ios_classic":
             case "watchos":
                 switch (what)
                 {
@@ -1171,7 +1163,6 @@ public static class gen
 	private const string GUID_CPP = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
 	private const string GUID_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 	private const string GUID_PCL = "{786C830F-07A1-408B-BD7F-6EE04809D6DB}";
-	private const string GUID_IOS = "{6BC8ED88-2882-458C-8E55-DFD12B67127B}";
 	private const string GUID_WATCHOS = "{FC940695-DFE0-4552-9F25-99AF4A5619A1}";
 	private const string GUID_UNIFIED_IOS = "{FEACFBD2-3405-455C-9665-78FE426C6842}";
 	private const string GUID_UNIFIED_MAC = "{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1}";
@@ -1400,12 +1391,6 @@ public static class gen
 					f.WriteEndElement(); // Import
 
 					break;
-				case "ios_classic":
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Xamarin\\iOS\\Xamarin.MonoTouch.CSharp.targets");
-					f.WriteEndElement(); // Import
-
-					break;
 				case "android":
 					f.WriteStartElement("Import");
 					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Novell\\Novell.MonoDroid.CSharp.targets");
@@ -1446,7 +1431,6 @@ public static class gen
 	{
 		switch (env)
 		{
-			case "ios_classic":
 			case "ios_unified":
 			case "macos":
 			case "watchos":
@@ -1468,9 +1452,6 @@ public static class gen
 				break;
 			case "macos":
 				write_reference(f, "Xamarin.Mac");
-				break;
-			case "ios_classic":
-				write_reference(f, "monotouch");
 				break;
 			case "android":
 				write_reference(f, "Mono.Android");
@@ -1522,9 +1503,6 @@ public static class gen
 		{
 			case "profile136":
 				defines.Add("OLD_REFLECTION");
-				break;
-			case "ios_classic":
-				defines.Add("PLATFORM_IOS");
 				break;
 			case "macos":
 				f.WriteElementString("TargetFrameworkIdentifier", "Xamarin.Mac");
@@ -1651,9 +1629,6 @@ public static class gen
 		{
 			switch (env)
 			{
-				case "ios_classic":
-					write_project_type_guids(f, GUID_IOS, GUID_CSHARP);
-					break;
 				case "ios_unified":
 					write_project_type_guids(f, GUID_UNIFIED_IOS, GUID_CSHARP);
 					break;
@@ -3528,7 +3503,7 @@ public static class gen
         add_dep_core(f);
 
         if (
-                ((env_deps == "ios_unified") || (env_deps == "ios_classic") || (env_deps == "watchos"))
+                ((env_deps == "ios_unified") || (env_deps == "watchos"))
                 && (what != "sqlite3")
            )
         {
@@ -3564,7 +3539,6 @@ public static class gen
                     f.WriteEndElement(); // dependency
                     break;
                 case "ios_unified":
-                case "ios_classic":
                 case "watchos":
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env_deps));
@@ -3615,7 +3589,6 @@ public static class gen
                     f.WriteEndElement(); // dependency
                     break;
                 case "ios_unified":
-                case "ios_classic":
                 case "watchos":
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}.static", gen.ROOT_NAME, env_deps));
