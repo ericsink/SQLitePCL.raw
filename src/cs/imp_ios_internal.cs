@@ -43,7 +43,7 @@
 
 #if PLATFORM_UNIFIED
 [assembly: ObjCRuntime.LinkWith(
-        "libsqlcipher.a",
+        "sqlcipher.a",
         LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
@@ -53,7 +53,7 @@
 
 #else
 [assembly: MonoTouch.ObjCRuntime.LinkWith(
-        "libsqlcipher.a",
+        "sqlcipher.a",
         LinkTarget = MonoTouch.ObjCRuntime.LinkTarget.Simulator | MonoTouch.ObjCRuntime.LinkTarget.Simulator64 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7 | MonoTouch.ObjCRuntime.LinkTarget.ArmV7s | MonoTouch.ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
