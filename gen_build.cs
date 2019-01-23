@@ -2579,7 +2579,7 @@ public static class gen
 
 	public const int MAJOR_VERSION = 1;
 	public const int MINOR_VERSION = 1;
-	public const int PATCH_VERSION = 12;
+	public const int PATCH_VERSION = 13;
 	public static string NUSPEC_VERSION_PRE = string.Format("{0}.{1}.{2}-pre{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
