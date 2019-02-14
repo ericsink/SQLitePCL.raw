@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\cs\raw.cs" />
+    <Compile Include="..\..\src\cs\intptrs.cs" />
+    <Compile Include="..\..\src\cs\isqlite3.cs" />
+    <Compile Include="..\..\src\cs\sqlite3_bait.cs" />
+</ItemGroup>
+
+</Project>
