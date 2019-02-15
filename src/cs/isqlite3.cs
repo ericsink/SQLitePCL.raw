@@ -83,7 +83,7 @@ namespace SQLitePCL
     /// would present an API which is friendlier to C# developers.
     ///
     /// </summary>
-    public interface ISQLite3Provider
+    interface ISQLite3Provider
     {
         int sqlite3_open(string filename, out IntPtr db);
         int sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs);
