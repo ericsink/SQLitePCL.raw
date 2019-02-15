@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
+</ItemGroup>
+
+</Project>

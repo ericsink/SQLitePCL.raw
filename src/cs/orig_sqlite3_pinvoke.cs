@@ -28,18 +28,36 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
+#if PLATFORM_IOS
+    using MonoTouch;
+#elif PLATFORM_UNIFIED
+    using ObjCRuntime;
+#endif
+
+    public static class Settings
+    {
+        public static string BaseDirectoryForDynamicLoadNativeLibrary = null;
+    }
 
     /// <summary>
     /// Implements the <see cref="ISQLite3Provider"/> interface
     /// </summary>
-	[Preserve(AllMembers = true)]
-    sealed class SQLite3Provider_dyn : ISQLite3Provider
+#if __ANDROID__
+    [Android.Runtime.Preserve(AllMembers=true)]
+#elif PLATFORM_IOS
+	[MonoTouch.Foundation.Preserve(AllMembers = true)]
+#elif PLATFORM_UNIFIED
+	[Foundation.Preserve(AllMembers = true)]
+#endif
+    public sealed class SQLite3Provider_REPLACE_WITH_SIMPLE_DLL_NAME : ISQLite3Provider
     {
-		// TODO very unhappy that this needs to be static
-		public static MyDelegates NativeMethods;
+	    // this file is intended to be compiled only after
+	    // an automatic search-and-replace has been done.
+	    //
+	    // TODO it would be nice to make this file error
+	    // at compile time when the replace has not been performed.
 
-		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
-        public SQLite3Provider_dyn()
+        public SQLite3Provider_REPLACE_WITH_SIMPLE_DLL_NAME()
         {
 #if NETFX_CORE
             // FYI, the wp8 code does this same thing except using PRAGMAs
@@ -93,7 +111,7 @@ namespace SQLitePCL
         public IntPtr xGetLastError;
 
 
-        [UnmanagedFunctionPointer(CALLING_CONVENTION)]
+        [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
         public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
     }
     #pragma warning restore 649
@@ -130,7 +148,9 @@ namespace SQLitePCL
             NativeMethods.sqlite3_interrupt(db);
         }
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_exec))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_exec))] // TODO not xplat
+#endif
         static int exec_hook_bridge(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
         {
             exec_hook_info hi = exec_hook_info.from_ptr(p);
@@ -279,19 +299,19 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset)
         {
-            return (this as ISQLite3Provider).sqlite3_blob_read(blob, b, 0, n, offset);
+            return NativeMethods.sqlite3_blob_read(blob, b, n, offset);
         }
 
         int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset)
         {
-            return (this as ISQLite3Provider).sqlite3_blob_write(blob, b, 0, n, offset);
+            return NativeMethods.sqlite3_blob_write(blob, b, n, offset);
         }
 
         int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -300,7 +320,7 @@ namespace SQLitePCL
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
+            int rc = NativeMethods.other_sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
         }
@@ -453,14 +473,16 @@ namespace SQLitePCL
         // is shared but not portable.  It is in the util.cs file which is compiled
         // into each platform assembly.
         
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_commit))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_commit))] // TODO not xplat
+#endif
         static int commit_hook_bridge_impl(IntPtr p)
         {
             commit_hook_info hi = commit_hook_info.from_ptr(p);
             return hi.call();
         }
 
-	MyDelegateTypes.callback_commit commit_hook_bridge = new MyDelegateTypes.callback_commit(commit_hook_bridge_impl); 
+	NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -487,7 +509,9 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_scalar_function))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_scalar_function))] // TODO not xplat
+#endif
         static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = NativeMethods.sqlite3_user_data(context);
@@ -495,7 +519,7 @@ namespace SQLitePCL
             hi.call(context, num_args, argsptr);
         }
 
-	MyDelegateTypes.callback_scalar_function scalar_function_hook_bridge = new MyDelegateTypes.callback_scalar_function(scalar_function_hook_bridge_impl); 
+	NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
         int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
         {
@@ -542,14 +566,16 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_log))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_log))] // TODO not xplat
+#endif
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
         {
             log_hook_info hi = log_hook_info.from_ptr(p);
             hi.call(rc, util.from_utf8(s));
         }
 
-	MyDelegateTypes.callback_log log_hook_bridge = new MyDelegateTypes.callback_log(log_hook_bridge_impl); 
+	NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (hooks.log != null)
@@ -575,7 +601,9 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_agg_function_step))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))] // TODO not xplat
+#endif
         static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
@@ -586,7 +614,9 @@ namespace SQLitePCL
             hi.call_step(context, agg, num_args, argsptr);
         }
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_agg_function_final))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))] // TODO not xplat
+#endif
         static void agg_function_hook_bridge_final_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
@@ -597,8 +627,8 @@ namespace SQLitePCL
             hi.call_final(context, agg);
         }
 
-	MyDelegateTypes.callback_agg_function_step agg_function_hook_bridge_step = new MyDelegateTypes.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
-	MyDelegateTypes.callback_agg_function_final agg_function_hook_bridge_final = new MyDelegateTypes.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
+	NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
+	NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
         int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
@@ -649,14 +679,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_collation))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_collation))] // TODO not xplat
+#endif
         static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
             collation_hook_info hi = collation_hook_info.from_ptr(p);
             return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
         }
 
-	MyDelegateTypes.callback_collation collation_hook_bridge = new MyDelegateTypes.callback_collation(collation_hook_bridge_impl); 
+	NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -692,14 +724,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_update))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_update))] // TODO not xplat
+#endif
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
         }
 
-	MyDelegateTypes.callback_update update_hook_bridge = new MyDelegateTypes.callback_update(update_hook_bridge_impl); 
+	NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -726,14 +760,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_rollback))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_rollback))] // TODO not xplat
+#endif
         static void rollback_hook_bridge_impl(IntPtr p)
         {
             rollback_hook_info hi = rollback_hook_info.from_ptr(p);
             hi.call();
         }
 
-	MyDelegateTypes.callback_rollback rollback_hook_bridge = new MyDelegateTypes.callback_rollback(rollback_hook_bridge_impl); 
+	NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -760,14 +796,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_trace))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_trace))] // TODO not xplat
+#endif
         static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
             trace_hook_info hi = trace_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s));
         }
 
-	MyDelegateTypes.callback_trace trace_hook_bridge = new MyDelegateTypes.callback_trace(trace_hook_bridge_impl); 
+	NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(IntPtr db, delegate_trace func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -794,14 +832,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_profile))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_profile))] // TODO not xplat
+#endif
         static void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
         {
             profile_hook_info hi = profile_hook_info.from_ptr(p);
             hi.call(util.from_utf8(s), elapsed);
         }
 
-	MyDelegateTypes.callback_profile profile_hook_bridge = new MyDelegateTypes.callback_profile(profile_hook_bridge_impl); 
+	NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(IntPtr db, delegate_profile func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -828,14 +868,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_progress_handler))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_progress_handler))] // TODO not xplat
+#endif
         static int progress_handler_hook_bridge_impl(IntPtr p)
         {
             progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
             return hi.call();
         }
 
-        MyDelegateTypes.callback_progress_handler progress_handler_hook_bridge = new MyDelegateTypes.callback_progress_handler(progress_handler_hook_bridge_impl);
+        NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -864,14 +906,16 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_authorizer))]
+#if PLATFORM_IOS || PLATFORM_UNIFIED
+        [MonoPInvokeCallback (typeof(NativeMethods.callback_authorizer))] // TODO not xplat
+#endif
         static int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
             return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
         }
 
-        MyDelegateTypes.callback_authorizer authorizer_hook_bridge = new MyDelegateTypes.callback_authorizer(authorizer_hook_bridge_impl);
+        NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -1221,5 +1265,596 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
         }
 
+        private static class NativeMethods
+        {
+        private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
+
+#if PRELOAD_FROM_ARCH_DIRECTORY
+        enum MyPlatform
+        {
+            WINDOWS,
+            DLOPEN,
+        }
+
+        [DllImport("kernel32")]
+        private static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+
+	    const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
+        [DllImport("dl")]
+        private static extern IntPtr dlopen(string filename, int flags);
+
+        const int RTLD_NOW = 2; // for dlopen's flags 
+
+        // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+        // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+        // https://github.com/aspnet/DataCommon.SQLite/blob/dev/src/Microsoft.Data.SQLite/Utilities/NativeLibraryLoader.cs
+
+        private static bool TryLoadFromArchDirectory(string baseDirectory)
+        {
+            if (baseDirectory == null)
+            {
+                return false;
+            }
+            System.Diagnostics.Debug.Assert(System.IO.Path.IsPathRooted(baseDirectory), "baseDirectory is not rooted.");
+            if (!System.IO.Directory.Exists(baseDirectory))
+            {
+                return false;
+            }
+
+        string dllName;
+        MyPlatform plat;
+		if (System.Environment.OSVersion.Platform == System.PlatformID.Win32NT)
+        {
+            plat = MyPlatform.WINDOWS;
+            dllName = string.Format("{0}.dll", SQLITE_DLL);
+        }
+        else
+        {
+            plat = MyPlatform.DLOPEN;
+            dllName = string.Format("lib{0}.so", SQLITE_DLL);
+        }
+
+            var architecture = IntPtr.Size == 4
+                ? "x86"
+                : "x64";
+
+            var dllPath = System.IO.Path.Combine(System.IO.Path.Combine(baseDirectory, architecture), dllName);
+            if (!System.IO.File.Exists(dllPath))
+	    {
+                return false;
+	    }
+
+        IntPtr ptr;
+        switch (plat)
+        {
+            case MyPlatform.WINDOWS:
+                ptr = LoadLibraryEx(dllPath, IntPtr.Zero, LOAD_WITH_ALTERED_SEARCH_PATH);
+                break;
+            case MyPlatform.DLOPEN:
+                // load library before DllImport doesn't seem to work on Linux
+                // disable for now
+                // TODO ptr = dlopen(dllPath, RTLD_NOW);
+				ptr = IntPtr.Zero;
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+
+            return ptr != IntPtr.Zero;
+        }
+#endif
+
+        static NativeMethods()
+        {
+#if PRELOAD_FROM_ARCH_DIRECTORY
+        // TODO do we need a try/catch around this?
+
+        // first try the directory provided by the app, if any
+        {
+            var baseDirectory = Settings.BaseDirectoryForDynamicLoadNativeLibrary;
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+        }
+
+        {
+            var baseDirectory = new Uri(AppDomain.CurrentDomain.BaseDirectory).LocalPath;
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+        }
+
+        {
+#if OLD_REFLECTION
+			var currentAssembly = typeof(NativeMethods).Assembly;
+#else
+			var currentAssembly = typeof(NativeMethods).GetTypeInfo().Assembly;
+#endif
+			var codeBase = currentAssembly.CodeBase;
+			var uri = new UriBuilder(codeBase);
+			var baseDirectory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path));
+            if (TryLoadFromArchDirectory(baseDirectory))
+            {
+                return;
+            }
+		}
+#endif
+        }
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_close(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_enable_shared_cache(int enable);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_interrupt(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_finalize(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_reset(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_clear_bindings(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_stmt_status(IntPtr stm, int op, int resetFlg);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_bind_parameter_name(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_database_name(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_database_name16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_decltype(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_decltype16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_name(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_name16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_origin_name(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_origin_name16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_table_name(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_table_name16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_text(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_text16(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_errmsg(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_db_readonly(IntPtr db, byte[] dbName);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_db_filename(IntPtr db, byte[] att);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_prepare_v2(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_complete(byte[] pSql);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_compileoption_used(byte[] pSql);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_compileoption_get(int n);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_table_column_metadata(IntPtr db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_value_text(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_value_text16(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_enable_load_extension(
+            IntPtr db, int enable);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_load_extension(
+            IntPtr db, byte[] fileName, byte[] procName, ref IntPtr pError);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_initialize();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_shutdown();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_libversion();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_libversion_number();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_threadsafe();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_sourceid();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_malloc(int n);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_realloc(IntPtr p, int n);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_free(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_open(byte[] filename, out IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_vfs_find(byte[] vfs);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+            public static extern int sqlite3_open16(string fileName, out IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern long sqlite3_last_insert_rowid(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_changes(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_total_changes(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern long sqlite3_memory_used();
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern long sqlite3_memory_highwater(int resetFlag);
+            
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_busy_timeout(IntPtr db, int ms);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_blob(IntPtr stmt, int index, byte[] val, int nSize, IntPtr nTransient);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_zeroblob(IntPtr stmt, int index, int size);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_double(IntPtr stmt, int index, double val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_int(IntPtr stmt, int index, int val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_int64(IntPtr stmt, int index, long val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_null(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_text(IntPtr stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_parameter_count(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_bind_parameter_index(IntPtr stmt, byte[] strName);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_column_count(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_data_count(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_step(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_sql(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern double sqlite3_column_double(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_column_int(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern long sqlite3_column_int64(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_column_blob(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_column_bytes(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_column_type(IntPtr stmt, int index);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_aggregate_count(IntPtr context);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_value_blob(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_value_bytes(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern double sqlite3_value_double(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_value_int(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern long sqlite3_value_int64(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_value_type(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_user_data(IntPtr context);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_double(IntPtr context, double val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_int(IntPtr context, int val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_int64(IntPtr context, long val);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_null(IntPtr context);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_zeroblob(IntPtr context, int n);
+
+            // TODO sqlite3_result_value 
+ 
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_error_toobig(IntPtr context);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_error_nomem(IntPtr context);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_result_error_code(IntPtr context, int code);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+            public static extern int sqlite3_bind_text16(IntPtr stmt, int index, string val, int nlen, IntPtr pvReserved);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+            public static extern void sqlite3_result_error16(IntPtr context, string strName, int nLen);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet = CharSet.Unicode)]
+            public static extern void sqlite3_result_text16(IntPtr context, string strName, int nLen, IntPtr pvReserved);
+
+#if not // TODO removed, perhaps temporarily.  not sure if we want these or PRAGMA key.
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_key(IntPtr db, byte[] key, int keylen);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_rekey(IntPtr db, byte[] key, int keylen);
+#endif
+
+            // Since sqlite3_config() takes a variable argument list, we have to overload declarations
+            // for all possible calls that we want to use.
+            [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_config_none(int op);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_config_int(int op, int val);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_config_log(int op, callback_log func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_agg_function_final(IntPtr context);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_scalar_function(IntPtr context, int nArgs, IntPtr argsptr);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_agg_function_step(IntPtr context, int nArgs, IntPtr argsptr);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_destroy(IntPtr p);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_create_function_v2(IntPtr db, byte[] strName, int nArgs, int nType, IntPtr pvUser, callback_scalar_function func, callback_agg_function_step fstep, callback_agg_function_final ffinal, callback_destroy fdestroy);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate int callback_collation(IntPtr puser, int len1, IntPtr pv1, int len2, IntPtr pv2);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_create_collation(IntPtr db, byte[] strName, int nType, IntPtr pvUser, callback_collation func);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_update(IntPtr p, int typ, IntPtr db, IntPtr tbl, long rowid);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_update_hook(IntPtr db, callback_update func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate int callback_commit(IntPtr puser);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_commit_hook(IntPtr db, callback_commit func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_profile(IntPtr puser, IntPtr statement, long elapsed);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_profile(IntPtr db, callback_profile func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate int callback_progress_handler(IntPtr puser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate int callback_authorizer(IntPtr puser, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_progress_handler(IntPtr db, int instructions, callback_progress_handler func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_trace(IntPtr puser, IntPtr statement);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_trace(IntPtr db, callback_trace func, IntPtr pvUser);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate void callback_rollback(IntPtr puser);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_rollback_hook(IntPtr db, callback_rollback func, IntPtr pvUser);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_db_handle(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_next_stmt(IntPtr db, IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_stmt_busy(IntPtr stmt);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_stmt_readonly(IntPtr stmt);
+
+            [UnmanagedFunctionPointer(CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_exec(IntPtr db, byte[] strSql, callback_exec cb, IntPtr pvParam, out IntPtr errMsg);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_get_autocommit(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_extended_result_codes(IntPtr db, int onoff);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_errcode(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_extended_errcode(IntPtr db);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
+
+            // Since sqlite3_log() takes a variable argument list, we have to overload declarations
+            // for all possible calls.  For now, we are only exposing a single string, and 
+            // depend on the caller to format the string.
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern void sqlite3_log(int iErrCode, byte[] zFormat);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern IntPtr sqlite3_backup_init(IntPtr destDb, byte[] zDestName, IntPtr sourceDb, byte[] zSourceName);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_backup_step(IntPtr backup, int nPage);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_backup_finish(IntPtr backup);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_backup_remaining(IntPtr backup);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_backup_pagecount(IntPtr backup);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_blob_open(IntPtr db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out IntPtr blob);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, EntryPoint="sqlite3_blob_write")]
+            public static extern int other_sqlite3_blob_write(IntPtr blob, IntPtr b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION, EntryPoint="sqlite3_blob_read")]
+            public static extern int other_sqlite3_blob_read(IntPtr blob, IntPtr b, int n, int offset);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_blob_bytes(IntPtr blob);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_blob_close(IntPtr blob);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_wal_autocheckpoint(IntPtr db, int n);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_wal_checkpoint(IntPtr db, byte[] dbName);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_wal_checkpoint_v2(IntPtr db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
+
+            [DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CallingConvention.REPLACE_WITH_CALLING_CONVENTION)]
+            public static extern int sqlite3_set_authorizer(IntPtr db, callback_authorizer cb, IntPtr pvUser);
+#if NETFX_CORE
+            [DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_win32_set_directory", CallingConvention=CallingConvention.REPLACE_WITH_CALLING_CONVENTION, CharSet=CharSet.Unicode)]
+            public static extern int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
+#endif
+
+        }
     }
 }

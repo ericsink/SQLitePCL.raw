@@ -6,6 +6,11 @@
   </PropertyGroup>
 
 <ItemGroup>
+    <Compile Include="..\..\src\cs\setup.cs" />
+    <Compile Include="..\..\src\cs\sqlite3_pinvoke.cs" />
+    <Compile Include="..\..\src\cs\attributes.cs" />
+    <Compile Include="..\..\src\cs\delegates.cs" />
+    <Compile Include="..\..\src\cs\util.cs" />
     <Compile Include="..\..\src\cs\raw.cs" />
     <Compile Include="..\..\src\cs\intptrs.cs" />
     <Compile Include="..\..\src\cs\isqlite3.cs" />

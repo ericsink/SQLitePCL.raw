@@ -35,7 +35,7 @@ namespace SQLitePCL
 
         static raw()
         {
-            _imp = new SQLite3Provider_bait();
+            _imp = new SQLite3Provider_dyn();
             _frozen = false;
         }
 

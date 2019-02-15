@@ -35,25 +35,7 @@ namespace SQLitePCL.Tests
 	{
 		public Init()
 		{
-#if PROVIDER_e_sqlite3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
-#elif PROVIDER_custom_sqlite3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_custom_sqlite3());
-#elif PROVIDER_sqlite3
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
-#elif PROVIDER_cppinterop
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cppinterop());
-#elif PROVIDER_internal
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif PROVIDER_sqlcipher
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
-#elif PROVIDER_bundle
-            SQLitePCL.Batteries.Init();
-#elif PROVIDER_none
-	    // used for when the tests are in a PCL
-#else
-#error test_cases.cs built with no provider specified
-#endif
+			SQLitePCL.Setup.Load("e_sqlite3.dll");
 		}
 	}
 
