@@ -27,8 +27,6 @@ public static class projects
 	//
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
-	public static List<config_testapp> items_testapp = new List<config_testapp>();
-
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 
 	// This function is called by Main to initialize the project lists.
@@ -36,8 +34,6 @@ public static class projects
 	public static void init()
 	{
         init_csproj();
-
-		init_testapps();
 
 		init_esqlite3();
 	}
@@ -217,52 +213,6 @@ public static class projects
 
         init_bundles(1);
         init_bundles(2);
-    }
-
-    private static void init_testapps()
-    {
-        items_testapp.Add(new config_testapp { 
-                env="android", 
-                cpu="anycpu", 
-                bundle="bundle_sqlcipher",
-                });
-        items_testapp.Add(new config_testapp { 
-                env="android", 
-                cpu="anycpu", 
-                bundle="bundle_e_sqlite3",
-                });
-        items_testapp.Add(new config_testapp { 
-                env="android", 
-                cpu="anycpu", 
-                bundle="bundle_green",
-                });
-
-        items_testapp.Add(new config_testapp { 
-                env="wp81", 
-                cpu="x86", 
-                bundle="bundle_e_sqlite3",
-                });
-        items_testapp.Add(new config_testapp { 
-                env="wp81", 
-                cpu="x86", 
-                bundle="bundle_green",
-                });
-
-        items_testapp.Add(new config_testapp { 
-                env="uwp10", 
-                cpu="x86", 
-                bundle="bundle_green",
-                });
-        items_testapp.Add(new config_testapp { 
-                env="uwp10", 
-                cpu="x86", 
-                bundle="bundle_e_sqlite3",
-                });
-        items_testapp.Add(new config_testapp { 
-                env="uwp10", 
-                cpu="x64", 
-                bundle="bundle_winsqlite3",
-                });
     }
 
 	private static void init_esqlite3()
@@ -638,36 +588,6 @@ public static class config_cs
 		}
 	}
 					
-}
-
-public class config_testapp
-{
-	public string guid;
-    public string env;
-    public string cpu;
-    public string bundle;
-
-    public string pattern
-    {
-        get
-        {
-            switch (env)
-            {
-                case "wp81": return "Tests.WP81";
-                case "android": return "Tests.Android";
-                case "uwp10": return "Tests.UWP10";
-                default: throw new Exception();
-            }
-        }
-    }
-
-    public string name
-    {
-        get
-        {
-            return string.Format("tests_{0}_{1}_{2}", bundle, env, cpu);
-        }
-    }
 }
 
 public class config_csproj : config_info
@@ -1463,45 +1383,6 @@ public static class gen
 
 	}
 
-    private static void gen_testapp(
-            config_testapp cfg,
-            string root
-            )
-    {
-        string vtests = string.Format("Tests_{0}", NUSPEC_VERSION);
-		Directory.CreateDirectory(vtests);
-        DirectoryCopy(Path.Combine(root, "Tests", cfg.pattern), Path.Combine(root, vtests, cfg.name), true);
-
-        File.Delete(Path.Combine(root, vtests, cfg.name, "project.lock.json"));
-        File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.nuget.props", cfg.pattern)));
-        File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.nuget.targets", cfg.pattern)));
-        File.Delete(Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj.user", cfg.pattern)));
-	try
-	{
-		Directory.Delete(Path.Combine(root, vtests, cfg.name, "bin"), true);
-	}
-	catch
-	{
-	}
-	try
-	{
-		Directory.Delete(Path.Combine(root, vtests, cfg.name, "obj"), true);
-	}
-	catch
-	{
-	}
-
-        string old_csproj = Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj", cfg.pattern));
-        string csproj = Path.Combine(root, vtests, cfg.name, string.Format("{0}.csproj", cfg.name));
-        File.Move(old_csproj, csproj);
-        string project_dot_json = Path.Combine(root, vtests, cfg.name, "project.json");
-
-        replace(csproj, cfg.pattern, cfg.name);
-        fix_guid(csproj, cfg.guid);
-        replace(project_dot_json, "bundle_e_sqlite3", cfg.bundle);
-        fix_version(project_dot_json);
-    }
-
     private static void write_android_native_libs(string cb_bin, XmlWriter f)
     {
         f.WriteStartElement("EmbeddedNativeLibrary");
@@ -1921,60 +1802,6 @@ public static class gen
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
 				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
-			f.WriteLine("\t\tHideSolutionNode = FALSE");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("EndGlobal");
-		}
-	}
-
-	public static void gen_testapp_solution(string root, List<config_testapp> a)
-	{
-        string vtests = string.Format("Tests_{0}", NUSPEC_VERSION);
-		using (StreamWriter f = new StreamWriter(Path.Combine(vtests, "testapps.sln")))
-		{
-			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 14");
-			f.WriteLine("VisualStudioVersion = 14.0");
-			f.WriteLine("MinimumVisualStudioVersion = 12.0");
-
-			foreach (config_testapp cfg in a)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}.csproj\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.name,
-						cfg.name,
-						cfg.guid
-						);
-				f.WriteLine("EndProject");
-			}
-
-			f.WriteLine("Global");
-
-			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
-			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_testapp cfg in projects.items_testapp)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.cpu);
-                if (cfg.env == "uwp10")
-                {
-                    f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Deploy.0 = Debug|{1}", cfg.guid, cfg.cpu);
-                }
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.cpu);
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.cpu);
-                if (cfg.env == "uwp10")
-                {
-                    f.WriteLine("\t\t{0}.Release|Mixed Platforms.Deploy.0 = Release|{1}", cfg.guid, cfg.cpu);
-                }
 			}
 			f.WriteLine("\tEndGlobalSection");
 
@@ -3864,11 +3691,6 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_testapp cfg in projects.items_testapp)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
 		// --------------------------------
 		// generate all the AssemblyInfo files
 
@@ -3885,15 +3707,9 @@ public static class gen
 			gen_csproj(cfg, root, top, cb_bin);
 		}
 
-		foreach (config_testapp cfg in projects.items_testapp)
-		{
-			gen_testapp(cfg, root);
-		}
-
 		// --------------------------------
 
 		gen_solution(top);
-		gen_testapp_solution(top, projects.items_testapp);
 
 		// --------------------------------
 
@@ -3980,13 +3796,6 @@ public static class gen
 				tw.WriteLine("../nuget pack {0}.nuspec", id);
 			}
 			tw.WriteLine("ls *.nupkg");
-		}
-
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "bt.ps1")))
-		{
-            string vtests = string.Format("Tests_{0}", NUSPEC_VERSION);
-			tw.WriteLine("cd ../{0}", vtests);
-			tw.WriteLine("../nuget restore -Source '{0}' -Source https://www.nuget.org/api/v2 ./testapps.sln", top);
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
