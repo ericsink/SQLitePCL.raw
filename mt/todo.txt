@@ -37,8 +37,6 @@ SourceGear name?
 
 UnmanagedFunctionPointer attribute CharSet ?
 
-EntryPoint
-
 get rid of old reflection ifdef
 
 stuff in csproj so we can do dotnet pack

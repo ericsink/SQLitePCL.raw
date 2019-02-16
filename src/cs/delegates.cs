@@ -44,7 +44,15 @@ namespace SQLitePCL
 				// TODO check here to make sure the type is a delegate of some kind?
 				// just in case we introduce other properties later?
 				var name = p.Name;
-				// TODO check for EntryPoint attribute
+				foreach (var attr in System.Attribute.GetCustomAttributes(delegate_type))
+				{
+					if (attr.GetType() == typeof(EntryPointAttribute))
+					{
+						var ep = attr as EntryPointAttribute;
+						//System.Console.WriteLine("{0} EntryPoint {1}", p.Name, ep.Name);
+						name = ep.Name;
+					}
+				}
 				var fn_ptr = gf.GetFunctionPtr(name);
 				if (fn_ptr != IntPtr.Zero)
 				{
@@ -53,6 +61,7 @@ namespace SQLitePCL
 				}
 				else
 				{
+					System.Console.WriteLine("Warning: {0} not found", name);
 					p.SetValue(this, null);
 				}
 			}
