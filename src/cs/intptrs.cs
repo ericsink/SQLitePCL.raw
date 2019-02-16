@@ -277,11 +277,7 @@ namespace SQLitePCL
 		internal bool already_disposed => _disposed;
 
         // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
-#if NO_CONCURRENTDICTIONARY
-        private System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt> _stmts = null;
-#else
         private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
-#endif
 
         internal sqlite3(IntPtr p)
         {
@@ -295,11 +291,7 @@ namespace SQLitePCL
             {
                 if (_stmts == null)
                 {
-#if NO_CONCURRENTDICTIONARY
-		_stmts = new System.Collections.Generic.Dictionary<IntPtr, sqlite3_stmt>();
-#else
                     _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
-#endif
                 }
             }
             else
@@ -367,14 +359,7 @@ namespace SQLitePCL
         {
             if (_stmts != null)
             {
-#if NO_CONCURRENTDICTIONARY
-		lock(_stmts)
-		{
-		    _stmts[stmt.ptr] = stmt;
-		}
-#else
                 _stmts[stmt.ptr] = stmt;
-#endif
             }
         }
 
@@ -382,14 +367,7 @@ namespace SQLitePCL
         {
             if (_stmts != null)
             {
-#if NO_CONCURRENTDICTIONARY
-			lock(_stmts)
-			{
-			    return _stmts[p];
-			}
-#else
                 return _stmts[p];
-#endif
             }
             else
             {
@@ -401,15 +379,8 @@ namespace SQLitePCL
         {
             if (_stmts != null)
             {
-#if NO_CONCURRENTDICTIONARY
-		lock(_stmts)
-		{
-		    _stmts.Remove(s.ptr);
-		}
-#else
                 sqlite3_stmt stmt;
                 _stmts.TryRemove(s.ptr, out stmt);
-#endif
             }
         }
     }

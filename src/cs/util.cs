@@ -68,55 +68,22 @@ namespace SQLitePCL
 
         internal static log_hook_info log;
 
-#if NO_CONCURRENTDICTIONARY
-        private static Dictionary<IntPtr,info> _hooks_by_db = new Dictionary<IntPtr,info>();
-#else
         private static System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info> _hooks_by_db = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info>();
-#endif
 
 	internal static info getOrCreateFor(IntPtr db)
 	{
 		info i;
-#if NO_CONCURRENTDICTIONARY
-		lock (_hooks_by_db)
-		{
-			if (!_hooks_by_db.TryGetValue(db, out i))
-			{
-				i = new info();
-				_hooks_by_db[db] = i;
-			}
-		}
-#else
                 i = _hooks_by_db.GetOrAdd(db, (unused) => new info());
-#endif
                 return i;
 	}
 
 	internal static void removeFor(IntPtr db)
 	{
 		info i;
-#if NO_CONCURRENTDICTIONARY
-		lock (_hooks_by_db)
-		{
-			if (_hooks_by_db.TryGetValue(db, out i))
-			{
-				_hooks_by_db.Remove(db);
-			}
-			else
-			{
-				i = null;
-			}
-		}
-		if (i != null)
-		{
-			i.free();
-		}
-#else
                 if (_hooks_by_db.TryRemove(db, out i))
                 {
 	            i.free();
                 }
-#endif
 	}
     }
 
