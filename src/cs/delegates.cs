@@ -77,17 +77,11 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_stmt_status sqlite3_stmt_status { get; private set; }
 		public MyDelegateTypes.sqlite3_bind_parameter_name sqlite3_bind_parameter_name { get; private set; }
 		public MyDelegateTypes.sqlite3_column_database_name sqlite3_column_database_name { get; private set; }
-		public MyDelegateTypes.sqlite3_column_database_name16 sqlite3_column_database_name16 { get; private set; }
 		public MyDelegateTypes.sqlite3_column_decltype sqlite3_column_decltype { get; private set; }
-		public MyDelegateTypes.sqlite3_column_decltype16 sqlite3_column_decltype16 { get; private set; }
 		public MyDelegateTypes.sqlite3_column_name sqlite3_column_name { get; private set; }
-		public MyDelegateTypes.sqlite3_column_name16 sqlite3_column_name16 { get; private set; }
 		public MyDelegateTypes.sqlite3_column_origin_name sqlite3_column_origin_name { get; private set; }
-		public MyDelegateTypes.sqlite3_column_origin_name16 sqlite3_column_origin_name16 { get; private set; }
 		public MyDelegateTypes.sqlite3_column_table_name sqlite3_column_table_name { get; private set; }
-		public MyDelegateTypes.sqlite3_column_table_name16 sqlite3_column_table_name16 { get; private set; }
 		public MyDelegateTypes.sqlite3_column_text sqlite3_column_text { get; private set; }
-		public MyDelegateTypes.sqlite3_column_text16 sqlite3_column_text16 { get; private set; }
 		public MyDelegateTypes.sqlite3_errmsg sqlite3_errmsg { get; private set; }
 		public MyDelegateTypes.sqlite3_db_readonly sqlite3_db_readonly { get; private set; }
 		public MyDelegateTypes.sqlite3_db_filename sqlite3_db_filename { get; private set; }
@@ -99,7 +93,6 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_compileoption_get sqlite3_compileoption_get { get; private set; }
 		public MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata { get; private set; }
 		public MyDelegateTypes.sqlite3_value_text sqlite3_value_text { get; private set; }
-		public MyDelegateTypes.sqlite3_value_text16 sqlite3_value_text16 { get; private set; }
 		public MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension { get; private set; }
 		public MyDelegateTypes.sqlite3_load_extension sqlite3_load_extension { get; private set; }
 		public MyDelegateTypes.sqlite3_initialize sqlite3_initialize { get; private set; }
@@ -114,7 +107,6 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_open sqlite3_open { get; private set; }
 		public MyDelegateTypes.sqlite3_open_v2 sqlite3_open_v2 { get; private set; }
 		public MyDelegateTypes.sqlite3_vfs_find sqlite3_vfs_find { get; private set; }
-		public MyDelegateTypes.sqlite3_open16 sqlite3_open16 { get; private set; }
 		public MyDelegateTypes.sqlite3_last_insert_rowid sqlite3_last_insert_rowid { get; private set; }
 		public MyDelegateTypes.sqlite3_changes sqlite3_changes { get; private set; }
 		public MyDelegateTypes.sqlite3_total_changes sqlite3_total_changes { get; private set; }
@@ -162,9 +154,6 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_result_error_nomem sqlite3_result_error_nomem { get; private set; }
 		public MyDelegateTypes.sqlite3_result_error_code sqlite3_result_error_code { get; private set; }
 		public MyDelegateTypes.sqlite3_aggregate_context sqlite3_aggregate_context { get; private set; }
-		public MyDelegateTypes.sqlite3_bind_text16 sqlite3_bind_text16 { get; private set; }
-		public MyDelegateTypes.sqlite3_result_error16 sqlite3_result_error16 { get; private set; }
-		public MyDelegateTypes.sqlite3_result_text16 sqlite3_result_text16 { get; private set; }
 		public MyDelegateTypes.sqlite3_key sqlite3_key { get; private set; }
 		public MyDelegateTypes.sqlite3_rekey sqlite3_rekey { get; private set; }
 		public MyDelegateTypes.sqlite3_config_none sqlite3_config_none { get; private set; }
@@ -242,37 +231,19 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_column_database_name(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_database_name16(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_column_decltype(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_decltype16(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_column_name(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_name16(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_column_origin_name(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_origin_name16(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_column_table_name(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_table_name16(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_column_text(IntPtr stmt, int index);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_text16(IntPtr stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_errmsg(IntPtr db);
@@ -306,9 +277,6 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_value_text(IntPtr p);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_value_text16(IntPtr p);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_enable_load_extension(
@@ -353,9 +321,6 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet = CharSet.Unicode)]
-		public delegate int sqlite3_open16(string fileName, out IntPtr db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate long sqlite3_last_insert_rowid(IntPtr db);
@@ -496,15 +461,6 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet = CharSet.Unicode)]
-		public delegate int sqlite3_bind_text16(IntPtr stmt, int index, string val, int nlen, IntPtr pvReserved);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet = CharSet.Unicode)]
-		public delegate void sqlite3_result_error16(IntPtr context, string strName, int nLen);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet = CharSet.Unicode)]
-		public delegate void sqlite3_result_text16(IntPtr context, string strName, int nLen, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_key(IntPtr db, byte[] key, int keylen);
