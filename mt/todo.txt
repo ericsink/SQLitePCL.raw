@@ -43,3 +43,6 @@ stuff in csproj so we can do dotnet pack
 
 AssemblyInfo stuff, version numbers
 
+instead of delegate-ish types in isqlite3.cs should the functions
+take something like Func<whatever> ?
+
