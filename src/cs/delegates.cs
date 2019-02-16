@@ -42,6 +42,8 @@ namespace SQLitePCL
 			foreach (var p in typeof(MyDelegates).GetTypeInfo().DeclaredProperties)
 			{
 				var delegate_type = p.PropertyType;
+				// TODO check here to make sure the type is a delegate of some kind?
+				// just in case we introduce other properties later?
 				var name = p.Name;
 				// TODO check for EntryPoint attribute
 				var fn_ptr = gf.GetFunctionPtr(name);
@@ -52,7 +54,7 @@ namespace SQLitePCL
 				}
 				else
 				{
-					// TODO set null
+					p.SetValue(this, null);
 				}
 			}
 		}
