@@ -27,7 +27,6 @@ public static class projects
 	//
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
-	public static List<config_csproj> items_test = new List<config_csproj>();
 	public static List<config_testapp> items_testapp = new List<config_testapp>();
 
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
@@ -37,8 +36,6 @@ public static class projects
 	public static void init()
 	{
         init_csproj();
-
-		init_tests();
 
 		init_testapps();
 
@@ -221,25 +218,6 @@ public static class projects
         init_bundles(1);
         init_bundles(2);
     }
-
-	private static void init_tests()
-	{
-        // using netstandard for the tests would require switching to the
-        // xunit pre
-        
-        //items_test.Add(config_csproj.create_portable_test("netstandard11"));
-        items_test.Add(config_csproj.create_portable_test("profile259"));
-
-        items_test.Add(config_csproj.create_bundle_test("net45", "e_sqlite3"));
-        items_test.Add(config_csproj.create_bundle_test("net45", "green"));
-
-        // in main
-        //items_csproj.Add(config_csproj.create_portable_test_main("netstandard11"));
-        //xunit only supports 259
-        //items_csproj.Add(config_csproj.create_portable_test_main("profile111"));
-        //items_csproj.Add(config_csproj.create_portable_test_main("profile136"));
-        items_csproj.Add(config_csproj.create_portable_test_main("profile259"));
-	}
 
     private static void init_testapps()
     {
@@ -872,55 +850,6 @@ public class config_csproj : config_info
         cfg.assemblyname = string.Format("{0}.ugly", cfg.root_name);
         cfg.env = env;
         cfg.csfiles_src.Add("ugly.cs");
-        cfg.ref_core = true;
-        return cfg;
-    }
-
-    public static config_csproj create_bundle_test(string env, string bundle)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
-        cfg.name = string.Format("{0}.test.bundle_{1}.{2}", cfg.root_name, bundle, env);
-        cfg.assemblyname = string.Format("{0}.tests", cfg.root_name);
-        cfg.env = env;
-        cfg.CopyNuGetImplementations = true;
-        cfg.csfiles_src.Add("tests_xunit.cs");
-        cfg.defines.Add("PROVIDER_bundle");
-
-        cfg.deps["xunit"] = "2.1.0";
-
-        cfg.deps[string.Format("{0}.ugly", gen.ROOT_NAME)] = gen.NUSPEC_VERSION;
-        cfg.deps[string.Format("{0}.bundle_{1}", gen.ROOT_NAME, bundle)] = gen.NUSPEC_VERSION;
-        return cfg;
-    }
-
-    public static config_csproj create_portable_test(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
-        cfg.name = string.Format("{0}.test.portable.{1}", cfg.root_name, env);
-        cfg.assemblyname = string.Format("{0}.tests", cfg.root_name);
-        cfg.env = env;
-        cfg.csfiles_src.Add("tests_xunit.cs");
-        cfg.defines.Add("PROVIDER_none");
-
-        cfg.deps["xunit"] = "2.1.0";
-        cfg.deps[string.Format("{0}.ugly", gen.ROOT_NAME)] = gen.NUSPEC_VERSION;
-        return cfg;
-    }
-
-    public static config_csproj create_portable_test_main(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "test";
-        cfg.name = string.Format("{0}.mtest.portable.{1}", cfg.root_name, env);
-        cfg.assemblyname = string.Format("{0}.tests", cfg.root_name);
-        cfg.env = env;
-        cfg.csfiles_src.Add("tests_xunit.cs");
-        cfg.defines.Add("PROVIDER_none");
-
-        cfg.deps["xunit"] = "2.1.0";
-        cfg.ref_ugly = true;
         cfg.ref_core = true;
         return cfg;
     }
@@ -2003,51 +1932,6 @@ public static class gen
 		}
 	}
 
-	public static void gen_test_solution(string top)
-	{
-		using (StreamWriter f = new StreamWriter(Path.Combine(top, "test.sln")))
-		{
-			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 14");
-			f.WriteLine("VisualStudioVersion = 14.0");
-			f.WriteLine("MinimumVisualStudioVersion = 12.0");
-
-			foreach (config_csproj cfg in projects.items_test)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("EndProject");
-			}
-
-			f.WriteLine("Global");
-
-			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
-			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_csproj cfg in projects.items_test)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
-			f.WriteLine("\t\tHideSolutionNode = FALSE");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("EndGlobal");
-		}
-	}
-
 	public static void gen_testapp_solution(string root, List<config_testapp> a)
 	{
         string vtests = string.Format("Tests_{0}", NUSPEC_VERSION);
@@ -2777,82 +2661,6 @@ public static class gen
 		f.WriteAttributeString("type", "expression");
 		f.WriteString("Apache-2.0");
 		f.WriteEndElement();
-	}
-
-	private static void gen_nuspec_tests(string top)
-	{
-		string id = string.Format("{0}.tests", gen.ROOT_NAME);
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.5"); // TODO 2.8.3 for unified
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", id);
-			f.WriteElementString("description", "tests");
-			f.WriteElementString("authors", "Eric Sink");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2019 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			write_license(f);
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "tests");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteStartElement("dependencies");
-
-            write_dependency_group(f, "android", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "ios_unified", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "macos", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            // TODO write_dependency_group(f, "watchos", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "net35", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "net40", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "net45", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "win81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "wpa81", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "wp80", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "uwp10", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "profile111", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "profile136", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "profile259", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, "netstandard11", DEP_CORE | DEP_UGLY | DEP_XUNIT);
-            write_dependency_group(f, null, DEP_CORE | DEP_UGLY | DEP_XUNIT);
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
-				if (cfg.area == "test")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
-			}
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
 	}
 
 	private static void gen_nuspec_ugly(string top)
@@ -4056,11 +3864,6 @@ public static class gen
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
 		}
 
-		foreach (config_csproj cfg in projects.items_test)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
 		foreach (config_testapp cfg in projects.items_testapp)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -4074,20 +3877,10 @@ public static class gen
 			gen_assemblyinfo(cfg, root, top);
 		}
 
-		foreach (config_csproj cfg in projects.items_test)
-		{
-			gen_assemblyinfo(cfg, root, top);
-		}
-
 		// --------------------------------
 		// generate all the project files
 
 		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			gen_csproj(cfg, root, top, cb_bin);
-		}
-
-		foreach (config_csproj cfg in projects.items_test)
 		{
 			gen_csproj(cfg, root, top, cb_bin);
 		}
@@ -4101,7 +3894,6 @@ public static class gen
 
 		gen_solution(top);
 		gen_testapp_solution(top, projects.items_testapp);
-		gen_test_solution(top);
 
 		// --------------------------------
 
@@ -4112,7 +3904,6 @@ public static class gen
         gen_nuspec_bundle_winsqlite3(top);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
-        gen_nuspec_tests(top);
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
