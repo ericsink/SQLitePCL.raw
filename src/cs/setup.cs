@@ -26,8 +26,23 @@
 namespace SQLitePCL
 {
     using System;
-    using System.Collections.Generic;
     using System.Runtime.InteropServices;
+
+	static class NativeMethods_dlopen
+	{
+		const string SO = "dl";
+
+        const int RTLD_NOW = 2; // for dlopen's flags 
+
+        [DllImport(SO)]
+        public static extern IntPtr dlopen(string dllToLoad, int flags);
+
+        [DllImport(SO)]
+        public static extern IntPtr dlsym(IntPtr hModule, string procedureName);
+
+        [DllImport(SO)]
+        public static extern int dlclose(IntPtr hModule);
+	}
 
 	static class NativeMethods_Win
 	{
