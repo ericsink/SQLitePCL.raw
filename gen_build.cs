@@ -908,11 +908,6 @@ public static class gen
 		f.WriteEndElement(); // Compile
 	}
 
-	private static void write_cpp_define(XmlWriter f, string s)
-	{
-		f.WriteElementString("PreprocessorDefinitions", string.Format("{0};%(PreprocessorDefinitions)", s));
-	}
-
 	private static void write_project_type_guids(XmlWriter f, string s1)
 	{
 		f.WriteElementString("ProjectTypeGuids", string.Format("{0}", s1));
@@ -1870,26 +1865,6 @@ public static class gen
 		f.WriteAttributeString("target", string.Format("lib\\{0}", tfm));
 		f.WriteEndElement(); // file
     }
-
-	private static void write_cppinterop_with_targets_file(XmlWriter f, List<config_csproj> a, string env, string top, string id)
-	{
-        foreach (var cfg in a)
-        {
-            write_nuspec_file_entry_wp80(cfg, f);
-        }
-
-        write_empty(f, top, config_cs.get_nuget_framework_name(env));
-
-		f.WriteComment("msbuild .targets file to inject reference for the right cpu");
-
-		string tname = string.Format("{0}.targets", id);
-		gen_nuget_targets_cppinterop(top, tname, a);
-
-		f.WriteStartElement("file");
-		f.WriteAttributeString("src", tname);
-		f.WriteAttributeString("target", string.Format("build\\{0}\\{1}.targets", config_cs.get_nuget_framework_name(env), id));
-		f.WriteEndElement(); // file
-	}
 
 	public const int MAJOR_VERSION = 1;
 	public const int MINOR_VERSION = 1;
@@ -3013,10 +2988,6 @@ public static class gen
 				}
 			}
 
-            var a = projects.items_csproj.Where(cfg => (cfg.area == "batteries_e_sqlite3" && cfg.env == "wp80")).ToList();
-
-            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
-            
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
@@ -3095,10 +3066,6 @@ public static class gen
 							);
 				}
 			}
-
-            var a = projects.items_csproj.Where(cfg => (cfg.area == "batteries_green" && cfg.env == "wp80")).ToList();
-
-            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
 
 			f.WriteEndElement(); // files
 
@@ -3439,94 +3406,6 @@ public static class gen
 			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
 					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
 			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuget_targets_cppinterop(string top, string tname, List<config_csproj> a)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		Dictionary<string,string> cpus = new Dictionary<string,string>();
-		foreach (var cfg in a)
-		{
-			cpus[cfg.cpu.ToLower()] = null;
-		}
-
-		string cond = "";
-		string ok = "";
-		foreach (string cpu in cpus.Keys)
-		{
-			if (cond.Length > 0)
-			{
-				cond += " AND ";
-				ok += " or ";
-			}
-
-			cond += string.Format("($(Platform.ToLower()) != '{0}')", cpu);
-			ok += cpu;
-		}
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("check_cpu_{0}", Guid.NewGuid().ToString()));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-			f.WriteAttributeString("Condition", string.Format(" ( {0} ) ", cond));
-			f.WriteStartElement("Warning");
-			f.WriteAttributeString("Text", string.Format("$(Platform) is not supported. The Platform configuration must be {0}", ok));
-			f.WriteEndElement(); // Warning
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-
-			foreach (var cfg in a)
-			{
-				switch (cfg.env)
-				{
-					case "wp81_sl":
-						// TODO SDKReference
-						f.WriteStartElement("Message");
-						f.WriteAttributeString("Text", "NOTE that you may need to add a reference to Microsoft Visual C++ Runtime.");
-						f.WriteAttributeString("Importance", "High");
-						f.WriteEndElement(); // Message
-						break;
-				}
-				
-				f.WriteComment(string.Format("{0}", cfg.get_name()));
-				f.WriteStartElement("ItemGroup");
-                f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cfg.cpu.ToLower()));
-
-				f.WriteStartElement("Reference");
-				// TODO should Include be the HintPath?
-				// https://github.com/onovotny/WinRTTimeZones/blob/master/NuGet/WinRTTimeZones.WP8.targets
-				f.WriteAttributeString("Include", cfg.assemblyname);
-
-				f.WriteElementString("HintPath", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}\\{1}.dll", string.Format("build\\{0}\\{1}\\", cfg.env, cfg.cpu), cfg.assemblyname));
-
-				// TODO private?
-
-				// TODO name?
-
-				f.WriteEndElement(); // Reference
-
-				f.WriteEndElement(); // ItemGroup
-			}
-
-			f.WriteEndElement(); // Target
 
 			f.WriteEndElement(); // Project
 
