@@ -33,8 +33,6 @@ namespace SQLitePCL
     static class SQLite3Provider_dyn
     {
 		// TODO very unhappy that this needs to be static
-		// if this needs to be static, then the whole class
-		// might as well be static
 		public static MyDelegates NativeMethods;
 
         public static int sqlite3_win32_set_directory(int typ, string path)

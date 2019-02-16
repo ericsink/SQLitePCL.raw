@@ -7,7 +7,9 @@ dlopen
 default load, so the setup call can be optional
 in many or most cases
 
-rename SQLite3Provider_dyn
+rename SQLite3Provider_dyn.  what to call it?
+what distinguishes this layer from the one
+above and below?
 
 places where the delegate has byte[] vs IntPtr
 
