@@ -30,14 +30,6 @@ namespace SQLitePCL
 
     public static class raw
     {
-        private static ISQLite3Provider _imp;
-
-        static raw()
-        {
-            _imp = new SQLite3Provider_dyn();
-            //_frozen = false;
-        }
-
 #if not
         private static bool _frozen;
         static public void SetProvider(ISQLite3Provider imp)
@@ -278,7 +270,7 @@ namespace SQLitePCL
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_open(filename, out p);
+            int rc = SQLite3Provider_dyn.sqlite3_open(filename, out p);
             db = new sqlite3(p);
             return rc;
         }
@@ -286,19 +278,19 @@ namespace SQLitePCL
         static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_open_v2(filename, out p, flags, vfs);
+            int rc = SQLite3Provider_dyn.sqlite3_open_v2(filename, out p, flags, vfs);
             db = new sqlite3(p);
             return rc;
         }
         static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
         {
-            return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
+            return SQLite3Provider_dyn.sqlite3__vfs__delete(vfs, pathname, syncdir);
         }
 
         static public int sqlite3_close_v2(sqlite3 db)
         {
 			if (db.already_disposed) return 0;
-            int rc = _imp.sqlite3_close_v2(db.ptr);
+            int rc = SQLite3Provider_dyn.sqlite3_close_v2(db.ptr);
             db.set_already_disposed();
             return rc;
         }
@@ -306,204 +298,204 @@ namespace SQLitePCL
         static public int sqlite3_close(sqlite3 db)
         {
 			if (db.already_disposed) return 0;
-            int rc = _imp.sqlite3_close(db.ptr);
+            int rc = SQLite3Provider_dyn.sqlite3_close(db.ptr);
             db.set_already_disposed();
             return rc;
         }
 
         static public int sqlite3_enable_shared_cache(int enable)
         {
-            return _imp.sqlite3_enable_shared_cache(enable);
+            return SQLite3Provider_dyn.sqlite3_enable_shared_cache(enable);
         }
 
         static public void sqlite3_interrupt(sqlite3 db)
         {
-            _imp.sqlite3_interrupt(db.ptr);
+            SQLite3Provider_dyn.sqlite3_interrupt(db.ptr);
         }
 
         static public void sqlite3_config_log(delegate_log f, object v)
         {
-            _imp.sqlite3_config_log(f, v);
+            SQLite3Provider_dyn.sqlite3_config_log(f, v);
         }
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
         {
-            _imp.sqlite3_commit_hook(db.ptr, f, v);
+            SQLite3Provider_dyn.sqlite3_commit_hook(db.ptr, f, v);
         }
 
         static public void sqlite3_rollback_hook(sqlite3 db, delegate_rollback f, object v)
         {
-            _imp.sqlite3_rollback_hook(db.ptr, f, v);
+            SQLite3Provider_dyn.sqlite3_rollback_hook(db.ptr, f, v);
         }
 
         static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
         {
-            _imp.sqlite3_trace(db.ptr, f, v);
+            SQLite3Provider_dyn.sqlite3_trace(db.ptr, f, v);
         }
 
         static public void sqlite3_profile(sqlite3 db, delegate_profile f, object v)
         {
-            _imp.sqlite3_profile(db.ptr, f, v);
+            SQLite3Provider_dyn.sqlite3_profile(db.ptr, f, v);
         }
 
         static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v)
         {
-            _imp.sqlite3_progress_handler(db.ptr, instructions, func, v);
+            SQLite3Provider_dyn.sqlite3_progress_handler(db.ptr, instructions, func, v);
         }
 
         static public void sqlite3_update_hook(sqlite3 db, delegate_update f, object v)
         {
-            _imp.sqlite3_update_hook(db.ptr, f, v);
+            SQLite3Provider_dyn.sqlite3_update_hook(db.ptr, f, v);
         }
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
-            return _imp.sqlite3_create_collation(db.ptr, name, v, f);
+            return SQLite3Provider_dyn.sqlite3_create_collation(db.ptr, name, v, f);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func);
+            return SQLite3Provider_dyn.sqlite3_create_function(db.ptr, name, nArg, v, func);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func_step, func_final);
+            return SQLite3Provider_dyn.sqlite3_create_function(db.ptr, name, nArg, v, func_step, func_final);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func);
+            return SQLite3Provider_dyn.sqlite3_create_function(db.ptr, name, nArg, flags, v, func);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func_step, func_final);
+            return SQLite3Provider_dyn.sqlite3_create_function(db.ptr, name, nArg, flags, v, func_step, func_final);
         }
 
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            return _imp.sqlite3_db_status(db.ptr, op, out current, out highest, resetFlg);
+            return SQLite3Provider_dyn.sqlite3_db_status(db.ptr, op, out current, out highest, resetFlg);
         }
 
         static public string sqlite3_libversion()
         {
-            return _imp.sqlite3_libversion();
+            return SQLite3Provider_dyn.sqlite3_libversion();
         }
 
         static public int sqlite3_libversion_number()
         {
-            return _imp.sqlite3_libversion_number();
+            return SQLite3Provider_dyn.sqlite3_libversion_number();
         }
 
         static public int sqlite3_threadsafe()
         {
-            return _imp.sqlite3_threadsafe();
+            return SQLite3Provider_dyn.sqlite3_threadsafe();
         }
 
         static public int sqlite3_initialize()
         {
-            return _imp.sqlite3_initialize();
+            return SQLite3Provider_dyn.sqlite3_initialize();
         }
 
         static public int sqlite3_shutdown()
         {
-            return _imp.sqlite3_shutdown();
+            return SQLite3Provider_dyn.sqlite3_shutdown();
         }
 
         static public int sqlite3_config(int op)
         {
-            return _imp.sqlite3_config(op);
+            return SQLite3Provider_dyn.sqlite3_config(op);
         }
 
         static public int sqlite3_config(int op, int val)
         {
-            return _imp.sqlite3_config(op, val);
+            return SQLite3Provider_dyn.sqlite3_config(op, val);
         }
 
         static public int sqlite3_enable_load_extension(sqlite3 db, int onoff)
         {
-            return _imp.sqlite3_enable_load_extension(db.ptr, onoff);
+            return SQLite3Provider_dyn.sqlite3_enable_load_extension(db.ptr, onoff);
         }
 
         static public string sqlite3_sourceid()
         {
-            return _imp.sqlite3_sourceid();
+            return SQLite3Provider_dyn.sqlite3_sourceid();
         }
 
         static public long sqlite3_memory_used()
         {
-            return _imp.sqlite3_memory_used();
+            return SQLite3Provider_dyn.sqlite3_memory_used();
         }
 
         static public long sqlite3_memory_highwater(int resetFlag)
         {
-            return _imp.sqlite3_memory_highwater(resetFlag);
+            return SQLite3Provider_dyn.sqlite3_memory_highwater(resetFlag);
         }
 
         static public int sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
-            return _imp.sqlite3_status(op, out current, out highwater, resetFlag);
+            return SQLite3Provider_dyn.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
         static public string sqlite3_errmsg(sqlite3 db)
         {
-            return _imp.sqlite3_errmsg(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_errmsg(db.ptr);
         }
 
         static public int sqlite3_db_readonly(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_db_readonly(db.ptr, dbName);
+            return SQLite3Provider_dyn.sqlite3_db_readonly(db.ptr, dbName);
         }
 
         static public string sqlite3_db_filename(sqlite3 db, string att)
         {
-            return _imp.sqlite3_db_filename(db.ptr, att);
+            return SQLite3Provider_dyn.sqlite3_db_filename(db.ptr, att);
         }
 
         static public long sqlite3_last_insert_rowid(sqlite3 db)
         {
-            return _imp.sqlite3_last_insert_rowid(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_last_insert_rowid(db.ptr);
         }
 
         static public int sqlite3_changes(sqlite3 db)
         {
-            return _imp.sqlite3_changes(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_changes(db.ptr);
         }
 
         static public int sqlite3_total_changes(sqlite3 db)
         {
-            return _imp.sqlite3_total_changes(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_total_changes(db.ptr);
         }
 
         static public int sqlite3_get_autocommit(sqlite3 db)
         {
-            return _imp.sqlite3_get_autocommit(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_get_autocommit(db.ptr);
         }
 
         static public int sqlite3_busy_timeout(sqlite3 db, int ms)
         {
-            return _imp.sqlite3_busy_timeout(db.ptr, ms);
+            return SQLite3Provider_dyn.sqlite3_busy_timeout(db.ptr, ms);
         }
 
         static public int sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
-            return _imp.sqlite3_extended_result_codes(db.ptr, onoff);
+            return SQLite3Provider_dyn.sqlite3_extended_result_codes(db.ptr, onoff);
         }
 
         static public int sqlite3_errcode(sqlite3 db)
         {
-            return _imp.sqlite3_errcode(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_errcode(db.ptr);
         }
 
         static public int sqlite3_extended_errcode(sqlite3 db)
         {
-            return _imp.sqlite3_extended_errcode(db.ptr);
+            return SQLite3Provider_dyn.sqlite3_extended_errcode(db.ptr);
         }
 
         static public string sqlite3_errstr(int rc)
         {
-            return _imp.sqlite3_errstr(rc);
+            return SQLite3Provider_dyn.sqlite3_errstr(rc);
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
@@ -515,84 +507,84 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_prepare_v2(db.ptr, sql, out p, out tail);
+            int rc = SQLite3Provider_dyn.sqlite3_prepare_v2(db.ptr, sql, out p, out tail);
             stmt = new sqlite3_stmt(p, db);
             return rc;
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
         {
-            return _imp.sqlite3_exec(db.ptr, sql, callback, user_data, out errMsg);
+            return SQLite3Provider_dyn.sqlite3_exec(db.ptr, sql, callback, user_data, out errMsg);
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql, out string errMsg)
         {
-            return _imp.sqlite3_exec(db.ptr, sql, null, null, out errMsg);
+            return SQLite3Provider_dyn.sqlite3_exec(db.ptr, sql, null, null, out errMsg);
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql)
         {
             string errmsg;
-            return _imp.sqlite3_exec(db.ptr, sql, null, null, out errmsg);
+            return SQLite3Provider_dyn.sqlite3_exec(db.ptr, sql, null, null, out errmsg);
         }
 
         static public int sqlite3_step(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_step(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_step(stmt.ptr);
         }
 
         static public int sqlite3_finalize(sqlite3_stmt stmt)
         {
 			if (stmt.already_disposed) return 0;
-            int rc = _imp.sqlite3_finalize(stmt.ptr);
+            int rc = SQLite3Provider_dyn.sqlite3_finalize(stmt.ptr);
             stmt.set_already_disposed();
             return rc;
         }
 
         static public int sqlite3_reset(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_reset(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_reset(stmt.ptr);
         }
 
         static public int sqlite3_clear_bindings(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_clear_bindings(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_clear_bindings(stmt.ptr);
         }
 
         public static int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg)
         {
-            return _imp.sqlite3_stmt_status(stmt.ptr, op, resetFlg);
+            return SQLite3Provider_dyn.sqlite3_stmt_status(stmt.ptr, op, resetFlg);
         }
 
         static public int sqlite3_complete(string sql)
         {
-            return _imp.sqlite3_complete(sql);
+            return SQLite3Provider_dyn.sqlite3_complete(sql);
         }
 
         static public int sqlite3_compileoption_used(string s)
         {
-            return _imp.sqlite3_compileoption_used(s);
+            return SQLite3Provider_dyn.sqlite3_compileoption_used(s);
         }
 
         static public string sqlite3_compileoption_get(int n)
         {
-            return _imp.sqlite3_compileoption_get(n);
+            return SQLite3Provider_dyn.sqlite3_compileoption_get(n);
         }
 
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            return _imp.sqlite3_table_column_metadata(db.ptr, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+            return SQLite3Provider_dyn.sqlite3_table_column_metadata(db.ptr, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
         }
 
         static public string sqlite3_sql(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_sql(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_sql(stmt.ptr);
         }
 
         static public sqlite3 sqlite3_db_handle(sqlite3_stmt stmt)
         {
 #if not
-            IntPtr p = _imp.sqlite3_db_handle(stmt.ptr);
+            IntPtr p = SQLite3Provider_dyn.sqlite3_db_handle(stmt.ptr);
             Assert(p == stmt.db.ptr);
 #endif
             return stmt.db;
@@ -606,7 +598,7 @@ namespace SQLitePCL
                 prev = stmt.ptr;
             }
 
-            IntPtr p = _imp.sqlite3_next_stmt(db.ptr, prev);
+            IntPtr p = SQLite3Provider_dyn.sqlite3_next_stmt(db.ptr, prev);
 
             if (p == IntPtr.Zero)
             {
@@ -620,12 +612,12 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size)
         {
-            return _imp.sqlite3_bind_zeroblob(stmt.ptr, index, size);
+            return SQLite3Provider_dyn.sqlite3_bind_zeroblob(stmt.ptr, index, size);
         }
 
         static public string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_bind_parameter_name(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_bind_parameter_name(stmt.ptr, index);
         }
 
         // probably unnecessary since we pass user_data back as one of the
@@ -637,94 +629,94 @@ namespace SQLitePCL
 
         static public void sqlite3_result_null(sqlite3_context context)
         {
-            _imp.sqlite3_result_null(context.ptr);
+            SQLite3Provider_dyn.sqlite3_result_null(context.ptr);
         }
 
         static public void sqlite3_result_blob(sqlite3_context context, byte[] val)
         {
-            _imp.sqlite3_result_blob(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_blob(context.ptr, val);
         }
 
         static public void sqlite3_result_error(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_error(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_error(context.ptr, val);
         }
 
         static public void sqlite3_result_text(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_text(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_text(context.ptr, val);
         }
 
         static public void sqlite3_result_double(sqlite3_context context, double val)
         {
-            _imp.sqlite3_result_double(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_double(context.ptr, val);
         }
 
         static public void sqlite3_result_int(sqlite3_context context, int val)
         {
-            _imp.sqlite3_result_int(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_int(context.ptr, val);
         }
 
         static public void sqlite3_result_int64(sqlite3_context context, long val)
         {
-            _imp.sqlite3_result_int64(context.ptr, val);
+            SQLite3Provider_dyn.sqlite3_result_int64(context.ptr, val);
         }
 
         static public void sqlite3_result_zeroblob(sqlite3_context context, int n)
         {
-            _imp.sqlite3_result_zeroblob(context.ptr, n);
+            SQLite3Provider_dyn.sqlite3_result_zeroblob(context.ptr, n);
         }
 
         // TODO sqlite3_result_value
 
         static public void sqlite3_result_error_toobig(sqlite3_context context)
         {
-            _imp.sqlite3_result_error_toobig(context.ptr);
+            SQLite3Provider_dyn.sqlite3_result_error_toobig(context.ptr);
         }
 
         static public void sqlite3_result_error_nomem(sqlite3_context context)
         {
-            _imp.sqlite3_result_error_nomem(context.ptr);
+            SQLite3Provider_dyn.sqlite3_result_error_nomem(context.ptr);
         }
 
         static public void sqlite3_result_error_code(sqlite3_context context, int code)
         {
-            _imp.sqlite3_result_error_code(context.ptr, code);
+            SQLite3Provider_dyn.sqlite3_result_error_code(context.ptr, code);
         }
 
         static public byte[] sqlite3_value_blob(sqlite3_value val)
         {
-            return _imp.sqlite3_value_blob(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_blob(val.ptr);
         }
 
         static public int sqlite3_value_bytes(sqlite3_value val)
         {
-            return _imp.sqlite3_value_bytes(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_bytes(val.ptr);
         }
 
         static public double sqlite3_value_double(sqlite3_value val)
         {
-            return _imp.sqlite3_value_double(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_double(val.ptr);
         }
 
         static public int sqlite3_value_int(sqlite3_value val)
         {
-            return _imp.sqlite3_value_int(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_int(val.ptr);
         }
 
         static public long sqlite3_value_int64(sqlite3_value val)
         {
-            return _imp.sqlite3_value_int64(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_int64(val.ptr);
         }
 
         static public int sqlite3_value_type(sqlite3_value val)
         {
-            return _imp.sqlite3_value_type(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_type(val.ptr);
         }
 
         static public string sqlite3_value_text(sqlite3_value val)
         {
-            return _imp.sqlite3_value_text(val.ptr);
+            return SQLite3Provider_dyn.sqlite3_value_text(val.ptr);
         }
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob)
@@ -734,162 +726,162 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int nSize)
         {
-            return _imp.sqlite3_bind_blob(stmt.ptr, index, blob, nSize);
+            return SQLite3Provider_dyn.sqlite3_bind_blob(stmt.ptr, index, blob, nSize);
         }
 
         static public int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)
         {
-            return _imp.sqlite3_bind_double(stmt.ptr, index, val);
+            return SQLite3Provider_dyn.sqlite3_bind_double(stmt.ptr, index, val);
         }
 
         static public int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val)
         {
-            return _imp.sqlite3_bind_int(stmt.ptr, index, val);
+            return SQLite3Provider_dyn.sqlite3_bind_int(stmt.ptr, index, val);
         }
 
         static public int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val)
         {
-            return _imp.sqlite3_bind_int64(stmt.ptr, index, val);
+            return SQLite3Provider_dyn.sqlite3_bind_int64(stmt.ptr, index, val);
         }
 
         static public int sqlite3_bind_null(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_bind_null(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_bind_null(stmt.ptr, index);
         }
 
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            return _imp.sqlite3_bind_text(stmt.ptr, index, val);
+            return SQLite3Provider_dyn.sqlite3_bind_text(stmt.ptr, index, val);
         }
 
         static public int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_bind_parameter_count(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_bind_parameter_count(stmt.ptr);
         }
 
         static public int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName)
         {
-            return _imp.sqlite3_bind_parameter_index(stmt.ptr, strName);
+            return SQLite3Provider_dyn.sqlite3_bind_parameter_index(stmt.ptr, strName);
         }
 
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_stmt_busy(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_stmt_busy(stmt.ptr);
         }
 
         static public int sqlite3_stmt_readonly(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_stmt_readonly(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_stmt_readonly(stmt.ptr);
         }
 
         static public string sqlite3_column_database_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_database_name(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_database_name(stmt.ptr, index);
         }
 
         static public string sqlite3_column_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_name(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_name(stmt.ptr, index);
         }
 
         static public string sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_origin_name(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_origin_name(stmt.ptr, index);
         }
 
         static public string sqlite3_column_table_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_table_name(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_table_name(stmt.ptr, index);
         }
 
         static public string sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_text(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_text(stmt.ptr, index);
         }
 
         static public int sqlite3_column_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_column_count(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_column_count(stmt.ptr);
         }
 
         static public int sqlite3_data_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_data_count(stmt.ptr);
+            return SQLite3Provider_dyn.sqlite3_data_count(stmt.ptr);
         }
 
         static public double sqlite3_column_double(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_double(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_double(stmt.ptr, index);
         }
 
         static public int sqlite3_column_int(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_int(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_int(stmt.ptr, index);
         }
 
         static public long sqlite3_column_int64(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_int64(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_int64(stmt.ptr, index);
         }
 
         static public byte[] sqlite3_column_blob(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_blob(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_blob(stmt.ptr, index);
         }
 
         static public int sqlite3_column_blob(sqlite3_stmt stmt, int index, byte[] result, int offset)
         {
-            return _imp.sqlite3_column_blob(stmt.ptr, index, result, offset);
+            return SQLite3Provider_dyn.sqlite3_column_blob(stmt.ptr, index, result, offset);
         }
 
         static public int sqlite3_column_bytes(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_bytes(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_bytes(stmt.ptr, index);
         }
 
         static public int sqlite3_column_type(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_type(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_type(stmt.ptr, index);
         }
 
         static public string sqlite3_column_decltype(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_decltype(stmt.ptr, index);
+            return SQLite3Provider_dyn.sqlite3_column_decltype(stmt.ptr, index);
         }
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
         {
-            IntPtr p = _imp.sqlite3_backup_init(destDb.ptr, destName, sourceDb.ptr, sourceName);
+            IntPtr p = SQLite3Provider_dyn.sqlite3_backup_init(destDb.ptr, destName, sourceDb.ptr, sourceName);
             return new sqlite3_backup(p);
         }
 
         static public int sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
-            return _imp.sqlite3_backup_step(backup.ptr, nPage);
+            return SQLite3Provider_dyn.sqlite3_backup_step(backup.ptr, nPage);
         }
 
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
 			if (backup.already_disposed) return 0;
-            int rc = _imp.sqlite3_backup_finish(backup.ptr);
+            int rc = SQLite3Provider_dyn.sqlite3_backup_finish(backup.ptr);
             backup.set_already_disposed();
             return rc;
         }
 
         static public int sqlite3_backup_remaining(sqlite3_backup backup)
         {
-            return _imp.sqlite3_backup_remaining(backup.ptr);
+            return SQLite3Provider_dyn.sqlite3_backup_remaining(backup.ptr);
         }
 
         static public int sqlite3_backup_pagecount(sqlite3_backup backup)
         {
-            return _imp.sqlite3_backup_pagecount(backup.ptr);
+            return SQLite3Provider_dyn.sqlite3_backup_pagecount(backup.ptr);
         }
 
         static public int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out p);
+            int rc = SQLite3Provider_dyn.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out p);
             blob = new sqlite3_blob(p);
             return rc;
         }
@@ -897,20 +889,20 @@ namespace SQLitePCL
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_blob_open(db.ptr, sdb, table, col, rowid, flags, out p);
+            int rc = SQLite3Provider_dyn.sqlite3_blob_open(db.ptr, sdb, table, col, rowid, flags, out p);
             blob = new sqlite3_blob(p);
             return rc;
         }
 
         static public int sqlite3_blob_bytes(sqlite3_blob blob)
         {
-            return _imp.sqlite3_blob_bytes(blob.ptr);
+            return SQLite3Provider_dyn.sqlite3_blob_bytes(blob.ptr);
         }
 
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
 			if (blob.already_disposed) return 0;
-            int rc = _imp.sqlite3_blob_close(blob.ptr);
+            int rc = SQLite3Provider_dyn.sqlite3_blob_close(blob.ptr);
             blob.set_already_disposed();
             return rc;
         }
@@ -918,48 +910,48 @@ namespace SQLitePCL
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int n, int offset)
         {
             // TODO why would anyone want to write a different number of bytes than the size of the array given?
-            return _imp.sqlite3_blob_write(blob.ptr, b, n, offset);
+            return SQLite3Provider_dyn.sqlite3_blob_write(blob.ptr, b, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int n, int offset)
         {
             // TODO why would anyone want to read a different number of bytes than the size of the array given?
-            return _imp.sqlite3_blob_read(blob.ptr, b, n, offset);
+            return SQLite3Provider_dyn.sqlite3_blob_read(blob.ptr, b, n, offset);
         }
 
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
-            return _imp.sqlite3_blob_write(blob.ptr, b, bOffset, n, offset);
+            return SQLite3Provider_dyn.sqlite3_blob_write(blob.ptr, b, bOffset, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
-            return _imp.sqlite3_blob_read(blob.ptr, b, bOffset, n, offset);
+            return SQLite3Provider_dyn.sqlite3_blob_read(blob.ptr, b, bOffset, n, offset);
         }
 
         static public int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
-            return _imp.sqlite3_wal_autocheckpoint(db.ptr, n);
+            return SQLite3Provider_dyn.sqlite3_wal_autocheckpoint(db.ptr, n);
         }
 
         static public int sqlite3_wal_checkpoint(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_wal_checkpoint(db.ptr, dbName);
+            return SQLite3Provider_dyn.sqlite3_wal_checkpoint(db.ptr, dbName);
         }
 
         static public int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            return _imp.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
+            return SQLite3Provider_dyn.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
         }
 
         static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
         {
-            return _imp.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
+            return SQLite3Provider_dyn.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
         }
 
         static public int sqlite3_win32_set_directory(int typ, string path)
         {
-            return _imp.sqlite3_win32_set_directory(typ, path);
+            return SQLite3Provider_dyn.sqlite3_win32_set_directory(typ, path);
         }
     }
 }

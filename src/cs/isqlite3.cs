@@ -83,6 +83,7 @@ namespace SQLitePCL
     /// would present an API which is friendlier to C# developers.
     ///
     /// </summary>
+#if not
     interface ISQLite3Provider
     {
         int sqlite3_open(string filename, out IntPtr db);
@@ -291,5 +292,6 @@ namespace SQLitePCL
 
         int sqlite3_win32_set_directory(int typ, string path);
     }
+#endif
 }
 
