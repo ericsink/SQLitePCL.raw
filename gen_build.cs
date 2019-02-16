@@ -27,6 +27,7 @@ public static class projects
 	//
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
+	// nuspec files only
 	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
 
 	// This function is called by Main to initialize the project lists.
@@ -1891,14 +1892,6 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-    private static void add_dep_xunit(XmlWriter f)
-    {
-        f.WriteStartElement("dependency");
-        f.WriteAttributeString("id", "xunit");
-        f.WriteAttributeString("version", "2.1.0");
-        f.WriteEndElement(); // dependency
-    }
-
     private static void add_dep_netstandard(XmlWriter f)
     {
         f.WriteStartElement("dependency");
@@ -2604,7 +2597,6 @@ public static class gen
     private const int DEP_NONE = 0;
     private const int DEP_CORE = 1;
     private const int DEP_UGLY = 2;
-    private const int DEP_XUNIT = 4;
 
     private static void write_dependency_group(XmlWriter f, string env, int flags)
     {
@@ -2627,10 +2619,6 @@ public static class gen
         if ((flags & DEP_UGLY) != 0)
         {
             add_dep_ugly(f);
-        }
-        if ((flags & DEP_XUNIT) != 0)
-        {
-            add_dep_xunit(f);
         }
         f.WriteEndElement(); // group
     }
@@ -3629,7 +3617,6 @@ public static class gen
             tw.WriteLine("../nuget pack {0}.bundle_sqlcipher.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.tests.nuspec", gen.ROOT_NAME);
 
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.osx.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.linux.nuspec", gen.ROOT_NAME);
@@ -3674,7 +3661,6 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("#../nuget push -Source {2} {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
