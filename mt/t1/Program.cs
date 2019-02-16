@@ -11,7 +11,7 @@ namespace t1
     {
         static void Main(string[] args)
         {
-			SQLitePCL.Setup.Load("e_sqlite3.dll");
+			SQLitePCL.Setup.Load("./libe_sqlite3.so");
 
 			using (var db = ugly.open(":memory:"))
 			{

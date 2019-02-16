@@ -93,29 +93,53 @@ namespace SQLitePCL
 		// the hope is that all use cases can be handled by
 		// adding the flexibility here
 
+		static bool try_win(string name, out IntPtr dll)
+		{
+			try
+			{
+				dll = NativeMethods_Win.LoadLibrary(name);
+				System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
+				return true;
+			}
+			catch
+			{
+				dll = IntPtr.Zero;
+				return false;
+			}
+		}
+
+		static bool try_dlopen(string name, out IntPtr dll)
+		{
+			try
+			{
+				dll = NativeMethods_dlopen.dlopen(name, NativeMethods_dlopen.RTLD_NOW);
+				System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
+				return true;
+			}
+			catch
+			{
+				dll = IntPtr.Zero;
+				return false;
+			}
+		}
+
 		public static void Load(string name)
 		{
-			var dll = NativeMethods_Win.LoadLibrary(name);
-			if (dll != IntPtr.Zero)
+			IntPtr dll;
+			if (try_win(name, out dll))
 			{
 				var gf = new GetFunctionPtr_Win(dll);
 				SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
 			}
+			else if (try_dlopen(name, out dll))
+			{
+				var gf = new GetFunctionPtr_dlopen(dll);
+				SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+			}
 			else
 			{
-				dll = NativeMethods_dlopen.dlopen(name, 0); // TODO flags
-				if (dll != IntPtr.Zero)
-				{
-					var gf = new GetFunctionPtr_dlopen(dll);
-					SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
-
+				throw new NotImplementedException();
 			}
 		}
 	}
-
 }
