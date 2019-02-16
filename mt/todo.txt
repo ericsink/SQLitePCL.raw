@@ -7,13 +7,11 @@ dlopen
 default load, so the setup call can be optional
 in many or most cases
 
-SQLite3Provider can be static.  no interface needed.
+rename SQLite3Provider_dyn
 
 places where the delegate has byte[] vs IntPtr
 
-rm the char 16 versions
-
-strong names
+strong names in new csproj
 
 stdcall.  which matters only for x86.  x64 and
 ARM ignore this and use cdecl.
@@ -22,9 +20,9 @@ do we need a separate build for calling convention?
 
 more xunit test cases
 
-how to do __internal for iOS?
+how to do __internal for iOS?  just pass null to dlopen?
 
-get rid of the win32 set directory calls.
+get rid of those win32 set directory calls.
 
 try to have no ifdefs in core
 
