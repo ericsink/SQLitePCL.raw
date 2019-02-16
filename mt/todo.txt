@@ -39,7 +39,5 @@ EntryPoint
 
 get rid of old reflection ifdef
 
-and no concurrent dictionary ifdef
-
 stuff in csproj so we can do dotnet pack
 
