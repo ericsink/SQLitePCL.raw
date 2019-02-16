@@ -62,8 +62,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_green",  ver,"net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", ver, "arm"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_green", ver, "x86"));
 
         // the following item builds for netstandard11 
         // but overrides the nuget target env to place it in netcoreapp
@@ -86,8 +84,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net35", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net40", "e_sqlite3"));
         items_csproj.Add(config_csproj.create_batteries("batteries_e_sqlite3", ver, "net45", "e_sqlite3"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "arm"));
-        items_csproj.Add(config_csproj.create_wp80_batteries("batteries_e_sqlite3", ver, "x86"));
 
         // the following item builds for netstandard11 
         // but overrides the nuget target env to place it in netcoreapp
@@ -977,21 +973,6 @@ public class config_csproj : config_info
         cfg.ref_core = true;
         cfg.ref_provider = "internal";
         cfg.ref_embedded = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, lib, env, "static");
-        return cfg;
-    }
-
-    public static config_csproj create_wp80_batteries(string area, int ver, string cpu)
-    {
-        var cfg = new config_csproj();
-        cfg.area = area;
-        cfg.cpu = cpu;
-        cfg.what = "e_sqlite3";
-        cfg.env = "wp80";
-        cfg.name = string.Format("{0}.{1}.{2}.{3}.{4}.{5}", cfg.root_name, ver, area, cfg.what, cfg.env, cfg.cpu);
-        set_batteries_version(cfg, ver);
-        cfg.defines.Add("PROVIDER_e_sqlite3");
-        cfg.ref_core = true;
-        cfg.ref_provider = cfg.what;
         return cfg;
     }
 
@@ -2483,61 +2464,6 @@ public static class gen
                     cfg, 
                     f
                     );
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuspec_provider_wp80(string top, string root, string what)
-    {
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string id = string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, "wp80");
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.8.1");
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCL.raw 'provider' bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());");
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.";
-			f.WriteElementString("description", desc);
-			f.WriteElementString("authors", "Eric Sink, et al");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2019 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			write_license(f);
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite wp8");
-
-			f.WriteStartElement("dependencies");
-
-            write_dependency_group(f, "wp80", DEP_CORE);
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-            var a = projects.items_csproj.Where(cfg => (cfg.area == "provider" && cfg.env == "wp80")).ToList();
-
-            write_cppinterop_with_targets_file(f, a, "wp80", top, id);
 
 			f.WriteEndElement(); // files
 
@@ -4186,7 +4112,6 @@ public static class gen
         gen_nuspec_bundle_winsqlite3(top);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
-        gen_nuspec_provider_wp80(top, root, "e_sqlite3");
         gen_nuspec_tests(top);
 
 		foreach (config_csproj cfg in projects.items_csproj)
@@ -4233,7 +4158,6 @@ public static class gen
             tw.WriteLine("../nuget pack {0}.bundle_sqlcipher.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.provider.e_sqlite3.wp80.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.tests.nuspec", gen.ROOT_NAME);
 
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.osx.nuspec", gen.ROOT_NAME);
@@ -4286,7 +4210,6 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.provider.e_sqlite3.wp80.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("#../nuget push -Source {2} {0}.tests.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
