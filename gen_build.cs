@@ -1839,21 +1839,6 @@ public static class gen
 		}
 	}
 
-	private static void write_nuspec_file_entry_wp80(config_csproj cfg, XmlWriter f)
-	{
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", s);
-			f.WriteAttributeString("target", string.Format("build\\{0}\\{1}\\", cfg.env, cfg.cpu));
-			f.WriteEndElement(); // file
-		}
-	}
-
 	private static void write_empty(XmlWriter f, string top, string tfm)
     {
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference");
