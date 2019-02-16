@@ -68,279 +68,142 @@ namespace SQLitePCL
 		}
 
 		public MyDelegateTypes.sqlite3_close sqlite3_close { get; private set; }
-
 		public MyDelegateTypes.sqlite3_close_v2 sqlite3_close_v2 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_enable_shared_cache sqlite3_enable_shared_cache { get; private set; }
-
 		public MyDelegateTypes.sqlite3_interrupt sqlite3_interrupt { get; private set; }
-
 		public MyDelegateTypes.sqlite3_finalize sqlite3_finalize { get; private set; }
-
 		public MyDelegateTypes.sqlite3_reset sqlite3_reset { get; private set; }
-
 		public MyDelegateTypes.sqlite3_clear_bindings sqlite3_clear_bindings { get; private set; }
-
 		public MyDelegateTypes.sqlite3_stmt_status sqlite3_stmt_status { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_parameter_name sqlite3_bind_parameter_name { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_database_name sqlite3_column_database_name { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_database_name16 sqlite3_column_database_name16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_decltype sqlite3_column_decltype { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_decltype16 sqlite3_column_decltype16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_name sqlite3_column_name { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_name16 sqlite3_column_name16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_origin_name sqlite3_column_origin_name { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_origin_name16 sqlite3_column_origin_name16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_table_name sqlite3_column_table_name { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_table_name16 sqlite3_column_table_name16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_text sqlite3_column_text { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_text16 sqlite3_column_text16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_errmsg sqlite3_errmsg { get; private set; }
-
 		public MyDelegateTypes.sqlite3_db_readonly sqlite3_db_readonly { get; private set; }
-
 		public MyDelegateTypes.sqlite3_db_filename sqlite3_db_filename { get; private set; }
-
 		public MyDelegateTypes.sqlite3_prepare sqlite3_prepare { get; private set; }
-
 		public MyDelegateTypes.sqlite3_prepare_v2 sqlite3_prepare_v2 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_db_status sqlite3_db_status { get; private set; }
-
 		public MyDelegateTypes.sqlite3_complete sqlite3_complete { get; private set; }
-
 		public MyDelegateTypes.sqlite3_compileoption_used sqlite3_compileoption_used { get; private set; }
-
 		public MyDelegateTypes.sqlite3_compileoption_get sqlite3_compileoption_get { get; private set; }
-
 		public MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_text sqlite3_value_text { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_text16 sqlite3_value_text16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension { get; private set; }
-
 		public MyDelegateTypes.sqlite3_load_extension sqlite3_load_extension { get; private set; }
-
 		public MyDelegateTypes.sqlite3_initialize sqlite3_initialize { get; private set; }
-
 		public MyDelegateTypes.sqlite3_shutdown sqlite3_shutdown { get; private set; }
-
 		public MyDelegateTypes.sqlite3_libversion sqlite3_libversion { get; private set; }
-
 		public MyDelegateTypes.sqlite3_libversion_number sqlite3_libversion_number { get; private set; }
-
 		public MyDelegateTypes.sqlite3_threadsafe sqlite3_threadsafe { get; private set; }
-
 		public MyDelegateTypes.sqlite3_sourceid sqlite3_sourceid { get; private set; }
-
 		public MyDelegateTypes.sqlite3_malloc sqlite3_malloc { get; private set; }
-
 		public MyDelegateTypes.sqlite3_realloc sqlite3_realloc { get; private set; }
-
 		public MyDelegateTypes.sqlite3_free sqlite3_free { get; private set; }
-
 		public MyDelegateTypes.sqlite3_open sqlite3_open { get; private set; }
-
 		public MyDelegateTypes.sqlite3_open_v2 sqlite3_open_v2 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_vfs_find sqlite3_vfs_find { get; private set; }
-
 		public MyDelegateTypes.sqlite3_open16 sqlite3_open16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_last_insert_rowid sqlite3_last_insert_rowid { get; private set; }
-
 		public MyDelegateTypes.sqlite3_changes sqlite3_changes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_total_changes sqlite3_total_changes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_memory_used sqlite3_memory_used { get; private set; }
-
 		public MyDelegateTypes.sqlite3_memory_highwater sqlite3_memory_highwater { get; private set; }
-		
 		public MyDelegateTypes.sqlite3_status sqlite3_status { get; private set; }
-
 		public MyDelegateTypes.sqlite3_busy_timeout sqlite3_busy_timeout { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_blob sqlite3_bind_blob { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_zeroblob sqlite3_bind_zeroblob { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_double sqlite3_bind_double { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_int sqlite3_bind_int { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_int64 sqlite3_bind_int64 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_null sqlite3_bind_null { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_text sqlite3_bind_text { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_parameter_count sqlite3_bind_parameter_count { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_parameter_index sqlite3_bind_parameter_index { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_count sqlite3_column_count { get; private set; }
-
 		public MyDelegateTypes.sqlite3_data_count sqlite3_data_count { get; private set; }
-
 		public MyDelegateTypes.sqlite3_step sqlite3_step { get; private set; }
-
 		public MyDelegateTypes.sqlite3_sql sqlite3_sql { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_double sqlite3_column_double { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_int sqlite3_column_int { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_int64 sqlite3_column_int64 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_blob sqlite3_column_blob { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_bytes sqlite3_column_bytes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_column_type sqlite3_column_type { get; private set; }
-
 		public MyDelegateTypes.sqlite3_aggregate_count sqlite3_aggregate_count { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_blob sqlite3_value_blob { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_bytes sqlite3_value_bytes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_double sqlite3_value_double { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_int sqlite3_value_int { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_int64 sqlite3_value_int64 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_value_type sqlite3_value_type { get; private set; }
-
 		public MyDelegateTypes.sqlite3_user_data sqlite3_user_data { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_blob sqlite3_result_blob { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_double sqlite3_result_double { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_error sqlite3_result_error { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_int sqlite3_result_int { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_int64 sqlite3_result_int64 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_null sqlite3_result_null { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_text sqlite3_result_text { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_zeroblob sqlite3_result_zeroblob { get; private set; }
-
 		// TODO sqlite3_result_value 
-
 		public MyDelegateTypes.sqlite3_result_error_toobig sqlite3_result_error_toobig { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_error_nomem sqlite3_result_error_nomem { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_error_code sqlite3_result_error_code { get; private set; }
-
 		public MyDelegateTypes.sqlite3_aggregate_context sqlite3_aggregate_context { get; private set; }
-
 		public MyDelegateTypes.sqlite3_bind_text16 sqlite3_bind_text16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_error16 sqlite3_result_error16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_result_text16 sqlite3_result_text16 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_key sqlite3_key { get; private set; }
-
 		public MyDelegateTypes.sqlite3_rekey sqlite3_rekey { get; private set; }
-
 		public MyDelegateTypes.sqlite3_config_none sqlite3_config_none { get; private set; }
-
 		public MyDelegateTypes.sqlite3_config_int sqlite3_config_int { get; private set; }
-
 		public MyDelegateTypes.sqlite3_config_log sqlite3_config_log { get; private set; }
-
 		public MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation { get; private set; }
-
 		public MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook { get; private set; }
-
 		public MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook { get; private set; }
-
 		public MyDelegateTypes.sqlite3_profile sqlite3_profile { get; private set; }
-
 		public MyDelegateTypes.sqlite3_progress_handler sqlite3_progress_handler { get; private set; }
-
 		public MyDelegateTypes.sqlite3_trace sqlite3_trace { get; private set; }
-
 		public MyDelegateTypes.sqlite3_rollback_hook sqlite3_rollback_hook { get; private set; }
-
 		public MyDelegateTypes.sqlite3_db_handle sqlite3_db_handle { get; private set; }
-
 		public MyDelegateTypes.sqlite3_next_stmt sqlite3_next_stmt { get; private set; }
-
 		public MyDelegateTypes.sqlite3_stmt_busy sqlite3_stmt_busy { get; private set; }
-
 		public MyDelegateTypes.sqlite3_stmt_readonly sqlite3_stmt_readonly { get; private set; }
-
 		public MyDelegateTypes.sqlite3_exec sqlite3_exec { get; private set; }
-
 		public MyDelegateTypes.sqlite3_get_autocommit sqlite3_get_autocommit { get; private set; }
-
 		public MyDelegateTypes.sqlite3_extended_result_codes sqlite3_extended_result_codes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_errcode sqlite3_errcode { get; private set; }
-
 		public MyDelegateTypes.sqlite3_extended_errcode sqlite3_extended_errcode { get; private set; }
-
 		public MyDelegateTypes.sqlite3_errstr sqlite3_errstr { get; private set; }
-
 		public MyDelegateTypes.sqlite3_log sqlite3_log { get; private set; }
-
 		public MyDelegateTypes.sqlite3_file_control sqlite3_file_control { get; private set; }
-
 		public MyDelegateTypes.sqlite3_backup_init sqlite3_backup_init { get; private set; }
-
 		public MyDelegateTypes.sqlite3_backup_step sqlite3_backup_step { get; private set; }
-
 		public MyDelegateTypes.sqlite3_backup_finish sqlite3_backup_finish { get; private set; }
-
 		public MyDelegateTypes.sqlite3_backup_remaining sqlite3_backup_remaining { get; private set; }
-
 		public MyDelegateTypes.sqlite3_backup_pagecount sqlite3_backup_pagecount { get; private set; }
-
 		public MyDelegateTypes.sqlite3_blob_open sqlite3_blob_open { get; private set; }
-
 		public MyDelegateTypes.sqlite3_blob_write sqlite3_blob_write { get; private set; }
-
 		public MyDelegateTypes.sqlite3_blob_read sqlite3_blob_read { get; private set; }
-
 		public MyDelegateTypes.sqlite3_blob_bytes sqlite3_blob_bytes { get; private set; }
-
 		public MyDelegateTypes.sqlite3_blob_close sqlite3_blob_close { get; private set; }
-
 		public MyDelegateTypes.sqlite3_wal_autocheckpoint sqlite3_wal_autocheckpoint { get; private set; }
-
 		public MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint { get; private set; }
-
 		public MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2 { get; private set; }
-
 		public MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer { get; private set; }
-
 		public MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory  { get; private set; }
 	}
 
