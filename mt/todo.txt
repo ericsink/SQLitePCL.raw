@@ -41,3 +41,5 @@ get rid of old reflection ifdef
 
 stuff in csproj so we can do dotnet pack
 
+AssemblyInfo stuff, version numbers
+
