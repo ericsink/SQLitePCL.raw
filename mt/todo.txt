@@ -1,5 +1,6 @@
 
-mv code into the project directories under mt
+mv code into the project directories under mt.
+what about calling convention cdecl vs stcall ?
 
 dlopen
 
@@ -14,9 +15,10 @@ rm the char 16 versions
 
 strong names
 
-stdcall
+stdcall.  which matters only for x86.  x64 and
+ARM ignore this and use cdecl.
 
-do we need a separate build for cdecl?
+do we need a separate build for calling convention?
 
 more xunit test cases
 
