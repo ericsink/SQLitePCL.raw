@@ -32,7 +32,7 @@ namespace SQLitePCL
 	{
 		const string SO = "dl";
 
-        const int RTLD_NOW = 2; // for dlopen's flags 
+        public const int RTLD_NOW = 2; // for dlopen's flags 
 
         [DllImport(SO)]
         public static extern IntPtr dlopen(string dllToLoad, int flags);
@@ -59,14 +59,30 @@ namespace SQLitePCL
 	class GetFunctionPtr_Win : IGetFunctionPtr
 	{
 		readonly IntPtr _dll;
-		public GetFunctionPtr_Win(string dll)
+		public GetFunctionPtr_Win(IntPtr dll)
 		{
-			_dll = NativeMethods_Win.LoadLibrary(dll);
+			_dll = dll;
 		}
 
 		public IntPtr GetFunctionPtr(string name)
 		{
 			var f = NativeMethods_Win.GetProcAddress(_dll, name);
+			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+			return f;
+		}
+	}
+
+	class GetFunctionPtr_dlopen : IGetFunctionPtr
+	{
+		readonly IntPtr _dll;
+		public GetFunctionPtr_dlopen(IntPtr dll)
+		{
+			_dll = dll;
+		}
+
+		public IntPtr GetFunctionPtr(string name)
+		{
+			var f = NativeMethods_dlopen.dlsym(_dll, name);
 			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
 			return f;
 		}
@@ -79,8 +95,26 @@ namespace SQLitePCL
 
 		public static void Load(string name)
 		{
-			var gf = new GetFunctionPtr_Win(name);
-			SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+			var dll = NativeMethods_Win.LoadLibrary(name);
+			if (dll != IntPtr.Zero)
+			{
+				var gf = new GetFunctionPtr_Win(dll);
+				SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+			}
+			else
+			{
+				dll = NativeMethods_dlopen.dlopen(name, 0); // TODO flags
+				if (dll != IntPtr.Zero)
+				{
+					var gf = new GetFunctionPtr_dlopen(dll);
+					SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+				}
+				else
+				{
+					throw new NotImplementedException();
+				}
+
+			}
 		}
 	}
 
