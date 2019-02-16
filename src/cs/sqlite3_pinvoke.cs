@@ -36,9 +36,10 @@ namespace SQLitePCL
     sealed class SQLite3Provider_dyn : ISQLite3Provider
     {
 		// TODO very unhappy that this needs to be static
+		// if this needs to be static, then the whole class
+		// might as well be static
 		public static MyDelegates NativeMethods;
 
-		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
         public SQLite3Provider_dyn()
         {
 #if NETFX_CORE
@@ -80,7 +81,7 @@ namespace SQLitePCL
         public IntPtr zName;
         public IntPtr pAppData;
         public IntPtr xOpen;
-        public SQLiteDeleteDelegate xDelete;
+        public MyDelegateTypes.SQLiteDeleteDelegate xDelete;
         public IntPtr xAccess;
         public IntPtr xFullPathname;
         public IntPtr xDlOpen;
@@ -91,10 +92,6 @@ namespace SQLitePCL
         public IntPtr xSleep;
         public IntPtr xCurrentTime;
         public IntPtr xGetLastError;
-
-
-        [UnmanagedFunctionPointer(CALLING_CONVENTION)]
-        public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
     }
     #pragma warning restore 649
 	
