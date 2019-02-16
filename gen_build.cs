@@ -25,7 +25,6 @@ public static class projects
 	// Each item in these Lists corresponds to a project file that will be
 	// generated.
 	//
-	public static List<config_cppinterop> items_cppinterop = new List<config_cppinterop>();
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
 	public static List<config_csproj> items_test = new List<config_csproj>();
@@ -37,8 +36,6 @@ public static class projects
 	//
 	public static void init()
 	{
-		init_cppinterop();
-
         init_csproj();
 
 		init_tests();
@@ -46,12 +43,6 @@ public static class projects
 		init_testapps();
 
 		init_esqlite3();
-	}
-
-	private static void init_cppinterop()
-	{
-		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="arm"});
-		items_cppinterop.Add(new config_cppinterop { env="wp80", cpu="x86"});
 	}
 
     private static void init_bundles(int ver)
@@ -213,9 +204,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "macos"));
         // ios would only make sense here with dylibs
         //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
-
-        items_csproj.Add(config_csproj.create_wp80_provider("arm"));
-        items_csproj.Add(config_csproj.create_wp80_provider("x86"));
 
         items_csproj.Add(config_csproj.create_ugly("net35"));
         items_csproj.Add(config_csproj.create_ugly("net40"));
@@ -539,69 +527,6 @@ public static class config_info_ext
 
 }
 
-public class config_cppinterop : config_info
-{
-	public string env;
-	public string cpu;
-	public string guid;
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, "SQLitePCL.cppinterop.dll");
-		switch (env)
-		{
-			case "wp80":
-				add_product(a, "SQLitePCL.cppinterop.winmd");
-				break;
-
-			case "wp81_sl":
-				add_product(a, "SQLitePCL.cppinterop.pri");
-				add_product(a, "SQLitePCL.cppinterop.winmd");
-				break;
-
-			default:
-				throw new Exception("cppinterop invalid env");
-		}
-	}
-
-	private string area()
-	{
-		return "cppinterop";
-	}
-
-	public string get_name()
-	{
-		return string.Format("{0}.{1}.{2}.{3}", gen.ROOT_NAME, area(), env, cpu);
-	}
-
-	public string get_project_filename()
-	{
-		return string.Format("{0}.vcxproj", get_name());
-	}
-
-	public string fixed_cpu()
-	{
-		if (cpu == "x86")
-		{
-			return "Win32";
-		}
-		else
-		{
-			return cpu;
-		}
-	}
-
-	private string sqlite3_toolset()
-	{
-        return projects.cs_env_to_toolset(env);
-	}
-}
-
 public class config_esqlite3 : config_info
 {
 	public string guid;
@@ -791,7 +716,6 @@ public class config_csproj : config_info
     public bool ref_ugly;
     public string ref_provider;
     public string ref_embedded;
-    public bool ref_cppinterop = false;
 
     string root_name
     {
@@ -941,22 +865,6 @@ public class config_csproj : config_info
                 break;
         }
 
-        return cfg;
-    }
-
-    public static config_csproj create_wp80_provider(string cpu)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "provider";
-        cfg.cpu = cpu;
-        cfg.env = "wp80";
-        cfg.what = "e_sqlite3";
-        cfg.name = string.Format("{0}.provider.{1}.{2}.{3}", cfg.root_name, cfg.what, cfg.env, cfg.cpu);
-        cfg.assemblyname = string.Format("{0}.provider.{1}", cfg.root_name, cfg.what);
-        cfg.csfiles_src.Add("util.cs");
-        cfg.csfiles_src.Add("sqlite3_cppinterop.cs");
-        cfg.ref_core = true;
-        cfg.ref_cppinterop = true;
         return cfg;
     }
 
@@ -1119,21 +1027,6 @@ public class config_csproj : config_info
 		}
 	}
 
-	public config_cppinterop get_cppinterop_item()
-	{
-		foreach (config_cppinterop cfg in projects.items_cppinterop)
-		{
-			if (
-                    (cfg.env == env)
-					&& (cfg.cpu == cpu)
-			   )
-			{
-				return cfg;
-			}
-		}
-		throw new Exception(get_name());
-	}
-
 	private void add_product(List<string> a, string s)
 	{
 		a.Add(Path.Combine(get_name(), "bin", "release", s));
@@ -1142,11 +1035,6 @@ public class config_csproj : config_info
 	public void get_products(List<string> a)
 	{
 		add_product(a, string.Format("{0}.dll", assemblyname));
-		if (ref_cppinterop)
-		{
-			var other = get_cppinterop_item();
-            other.get_products(a);
-		}
 	}
 
     // TODO rm this func
@@ -1665,232 +1553,6 @@ public static class gen
 
 	}
 
-	private static void gen_cppinterop(config_cppinterop cfg, string root, string top, string cb_bin)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string proj = cfg.get_project_path(top);
-		using (XmlWriter f = XmlWriter.Create(proj, settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteAttributeString("ToolsVersion", "4.0");
-					break;
-				case "wp81_sl":
-					f.WriteAttributeString("ToolsVersion", "12.0");
-					break;
-				default:
-					throw new Exception("invalid cppinterop env");
-			}
-			f.WriteAttributeString("DefaultTargets", "Build");
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteAttributeString("Label", "ProjectConfigurations");
-
-			f.WriteStartElement("ProjectConfiguration");
-			f.WriteAttributeString("Include", string.Format("Debug|{0}", cfg.fixed_cpu()));
-			f.WriteElementString("Configuration", "Debug");
-			f.WriteElementString("Platform", cfg.fixed_cpu());
-			f.WriteEndElement(); // ProjectConfiguration
-
-			f.WriteStartElement("ProjectConfiguration");
-			f.WriteAttributeString("Include", string.Format("Release|{0}", cfg.fixed_cpu()));
-			f.WriteElementString("Configuration", "Release");
-			f.WriteElementString("Platform", cfg.fixed_cpu());
-			f.WriteEndElement(); // ProjectConfiguration
-
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ProjectGuid", cfg.guid);
-			f.WriteElementString("DefaultLanguage", "en-us");
-			f.WriteElementString("RootNamespace", "SQLitePCL.cppinterop");
-
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteElementString("WinMDAssembly", "true");
-					f.WriteElementString("MinimumVisualStudioVersion", "11.0");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("Keyword", "Win32Proj");
-					f.WriteElementString("MinimumVisualStudioVersion", "12.0");
-					f.WriteElementString("AppContainerApplication", "true");
-					f.WriteElementString("ApplicationType", "Windows Phone Silverlight");
-					f.WriteElementString("ApplicationTypeRevision", "8.1");
-					break;
-			}
-
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.Default.props");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ConfigurationType", "DynamicLibrary");
-
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteElementString("PlatformToolset", "v110_wp80");
-					break;
-				case "wp81_sl":
-					f.WriteElementString("PlatformToolset", "v120");
-					break;
-			}
-
-			f.WriteEndElement(); // PropertyGroup
-
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteElementString("AdditionalUsingDirectories", "$(WindowsSDK_WindowsMetaData);$(AdditionalUsingDirectories)");
-					f.WriteElementString("CompileAsWinRT", "true");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
-					f.WriteElementString("GenerateWindowsMetadata", "true");
-					f.WriteElementString("IgnoreSpecificDefaultLibraries", "ole32.lib;%(IgnoreSpecificDefaultLibraries)");
-					f.WriteElementString("AdditionalDependencies", "WindowsPhoneCore.lib;runtimeobject.lib;PhoneAppModelHost.lib;%(AdditionalDependencies)");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-				case "wp81_sl":
-					f.WriteStartElement("ItemDefinitionGroup");
-					f.WriteStartElement("ClCompile");
-					write_cpp_define(f, "_WINRT_DLL");
-					f.WriteEndElement(); // ClCompile
-					f.WriteStartElement("Link");
-					f.WriteEndElement(); // Link
-					f.WriteEndElement(); // ItemDefinitionGroup
-					break;
-			}
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Debug' "));
-			f.WriteElementString("UseDebugLibraries", "true");
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteAttributeString("Condition", string.Format(" '$(Configuration)' == 'Release' "));
-			f.WriteElementString("UseDebugLibraries", "false");
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.props");
-			f.WriteEndElement(); // Import
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("TargetName", "SQLitePCL.cppinterop");
-			f.WriteElementString("OutDir", string.Format("bin\\$(Configuration)\\"));
-			f.WriteElementString("IntDir", string.Format("obj\\$(Configuration)\\"));
-			f.WriteElementString("IncludePath", string.Format("{0};$(IncludePath)", Path.Combine(root, "..", "cb", "sqlite3")));
-			f.WriteElementString("LinkIncremental", "false");
-			f.WriteElementString("GenerateManifest", "false");
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteStartElement("ClCompile");
-			f.WriteElementString("PrecompiledHeader", "NotUsing");
-			f.WriteElementString("AdditionalOptions", "/bigobj %(AdditionalOptions)");
-			//f.WriteElementString("CompileAsWinRT", "false");
-			//f.WriteElementString("SDLCheck", "false");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("SubSystem", "Console");
-			f.WriteElementString("IgnoreAllDefaultLibraries", "false");
-			string sqlite3_item_path = Path.Combine(
-					cb_bin,
-					"e_sqlite3",
-                    "win",
-					"v110",
-					"wp80",
-					cfg.cpu,
-                    "e_sqlite3.lib"
-					);
-			f.WriteElementString("AdditionalDependencies", string.Format("{0};%(AdditionalDependencies)", sqlite3_item_path));
-			//f.WriteElementString("GenerateWindowsMetadata", "false");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteAttributeString("Condition", string.Format("'$(Configuration)'=='{0}' ", "Debug"));
-			f.WriteStartElement("ClCompile");
-			f.WriteElementString("Optimization", "Disabled");
-			write_cpp_define(f, "_DEBUG");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("GenerateDebugInformation", "true");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemDefinitionGroup");
-			f.WriteStartElement("ClCompile");
-			f.WriteAttributeString("Condition", string.Format("'$(Configuration)'=='{0}' ", "Release"));
-			f.WriteElementString("Optimization", "MaxSpeed");
-			//f.WriteElementString("FunctionLevelLinking", "true");
-			//f.WriteElementString("IntrinsicFunctions", "true");
-			write_cpp_define(f, "NDEBUG");
-			f.WriteEndElement(); // ClCompile
-			f.WriteStartElement("Link");
-			f.WriteElementString("GenerateDebugInformation", "false");
-			//f.WriteElementString("EnableCOMDATFolding", "true");
-			//f.WriteElementString("OptimizeReferences", "true");
-			f.WriteEndElement(); // Link
-			f.WriteEndElement(); // ItemDefinitionGroup
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteStartElement("ClCompile");
-			f.WriteAttributeString("Include", Path.Combine(root, "src\\cpp\\sqlite3_cx.cpp"));
-			f.WriteEndElement(); // ClCompile
-			f.WriteEndElement(); // ItemGroup
-
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteStartElement("ItemGroup");
-					f.WriteStartElement("Reference");
-					f.WriteAttributeString("Include", "platform.winmd");
-					f.WriteElementString("IsWinMDFile", "true");
-					f.WriteElementString("Private", "false");
-					f.WriteEndElement(); // Reference
-					f.WriteEndElement(); // ItemGroup
-					break;
-				case "wp81_sl":
-					break;
-			}
-
-			f.WriteStartElement("Import");
-			f.WriteAttributeString("Project", "$(VCTargetsPath)\\Microsoft.Cpp.targets");
-			f.WriteEndElement(); // Import
-
-			switch (cfg.env)
-			{
-				case "wp80":
-					f.WriteStartElement("Import");
-					f.WriteAttributeString("Project", "$(MSBuildExtensionsPath)\\Microsoft\\WindowsPhone\\v$(TargetPlatformVersion)\\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets");
-					f.WriteEndElement(); // Import
-					break;
-				case "wp81_sl":
-					break;
-			}
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
     private static void gen_testapp(
             config_testapp cfg,
             string root
@@ -2179,21 +1841,6 @@ public static class gen
                 f.WriteEndElement(); // ItemGroup
             }
 
-			if (cfg.ref_cppinterop)
-			{
-				f.WriteStartElement("ItemGroup");
-				f.WriteStartElement("ProjectReference");
-				{
-					config_cppinterop other = cfg.get_cppinterop_item();
-					f.WriteAttributeString("Include", other.get_project_path(top));
-					f.WriteElementString("Project", other.guid);
-					f.WriteElementString("Name", other.get_name());
-					//f.WriteElementString("Private", "true");
-				}
-				f.WriteEndElement(); // ProjectReference
-				f.WriteEndElement(); // ItemGroup
-			}
-
             if (cfg.area == "lib")
             {
 			switch (cfg.env)
@@ -2330,17 +1977,6 @@ public static class gen
 			f.WriteLine("VisualStudioVersion = 14.0");
 			f.WriteLine("MinimumVisualStudioVersion = 12.0");
 
-			foreach (config_cppinterop cfg in projects.items_cppinterop)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CPP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-				f.WriteLine("EndProject");
-			}
-
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
 				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
@@ -2358,13 +1994,6 @@ public static class gen
                 {
                     // TODO
                 }
-                if (cfg.ref_cppinterop)
-                {
-					f.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-					config_cppinterop other = cfg.get_cppinterop_item();
-					f.WriteLine("\t\t{0} = {0}", other.guid);
-					f.WriteLine("\tEndProjectSection");
-                }
 				f.WriteLine("EndProject");
 			}
 
@@ -2376,13 +2005,6 @@ public static class gen
 			f.WriteLine("\tEndGlobalSection");
 
 			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_cppinterop cfg in projects.items_cppinterop)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
 				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
@@ -2579,7 +2201,7 @@ public static class gen
 
 	public const int MAJOR_VERSION = 1;
 	public const int MINOR_VERSION = 1;
-	public const int PATCH_VERSION = 13;
+	public const int PATCH_VERSION = 14;
 	public static string NUSPEC_VERSION_PRE = string.Format("{0}.{1}.{2}-pre{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -2591,7 +2213,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -4503,11 +4125,6 @@ public static class gen
 		// --------------------------------
 		// assign all the guids
 
-		foreach (config_cppinterop cfg in projects.items_cppinterop)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
 			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -4538,11 +4155,6 @@ public static class gen
 
 		// --------------------------------
 		// generate all the project files
-
-		foreach (config_cppinterop cfg in projects.items_cppinterop)
-		{
-			gen_cppinterop(cfg, root, top, cb_bin);
-		}
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
