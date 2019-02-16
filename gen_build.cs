@@ -169,19 +169,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
 
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "netstandard11"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net35"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net40"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "net45"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "android"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win8"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "win81"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "uwp10"));
-        items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "macos"));
-        // ios would only make sense here with dylibs
-        //items_csproj.Add(config_csproj.create_provider("custom_sqlite3", "ios_unified"));
-
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard11"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
         items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
@@ -659,9 +646,6 @@ public class config_csproj : config_info
             case "watchos":
                 switch (what)
                 {
-                    case "custom_sqlite3":
-                        cfg.defines.Add("IOS_PACKAGED_CUSTOM_SQLITE3");
-                        break;
                     case "e_sqlite3":
                         cfg.defines.Add("IOS_PACKAGED_E_SQLITE3");
                         break;
@@ -680,7 +664,6 @@ public class config_csproj : config_info
             case "watchos":
                 switch (what)
                 {
-                    case "custom_sqlite3":
                     case "e_sqlite3":
                     case "sqlcipher":
                         cfg.csfiles_src.Add("imp_ios_internal.cs");
@@ -744,9 +727,6 @@ public class config_csproj : config_info
                         break;
                     case "sqlite3_xamarin":
                         cfg.csfiles_bld.Add("pinvoke_sqlite3_xamarin.cs");
-                        break;
-                    case "custom_sqlite3":
-                        cfg.csfiles_bld.Add("pinvoke_custom_sqlite3.cs");
                         break;
                     case "e_sqlite3":
                         cfg.csfiles_bld.Add("pinvoke_e_sqlite3.cs");
@@ -3494,15 +3474,6 @@ public static class gen
 			string cs = cs_pinvoke
                 .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher")
                 .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_custom_sqlite3.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "custom_sqlite3")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "custom_sqlite3")
                 .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
                 ;
 			tw.Write(cs);
