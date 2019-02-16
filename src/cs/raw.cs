@@ -30,28 +30,6 @@ namespace SQLitePCL
 
     public static class raw
     {
-#if not
-        private static bool _frozen;
-        static public void SetProvider(ISQLite3Provider imp)
-        {
-            if (_frozen) return;
-            int version = imp.sqlite3_libversion_number();
-#if not // don't do this, because it ends up calling sqlite3_initialize
-		IntPtr db;
-		int rc;
-	        rc = imp.sqlite3_open(":memory:", out db);
-		if (rc != 0) throw new Exception();
-		rc = imp.sqlite3_close(db);
-		if (rc != 0) throw new Exception();
-#endif
-            _imp = imp;
-        }
-        static public void FreezeProvider(bool b = true)
-        {
-            _frozen = b;
-        }
-#endif
-
         public const int SQLITE_UTF8 = 1;
         public const int SQLITE_UTF16LE = 2;
         public const int SQLITE_UTF16BE = 3;
