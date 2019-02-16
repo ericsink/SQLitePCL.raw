@@ -1,0 +1,45 @@
+
+mv code into the project directories under mt
+
+dlopen
+
+default load, so the setup call can be optional
+in many or most cases
+
+SQLite3Provider can be static.  no interface needed.
+
+places where the delegate has byte[] vs IntPtr
+
+rm the char 16 versions
+
+strong names
+
+stdcall
+
+do we need a separate build for cdecl?
+
+more xunit test cases
+
+how to do __internal for iOS?
+
+get rid of the win32 set directory calls.
+
+try to have no ifdefs in core
+
+chgs to intptr dispose?
+
+version of gen_build which only does the nugets
+for packaging e_sqlite and sqlcipher builds
+
+SourceGear name?
+
+UnmanagedFunctionPointer attribute CharSet ?
+
+EntryPoint
+
+get rid of old reflection ifdef
+
+and no concurrent dictionary ifdef
+
+stuff in csproj so we can do dotnet pack
+

@@ -801,7 +801,6 @@ namespace SQLitePCL
 		public delegate int sqlite3_set_authorizer(IntPtr db, callback_authorizer cb, IntPtr pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
-		[EntryPoint("sqlite3_win32_set_directory")]
 		public delegate int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
 	}
