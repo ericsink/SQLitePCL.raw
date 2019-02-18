@@ -31,8 +31,6 @@ to keep the ugliness of callbacks more isolated
 
 mv code into the project directories under mt.
 
-dlopen on Mac
-
 default load, so the setup call can be optional
 in many or most cases
 
