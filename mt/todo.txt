@@ -1,6 +1,6 @@
 
-stdcall.  which matters only for x86.  x64 and
-ARM ignore this and use cdecl.
+stdcall.  which matters only for x86.  for x64 and
+ARM, this is ignored and cdecl is used.
 
 do we need a separate build for calling convention?
 or just build both stdcall and cdecl versions
@@ -28,6 +28,8 @@ dyn and raw could be merged?  unless we want
 to keep the ugliness of callbacks more isolated
 
 --
+
+DI for the utf8 stuff
 
 debug vs release builds?
 
