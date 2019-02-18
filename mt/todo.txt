@@ -1,20 +1,4 @@
 
-mv code into the project directories under mt.
-what about calling convention cdecl vs stcall ?
-
-dlopen on Mac
-
-default load, so the setup call can be optional
-in many or most cases
-
-rename SQLite3Provider_dyn.  what to call it?
-what distinguishes this layer from the one
-above and below?
-
-places where the delegate has byte[] vs IntPtr
-
-strong names in new csproj
-
 stdcall.  which matters only for x86.  x64 and
 ARM ignore this and use cdecl.
 
@@ -22,11 +6,43 @@ do we need a separate build for calling convention?
 or just build both stdcall and cdecl versions
 and have them both?
 
+unforutnately, the calling convention is in the
+unmanaged function ptr delegate type in MyDelegateTypes,
+which is referenced from dyn.
+
+--
+
+layers:
+
+	unmanaged functon pointers
+
+	dyn
+		callbacks
+		certain cases, byte arrays and string
+
+	raw
+		intptr wrappers
+		public
+
+dyn and raw could be merged?  unless we want
+to keep the ugliness of callbacks more isolated
+
+--
+
+mv code into the project directories under mt.
+
+dlopen on Mac
+
+default load, so the setup call can be optional
+in many or most cases
+
+strong names in new csproj
+
 more xunit test cases
 
 how to do __internal for iOS?  just pass null to dlopen?
 
-get rid of those win32 set directory calls.
+restore those win32 set directory calls somewhere
 
 try to have no ifdefs in core
 
@@ -37,12 +53,10 @@ for packaging e_sqlite and sqlcipher builds
 
 SourceGear name?
 
-UnmanagedFunctionPointer attribute CharSet ?
-
 stuff in csproj so we can do dotnet pack
 
 AssemblyInfo stuff, version numbers
 
-instead of delegate-ish types in isqlite3.cs should the functions
+instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?
 
