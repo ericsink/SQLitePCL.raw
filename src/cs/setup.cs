@@ -28,6 +28,11 @@ namespace SQLitePCL
     using System;
     using System.Runtime.InteropServices;
 
+	interface IGetFunctionPtr
+	{
+		IntPtr GetFunctionPtr(string name);
+	}
+
 	static class NativeMethods_dlopen
 	{
 		const string SO = "dl";

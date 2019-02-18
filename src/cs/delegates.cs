@@ -29,11 +29,6 @@ namespace SQLitePCL
     using System.Runtime.InteropServices;
 	using System.Reflection;
 
-	interface IGetFunctionPtr
-	{
-		IntPtr GetFunctionPtr(string name);
-	}
-
 	class MyDelegates
 	{
 		public MyDelegates(IGetFunctionPtr gf)
