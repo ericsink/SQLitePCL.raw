@@ -2,7 +2,7 @@
 mv code into the project directories under mt.
 what about calling convention cdecl vs stcall ?
 
-dlopen
+dlopen on Mac
 
 default load, so the setup call can be optional
 in many or most cases
@@ -19,6 +19,8 @@ stdcall.  which matters only for x86.  x64 and
 ARM ignore this and use cdecl.
 
 do we need a separate build for calling convention?
+or just build both stdcall and cdecl versions
+and have them both?
 
 more xunit test cases
 
@@ -36,8 +38,6 @@ for packaging e_sqlite and sqlcipher builds
 SourceGear name?
 
 UnmanagedFunctionPointer attribute CharSet ?
-
-get rid of old reflection ifdef
 
 stuff in csproj so we can do dotnet pack
 

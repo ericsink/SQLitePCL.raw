@@ -28,6 +28,21 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
 
+	public delegate void delegate_log(object user_data, int errorCode, string msg);
+	public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
+	public delegate int delegate_commit(object user_data);
+	public delegate void delegate_rollback(object user_data);
+	public delegate void delegate_trace(object user_data, string statement);
+	public delegate void delegate_profile(object user_data, string statement, long ns);
+	public delegate int delegate_progress_handler(object user_data);
+	public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
+	public delegate int delegate_collation(object user_data, string s1, string s2);
+	public delegate int delegate_exec(object user_data, string[] values, string[] names);
+
+	public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
+	public delegate void delegate_function_aggregate_step(sqlite3_context ctx, object user_data, sqlite3_value[] args);
+	public delegate void delegate_function_aggregate_final(sqlite3_context ctx, object user_data);
+
     public static class raw
     {
         public const int SQLITE_UTF8 = 1;
