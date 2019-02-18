@@ -29,12 +29,12 @@ to keep the ugliness of callbacks more isolated
 
 --
 
+debug vs release builds?
+
 mv code into the project directories under mt.
 
 default load, so the setup call can be optional
 in many or most cases
-
-strong names in new csproj
 
 more xunit test cases
 
