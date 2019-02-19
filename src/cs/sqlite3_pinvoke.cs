@@ -443,7 +443,7 @@ namespace SQLitePCL
             return hi.call();
         }
 
-	NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
+	static MyDelegateTypes.callback_commit commit_hook_bridge = new MyDelegateTypes.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -478,7 +478,7 @@ namespace SQLitePCL
             hi.call(context, num_args, argsptr);
         }
 
-	NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
+	static MyDelegateTypes.callback_scalar_function scalar_function_hook_bridge = new MyDelegateTypes.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
         static int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
         {
@@ -532,7 +532,7 @@ namespace SQLitePCL
             hi.call(rc, util.from_utf8(s));
         }
 
-	NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
+	static MyDelegateTypes.callback_log log_hook_bridge = new MyDelegateTypes.callback_log(log_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (hooks.log != null)
@@ -580,8 +580,8 @@ namespace SQLitePCL
             hi.call_final(context, agg);
         }
 
-	NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
-	NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
+	static MyDelegateTypes.callback_agg_function_step agg_function_hook_bridge_step = new MyDelegateTypes.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
+	static MyDelegateTypes.callback_agg_function_final agg_function_hook_bridge_final = new MyDelegateTypes.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
         static int my_sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
@@ -638,7 +638,7 @@ namespace SQLitePCL
             return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
         }
 
-	NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
+	static MyDelegateTypes.callback_collation collation_hook_bridge = new MyDelegateTypes.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -681,7 +681,7 @@ namespace SQLitePCL
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
         }
 
-	NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
+	static MyDelegateTypes.callback_update update_hook_bridge = new MyDelegateTypes.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -715,7 +715,7 @@ namespace SQLitePCL
             hi.call();
         }
 
-	NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
+	static MyDelegateTypes.callback_rollback rollback_hook_bridge = new MyDelegateTypes.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -749,7 +749,7 @@ namespace SQLitePCL
             hi.call(util.from_utf8(s));
         }
 
-	NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
+	static MyDelegateTypes.callback_trace trace_hook_bridge = new MyDelegateTypes.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(IntPtr db, delegate_trace func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -783,7 +783,7 @@ namespace SQLitePCL
             hi.call(util.from_utf8(s), elapsed);
         }
 
-	NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
+	static MyDelegateTypes.callback_profile profile_hook_bridge = new MyDelegateTypes.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(IntPtr db, delegate_profile func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -817,7 +817,7 @@ namespace SQLitePCL
             return hi.call();
         }
 
-        NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
+        static MyDelegateTypes.callback_progress_handler progress_handler_hook_bridge = new MyDelegateTypes.callback_progress_handler(progress_handler_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
@@ -853,7 +853,7 @@ namespace SQLitePCL
             return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
         }
 
-        NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
+        static MyDelegateTypes.callback_authorizer authorizer_hook_bridge = new MyDelegateTypes.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
