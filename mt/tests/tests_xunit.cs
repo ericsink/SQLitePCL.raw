@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Text;
 using SQLitePCL;
@@ -35,6 +36,7 @@ namespace SQLitePCL.Tests
 	{
 		public Init()
 		{
+			//SQLitePCL.Setup.Load("c:/Windows/system32/winsqlite3.dll");
 			SQLitePCL.Setup.Load("e_sqlite3.dll");
 		}
 	}
@@ -433,6 +435,28 @@ namespace SQLitePCL.Tests
                         Assert.True(bak.pagecount() > 0);
                     }
                 }
+            }
+        }
+
+        [Fact]
+        public void test_more_stuff()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+				foreach (var i in Enumerable.Range(1, 40))
+				{
+					db.exec("INSERT INTO foo (x) VALUES (?)", i);
+				}
+                using (sqlite3_stmt stmt = db.prepare("SELECT x from foo"))
+				{
+					while (stmt.step() == raw.SQLITE_ROW)
+					{
+						var v = stmt.column_int(0);
+						System.Console.WriteLine("", v);
+					}
+				}
+
             }
         }
 

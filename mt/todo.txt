@@ -1,4 +1,10 @@
 
+missing test for sqlite3_exec with a hook.
+it would probably crash, since the implementation
+doesn't gc protect the delegate?  or is the one
+a special case because the delegate only lives
+as long as the call?
+
 stdcall.  which matters only for x86.  for x64 and
 ARM, this is ignored and cdecl is used.
 
@@ -9,6 +15,17 @@ and have them both?
 unforutnately, the calling convention is in the
 unmanaged function ptr delegate type in MyDelegateTypes,
 which is referenced from dyn.
+
+need to setup some x86 stdcall builds for testing?
+or just one winsqlite3 itself.
+
+is the calling convention handled at the call site?
+if we have a custom delegate type with a calling
+convention, and we cast it to a Func<> kind of delegate,
+does the calling convention still work?
+
+irritating that test suite passes using winsqlite3
+and either calling convention.  why?
 
 --
 

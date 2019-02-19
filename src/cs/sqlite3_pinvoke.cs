@@ -112,6 +112,7 @@ namespace SQLitePCL
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
+// TODO shouldn't there be a impl/bridge thing here
 
         public static int sqlite3_exec(IntPtr db, string sql, delegate_exec func, object user_data, out string errMsg)
         {
@@ -436,6 +437,8 @@ namespace SQLitePCL
             return hi.call();
         }
 
+	// TODO interestingly, if we remove this line and rename above to just ..._bridge, we get garbage collected delegate error
+	// oh.  it's because making it static is one way of preventing garbage collection.
 	static MyDelegateTypes.callback_commit commit_hook_bridge = new MyDelegateTypes.callback_commit(commit_hook_bridge_impl); 
         public static void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {

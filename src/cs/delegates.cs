@@ -194,6 +194,7 @@ namespace SQLitePCL
 	static class MyDelegateTypes
 	{
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
+		//const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_close(IntPtr db);
