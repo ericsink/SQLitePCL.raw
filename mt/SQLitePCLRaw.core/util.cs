@@ -153,6 +153,49 @@ namespace SQLitePCL
         }
     }
 
+	// TODO experiment
+    internal class hook_info<T>
+		where T : class
+    {
+        private T _func;
+        private object _user_data;
+        private GCHandle _h;
+
+        internal hook_info(T func, object v)
+        {
+            _func = func;
+            _user_data = v;
+
+            _h = GCHandle.Alloc(this);
+        }
+
+        internal IntPtr ptr
+        {
+            get
+            {
+                return (IntPtr) _h;
+            }
+        }
+
+        internal static hook_info<T> from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            hook_info<T> hi = h.Target as hook_info<T>;
+            // TODO assert(hi._h == h)
+            return hi;
+        }
+
+        internal T func => _func;
+		internal object data => _user_data;
+
+        internal void free()
+        {
+            _func = null;
+            _user_data = null;
+            _h.Free();
+        }
+    };
+
     internal class log_hook_info
     {
         private delegate_log _func;

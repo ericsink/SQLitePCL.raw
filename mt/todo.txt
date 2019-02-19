@@ -1,4 +1,6 @@
 
+test on uwp
+
 missing test for sqlite3_exec with a hook.
 it would probably crash, since the implementation
 doesn't gc protect the delegate?  or is this one
