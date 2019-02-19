@@ -5,20 +5,16 @@ doesn't gc protect the delegate?  or is this one
 a special case because the delegate only lives
 as long as the call?
 
-build sqlite3_pinvoke twice, once for cdecl
-and once for stdcall.  give them different class
-names.  deal with this in Setup.
+deal with stdcall/winsqlite3 in Setup
 
 need to setup some x86 stdcall builds for testing?
 or just use winsqlite3 itself.  irritating that 
-test suite passes using winsqlite3 and either 
+the test suite passes using winsqlite3 and either 
 calling convention.  why?
 
 DI for the utf8 stuff
 
 debug vs release builds?
-
-mv code into the project directories under mt.
 
 default load, so the setup call can be optional
 in many or most cases
