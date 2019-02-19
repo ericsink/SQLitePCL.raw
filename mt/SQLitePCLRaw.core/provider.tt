@@ -1,3 +1,6 @@
+<#@ template language="C#" #>
+<#@ output extension=".cs"#>
+<#@ parameter name='Name' #>
 /*
    Copyright 2014-2019 Zumero, LLC
 
