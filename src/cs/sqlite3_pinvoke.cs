@@ -1215,12 +1215,12 @@ namespace SQLitePCL
 			// TODO check here to make sure the type is a delegate of some kind?
 			// just in case we introduce other properties later?
 			var name = delegate_type.Name;
-			foreach (var attr in System.Attribute.GetCustomAttributes(delegate_type))
+			foreach (var attr in delegate_type.GetTypeInfo().GetCustomAttributes())
 			{
 				if (attr.GetType() == typeof(EntryPointAttribute))
 				{
 					var ep = attr as EntryPointAttribute;
-					System.Console.WriteLine("{0} EntryPoint {1}", name, ep.Name);
+					//System.Console.WriteLine("{0} EntryPoint {1}", name, ep.Name);
 					name = ep.Name;
 				}
 			}
@@ -1232,7 +1232,7 @@ namespace SQLitePCL
 			}
 			else
 			{
-				System.Console.WriteLine("Warning: {0} not found", name);
+				//System.Console.WriteLine("Warning: {0} not found", name);
 				del = null;
 			}
 		}

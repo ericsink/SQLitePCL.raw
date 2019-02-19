@@ -103,7 +103,7 @@ namespace SQLitePCL
 			try
 			{
 				dll = NativeMethods_Win.LoadLibrary(name);
-				System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
+				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
 				return true;
 			}
 			catch
@@ -118,7 +118,7 @@ namespace SQLitePCL
 			try
 			{
 				dll = NativeMethods_dlopen.dlopen(name, NativeMethods_dlopen.RTLD_NOW);
-				System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
+				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
 				return true;
 			}
 			catch
