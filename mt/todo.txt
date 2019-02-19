@@ -5,24 +5,12 @@ doesn't gc protect the delegate?  or is this one
 a special case because the delegate only lives
 as long as the call?
 
-stdcall.  which matters only for x86.  for x64 and
-ARM, this is ignored and cdecl is used.
-
-do we need a separate build for calling convention?
-or just build both stdcall and cdecl versions
-and have them both?
-
-unforutnately, the calling convention is in the
-unmanaged function ptr delegate type in MyDelegateTypes,
-which is referenced from dyn.
+build sqlite3_pinvoke twice, once for cdecl
+and once for stdcall.  give them different class
+names.  deal with this in Setup.
 
 need to setup some x86 stdcall builds for testing?
 or just use winsqlite3 itself.
-
-is the calling convention handled at the call site?
-if we have a custom delegate type with a calling
-convention, and we cast it to a Func<> kind of delegate,
-does the calling convention still work?
 
 irritating that test suite passes using winsqlite3
 and either calling convention.  why?
@@ -41,9 +29,6 @@ layers:
 		intptr wrappers
 		public
 
-dyn and raw could be merged?  unless we want
-to keep the ugliness of callbacks more isolated
-
 --
 
 DI for the utf8 stuff
@@ -61,14 +46,14 @@ how to do __internal for iOS?  just pass null to dlopen?
 
 restore those win32 set directory calls somewhere
 
-try to have no ifdefs in core
+goal is to have no ifdefs in core
 
 chgs to intptr dispose?
 
 version of gen_build which only does the nugets
 for packaging e_sqlite and sqlcipher builds
 
-SourceGear name?
+chg to SourceGear name?
 
 stuff in csproj so we can do dotnet pack
 
@@ -84,4 +69,5 @@ DllImport meant that sqlite3_close (for example) shows up
 in only one place in NativeMethods.  with the new code,
 we need a delegate type, and a field to hold one of them,
 and a line to load it.
+
 
