@@ -7,9 +7,12 @@
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.core.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+<!--
 <Target Name="autogen" BeforeTargets="BeforeBuild">
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o provider_cdecl.cs provider.tt"/>
+<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_cdecl.cs -p:CONV=Cdecl provider.tt"/>
+<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_stdcall.cs -p:CONV=StdCall provider.tt"/>
 </Target>
+-->
 
 <ItemGroup>
     <Compile Include="setup.cs" />
@@ -19,7 +22,8 @@
     <Compile Include="intptrs.cs" />
     <Compile Include="isqlite3.cs" />
 
-    <Compile Include="provider_cdecl.cs" />
+    <Compile Include="gen_provider_cdecl.cs" />
+    <Compile Include="gen_provider_stdcall.cs" />
 </ItemGroup>
 
 </Project>

@@ -132,8 +132,8 @@ namespace SQLitePCL
 		{
 			var dll = NativeMethods_dlopen.dlopen(null, NativeMethods_dlopen.RTLD_NOW);
 			var gf = new GetFunctionPtr_dlopen(dll);
-			SQLite3Provider_dyn.Setup(gf);
-			raw.SetProvider(new SQLite3Provider_dyn());
+			SQLite3Provider_Cdecl.Setup(gf);
+			raw.SetProvider(new SQLite3Provider_Cdecl());
 		}
 
 		public static void Load(string name)
@@ -142,14 +142,14 @@ namespace SQLitePCL
 			if (try_win(name, out dll))
 			{
 				var gf = new GetFunctionPtr_Win(dll);
-				SQLite3Provider_dyn.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_dyn());
+				SQLite3Provider_Cdecl.Setup(gf);
+				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
 			else if (try_dlopen(name, out dll))
 			{
 				var gf = new GetFunctionPtr_dlopen(dll);
-				SQLite3Provider_dyn.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_dyn());
+				SQLite3Provider_Cdecl.Setup(gf);
+				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
 			else
 			{

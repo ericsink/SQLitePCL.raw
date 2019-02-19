@@ -1,7 +1,4 @@
-<#@ template language="C#" #>
-<#@ output extension=".cs"#>
-<#@ parameter name='CONV' #>
-/*
+﻿/*
    Copyright 2014-2019 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,9 +31,9 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    sealed class SQLite3Provider_<#= CONV #> : ISQLite3Provider
+    sealed class SQLite3Provider_StdCall : ISQLite3Provider
     {
-		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
+		const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
 		public static void Setup(IGetFunctionPtr gf)
 		{
