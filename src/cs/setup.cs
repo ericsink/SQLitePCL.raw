@@ -135,11 +135,13 @@ namespace SQLitePCL
 			{
 				var gf = new GetFunctionPtr_Win(dll);
 				SQLite3Provider_dyn.Setup(gf);
+				raw.SetProvider(new SQLite3Provider_dyn());
 			}
 			else if (try_dlopen(name, out dll))
 			{
 				var gf = new GetFunctionPtr_dlopen(dll);
 				SQLite3Provider_dyn.Setup(gf);
+				raw.SetProvider(new SQLite3Provider_dyn());
 			}
 			else
 			{
