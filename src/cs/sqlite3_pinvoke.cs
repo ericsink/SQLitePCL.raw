@@ -431,18 +431,15 @@ namespace SQLitePCL
         // into each platform assembly.
         
         [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_commit))]
-        static int commit_hook_bridge_impl(IntPtr p)
+        static int commit_hook_bridge(IntPtr p)
         {
             commit_hook_info hi = commit_hook_info.from_ptr(p);
             return hi.call();
         }
 
-	// TODO interestingly, if we remove this line and rename above to just ..._bridge, we get garbage collected delegate error
-	// oh.  it's because making it static is one way of preventing garbage collection.
-	static MyDelegateTypes.callback_commit commit_hook_bridge = new MyDelegateTypes.callback_commit(commit_hook_bridge_impl); 
         public static void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
-		var info = hooks.getOrCreateFor(db);
+			var info = hooks.getOrCreateFor(db);
             if (info.commit != null)
             {
                 // TODO maybe turn off the hook here, for now

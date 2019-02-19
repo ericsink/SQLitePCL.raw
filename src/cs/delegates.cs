@@ -38,13 +38,13 @@ namespace SQLitePCL
 				var delegate_type = p.PropertyType;
 				// TODO check here to make sure the type is a delegate of some kind?
 				// just in case we introduce other properties later?
-				var name = p.Name;
+				var name = delegate_type.Name;
 				foreach (var attr in System.Attribute.GetCustomAttributes(delegate_type))
 				{
 					if (attr.GetType() == typeof(EntryPointAttribute))
 					{
 						var ep = attr as EntryPointAttribute;
-						//System.Console.WriteLine("{0} EntryPoint {1}", p.Name, ep.Name);
+						System.Console.WriteLine("{0} EntryPoint {1}", p.Name, ep.Name);
 						name = ep.Name;
 					}
 				}
@@ -157,7 +157,15 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2 { get; private set; }
 		public MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation { get; private set; }
 		public MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook { get; private set; }
-		public MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook { get; private set; }
+
+		MyDelegateTypes.sqlite3_commit_hook native_sqlite3_commit_hook { get; set; }
+		static MyDelegateTypes.callback_commit commit_hook_delegate;
+        public void sqlite3_commit_hook(IntPtr db, Func<IntPtr, int> func, IntPtr v)
+		{
+			commit_hook_delegate = new MyDelegateTypes.callback_commit(func); 
+			native_sqlite3_commit_hook(db, commit_hook_delegate, v);
+		}
+
 		public MyDelegateTypes.sqlite3_profile sqlite3_profile { get; private set; }
 		public MyDelegateTypes.sqlite3_progress_handler sqlite3_progress_handler { get; private set; }
 		public MyDelegateTypes.sqlite3_trace sqlite3_trace { get; private set; }
