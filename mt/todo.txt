@@ -25,7 +25,7 @@ restore those win32 set directory calls somewhere
 
 goal is to have no ifdefs in core
 
-chgs to intptr dispose?
+chgs to intptr dispose?  #166  SafeHandle
 
 version of gen_build which only does the nugets
 for packaging e_sqlite and sqlcipher builds
