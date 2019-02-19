@@ -14,6 +14,7 @@
     <Compile Include="..\..\src\cs\util.cs" />
     <Compile Include="..\..\src\cs\raw.cs" />
     <Compile Include="..\..\src\cs\intptrs.cs" />
+    <Compile Include="..\..\src\cs\isqlite3.cs" />
 </ItemGroup>
 
 </Project>

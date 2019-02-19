@@ -31,7 +31,7 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    static class SQLite3Provider_dyn
+    sealed class SQLite3Provider_dyn : ISQLite3Provider
     {
 		// TODO very unhappy that this needs to be static
 		static MyDelegates NativeMethods;
@@ -41,17 +41,17 @@ namespace SQLitePCL
 			NativeMethods = new MyDelegates(gf);
 		}
 
-        public static int sqlite3_win32_set_directory(int typ, string path)
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
         {
             return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
         }
 
-        public static int sqlite3_open(string filename, out IntPtr db)
+        int ISQLite3Provider.sqlite3_open(string filename, out IntPtr db)
         {
             return NativeMethods.sqlite3_open(util.to_utf8(filename), out db);
         }
 
-        public static int sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs)
+        int ISQLite3Provider.sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs)
         {
             return NativeMethods.sqlite3_open_v2(util.to_utf8(filename), out db, flags, util.to_utf8(vfs));
         }
@@ -80,7 +80,7 @@ namespace SQLitePCL
     }
     #pragma warning restore 649
 	
-	public static int sqlite3__vfs__delete(string vfs, string filename, int syncDir)
+	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
 	{
 	    IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(util.to_utf8(vfs));
 	    // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
@@ -88,26 +88,26 @@ namespace SQLitePCL
 	    return vstruct.xDelete(ptrVfs, util.to_utf8(filename), 1);
 	}
 
-        public static int sqlite3_close_v2(IntPtr db)
+        int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close_v2(db);
 		hooks.removeFor(db);
 		return rc;
         }
 
-        public static int sqlite3_close(IntPtr db)
+        int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close(db);
 		hooks.removeFor(db);
 		return rc;
         }
 
-        public static int sqlite3_enable_shared_cache(int enable)
+        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
         }
 
-        public static void sqlite3_interrupt(IntPtr db)
+        void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
         {
             NativeMethods.sqlite3_interrupt(db);
         }
@@ -120,7 +120,7 @@ namespace SQLitePCL
         }
 // TODO shouldn't there be a impl/bridge thing here
 
-        public static int sqlite3_exec(IntPtr db, string sql, delegate_exec func, object user_data, out string errMsg)
+        int ISQLite3Provider.sqlite3_exec(IntPtr db, string sql, delegate_exec func, object user_data, out string errMsg)
         {
             IntPtr errmsg_ptr;
             int rc;
@@ -149,22 +149,22 @@ namespace SQLitePCL
             return rc;
         }
 
-        public static int sqlite3_complete(string sql)
+        int ISQLite3Provider.sqlite3_complete(string sql)
         {
             return NativeMethods.sqlite3_complete(util.to_utf8(sql));
         }
 
-        public static string sqlite3_compileoption_get(int n)
+        string ISQLite3Provider.sqlite3_compileoption_get(int n)
         {
             return util.from_utf8(NativeMethods.sqlite3_compileoption_get(n));
         }
 
-        public static int sqlite3_compileoption_used(string s)
+        int ISQLite3Provider.sqlite3_compileoption_used(string s)
         {
             return NativeMethods.sqlite3_compileoption_used(util.to_utf8(s));
         }
 
-        public static int sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        int ISQLite3Provider.sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             IntPtr datatype_ptr;
             IntPtr collseq_ptr;
@@ -202,7 +202,7 @@ namespace SQLitePCL
             return rc; 
         }
 
-        public static int sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
+        int ISQLite3Provider.sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
         {
             var ba_sql = util.to_utf8(sql);
             GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
@@ -225,52 +225,52 @@ namespace SQLitePCL
             return rc;
         }
 
-        public static int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg)
+        int ISQLite3Provider.sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg)
         {
             return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
-        public static string sqlite3_sql(IntPtr stmt)
+        string ISQLite3Provider.sqlite3_sql(IntPtr stmt)
         {
             return util.from_utf8(NativeMethods.sqlite3_sql(stmt));
         }
 
-        public static IntPtr sqlite3_db_handle(IntPtr stmt)
+        IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
         {
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        public static int sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
         }
 
-        public static int sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_open(db, util.to_utf8(sdb), util.to_utf8(table), util.to_utf8(col), rowid, flags, out blob);
         }
 
-        public static int sqlite3_blob_bytes(IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_bytes(IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_bytes(blob);
         }
 
-        public static int sqlite3_blob_close(IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
-        public static int sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset)
         {
-            return sqlite3_blob_read(blob, b, 0, n, offset);
+            return (this as ISQLite3Provider).sqlite3_blob_read(blob, b, 0, n, offset);
         }
 
-        public static int sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset)
         {
-            return sqlite3_blob_write(blob, b, 0, n, offset);
+            return (this as ISQLite3Provider).sqlite3_blob_write(blob, b, 0, n, offset);
         }
 
-        public static int sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
@@ -279,7 +279,7 @@ namespace SQLitePCL
 	    return rc;
         }
 
-        public static int sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
@@ -288,132 +288,132 @@ namespace SQLitePCL
 	    return rc;
         }
 
-        public static IntPtr sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
+        IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
         {
             return NativeMethods.sqlite3_backup_init(destDb, util.to_utf8(destName), sourceDb, util.to_utf8(sourceName));
         }
 
-        public static int sqlite3_backup_step(IntPtr backup, int nPage)
+        int ISQLite3Provider.sqlite3_backup_step(IntPtr backup, int nPage)
         {
             return NativeMethods.sqlite3_backup_step(backup, nPage);
         }
 
-        public static int sqlite3_backup_finish(IntPtr backup)
+        int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_finish(backup);
         }
 
-        public static int sqlite3_backup_remaining(IntPtr backup)
+        int ISQLite3Provider.sqlite3_backup_remaining(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_remaining(backup);
         }
 
-        public static int sqlite3_backup_pagecount(IntPtr backup)
+        int ISQLite3Provider.sqlite3_backup_pagecount(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_pagecount(backup);
         }
 
-        public static IntPtr sqlite3_next_stmt(IntPtr db, IntPtr stmt)
+        IntPtr ISQLite3Provider.sqlite3_next_stmt(IntPtr db, IntPtr stmt)
         {
             return NativeMethods.sqlite3_next_stmt(db, stmt);
         }
 
-        public static long sqlite3_last_insert_rowid(IntPtr db)
+        long ISQLite3Provider.sqlite3_last_insert_rowid(IntPtr db)
         {
             return NativeMethods.sqlite3_last_insert_rowid(db);
         }
 
-        public static int sqlite3_changes(IntPtr db)
+        int ISQLite3Provider.sqlite3_changes(IntPtr db)
         {
             return NativeMethods.sqlite3_changes(db);
         }
 
-        public static int sqlite3_total_changes(IntPtr db)
+        int ISQLite3Provider.sqlite3_total_changes(IntPtr db)
         {
             return NativeMethods.sqlite3_total_changes(db);
         }
 
-        public static int sqlite3_extended_result_codes(IntPtr db, int onoff)
+        int ISQLite3Provider.sqlite3_extended_result_codes(IntPtr db, int onoff)
         {
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
 
-        public static string sqlite3_errstr(int rc)
+        string ISQLite3Provider.sqlite3_errstr(int rc)
         {
             return util.from_utf8(NativeMethods.sqlite3_errstr(rc));
         }
 
-        public static int sqlite3_errcode(IntPtr db)
+        int ISQLite3Provider.sqlite3_errcode(IntPtr db)
         {
             return NativeMethods.sqlite3_errcode(db);
         }
 
-        public static int sqlite3_extended_errcode(IntPtr db)
+        int ISQLite3Provider.sqlite3_extended_errcode(IntPtr db)
         {
             return NativeMethods.sqlite3_extended_errcode(db);
         }
 
-        public static int sqlite3_busy_timeout(IntPtr db, int ms)
+        int ISQLite3Provider.sqlite3_busy_timeout(IntPtr db, int ms)
         {
             return NativeMethods.sqlite3_busy_timeout(db, ms);
         }
 
-        public static int sqlite3_get_autocommit(IntPtr db)
+        int ISQLite3Provider.sqlite3_get_autocommit(IntPtr db)
         {
             return NativeMethods.sqlite3_get_autocommit(db);
         }
 
-        public static int sqlite3_db_readonly(IntPtr db, string dbName)
+        int ISQLite3Provider.sqlite3_db_readonly(IntPtr db, string dbName)
         {
             return NativeMethods.sqlite3_db_readonly(db, util.to_utf8(dbName)); 
         }
         
-        public static string sqlite3_db_filename(IntPtr db, string att)
+        string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
 	{
             return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
 	}
 
-        public static string sqlite3_errmsg(IntPtr db)
+        string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
         {
             return util.from_utf8(NativeMethods.sqlite3_errmsg(db));
         }
 
-        public static string sqlite3_libversion()
+        string ISQLite3Provider.sqlite3_libversion()
         {
             return util.from_utf8(NativeMethods.sqlite3_libversion());
         }
 
-        public static int sqlite3_libversion_number()
+        int ISQLite3Provider.sqlite3_libversion_number()
         {
             return NativeMethods.sqlite3_libversion_number();
         }
 
-        public static int sqlite3_threadsafe()
+        int ISQLite3Provider.sqlite3_threadsafe()
         {
             return NativeMethods.sqlite3_threadsafe();
         }
 
-        public static int sqlite3_config(int op)
+        int ISQLite3Provider.sqlite3_config(int op)
         {
             return NativeMethods.sqlite3_config_none(op);
         }
 
-        public static int sqlite3_config(int op, int val)
+        int ISQLite3Provider.sqlite3_config(int op, int val)
         {
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
-        public static int sqlite3_initialize()
+        int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
         }
 
-        public static int sqlite3_shutdown()
+        int ISQLite3Provider.sqlite3_shutdown()
         {
             return NativeMethods.sqlite3_shutdown();
         }
 
-        public static int sqlite3_enable_load_extension(IntPtr db, int onoff)
+        int ISQLite3Provider.sqlite3_enable_load_extension(IntPtr db, int onoff)
         {
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
@@ -443,7 +443,7 @@ namespace SQLitePCL
             return hi.call();
         }
 
-        public static void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
+        void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
         {
 			var info = hooks.getOrCreateFor(db);
             if (info.commit != null)
@@ -510,12 +510,12 @@ namespace SQLitePCL
             }
         }
 
-        public static int sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
 		}
 
-        public static int sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
 		}
@@ -529,7 +529,7 @@ namespace SQLitePCL
             hi.call(rc, util.from_utf8(s));
         }
 
-        public static int sqlite3_config_log(delegate_log func, object v)
+        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (hooks.log != null)
             {
@@ -610,12 +610,12 @@ namespace SQLitePCL
             }
         }
 
-        public static int sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
 		}
 
-        public static int sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(IntPtr db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
 		}
@@ -625,7 +625,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        public static int sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
+        int ISQLite3Provider.sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func)
         {
 			return NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, v, func);
         }
@@ -642,7 +642,7 @@ namespace SQLitePCL
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
         }
 
-        public static void sqlite3_update_hook(IntPtr db, delegate_update func, object v)
+        void ISQLite3Provider.sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.update != null)
@@ -675,7 +675,7 @@ namespace SQLitePCL
             hi.call();
         }
 
-        public static void sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
+        void ISQLite3Provider.sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.rollback != null)
@@ -708,7 +708,7 @@ namespace SQLitePCL
             hi.call(util.from_utf8(s));
         }
 
-        public static void sqlite3_trace(IntPtr db, delegate_trace func, object v)
+        void ISQLite3Provider.sqlite3_trace(IntPtr db, delegate_trace func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.trace != null)
@@ -741,7 +741,7 @@ namespace SQLitePCL
             hi.call(util.from_utf8(s), elapsed);
         }
 
-        public static void sqlite3_profile(IntPtr db, delegate_profile func, object v)
+        void ISQLite3Provider.sqlite3_profile(IntPtr db, delegate_profile func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.profile != null)
@@ -774,7 +774,7 @@ namespace SQLitePCL
             return hi.call();
         }
 
-        public static void sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
+        void ISQLite3Provider.sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.progress != null)
@@ -809,7 +809,7 @@ namespace SQLitePCL
             return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
         }
 
-        public static int sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
+        int ISQLite3Provider.sqlite3_set_authorizer(IntPtr db, delegate_authorizer func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
             if (info.authorizer != null)
@@ -832,84 +832,84 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-        public static long sqlite3_memory_used()
+        long ISQLite3Provider.sqlite3_memory_used()
         {
             return NativeMethods.sqlite3_memory_used();
         }
 
-        public static long sqlite3_memory_highwater(int resetFlag)
+        long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
         {
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
-        public static int sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
             return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
-        public static string sqlite3_sourceid()
+        string ISQLite3Provider.sqlite3_sourceid()
         {
             return util.from_utf8(NativeMethods.sqlite3_sourceid());
         }
 
-        public static void sqlite3_result_int64(IntPtr ctx, long val)
+        void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
         {
             NativeMethods.sqlite3_result_int64(ctx, val);
         }
 
-        public static void sqlite3_result_int(IntPtr ctx, int val)
+        void ISQLite3Provider.sqlite3_result_int(IntPtr ctx, int val)
         {
             NativeMethods.sqlite3_result_int(ctx, val);
         }
 
-        public static void sqlite3_result_double(IntPtr ctx, double val)
+        void ISQLite3Provider.sqlite3_result_double(IntPtr ctx, double val)
         {
             NativeMethods.sqlite3_result_double(ctx, val);
         }
 
-        public static void sqlite3_result_null(IntPtr stm)
+        void ISQLite3Provider.sqlite3_result_null(IntPtr stm)
         {
             NativeMethods.sqlite3_result_null(stm);
         }
 
-        public static void sqlite3_result_error(IntPtr ctx, string val)
+        void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, string val)
         {
             NativeMethods.sqlite3_result_error(ctx, util.to_utf8(val), -1);
         }
 
-        public static void sqlite3_result_text(IntPtr ctx, string val)
+        void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, string val)
         {
             NativeMethods.sqlite3_result_text(ctx, util.to_utf8(val), -1, new IntPtr(-1));
         }
 
-        public static void sqlite3_result_blob(IntPtr ctx, byte[] blob)
+        void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, byte[] blob)
         {
             NativeMethods.sqlite3_result_blob(ctx, blob, blob.Length, new IntPtr(-1));
         }
 
-        public static void sqlite3_result_zeroblob(IntPtr ctx, int n)
+        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
         {
             NativeMethods.sqlite3_result_zeroblob(ctx, n);
         }
 
         // TODO sqlite3_result_value
 
-        public static void sqlite3_result_error_toobig(IntPtr ctx)
+        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_toobig(ctx);
         }
 
-        public static void sqlite3_result_error_nomem(IntPtr ctx)
+        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_nomem(ctx);
         }
 
-        public static void sqlite3_result_error_code(IntPtr ctx, int code)
+        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
         {
             NativeMethods.sqlite3_result_error_code(ctx, code);
         }
 
-        public static byte[] sqlite3_value_blob(IntPtr p)
+        byte[] ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_value_blob(p);
             if (blobPointer == IntPtr.Zero)
@@ -923,132 +923,132 @@ namespace SQLitePCL
             return result;
         }
 
-        public static int sqlite3_value_bytes(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
         {
             return NativeMethods.sqlite3_value_bytes(p);
         }
 
-        public static double sqlite3_value_double(IntPtr p)
+        double ISQLite3Provider.sqlite3_value_double(IntPtr p)
         {
             return NativeMethods.sqlite3_value_double(p);
         }
 
-        public static int sqlite3_value_int(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_int(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int(p);
         }
 
-        public static long sqlite3_value_int64(IntPtr p)
+        long ISQLite3Provider.sqlite3_value_int64(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int64(p);
         }
 
-        public static int sqlite3_value_type(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_type(IntPtr p)
         {
             return NativeMethods.sqlite3_value_type(p);
         }
 
-        public static string sqlite3_value_text(IntPtr p)
+        string ISQLite3Provider.sqlite3_value_text(IntPtr p)
         {
             return util.from_utf8(NativeMethods.sqlite3_value_text(p));
         }
 
-        public static int sqlite3_bind_int(IntPtr stm, int paramIndex, int val)
+        int ISQLite3Provider.sqlite3_bind_int(IntPtr stm, int paramIndex, int val)
         {
             return NativeMethods.sqlite3_bind_int(stm, paramIndex, val);
         }
 
-        public static int sqlite3_bind_int64(IntPtr stm, int paramIndex, long val)
+        int ISQLite3Provider.sqlite3_bind_int64(IntPtr stm, int paramIndex, long val)
         {
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
 
-        public static int sqlite3_bind_text(IntPtr stm, int paramIndex, string t)
+        int ISQLite3Provider.sqlite3_bind_text(IntPtr stm, int paramIndex, string t)
         {
             return NativeMethods.sqlite3_bind_text(stm, paramIndex, util.to_utf8(t), -1, new IntPtr(-1));
         }
 
-        public static int sqlite3_bind_double(IntPtr stm, int paramIndex, double val)
+        int ISQLite3Provider.sqlite3_bind_double(IntPtr stm, int paramIndex, double val)
         {
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
 
-        public static int sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob)
+        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob)
         {
             return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, blob.Length, new IntPtr(-1));
         }
 
-        public static int sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int nSize)
+        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int nSize)
         {
             return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, nSize, new IntPtr(-1));
         }
 
-        public static int sqlite3_bind_zeroblob(IntPtr stm, int paramIndex, int size)
+        int ISQLite3Provider.sqlite3_bind_zeroblob(IntPtr stm, int paramIndex, int size)
         {
             return NativeMethods.sqlite3_bind_zeroblob(stm, paramIndex, size);
         }
 
-        public static int sqlite3_bind_null(IntPtr stm, int paramIndex)
+        int ISQLite3Provider.sqlite3_bind_null(IntPtr stm, int paramIndex)
         {
             return NativeMethods.sqlite3_bind_null(stm, paramIndex);
         }
 
-        public static int sqlite3_bind_parameter_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_bind_parameter_count(IntPtr stm)
         {
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
 
-        public static string sqlite3_bind_parameter_name(IntPtr stm, int paramIndex)
+        string ISQLite3Provider.sqlite3_bind_parameter_name(IntPtr stm, int paramIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex));
         }
 
-        public static int sqlite3_bind_parameter_index(IntPtr stm, string paramName)
+        int ISQLite3Provider.sqlite3_bind_parameter_index(IntPtr stm, string paramName)
         {
             return NativeMethods.sqlite3_bind_parameter_index(stm, util.to_utf8(paramName));
         }
 
-        public static int sqlite3_step(IntPtr stm)
+        int ISQLite3Provider.sqlite3_step(IntPtr stm)
         {
             return NativeMethods.sqlite3_step(stm);
         }
 
-        public static int sqlite3_stmt_busy(IntPtr stm)
+        int ISQLite3Provider.sqlite3_stmt_busy(IntPtr stm)
         {
             return NativeMethods.sqlite3_stmt_busy(stm);
         }
 
-        public static int sqlite3_stmt_readonly(IntPtr stm)
+        int ISQLite3Provider.sqlite3_stmt_readonly(IntPtr stm)
         {
             return NativeMethods.sqlite3_stmt_readonly(stm);
         }
 
-        public static int sqlite3_column_int(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_int(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int(stm, columnIndex);
         }
 
-        public static long sqlite3_column_int64(IntPtr stm, int columnIndex)
+        long ISQLite3Provider.sqlite3_column_int64(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        public static string sqlite3_column_text(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_text(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_text(stm, columnIndex));
         }
 
-        public static string sqlite3_column_decltype(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_decltype(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
         }
 
-        public static double sqlite3_column_double(IntPtr stm, int columnIndex)
+        double ISQLite3Provider.sqlite3_column_double(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_double(stm, columnIndex);
         }
 
-        public static byte[] sqlite3_column_blob(IntPtr stm, int columnIndex)
+        byte[] ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_column_blob(stm, columnIndex);
             if (blobPointer == IntPtr.Zero)
@@ -1062,7 +1062,7 @@ namespace SQLitePCL
             return result;
         }
 
-        public static int sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset)
+        int ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset)
         {
             if (result == null || offset >= result.Length)
             {
@@ -1083,77 +1083,77 @@ namespace SQLitePCL
             return raw.SQLITE_OK;
         }
 
-        public static int sqlite3_column_type(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_type(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_type(stm, columnIndex);
         }
 
-        public static int sqlite3_column_bytes(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_bytes(IntPtr stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_bytes(stm, columnIndex);
         }
 
-        public static int sqlite3_column_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_column_count(IntPtr stm)
         {
             return NativeMethods.sqlite3_column_count(stm);
         }
 
-        public static int sqlite3_data_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_data_count(IntPtr stm)
         {
             return NativeMethods.sqlite3_data_count(stm);
         }
 
-        public static string sqlite3_column_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_name(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_name(stm, columnIndex));
         }
 
-        public static string sqlite3_column_origin_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_origin_name(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_origin_name(stm, columnIndex));
         }
 
-        public static string sqlite3_column_table_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_table_name(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_table_name(stm, columnIndex));
         }
 
-        public static string sqlite3_column_database_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_database_name(IntPtr stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
         }
 
-        public static int sqlite3_reset(IntPtr stm)
+        int ISQLite3Provider.sqlite3_reset(IntPtr stm)
         {
             return NativeMethods.sqlite3_reset(stm);
         }
 
-        public static int sqlite3_clear_bindings(IntPtr stm)
+        int ISQLite3Provider.sqlite3_clear_bindings(IntPtr stm)
         {
             return NativeMethods.sqlite3_clear_bindings(stm);
         }
 
-        public static int sqlite3_stmt_status(IntPtr stm, int op, int resetFlg)
+        int ISQLite3Provider.sqlite3_stmt_status(IntPtr stm, int op, int resetFlg)
         {
             return NativeMethods.sqlite3_stmt_status(stm, op, resetFlg);
         }
 
-        public static int sqlite3_finalize(IntPtr stm)
+        int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
             return NativeMethods.sqlite3_finalize(stm);
         }
 
-        public static int sqlite3_wal_autocheckpoint(IntPtr db, int n)
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(IntPtr db, int n)
         {
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
 
-        public static int sqlite3_wal_checkpoint(IntPtr db, string dbName)
+        int ISQLite3Provider.sqlite3_wal_checkpoint(IntPtr db, string dbName)
         {
             return NativeMethods.sqlite3_wal_checkpoint(db, util.to_utf8(dbName));
         }
 
-        public static int sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
             return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
         }
