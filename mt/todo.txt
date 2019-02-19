@@ -79,3 +79,9 @@ take something like Func<whatever> ?
 
 can the hook_info classes be simplified?
 
+lots of duplication in sqlite3_pinvoke with the new code.
+DllImport meant that sqlite3_close (for example) shows up
+in only one place in NativeMethods.  with the new code,
+we need a delegate type, and a field to hold one of them,
+and a line to load it.
+
