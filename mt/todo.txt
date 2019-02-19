@@ -10,26 +10,9 @@ and once for stdcall.  give them different class
 names.  deal with this in Setup.
 
 need to setup some x86 stdcall builds for testing?
-or just use winsqlite3 itself.
-
-irritating that test suite passes using winsqlite3
-and either calling convention.  why?
-
---
-
-layers:
-
-	unmanaged functon pointers
-
-	dyn
-		callbacks
-		certain cases, byte arrays and string
-
-	raw
-		intptr wrappers
-		public
-
---
+or just use winsqlite3 itself.  irritating that 
+test suite passes using winsqlite3 and either 
+calling convention.  why?
 
 DI for the utf8 stuff
 
@@ -41,8 +24,6 @@ default load, so the setup call can be optional
 in many or most cases
 
 more xunit test cases
-
-how to do __internal for iOS?  just pass null to dlopen?
 
 restore those win32 set directory calls somewhere
 
