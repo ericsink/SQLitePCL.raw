@@ -128,6 +128,14 @@ namespace SQLitePCL
 			}
 		}
 
+		public static void Load_ios_internal()
+		{
+			var dll = NativeMethods_dlopen.dlopen(null, NativeMethods_dlopen.RTLD_NOW);
+			var gf = new GetFunctionPtr_dlopen(dll);
+			SQLite3Provider_dyn.Setup(gf);
+			raw.SetProvider(new SQLite3Provider_dyn());
+		}
+
 		public static void Load(string name)
 		{
 			IntPtr dll;
