@@ -1327,166 +1327,20 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_rekey sqlite3_rekey { get; private set; }
 		public MyDelegateTypes.sqlite3_config_none sqlite3_config_none { get; private set; }
 		public MyDelegateTypes.sqlite3_config_int sqlite3_config_int { get; private set; }
-
-		MyDelegateTypes.sqlite3_config_log native_sqlite3_config_log { get; set; }
-		static MyDelegateTypes.callback_log log_hook_delegate;
-        public int sqlite3_config_log(int op, Action<IntPtr, int, IntPtr> func, IntPtr v)
-		{
-			log_hook_delegate = new MyDelegateTypes.callback_log(func); 
-			return native_sqlite3_config_log(op, log_hook_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_create_function_v2 native_sqlite3_create_function_v2 { get; set; }
-		static MyDelegateTypes.callback_scalar_function scalar_delegate;
-		static MyDelegateTypes.callback_agg_function_step agg_step_delegate; 
-		static MyDelegateTypes.callback_agg_function_final agg_final_delegate;
-		static MyDelegateTypes.callback_destroy destroy_delegate;
-		public int sqlite3_create_function_v2(
-			IntPtr db, 
-			byte[] strName, 
-			int nArgs, 
-			int nType, 
-			IntPtr pvUser, 
-			Action<IntPtr, int, IntPtr> f_scalar, 
-			Action<IntPtr, int, IntPtr> f_agg_step, 
-			Action<IntPtr> f_agg_final, 
-			Action<IntPtr> f_destroy
-			)
-		{
-			if (f_scalar != null)
-			{
-				scalar_delegate = new MyDelegateTypes.callback_scalar_function(f_scalar);
-			}
-			else
-			{
-				scalar_delegate = null;
-			}
-			if (f_agg_step != null)
-			{
-				agg_step_delegate = new MyDelegateTypes.callback_agg_function_step(f_agg_step);
-			}
-			else
-			{
-				agg_step_delegate = null;
-			}
-			if (f_agg_final != null)
-			{
-				agg_final_delegate = new MyDelegateTypes.callback_agg_function_final(f_agg_final);
-			}
-			else
-			{
-				agg_final_delegate = null;
-			}
-			if (f_destroy != null)
-			{
-				destroy_delegate = new MyDelegateTypes.callback_destroy(f_destroy);
-			}
-			else
-			{
-				destroy_delegate = null;
-			}
-			return native_sqlite3_create_function_v2(db, strName, nArgs, nType, pvUser, scalar_delegate, agg_step_delegate, agg_final_delegate, destroy_delegate);
-		}
-
-        [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_collation))]
-        static int collation_hook_bridge(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
-        {
-            collation_hook_info hi = collation_hook_info.from_ptr(p);
-            return hi.call(util.from_utf8(pv1, len1), util.from_utf8(pv2, len2));
-        }
-
-		MyDelegateTypes.sqlite3_create_collation native_sqlite3_create_collation { get; set; }
-		static MyDelegateTypes.callback_collation collation_delegate = new MyDelegateTypes.callback_collation(collation_hook_bridge);
-		public int sqlite3_create_collation(IntPtr db, byte[] strName, int nType, object v, delegate_collation func)
-		{
-			IntPtr ptr;
-			if (func != null)
-			{
-                collation_hook_info hi = new collation_hook_info(func, v);
-				ptr = hi.ptr;
-			}
-			else
-			{
-				ptr = IntPtr.Zero;
-			}
-			return native_sqlite3_create_collation(db, strName, nType, ptr, collation_delegate);
-		}
-
-		MyDelegateTypes.sqlite3_update_hook native_sqlite3_update_hook { get; set; }
-		static MyDelegateTypes.callback_update update_hook_delegate;
-        public IntPtr sqlite3_update_hook(IntPtr db, Action<IntPtr, int, IntPtr, IntPtr, long> func, IntPtr v)
-		{
-			update_hook_delegate = new MyDelegateTypes.callback_update(func); 
-			return native_sqlite3_update_hook(db, update_hook_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_commit_hook native_sqlite3_commit_hook { get; set; }
-		static MyDelegateTypes.callback_commit commit_hook_delegate;
-        public IntPtr sqlite3_commit_hook(IntPtr db, Func<IntPtr, int> func, IntPtr v)
-		{
-			commit_hook_delegate = new MyDelegateTypes.callback_commit(func); 
-			return native_sqlite3_commit_hook(db, commit_hook_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_profile native_sqlite3_profile { get; set; }
-		static MyDelegateTypes.callback_profile profile_delegate;
-        public IntPtr sqlite3_profile(IntPtr db, Action<IntPtr, IntPtr, long> func, IntPtr v)
-		{
-			profile_delegate = new MyDelegateTypes.callback_profile(func); 
-			return native_sqlite3_profile(db, profile_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_progress_handler native_sqlite3_progress_handler { get; set; }
-		static MyDelegateTypes.callback_progress_handler progress_handler_delegate;
-        public IntPtr sqlite3_progress_handler(IntPtr db, int instructions, Func<IntPtr, int> func, IntPtr v)
-		{
-			if (func != null)
-			{
-				progress_handler_delegate = new MyDelegateTypes.callback_progress_handler(func); 
-			}
-			else
-			{
-				progress_handler_delegate = null;
-			}
-			return native_sqlite3_progress_handler(db, instructions, progress_handler_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_trace native_sqlite3_trace { get; set; }
-		static MyDelegateTypes.callback_trace trace_delegate;
-        public IntPtr sqlite3_trace(IntPtr db, Action<IntPtr, IntPtr> func, IntPtr v)
-		{
-			trace_delegate = new MyDelegateTypes.callback_trace(func); 
-			return native_sqlite3_trace(db, trace_delegate, v);
-		}
-
-		MyDelegateTypes.sqlite3_rollback_hook native_sqlite3_rollback_hook { get; set; }
-		static MyDelegateTypes.callback_rollback rollback_hook_delegate;
-        public IntPtr sqlite3_rollback_hook(IntPtr db, Action<IntPtr> func, IntPtr v)
-		{
-			rollback_hook_delegate = new MyDelegateTypes.callback_rollback(func); 
-			return native_sqlite3_rollback_hook(db, rollback_hook_delegate, v);
-		}
-
+		public MyDelegateTypes.sqlite3_config_log sqlite3_config_log { get; private set; }
+		public MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2 { get; private set; }
+		public MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation { get; private set; }
+		public MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook { get; private set; }
+		public MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook { get; private set; }
+		public MyDelegateTypes.sqlite3_profile sqlite3_profile { get; private set; }
+		public MyDelegateTypes.sqlite3_progress_handler sqlite3_progress_handler { get; private set; }
+		public MyDelegateTypes.sqlite3_trace sqlite3_trace { get; private set; }
+		public MyDelegateTypes.sqlite3_rollback_hook sqlite3_rollback_hook { get; private set; }
 		public MyDelegateTypes.sqlite3_db_handle sqlite3_db_handle { get; private set; }
 		public MyDelegateTypes.sqlite3_next_stmt sqlite3_next_stmt { get; private set; }
 		public MyDelegateTypes.sqlite3_stmt_busy sqlite3_stmt_busy { get; private set; }
 		public MyDelegateTypes.sqlite3_stmt_readonly sqlite3_stmt_readonly { get; private set; }
-
-		MyDelegateTypes.sqlite3_exec native_sqlite3_exec { get; set; }
-		static MyDelegateTypes.callback_exec exec_delegate;
-		public int sqlite3_exec(IntPtr db, byte[] strSql, Func<IntPtr, int, IntPtr, IntPtr, int> cb, IntPtr pvParam, out IntPtr errMsg)
-		{
-			if (cb != null)
-			{
-				exec_delegate = new MyDelegateTypes.callback_exec(cb); 
-			}
-			else
-			{
-				exec_delegate = null;
-			}
-			return native_sqlite3_exec(db, strSql, exec_delegate, pvParam, out errMsg);
-		}
-
+		public MyDelegateTypes.sqlite3_exec sqlite3_exec { get; private set; }
 		public MyDelegateTypes.sqlite3_get_autocommit sqlite3_get_autocommit { get; private set; }
 		public MyDelegateTypes.sqlite3_extended_result_codes sqlite3_extended_result_codes { get; private set; }
 		public MyDelegateTypes.sqlite3_errcode sqlite3_errcode { get; private set; }
@@ -1507,19 +1361,7 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_wal_autocheckpoint sqlite3_wal_autocheckpoint { get; private set; }
 		public MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint { get; private set; }
 		public MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2 { get; private set; }
-
-		MyDelegateTypes.sqlite3_set_authorizer native_sqlite3_set_authorizer { get; set; }
-		static MyDelegateTypes.callback_authorizer authorizer_delegate;
-        public int sqlite3_set_authorizer(
-			IntPtr db, 
-			Func<IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int> func,
-			IntPtr v
-			)
-		{
-			authorizer_delegate = new MyDelegateTypes.callback_authorizer(func); 
-			return native_sqlite3_set_authorizer(db, authorizer_delegate, v);
-		}
-
+		public MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer { get; private set; }
 		public MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory  { get; private set; }
 	}
 
