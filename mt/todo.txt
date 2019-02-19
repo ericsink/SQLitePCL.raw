@@ -1,15 +1,7 @@
 
-goal is to hide the delegate types one level
-deeper, not exposing them to dyn, so that
-dyn doesn't have to be specific to cdecl
-or stdcall.  so knowledge of the calling convention
-could exist entirely inside the delegates class.
-
---
-
 missing test for sqlite3_exec with a hook.
 it would probably crash, since the implementation
-doesn't gc protect the delegate?  or is the one
+doesn't gc protect the delegate?  or is this one
 a special case because the delegate only lives
 as long as the call?
 
@@ -25,7 +17,7 @@ unmanaged function ptr delegate type in MyDelegateTypes,
 which is referenced from dyn.
 
 need to setup some x86 stdcall builds for testing?
-or just one winsqlite3 itself.
+or just use winsqlite3 itself.
 
 is the calling convention handled at the call site?
 if we have a custom delegate type with a calling
@@ -84,4 +76,6 @@ AssemblyInfo stuff, version numbers
 
 instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?
+
+can the hook_info classes be simplified?
 
