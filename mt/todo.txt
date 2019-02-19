@@ -1,4 +1,12 @@
 
+goal is to hide the delegate types one level
+deeper, not exposing them to dyn, so that
+dyn doesn't have to be specific to cdecl
+or stdcall.  so knowledge of the calling convention
+could exist entirely inside the delegates class.
+
+--
+
 missing test for sqlite3_exec with a hook.
 it would probably crash, since the implementation
 doesn't gc protect the delegate?  or is the one
