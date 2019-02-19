@@ -134,12 +134,12 @@ namespace SQLitePCL
 			if (try_win(name, out dll))
 			{
 				var gf = new GetFunctionPtr_Win(dll);
-				SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+				SQLite3Provider_dyn.Setup(gf);
 			}
 			else if (try_dlopen(name, out dll))
 			{
 				var gf = new GetFunctionPtr_dlopen(dll);
-				SQLite3Provider_dyn.NativeMethods = new MyDelegates(gf);
+				SQLite3Provider_dyn.Setup(gf);
 			}
 			else
 			{
