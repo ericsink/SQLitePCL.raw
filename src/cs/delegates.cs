@@ -156,7 +156,14 @@ namespace SQLitePCL
 		public MyDelegateTypes.sqlite3_config_log sqlite3_config_log { get; private set; }
 		public MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2 { get; private set; }
 		public MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation { get; private set; }
-		public MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook { get; private set; }
+
+		MyDelegateTypes.sqlite3_update_hook native_sqlite3_update_hook { get; set; }
+		static MyDelegateTypes.callback_update update_hook_delegate;
+        public void sqlite3_update_hook(IntPtr db, Action<IntPtr, int, IntPtr, IntPtr, long> func, IntPtr v)
+		{
+			update_hook_delegate = new MyDelegateTypes.callback_update(func); 
+			native_sqlite3_update_hook(db, update_hook_delegate, v);
+		}
 
 		MyDelegateTypes.sqlite3_commit_hook native_sqlite3_commit_hook { get; set; }
 		static MyDelegateTypes.callback_commit commit_hook_delegate;

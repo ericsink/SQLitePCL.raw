@@ -669,13 +669,12 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(MyDelegateTypes.callback_update))]
-        static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
+        static void update_hook_bridge(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
             hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
         }
 
-	static MyDelegateTypes.callback_update update_hook_bridge = new MyDelegateTypes.callback_update(update_hook_bridge_impl); 
         public static void sqlite3_update_hook(IntPtr db, delegate_update func, object v)
         {
 		var info = hooks.getOrCreateFor(db);
