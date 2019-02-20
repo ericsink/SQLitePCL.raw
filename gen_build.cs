@@ -187,24 +187,6 @@ public interface config_info
 	string get_name();
 }
 
-public static class config_info_ext
-{
-	public static string get_project_subdir(this config_info cfg, string top)
-	{
-		string subdir = Path.Combine(Path.Combine(top, cfg.get_name()));
-		Directory.CreateDirectory(subdir);
-		return subdir;
-	}
-
-	public static string get_project_path(this config_info cfg, string top)
-	{
-		string subdir = cfg.get_project_subdir(top);
-		string proj = Path.Combine(subdir, cfg.get_project_filename());
-		return proj;
-	}
-
-}
-
 public class config_esqlite3 : config_info
 {
 	public string guid;
@@ -250,53 +232,6 @@ public static class config_cs
 		return env.StartsWith("netstandard");
 	}
 
-	public static string get_full_framework_name(string env)
-	{
-        // what this function really does is return whatever
-        // framework name is full enough for project.json/frameworks.
-		switch (env)
-		{
-			case "ios_unified":
-				return "Xamarin.iOS10";
-			case "macos":
-				return "Xamarin.Mac20";
-			case "watchos":
-				return "Xamarin.WatchOS";
-			case "android":
-				return "MonoAndroid,Version=v2.3";
-			case "net45":
-				return "net45";
-			case "net40":
-				return "net40";
-			case "net35":
-				return "net35";
-			case "wp80":
-				return "wp8";
-			case "wp81_sl":
-				return "wp81";
-			case "wpa81":
-				return "wpa81";
-			case "uwp10":
-				return "uap10.0";
-			case "win8":
-				return ".NETCore,Version=4.5.1";
-			case "win81":
-				return ".NETCore,Version=4.5.1";
-            case "profile111":
-                return ".NETPortable,Version=v4.5,Profile=profile111";
-            case "profile136":
-                return ".NETPortable,Version=v4.0,Profile=profile136";
-            case "profile259":
-                return ".NETPortable,Version=v4.5,Profile=profile259";
-            case "netstandard10":
-                return "netstandard1.0";
-            case "netstandard11":
-                return "netstandard1.1";
-			default:
-				throw new Exception(env);
-		}
-	}
-					
 	public static string get_nuget_framework_name(string env)
 	{
 		switch (env)
@@ -360,8 +295,6 @@ public class config_csproj : config_info
 	public List<string> defines = new List<string>();
 	public List<string> runtimes = new List<string>();
 	public Dictionary<string,string> deps = new Dictionary<string,string>();
-    public bool ref_core;
-    public string ref_embedded;
 
     string root_name
     {
