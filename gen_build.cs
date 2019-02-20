@@ -1268,56 +1268,6 @@ public static class gen
         write_project_dot_json(subdir, config_cs.get_full_framework_name(cfg.env), cfg.deps, cfg.runtimes);
 	}
 
-	public static void gen_solution(string top)
-	{
-		using (StreamWriter f = new StreamWriter(Path.Combine(top, "sqlitepcl.sln")))
-		{
-			f.WriteLine("Microsoft Visual Studio Solution File, Format Version 12.00");
-			f.WriteLine("# Visual Studio 14");
-			f.WriteLine("VisualStudioVersion = 14.0");
-			f.WriteLine("MinimumVisualStudioVersion = 12.0");
-
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
-				f.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\\{2}\", \"{3}\"",
-						GUID_CSHARP,
-						cfg.get_name(),
-						cfg.get_project_filename(),
-						cfg.guid
-						);
-                // TODO project dependency
-                if (cfg.ref_core)
-                {
-                    // TODO
-                }
-				f.WriteLine("EndProject");
-			}
-
-			f.WriteLine("Global");
-
-			f.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-			f.WriteLine("\t\tDebug|Mixed Platforms = Debug|Mixed Platforms");
-			f.WriteLine("\t\tRelease|Mixed Platforms = Release|Mixed Platforms");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.ActiveCfg = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Debug|Mixed Platforms.Build.0 = Debug|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.ActiveCfg = Release|{1}", cfg.guid, cfg.fixed_cpu());
-				f.WriteLine("\t\t{0}.Release|Mixed Platforms.Build.0 = Release|{1}", cfg.guid, cfg.fixed_cpu());
-			}
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
-			f.WriteLine("\t\tHideSolutionNode = FALSE");
-			f.WriteLine("\tEndGlobalSection");
-
-			f.WriteLine("EndGlobal");
-		}
-	}
-
 	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
     {
         if (cfg.nuget_override_target_env != null)
@@ -3002,10 +2952,6 @@ public static class gen
 		{
 			gen_csproj(cfg, root, top, cb_bin);
 		}
-
-		// --------------------------------
-
-		gen_solution(top);
 
 		// --------------------------------
 
