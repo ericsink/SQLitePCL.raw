@@ -1,4 +1,6 @@
 
+fix cb paths
+
 rename sqlcipher to e_sqlcipher
 
 test on uwp
