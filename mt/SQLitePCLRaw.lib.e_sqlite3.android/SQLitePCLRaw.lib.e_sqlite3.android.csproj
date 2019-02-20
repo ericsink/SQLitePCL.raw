@@ -1,0 +1,37 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>MonoAndroid80</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\cs\embedded_init.cs" />
+</ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedNativeLibrary Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\android\x86\libe_sqlite3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>x86\libe_sqlite3.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\android\x86_64\libe_sqlite3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>x86_64\libe_sqlite3.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\android\armeabi\libe_sqlite3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>armeabi\libe_sqlite3.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\android\arm64-v8a\libe_sqlite3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>arm64-v8a\libe_sqlite3.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\android\armeabi-v7a\libe_sqlite3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>armeabi-v7a\libe_sqlite3.so</Link>
+    </EmbeddedNativeLibrary>
+  </ItemGroup>
+
+</Project>
+
