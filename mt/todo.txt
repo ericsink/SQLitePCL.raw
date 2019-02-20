@@ -1,7 +1,16 @@
 
-refactor common stuff in gen_nuspec_*
+just one lib pkg each for e_sqlite3
+and sqlcipher
 
---
+what nuspec does dotnet pack generate?
+
+rm provders from bundle nuspecs
+
+what are the empty dep groups for?
+
+maybe don't do bundle_winsqlite3?
+
+refactor common stuff in gen_nuspec_*
 
 chg cb build scripts to use VS 2017
 
