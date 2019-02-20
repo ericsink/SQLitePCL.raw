@@ -41,9 +41,9 @@ public static class projects
 		items_e_sqlite3_win.Add("v140");
 	}
 
-	public static string get_nuget_target_path(string env)
+	public static string get_nuget_target_path(string tfm)
 	{
-		return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
+		return string.Format("lib\\{0}\\", tfm);
 	}
 
     public static string rid_front_half(string toolset)
@@ -166,28 +166,12 @@ public static class gen
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
-	private static void write_nuspec_file_entry_basic(string src, string target, XmlWriter f)
+	private static void write_nuspec_file_entry(string src, string target, XmlWriter f)
 	{
 		f.WriteStartElement("file");
 		f.WriteAttributeString("src", src);
 		f.WriteAttributeString("target", target);
 		f.WriteEndElement(); // file
-	}
-
-	private static void write_nuspec_file_entry(string src, string target_env, XmlWriter f)
-	{
-		write_nuspec_file_entry_basic(
-			src,
-			projects.get_nuget_target_path(target_env),
-			f);
-	}
-
-	private static void write_nuspec_file_entry(List<string> a, string target_env, XmlWriter f)
-	{
-		foreach (string s in a)
-		{
-			write_nuspec_file_entry(s, target_env, f);
-		}
 	}
 
 	private static void write_empty(XmlWriter f, string top, string tfm)
@@ -272,7 +256,8 @@ public static class gen
 		public string config {get;set;}
 		public string dll {get;set;}
 		public string tfm {get;set;}
-		public string get_path(string dir)
+		public string target_path => projects.get_nuget_target_path(tfm);
+		public string get_src_path(string dir)
 		{
 			return Path.Combine(
 				dir,
@@ -381,9 +366,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.core")
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
@@ -548,9 +533,10 @@ public static class gen
 
 			f.WriteStartElement("files");
 
+			var tfm = config_cs.get_nuget_framework_name(cfg.target_env);
             write_nuspec_file_entry(
 					cfg.src,
-					cfg.target_env,
+					projects.get_nuget_target_path(tfm),
                     f
                     );
 
@@ -871,9 +857,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.ugly")
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
@@ -947,9 +933,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.winsqlite3")
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
@@ -1212,9 +1198,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.sqlcipher")
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
@@ -1289,9 +1275,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlite3")
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
@@ -1367,9 +1353,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.core") // TODO green
 				)
 			{
-				write_nuspec_file_entry_basic(
-						dll.get_path(dir_mt), 
-						dll.tfm,
+				write_nuspec_file_entry(
+						dll.get_src_path(dir_mt), 
+						dll.target_path,
 						f
 						);
 			}
