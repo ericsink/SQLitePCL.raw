@@ -22,25 +22,6 @@ using System.Xml;
 
 public static class projects
 {
-	public static List<string> items_e_sqlite3_win = new List<string>();
-
-	// This function is called by Main to initialize the project lists.
-	//
-	public static void init()
-	{
-		init_e_sqlite3_win();
-	}
-
-	private static void init_e_sqlite3_win()
-	{
-		items_e_sqlite3_win.Add("v110_xp");
-		items_e_sqlite3_win.Add("v110");
-		items_e_sqlite3_win.Add("v110_wp80");
-		items_e_sqlite3_win.Add("v120");
-		items_e_sqlite3_win.Add("v120_wp81");
-		items_e_sqlite3_win.Add("v140");
-	}
-
 	public static string get_nuget_target_path(string tfm)
 	{
 		return string.Format("lib\\{0}\\", tfm);
@@ -381,13 +362,13 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_e_sqlite3_win(string top, string cb_bin, string toolset)
+	private static void gen_nuspec_e_sqlite3_win(string top, string cb_bin)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = config_e_sqlite3_win.get_id(toolset);
+		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.windows");
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -424,40 +405,14 @@ public static class gen
 				f.WriteEndElement(); // file
 			};
 
-			switch (toolset)
-			{
-				case "v110_xp":
-					write_file_entry("v110", "xp", "x86", "win-x86");
-					write_file_entry("v110", "xp", "x64", "win-x64");
-					write_file_entry("v140", "plain", "arm", "win8-arm");
-					break;
-				case "v110":
-					write_file_entry("v110", "appcontainer", "arm", "win8-arm");
-					write_file_entry("v110", "appcontainer", "x64", "win8-x64");
-					write_file_entry("v110", "appcontainer", "x86", "win8-x86");
-					break;
-				case "v120":
-					write_file_entry("v120", "appcontainer", "arm", "win81-arm");
-					write_file_entry("v120", "appcontainer", "x64", "win81-x64");
-					write_file_entry("v120", "appcontainer", "x86", "win81-x86");
-					break;
-				case "v140":
-					write_file_entry("v140", "appcontainer", "arm", "win10-arm");
-					write_file_entry("v140", "appcontainer", "x64", "win10-x64");
-					write_file_entry("v140", "appcontainer", "x86", "win10-x86");
-					break;
-				case "v110_wp80":
-					write_file_entry("v110", "wp80", "arm", "wp80-arm");
-					write_file_entry("v110", "wp80", "x86", "wp80-x86");
-					break;
-				case "v120_wp81":
-					write_file_entry("v120", "wp81", "arm", "wpa81-arm");
-					write_file_entry("v120", "wp81", "x86", "wpa81-x86");
-					break;
-				default:
-					throw new NotImplementedException(string.Format("esqlite3 nuspec: {0}", toolset));
-			}
+			write_file_entry("v140", "plain", "x86", "win-x86");
+			write_file_entry("v140", "plain", "x64", "win-x64");
+			write_file_entry("v140", "plain", "arm", "win8-arm");
+			write_file_entry("v140", "appcontainer", "arm", "win10-arm");
+			write_file_entry("v140", "appcontainer", "x64", "win10-x64");
+			write_file_entry("v140", "appcontainer", "x86", "win10-x86");
 
+#if TODO // targets file
 			string tname;
 			switch (toolset) {
 				case "v110_xp":
@@ -485,7 +440,7 @@ public static class gen
                     }
 					break;
 			}
-
+#endif
 
 			f.WriteEndElement(); // files
 
@@ -698,6 +653,8 @@ public static class gen
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
+
+			// TODO use a helper function to write these file entries
 
 			string tname = string.Format("{0}.targets", id);
 			switch (plat) {
@@ -1719,8 +1676,6 @@ public static class gen
 
 	public static void Main(string[] args)
 	{
-		projects.init();
-
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		string top = Path.Combine(root, "bld");
 		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
@@ -1778,11 +1733,7 @@ public static class gen
 				);
 		}
 
-		foreach (var toolset in projects.items_e_sqlite3_win)
-		{
-			gen_nuspec_e_sqlite3_win(top, cb_bin, toolset);
-		}
-
+		gen_nuspec_e_sqlite3_win(top, cb_bin);
 		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "osx");
 		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "linux");
 
@@ -1807,6 +1758,7 @@ public static class gen
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
 
+			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.windows.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.osx.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.linux.nuspec", gen.ROOT_NAME);
 
@@ -1817,11 +1769,6 @@ public static class gen
 			foreach (var cfg in items_embedded)
 			{
 				tw.WriteLine("../nuget pack {0}.nuspec", cfg.id);
-			}
-			foreach (var toolset in projects.items_e_sqlite3_win)
-			{
-				string id = config_e_sqlite3_win.get_id(toolset);
-				tw.WriteLine("../nuget pack {0}.nuspec", id);
 			}
 			tw.WriteLine("ls *.nupkg");
 		}
@@ -1839,6 +1786,7 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
@@ -1849,11 +1797,6 @@ public static class gen
 			foreach (var cfg in items_embedded)
 			{
 				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", cfg.id, NUSPEC_VERSION, src);
-			}
-			foreach (var toolset in projects.items_e_sqlite3_win)
-			{
-				string id = config_e_sqlite3_win.get_id(toolset);
-				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
 			}
 		}
 	}
