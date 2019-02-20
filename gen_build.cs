@@ -22,12 +22,6 @@ using System.Xml;
 
 public static class projects
 {
-	// Each item in these Lists corresponds to a project file that will be
-	// generated.
-	//
-	public static List<config_csproj> items_csproj = new List<config_csproj>();
-
-	// nuspec files only
 	public static List<string> items_e_sqlite3_win = new List<string>();
 
 	// This function is called by Main to initialize the project lists.
@@ -168,60 +162,24 @@ public class config_embedded
 	public string target_env {get;set;}
 }
 
-public class config_csproj
-{
-    public string area;
-    public string name;
-	public string assemblyname;
-	public string env;
-    public string nuget_override_target_env;
-
-    public string get_name()
-    {
-        return name;
-    }
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
-
-	public void get_products(List<string> a)
-	{
-		add_product(a, string.Format("{0}.dll", assemblyname));
-	}
-
-    // TODO rm this func
-	public string get_id()
-	{
-		return get_name();
-	}
-
-}
-
 public static class gen
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
-	private static void gen_assemblyinfo(config_csproj cfg, string root, string top)
+	private static void write_nuspec_file_entry_basic(string src, string target, XmlWriter f)
 	{
-		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, string.Format("AssemblyInfo.{0}.cs", cfg.assemblyname))))
-		{
-			string cs1 = cs
-				.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + cfg.assemblyname + '"')
-				.Replace("REPLACE_WITH_ASSEMBLY_VERSION", '"' + ASSEMBLY_VERSION + '"')
-				;
-			tw.Write(cs1);
-		}
+		f.WriteStartElement("file");
+		f.WriteAttributeString("src", src);
+		f.WriteAttributeString("target", target);
+		f.WriteEndElement(); // file
 	}
 
 	private static void write_nuspec_file_entry(string src, string target_env, XmlWriter f)
 	{
-		f.WriteStartElement("file");
-		f.WriteAttributeString("src", src);
-		f.WriteAttributeString("target", projects.get_nuget_target_path(target_env));
-		f.WriteEndElement(); // file
+		write_nuspec_file_entry_basic(
+			src,
+			projects.get_nuget_target_path(target_env),
+			f);
 	}
 
 	private static void write_nuspec_file_entry(List<string> a, string target_env, XmlWriter f)
@@ -231,14 +189,6 @@ public static class gen
 			write_nuspec_file_entry(s, target_env, f);
 		}
 	}
-
-	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
-    {
-		var a = new List<string>();
-		cfg.get_products(a);
-
-		write_nuspec_file_entry(a, cfg.nuget_override_target_env ?? cfg.env, f);
-    }
 
 	private static void write_empty(XmlWriter f, string top, string tfm)
     {
@@ -316,7 +266,64 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-	private static void gen_nuspec_core(string top, string root)
+	class dll_info
+	{
+		public string project_subdir {get;set;}
+		public string config {get;set;}
+		public string dll {get;set;}
+		public string tfm {get;set;}
+		public string get_path(string dir)
+		{
+			return Path.Combine(
+				dir,
+				project_subdir,
+				"bin",
+				config,
+				tfm,
+				dll
+				);
+		}
+	}
+
+	static List<dll_info> find_dlls(
+		string dir
+		)
+	{
+		var a = new List<dll_info>();
+		foreach (var dir_project in Directory.GetDirectories(dir, "SQLitePCLRaw.*"))
+		{
+			var project_name = Path.GetFileName(dir_project);
+			var dir_bin = Path.Combine(dir_project, "bin");
+			if (Directory.Exists(dir_bin))
+			{
+				foreach (var dir_config in Directory.GetDirectories(dir_bin))
+				{
+					foreach (var dir_tfm in Directory.GetDirectories(dir_config))
+					{
+						foreach (var dll_path in Directory.GetFiles(dir_tfm, "*.dll"))
+						{
+							var config_name = Path.GetFileName(dir_config);
+							var target_name = Path.GetFileName(dir_tfm);
+							var dll_name = Path.GetFileName(dll_path);
+							System.Console.WriteLine("{0} - {1} - {2} - {3}", project_name, config_name, target_name, dll_name);
+							a.Add(
+								new dll_info
+								{
+									project_subdir = project_name,
+									config = config_name,
+									tfm = target_name,
+									dll = dll_name,
+								}
+								);
+						}
+					}
+				}
+			}
+		}
+		return a;
+	}
+
+	private static void gen_nuspec_core(string top, string root, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -369,15 +376,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.core")
+				)
 			{
-                if (cfg.area == "core")
-                {
-                    write_nuspec_file_entry(
-                            cfg, 
-                            f
-                            );
-                }
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
 			f.WriteEndElement(); // files
@@ -804,7 +812,7 @@ public static class gen
 		f.WriteEndElement();
 	}
 
-	private static void gen_nuspec_ugly(string top)
+	private static void gen_nuspec_ugly(string top, string dir_mt, List<dll_info> dlls)
 	{
 		string id = string.Format("{0}.ugly", gen.ROOT_NAME);
 
@@ -858,15 +866,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.ugly")
+				)
 			{
-				if (cfg.area == "ugly")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
 			f.WriteEndElement(); // files
@@ -877,7 +886,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_winsqlite3(string top)
+	private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt, List<dll_info> dlls)
     {
 		string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
 
@@ -933,15 +942,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.winsqlite3")
+				)
 			{
-				if (cfg.area == "batteries_winsqlite3" && cfg.env != "wp80")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
 			f.WriteEndElement(); // files
@@ -1107,7 +1117,7 @@ public static class gen
 		Zetetic,
 	}
 
-	private static void gen_nuspec_bundle_sqlcipher(string top, SQLCipherBundleKind kind)
+	private static void gen_nuspec_bundle_sqlcipher(string top, SQLCipherBundleKind kind, string dir_mt, List<dll_info> dlls)
     {
 		string id;
 		switch (kind)
@@ -1197,15 +1207,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.sqlcipher")
+				)
 			{
-				if (cfg.area == "batteries_sqlcipher")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
 			f.WriteEndElement(); // files
@@ -1216,7 +1227,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_e_sqlite3(string top)
+	private static void gen_nuspec_bundle_e_sqlite3(string top, string dir_mt, List<dll_info> dlls)
 	{
 		string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
 
@@ -1273,15 +1284,16 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlite3")
+				)
 			{
-				if (cfg.area == "batteries_e_sqlite3" && cfg.env != "wp80")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
 			f.WriteEndElement(); // files
@@ -1292,7 +1304,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_green(string top)
+	private static void gen_nuspec_bundle_green(string top, string dir_mt, List<dll_info> dlls)
 	{
 		string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
 
@@ -1349,16 +1361,19 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (config_csproj cfg in projects.items_csproj)
+#if not
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.core") // TODO green
+				)
 			{
-				if (cfg.area == "batteries_green" && cfg.env != "wp80")
-				{
-					write_nuspec_file_entry(
-							cfg, 
-							f
-							);
-				}
+				write_nuspec_file_entry_basic(
+						dll.get_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
+#endif
 
 			f.WriteEndElement(); // files
 
@@ -1761,28 +1776,23 @@ public static class gen
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		string top = Path.Combine(root, "bld");
 		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
+		string dir_mt = Path.Combine(root, "mt");
 
 		// --------------------------------
 		// create the bld directory
 		Directory.CreateDirectory(top);
 
 		// --------------------------------
-		// generate all the AssemblyInfo files
 
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			gen_assemblyinfo(cfg, root, top);
-		}
+		var dlls = find_dlls(dir_mt);
 
-		// --------------------------------
-
-        gen_nuspec_core(top, root);
-        gen_nuspec_ugly(top);
-        gen_nuspec_bundle_green(top);
-        gen_nuspec_bundle_e_sqlite3(top);
-        gen_nuspec_bundle_winsqlite3(top);
-        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
-        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
+        gen_nuspec_core(top, root, dir_mt, dlls);
+        gen_nuspec_ugly(top, dir_mt, dlls);
+        gen_nuspec_bundle_green(top, dir_mt, dlls);
+        gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
+        gen_nuspec_bundle_winsqlite3(top, dir_mt, dlls);
+        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial, dir_mt, dlls);
+        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic, dir_mt, dlls);
 
 		var items_embedded = new config_embedded[]
 		{
