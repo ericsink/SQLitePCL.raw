@@ -116,7 +116,7 @@ public static class config_cs
 	{
 		switch (env)
 		{
-			case "ios_unified":
+			case "ios":
 				return "Xamarin.iOS10";
 			case "macos":
 				return "Xamarin.Mac20";
@@ -342,7 +342,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_dependency_group(f, "android", DEP_NONE);
-            write_dependency_group(f, "ios_unified", DEP_NONE);
+            write_dependency_group(f, "ios", DEP_NONE);
             write_dependency_group(f, "macos", DEP_NONE);
             // TODO write_dependency_group(f, "watchos", DEP_NONE);
             write_dependency_group(f, "net35", DEP_NONE);
@@ -833,7 +833,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_dependency_group(f, "android", DEP_CORE);
-            write_dependency_group(f, "ios_unified", DEP_CORE);
+            write_dependency_group(f, "ios", DEP_CORE);
             write_dependency_group(f, "macos", DEP_CORE);
             // TODO write_dependency_group(f, "watchos", DEP_CORE);
             write_dependency_group(f, "net35", DEP_CORE);
@@ -967,7 +967,7 @@ public static class gen
         add_dep_core(f);
 
         if (
-                ((env_deps == "ios_unified") || (env_deps == "watchos"))
+                ((env_deps == "ios") || (env_deps == "watchos"))
                 && (what != "sqlite3")
            )
         {
@@ -1002,7 +1002,7 @@ public static class gen
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "ios_unified":
+                case "ios":
                 case "watchos":
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env_deps));
@@ -1052,7 +1052,7 @@ public static class gen
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "ios_unified":
+                case "ios":
                 case "watchos":
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}.static", gen.ROOT_NAME, env_deps));
@@ -1172,7 +1172,7 @@ public static class gen
 			}
 
             write_bundle_dependency_group(f, "android", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "ios_unified", "sqlcipher", lib_deps);
+            write_bundle_dependency_group(f, "ios", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "macos", "sqlcipher", lib_deps);
             // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "net35", "sqlcipher", lib_deps);
@@ -1248,7 +1248,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, "android", "e_sqlite3");
-            write_bundle_dependency_group(f, "ios_unified", "e_sqlite3");
+            write_bundle_dependency_group(f, "ios", "e_sqlite3");
             write_bundle_dependency_group(f, "macos", "e_sqlite3");
             // TODO write_bundle_dependency_group(f, "watchos", "e_sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
@@ -1325,7 +1325,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, "android", "e_sqlite3");
-            write_bundle_dependency_group(f, "ios_unified", "sqlite3");
+            write_bundle_dependency_group(f, "ios", "sqlite3");
             write_bundle_dependency_group(f, "macos", "e_sqlite3");
             // TODO write_bundle_dependency_group(f, "watchos", "sqlite3");
             write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
@@ -1792,7 +1792,7 @@ public static class gen
 			{
 				id = "SQLitePCLRaw.lib.e_sqlite3.ios",
 				src = "TODO",
-				target_env = "ios_unified"
+				target_env = "ios"
 			},
 			new config_embedded
 			{
@@ -1804,7 +1804,7 @@ public static class gen
 			{
 				id = "SQLitePCLRaw.lib.sqlcipher.ios",
 				src = "TODO",
-				target_env = "ios_unified"
+				target_env = "ios"
 			},
 		};
 
