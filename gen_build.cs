@@ -28,7 +28,7 @@ public static class projects
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
 	// nuspec files only
-	public static List<string> items_esqlite3 = new List<string>();
+	public static List<string> items_e_sqlite3_win = new List<string>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -39,31 +39,17 @@ public static class projects
 
 	private static void init_esqlite3()
 	{
-		items_esqlite3.Add("v110_xp");
-		items_esqlite3.Add("v110");
-		items_esqlite3.Add("v110_wp80");
-		items_esqlite3.Add("v120");
-		items_esqlite3.Add("v120_wp81");
-		items_esqlite3.Add("v140");
+		items_e_sqlite3_win.Add("v110_xp");
+		items_e_sqlite3_win.Add("v110");
+		items_e_sqlite3_win.Add("v110_wp80");
+		items_e_sqlite3_win.Add("v120");
+		items_e_sqlite3_win.Add("v120_wp81");
+		items_e_sqlite3_win.Add("v140");
 	}
 
 	public static string get_nuget_target_path(string env)
 	{
-		if (config_cs.env_is_portable(env))
-		{
-			return string.Format("lib\\{0}\\", projects.get_portable_nuget_target_string(env));
-		}
-		else if (env == "wp80")
-		{
-            // this goes into build/wp80/cpu, but the cpu isn't
-            // a param to this function, so the wp80 case has to
-            // be handled another way
-            throw new NotImplementedException();
-		}
-		else
-		{
-			return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
-		}
+		return string.Format("lib\\{0}\\", config_cs.get_nuget_framework_name(env));
 	}
 
     public static string rid_front_half(string toolset)
@@ -114,25 +100,6 @@ public static class projects
 	    }
     }
 
-	public static string get_portable_nuget_target_string(string env)
-	{
-		switch (env)
-		{
-			case "profile78":
-				return "portable-net45+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
-			case "profile259":
-				return "portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
-			case "profile111":
-				return "portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
-			case "profile158":
-				return "portable-net45+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
-			case "profile136":
-				return "portable-net40+sl5+netcore45+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10";
-			default:
-				throw new Exception(env);
-		}
-	}
-
 }
 
 public static class config_esqlite3
@@ -151,11 +118,6 @@ public static class config_esqlite3
 
 public static class config_cs
 {
-	public static bool env_is_portable(string env)
-	{
-		return env.StartsWith("profile");
-	}
-
 	public static string get_nuget_framework_name(string env)
 	{
 		switch (env)
@@ -190,10 +152,6 @@ public static class config_cs
 				return "netstandard1.1";
 			case "netstandard10":
 				return "netstandard1.0";
-            case "profile111":
-            case "profile136":
-            case "profile259":
-                return projects.get_portable_nuget_target_string(env);
             case "netcoreapp":
                 return "netcoreapp";
 			default:
@@ -203,16 +161,20 @@ public static class config_cs
 					
 }
 
+public class config_embedded
+{
+	public string id {get;set;}
+	public string src {get;set;}
+	public string target_env {get;set;}
+}
+
 public class config_csproj
 {
     public string area;
-    public string what; // TODO call this provider_name ?
     public string name;
-	//public string guid;
 	public string assemblyname;
 	public string env;
     public string nuget_override_target_env;
-	public string cpu = "anycpu";
 
     public string get_name()
     {
@@ -254,36 +216,29 @@ public static class gen
 		}
 	}
 
+	private static void write_nuspec_file_entry(string src, string target_env, XmlWriter f)
+	{
+		f.WriteStartElement("file");
+		f.WriteAttributeString("src", src);
+		f.WriteAttributeString("target", projects.get_nuget_target_path(target_env));
+		f.WriteEndElement(); // file
+	}
+
+	private static void write_nuspec_file_entry(List<string> a, string target_env, XmlWriter f)
+	{
+		foreach (string s in a)
+		{
+			write_nuspec_file_entry(s, target_env, f);
+		}
+	}
+
 	private static void write_nuspec_file_entry(config_csproj cfg, XmlWriter f)
     {
-        if (cfg.nuget_override_target_env != null)
-        {
-            write_nuspec_file_entry(cfg, cfg.nuget_override_target_env, f);
-        }
-        else
-        {
-            write_nuspec_file_entry(cfg, cfg.env, f);
-        }
-    }
-
-	private static void write_nuspec_file_entry(config_csproj cfg, string target_env, XmlWriter f)
-	{
-        // note that target_env may not be the same as cfg.env
-        // for example we may want to build with netstandard11
-        // settings, and then drop that assembly into more than
-        // one place in the nuget file
-		f.WriteComment(string.Format("{0}", cfg.get_name()));
 		var a = new List<string>();
 		cfg.get_products(a);
 
-		foreach (string s in a)
-		{
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", s);
-			f.WriteAttributeString("target", projects.get_nuget_target_path(target_env));
-			f.WriteEndElement(); // file
-		}
-	}
+		write_nuspec_file_entry(a, cfg.nuget_override_target_env ?? cfg.env, f);
+    }
 
 	private static void write_empty(XmlWriter f, string top, string tfm)
     {
@@ -329,20 +284,36 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-    private static void add_dep_ugly(XmlWriter f)
-    {
-        f.WriteStartElement("dependency");
-        f.WriteAttributeString("id", string.Format("{0}.ugly", gen.ROOT_NAME));
-        f.WriteAttributeString("version", NUSPEC_VERSION);
-        f.WriteEndElement(); // dependency
-    }
-
     private static void add_dep_netstandard(XmlWriter f)
     {
         f.WriteStartElement("dependency");
         f.WriteAttributeString("id", "NETStandard.Library");
         f.WriteAttributeString("version", "1.6.0");
         f.WriteEndElement(); // dependency
+    }
+
+    private const int DEP_NONE = 0;
+    private const int DEP_CORE = 1;
+
+    private static void write_dependency_group(XmlWriter f, string env, int flags)
+    {
+        f.WriteStartElement("group");
+        if (env != null)
+        {
+            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
+            switch (env)
+            {
+                case "uwp10":
+                case "netstandard11":
+                    add_dep_netstandard(f);
+                    break;
+            }
+        }
+        if ((flags & DEP_CORE) != 0)
+        {
+            add_dep_core(f);
+        }
+        f.WriteEndElement(); // group
     }
 
 	private static void gen_nuspec_core(string top, string root)
@@ -389,9 +360,6 @@ public static class gen
             write_dependency_group(f, "wpa81", DEP_NONE);
             write_dependency_group(f, "wp80", DEP_NONE);
             write_dependency_group(f, "uwp10", DEP_NONE);
-            write_dependency_group(f, "profile111", DEP_NONE);
-            write_dependency_group(f, "profile136", DEP_NONE);
-            write_dependency_group(f, "profile259", DEP_NONE);
             write_dependency_group(f, "netstandard11", DEP_NONE);
             write_dependency_group(f, null, DEP_NONE);
 
@@ -420,7 +388,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_esqlite3(string top, string cb_bin, string toolset)
+	private static void gen_nuspec_e_sqlite3_win(string top, string cb_bin, string toolset)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -534,13 +502,16 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_embedded(string top, config_csproj cfg)
+	private static void gen_nuspec_embedded(
+		string top,
+		config_embedded cfg
+		)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = cfg.get_id();
+		var id = cfg.id;
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -570,7 +541,8 @@ public static class gen
 			f.WriteStartElement("files");
 
             write_nuspec_file_entry(
-                    cfg, 
+					cfg.src,
+					cfg.target_env,
                     f
                     );
 
@@ -582,7 +554,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_e_sqlite3(string top, string cb_bin, string plat)
+	private static void gen_nuspec_e_sqlite3_otherplat(string top, string cb_bin, string plat)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -877,9 +849,6 @@ public static class gen
             write_dependency_group(f, "wpa81", DEP_CORE);
             write_dependency_group(f, "wp80", DEP_CORE);
             write_dependency_group(f, "uwp10", DEP_CORE);
-            write_dependency_group(f, "profile111", DEP_CORE);
-            write_dependency_group(f, "profile136", DEP_CORE);
-            write_dependency_group(f, "profile259", DEP_CORE);
             write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
@@ -982,35 +951,6 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
-
-    private const int DEP_NONE = 0;
-    private const int DEP_CORE = 1;
-    private const int DEP_UGLY = 2;
-
-    private static void write_dependency_group(XmlWriter f, string env, int flags)
-    {
-        f.WriteStartElement("group");
-        if (env != null)
-        {
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
-            switch (env)
-            {
-                case "uwp10":
-                case "netstandard11":
-                    add_dep_netstandard(f);
-                    break;
-            }
-        }
-        if ((flags & DEP_CORE) != 0)
-        {
-            add_dep_core(f);
-        }
-        if ((flags & DEP_UGLY) != 0)
-        {
-            add_dep_ugly(f);
-        }
-        f.WriteEndElement(); // group
-    }
 
     private static void write_bundle_dependency_group(XmlWriter f, string env, string what)
     {
@@ -1248,9 +1188,6 @@ public static class gen
             write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "uwp10", "sqlcipher");
             
-            write_dependency_group(f, "profile111", DEP_CORE);
-            write_dependency_group(f, "profile136", DEP_CORE);
-            write_dependency_group(f, "profile259", DEP_CORE);
             write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
@@ -1327,9 +1264,6 @@ public static class gen
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
             write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3", true);
             
-            write_dependency_group(f, "profile111", DEP_CORE);
-            write_dependency_group(f, "profile136", DEP_CORE);
-            write_dependency_group(f, "profile259", DEP_CORE);
             write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
@@ -1406,9 +1340,6 @@ public static class gen
             write_bundle_dependency_group(f, "net45", "e_sqlite3");
             write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3", true);
 
-            write_dependency_group(f, "profile111", DEP_CORE);
-            write_dependency_group(f, "profile136", DEP_CORE);
-            write_dependency_group(f, "profile259", DEP_CORE);
             write_dependency_group(f, "netstandard11", DEP_CORE);
             write_dependency_group(f, null, DEP_CORE);
 
@@ -1853,21 +1784,49 @@ public static class gen
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
 
-		foreach (config_csproj cfg in projects.items_csproj)
+		var items_embedded = new config_embedded[]
 		{
-            if (cfg.area == "lib")
-            {
-                gen_nuspec_embedded(top, cfg);
-            }
+			new config_embedded
+			{
+				id = "SQLitePCLRaw.lib.e_sqlite3.android",
+				src = "TODO",
+				target_env = "android"
+			},
+			new config_embedded
+			{
+				id = "SQLitePCLRaw.lib.e_sqlite3.ios",
+				src = "TODO",
+				target_env = "ios_unified"
+			},
+			new config_embedded
+			{
+				id = "SQLitePCLRaw.lib.sqlcipher.android",
+				src = "TODO",
+				target_env = "android"
+			},
+			new config_embedded
+			{
+				id = "SQLitePCLRaw.lib.sqlcipher.ios",
+				src = "TODO",
+				target_env = "ios_unified"
+			},
+		};
+
+		foreach (var cfg in items_embedded)
+		{
+			gen_nuspec_embedded(
+				top, 
+				cfg
+				);
 		}
 
-		foreach (var toolset in projects.items_esqlite3)
+		foreach (var toolset in projects.items_e_sqlite3_win)
 		{
-			gen_nuspec_esqlite3(top, cb_bin, toolset);
+			gen_nuspec_e_sqlite3_win(top, cb_bin, toolset);
 		}
 
-		gen_nuspec_e_sqlite3(top, cb_bin, "osx");
-		gen_nuspec_e_sqlite3(top, cb_bin, "linux");
+		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "osx");
+		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "linux");
 
 		gen_nuspec_sqlcipher(top, cb_bin, "windows");
 		gen_nuspec_sqlcipher(top, cb_bin, "osx");
@@ -1897,15 +1856,11 @@ public static class gen
 			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.osx.nuspec", gen.ROOT_NAME);
 			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.linux.nuspec", gen.ROOT_NAME);
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (var cfg in items_embedded)
 			{
-                if (cfg.area == "lib")
-                {
-                    string id = cfg.get_id();
-                    tw.WriteLine("../nuget pack {0}.nuspec", id);
-                }
+				tw.WriteLine("../nuget pack {0}.nuspec", cfg.id);
 			}
-			foreach (var toolset in projects.items_esqlite3)
+			foreach (var toolset in projects.items_e_sqlite3_win)
 			{
 				string id = config_esqlite3.get_id(toolset);
 				tw.WriteLine("../nuget pack {0}.nuspec", id);
@@ -1933,15 +1888,11 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			foreach (config_csproj cfg in projects.items_csproj)
+			foreach (var cfg in items_embedded)
 			{
-                if (cfg.area == "lib")
-                {
-                    string id = cfg.get_id();
-                    tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
-                }
+				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", cfg.id, NUSPEC_VERSION, src);
 			}
-			foreach (var toolset in projects.items_esqlite3)
+			foreach (var toolset in projects.items_e_sqlite3_win)
 			{
 				string id = config_esqlite3.get_id(toolset);
 				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
