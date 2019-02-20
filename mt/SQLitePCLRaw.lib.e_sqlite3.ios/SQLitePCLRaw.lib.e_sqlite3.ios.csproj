@@ -1,0 +1,21 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>xamarin.ios10</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\cs\embedded_init.cs" />
+    <Compile Include="imp_ios_internal.cs" />
+</ItemGroup>
+
+  <ItemGroup>
+    <ManifestResourceWithNoCulture Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\ios\e_sqlite3.a">
+      <Link>e_sqlite3.a</Link>
+    </ManifestResourceWithNoCulture>
+  </ItemGroup>
+
+</Project>
+
