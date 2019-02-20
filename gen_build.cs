@@ -34,10 +34,10 @@ public static class projects
 	//
 	public static void init()
 	{
-		init_esqlite3();
+		init_e_sqlite3_win();
 	}
 
-	private static void init_esqlite3()
+	private static void init_e_sqlite3_win()
 	{
 		items_e_sqlite3_win.Add("v110_xp");
 		items_e_sqlite3_win.Add("v110");
@@ -102,7 +102,7 @@ public static class projects
 
 }
 
-public static class config_esqlite3
+public static class config_e_sqlite3_win
 {
 	public static string get_name(string toolset)
 	{
@@ -394,7 +394,7 @@ public static class gen
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = config_esqlite3.get_id(toolset);
+		string id = config_e_sqlite3_win.get_id(toolset);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -1862,7 +1862,7 @@ public static class gen
 			}
 			foreach (var toolset in projects.items_e_sqlite3_win)
 			{
-				string id = config_esqlite3.get_id(toolset);
+				string id = config_e_sqlite3_win.get_id(toolset);
 				tw.WriteLine("../nuget pack {0}.nuspec", id);
 			}
 			tw.WriteLine("ls *.nupkg");
@@ -1894,7 +1894,7 @@ public static class gen
 			}
 			foreach (var toolset in projects.items_e_sqlite3_win)
 			{
-				string id = config_esqlite3.get_id(toolset);
+				string id = config_e_sqlite3_win.get_id(toolset);
 				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
 			}
 		}
