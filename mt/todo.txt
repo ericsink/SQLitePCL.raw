@@ -1,4 +1,6 @@
 
+chg cb build scripts to use VS 2017
+
 fix cb paths
 
 rename sqlcipher to e_sqlcipher
