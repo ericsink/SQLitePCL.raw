@@ -1,4 +1,8 @@
 
+refactor common stuff in gen_nuspec_*
+
+--
+
 chg cb build scripts to use VS 2017
 
 fix cb paths
@@ -12,7 +16,8 @@ restore those win32 set directory calls somewhere
 default load, so the setup call can be optional
 in many or most cases
 
-stuff in csproj so we can do dotnet pack
+stuff in csproj so we can do dotnet pack?
+probably not.
 
 AssemblyInfo stuff, version numbers
 
