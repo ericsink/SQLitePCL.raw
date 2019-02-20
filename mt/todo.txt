@@ -1,4 +1,6 @@
 
+rename sqlcipher to e_sqlcipher
+
 test on uwp
 
 restore those win32 set directory calls somewhere
