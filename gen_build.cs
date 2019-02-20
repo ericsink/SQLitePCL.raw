@@ -183,7 +183,6 @@ public static class projects
 
 public interface config_info
 {
-	string get_project_filename();
 	string get_name();
 }
 
@@ -213,11 +212,6 @@ public class config_esqlite3 : config_info
 		return string.Format("{0}.{1}", gen.ROOT_NAME, get_name());
 	}
 
-	public string get_project_filename()
-	{
-		throw new NotImplementedException();
-	}
-	
 }
 
 public static class config_cs
@@ -225,11 +219,6 @@ public static class config_cs
 	public static bool env_is_portable(string env)
 	{
 		return env.StartsWith("profile");
-	}
-
-	public static bool env_is_netstandard(string env)
-	{
-		return env.StartsWith("netstandard");
 	}
 
 	public static string get_nuget_framework_name(string env)
@@ -304,26 +293,11 @@ public class config_csproj : config_info
         }
     }
 
-	public bool is_portable()
-	{
-		return config_cs.env_is_portable(env);
-	}
-
-	public bool is_netstandard()
-	{
-		return config_cs.env_is_netstandard(env);
-	}
-
     public string get_name()
     {
         return name;
     }
 
-	public string get_project_filename()
-	{
-		return string.Format("{0}.csproj", name);
-	}
-	
 	public string fixed_cpu()
 	{
 		if (cpu == "anycpu")
@@ -690,62 +664,6 @@ public static class gen
                     cfg, 
                     f
                     );
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuspec_provider(string top, string root, config_csproj cfg)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string id = cfg.get_id();
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			f.WriteAttributeString("minClientVersion", "2.8.1");
-
-			f.WriteElementString("id", id);
-			f.WriteElementString("version", NUSPEC_VERSION);
-			f.WriteElementString("title", id);
-			string desc = string.Format("A SQLitePCL.raw 'provider' bridges the gap between SQLitePCLRaw.core and a particular instance of the native SQLite library.  Install this package in your app project and call SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_{0}());", cfg.what);
-            desc = desc + "  Depending on the platform, you may also need to add one of the SQLitePCLRaw.lib.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.";
-			f.WriteElementString("description", desc);
-			f.WriteElementString("authors", "Eric Sink, et al");
-			f.WriteElementString("owners", "Eric Sink");
-			f.WriteElementString("copyright", "Copyright 2014-2019 Zumero, LLC");
-			f.WriteElementString("requireLicenseAcceptance", "false");
-			write_license(f);
-			f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-			f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-			f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-			f.WriteElementString("tags", "sqlite pcl database monotouch ios monodroid android wp8 wpa");
-
-			f.WriteStartElement("dependencies");
-
-            write_dependency_group(f, cfg.env, DEP_CORE);
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			write_nuspec_file_entry(
-					cfg, 
-					f
-					);
 
 			f.WriteEndElement(); // files
 
@@ -2033,14 +1951,6 @@ public static class gen
 		Directory.CreateDirectory(top);
 
 		// --------------------------------
-		// assign all the guids
-
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			cfg.guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-		}
-
-		// --------------------------------
 		// generate all the AssemblyInfo files
 
 		foreach (config_csproj cfg in projects.items_csproj)
@@ -2057,14 +1967,6 @@ public static class gen
         gen_nuspec_bundle_winsqlite3(top);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic);
-
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-            if (cfg.area == "provider" && cfg.env != "wp80")
-            {
-                gen_nuspec_provider(top, root, cfg);
-            }
-		}
 
 		foreach (config_csproj cfg in projects.items_csproj)
 		{
@@ -2112,14 +2014,6 @@ public static class gen
 
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
-                if (cfg.area == "provider" && cfg.env != "wp80")
-                {
-                    string id = cfg.get_id();
-                    tw.WriteLine("../nuget pack {0}.nuspec", id);
-                }
-			}
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
                 if (cfg.area == "lib")
                 {
                     string id = cfg.get_id();
@@ -2154,14 +2048,6 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			foreach (config_csproj cfg in projects.items_csproj)
-			{
-                if (cfg.area == "provider" && cfg.env != "wp80")
-                {
-                    string id = cfg.get_id();
-                    tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
-                }
-			}
 			foreach (config_csproj cfg in projects.items_csproj)
 			{
                 if (cfg.area == "lib")
