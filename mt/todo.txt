@@ -1,6 +1,19 @@
 
 test on uwp
 
+restore those win32 set directory calls somewhere
+
+default load, so the setup call can be optional
+in many or most cases
+
+stuff in csproj so we can do dotnet pack
+
+AssemblyInfo stuff, version numbers
+
+lib and bundle packages
+
+--
+
 missing test for sqlite3_exec with a hook.
 it would probably crash, since the implementation
 doesn't gc protect the delegate?  or is this one
@@ -18,12 +31,7 @@ DI for the utf8 stuff?  #202
 
 debug vs release builds?
 
-default load, so the setup call can be optional
-in many or most cases
-
 more xunit test cases
-
-restore those win32 set directory calls somewhere
 
 goal is to have no ifdefs in core
 
@@ -33,10 +41,6 @@ version of gen_build which only does the nugets
 for packaging e_sqlite and sqlcipher builds
 
 chg to SourceGear name?
-
-stuff in csproj so we can do dotnet pack
-
-AssemblyInfo stuff, version numbers
 
 instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?
