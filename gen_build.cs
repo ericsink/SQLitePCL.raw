@@ -111,57 +111,6 @@ public static class projects
 
     private static void init_csproj()
     {
-        items_csproj.Add(config_csproj.create_core("net35"));
-        items_csproj.Add(config_csproj.create_core("net40"));
-        items_csproj.Add(config_csproj.create_core("net45"));
-        items_csproj.Add(config_csproj.create_core("ios_unified"));
-        items_csproj.Add(config_csproj.create_core("macos"));
-        // TODO items_csproj.Add(config_csproj.create_core("watchos"));
-        items_csproj.Add(config_csproj.create_core("android"));
-        items_csproj.Add(config_csproj.create_core("win8"));
-        items_csproj.Add(config_csproj.create_core("win81"));
-        items_csproj.Add(config_csproj.create_core("wpa81"));
-        items_csproj.Add(config_csproj.create_core("uwp10"));
-        items_csproj.Add(config_csproj.create_core("profile111"));
-        items_csproj.Add(config_csproj.create_core("profile136"));
-        items_csproj.Add(config_csproj.create_core("profile259"));
-        items_csproj.Add(config_csproj.create_core("netstandard10"));
-        items_csproj.Add(config_csproj.create_core("netstandard11"));
-
-        items_csproj.Add(config_csproj.create_provider("sqlite3_xamarin", "android"));
-
-        items_csproj.Add(config_csproj.create_provider("winsqlite3", "uwp10"));
-        items_csproj.Add(config_csproj.create_provider("winsqlite3", "net45"));
-
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "netstandard11"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "net35"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "net40"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "net45"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "ios_unified"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "macos"));
-        // TODO items_csproj.Add(config_csproj.create_provider("sqlite3", "watchos"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "android")); // bad idea
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "win8"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "win81"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("sqlite3", "uwp10"));
-
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "netstandard11"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net35"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net40"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "net45"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "android"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win8"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "win81"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "uwp10"));
-        items_csproj.Add(config_csproj.create_provider("e_sqlite3", "macos"));
-        // ios would only make sense here with dylibs
-        //items_csproj.Add(config_csproj.create_provider("e_sqlite3", "ios_unified"));
-
-        items_csproj.Add(config_csproj.create_provider("internal", "ios_unified"));
-        // TODO items_csproj.Add(config_csproj.create_provider("internal", "watchos"));
-
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "android"));
         items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_unified"));
         // TODO items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "watchos"));
@@ -169,37 +118,6 @@ public static class projects
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
         items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
 
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "netstandard11"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net35"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net40"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "net45"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "android"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "win8"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "win81"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "wpa81"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "uwp10"));
-        items_csproj.Add(config_csproj.create_provider("sqlcipher", "macos"));
-        // ios would only make sense here with dylibs
-        //items_csproj.Add(config_csproj.create_provider("sqlcipher", "ios_unified"));
-
-        items_csproj.Add(config_csproj.create_ugly("net35"));
-        items_csproj.Add(config_csproj.create_ugly("net40"));
-        items_csproj.Add(config_csproj.create_ugly("net45"));
-        items_csproj.Add(config_csproj.create_ugly("android"));
-        items_csproj.Add(config_csproj.create_ugly("ios_unified"));
-        items_csproj.Add(config_csproj.create_ugly("macos"));
-        // TODO items_csproj.Add(config_csproj.create_ugly("watchos"));
-        items_csproj.Add(config_csproj.create_ugly("win8"));
-        items_csproj.Add(config_csproj.create_ugly("win81"));
-        items_csproj.Add(config_csproj.create_ugly("wpa81"));
-        items_csproj.Add(config_csproj.create_ugly("uwp10"));
-        items_csproj.Add(config_csproj.create_ugly("profile111"));
-        items_csproj.Add(config_csproj.create_ugly("profile136"));
-        items_csproj.Add(config_csproj.create_ugly("profile259"));
-        //items_csproj.Add(config_csproj.create_ugly("netstandard10"));
-        items_csproj.Add(config_csproj.create_ugly("netstandard11"));
-
-        init_bundles(1);
         init_bundles(2);
     }
 
@@ -333,57 +251,6 @@ public static class projects
 			}
 		}
         return null;
-    }
-
-	public static config_csproj find_core(string env)
-	{
-        config_csproj cfg = find("core", env);
-        if (cfg == null)
-        {
-            // TODO need to find a core that is compatible with env
-            // TODO this should be smarter
-            switch (env)
-            {
-                case "net40":
-                    cfg = find("core", "profile136");
-                    break;
-                case "net45":
-                    cfg = find("core", "profile111");
-                    break;
-                case "win81":
-                    cfg = find("core", "profile111");
-                    break;
-                default:
-                    cfg = find("core", "netstandard11");
-                    //cfg = find("core", "profile259");
-                    break;
-            }
-        }
-        if (cfg != null)
-        {
-            return cfg;
-        }
-		throw new Exception(string.Format("core not found for {0}", env));
-	}
-
-    public static config_csproj find_provider(string what, string env, string cpu)
-    {
-        config_csproj cfg = find("provider", what, env, cpu);
-        if (cfg == null)
-        {
-            switch (env)
-            {
-                default:
-                    cfg = find("provider", what, "netstandard11", "anycpu");
-                    //cfg = find("provider", what, "profile259", "anycpu");
-                    break;
-            }
-        }
-        if (cfg != null)
-        {
-            return cfg;
-        }
-		throw new Exception(string.Format("provider not found for {0}/{1}", what, env));
     }
 
     public static config_csproj find_name(string name)
@@ -595,8 +462,6 @@ public class config_csproj : config_info
 	public List<string> runtimes = new List<string>();
 	public Dictionary<string,string> deps = new Dictionary<string,string>();
     public bool ref_core;
-    public bool ref_ugly;
-    public string ref_provider;
     public string ref_embedded;
 
     string root_name
@@ -605,22 +470,6 @@ public class config_csproj : config_info
         {
             return gen.ROOT_NAME;
         }
-    }
-
-    public static config_csproj create_core(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "core";
-        cfg.name = string.Format("{0}.core.{1}", cfg.root_name, env);
-        cfg.assemblyname = string.Format("{0}.core", cfg.root_name);
-        cfg.env = env;
-
-        cfg.csfiles_src.Add("raw.cs");
-        cfg.csfiles_src.Add("intptrs.cs");
-        cfg.csfiles_src.Add("isqlite3.cs");
-        cfg.csfiles_src.Add("sqlite3_bait.cs");
-
-        return cfg;
     }
 
     public static config_csproj create_embedded(string what, string env)
@@ -679,82 +528,6 @@ public class config_csproj : config_info
         return cfg;
     }
 
-    // TODO 'what' should be the name used in DllImport
-    public static config_csproj create_provider(string what, string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "provider";
-        cfg.what = what;
-        cfg.name = string.Format("{0}.provider.{1}.{2}", cfg.root_name, what, env);
-        cfg.assemblyname = string.Format("{0}.provider.{1}", cfg.root_name, what);
-        cfg.env = env;
-        cfg.csfiles_src.Add("util.cs");
-        cfg.ref_core = true;
-        switch (cfg.env)
-        {
-            case "net35":
-            case "net40":
-            case "net45":
-                cfg.defines.Add("PRELOAD_FROM_ARCH_DIRECTORY");
-                break;
-        }
-        switch (cfg.env)
-        {
-            case "ios_unified":
-            case "watchos":
-                switch (what)
-                {
-                    case "sqlite3":
-                        cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
-                        break;
-                    case "internal":
-                        cfg.csfiles_bld.Add("pinvoke_ios_internal.cs");
-                        break;
-                    default:
-                        // TODO e_sqlite3 and custom_sqlite3 could be supported here,
-                        // but without dylibs, they don't make much sense.
-                        throw new Exception(what);
-                }
-                break;
-            default:
-                switch (what)
-                {
-                    case "sqlite3":
-                        cfg.csfiles_bld.Add("pinvoke_sqlite3.cs");
-                        break;
-                    case "winsqlite3":
-                        cfg.csfiles_bld.Add("pinvoke_winsqlite3.cs");
-                        break;
-                    case "sqlite3_xamarin":
-                        cfg.csfiles_bld.Add("pinvoke_sqlite3_xamarin.cs");
-                        break;
-                    case "e_sqlite3":
-                        cfg.csfiles_bld.Add("pinvoke_e_sqlite3.cs");
-                        break;
-                    case "sqlcipher":
-                        cfg.csfiles_bld.Add("pinvoke_sqlcipher.cs");
-                        break;
-                    default:
-                        throw new Exception(what);
-                }
-                break;
-        }
-
-        return cfg;
-    }
-
-    public static config_csproj create_ugly(string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "ugly";
-        cfg.name = string.Format("{0}.ugly.{1}", cfg.root_name, env);
-        cfg.assemblyname = string.Format("{0}.ugly", cfg.root_name);
-        cfg.env = env;
-        cfg.csfiles_src.Add("ugly.cs");
-        cfg.ref_core = true;
-        return cfg;
-    }
-
     public static config_csproj create_batteries(string area, int ver, string env, string what)
     {
         return create_batteries(area, ver, env, what, null);
@@ -787,7 +560,6 @@ public class config_csproj : config_info
         set_batteries_version(cfg, ver);
         cfg.defines.Add("PROVIDER_" + ((what!=null)?what:"none"));
         cfg.ref_core = true;
-        cfg.ref_provider = what;
         return cfg;
     }
 
@@ -801,7 +573,6 @@ public class config_csproj : config_info
         cfg.defines.Add("PROVIDER_internal");
         cfg.defines.Add("EMBEDDED_INIT");
         cfg.ref_core = true;
-        cfg.ref_provider = "internal";
         cfg.ref_embedded = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, lib, env, "static");
         return cfg;
     }
@@ -1542,6 +1313,7 @@ public static class gen
 
             if (cfg.ref_core)
             {
+#if TODO // fix ref to new core lib
                 f.WriteStartElement("ItemGroup");
 
                 f.WriteStartElement("ProjectReference");
@@ -1555,40 +1327,7 @@ public static class gen
                 f.WriteEndElement(); // ProjectReference
 
                 f.WriteEndElement(); // ItemGroup
-            }
-
-            if (cfg.ref_ugly)
-            {
-                f.WriteStartElement("ItemGroup");
-
-                f.WriteStartElement("ProjectReference");
-                {
-                    config_csproj other = projects.find_ugly(cfg.env);
-                    f.WriteAttributeString("Include", other.get_project_path(top));
-                    f.WriteElementString("Project", other.guid);
-                    f.WriteElementString("Name", other.get_name());
-                    //f.WriteElementString("Private", "true");
-                }
-                f.WriteEndElement(); // ProjectReference
-
-                f.WriteEndElement(); // ItemGroup
-            }
-
-            if (cfg.ref_provider != null)
-            {
-                f.WriteStartElement("ItemGroup");
-
-                f.WriteStartElement("ProjectReference");
-                {
-                    config_csproj other = projects.find_provider(cfg.ref_provider, cfg.env, cfg.cpu);
-                    f.WriteAttributeString("Include", other.get_project_path(top));
-                    f.WriteElementString("Project", other.guid);
-                    f.WriteElementString("Name", other.get_name());
-                    //f.WriteElementString("Private", "true");
-                }
-                f.WriteEndElement(); // ProjectReference
-
-                f.WriteEndElement(); // ItemGroup
+#endif
             }
 
             if (cfg.ref_embedded != null)
@@ -1754,10 +1493,6 @@ public static class gen
 						);
                 // TODO project dependency
                 if (cfg.ref_core)
-                {
-                    // TODO
-                }
-                if (cfg.ref_provider != null)
                 {
                     // TODO
                 }
@@ -3449,62 +3184,6 @@ public static class gen
 		// --------------------------------
 		// create the bld directory
 		Directory.CreateDirectory(top);
-
-		string cs_pinvoke = File.ReadAllText(Path.Combine(root, "src/cs/sqlite3_pinvoke.cs"));
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_e_sqlite3.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "e_sqlite3")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "e_sqlite3")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlcipher.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlcipher")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlcipher")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_winsqlite3.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "winsqlite3")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "winsqlite3")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "StdCall")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_sqlite3_xamarin.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "sqlite3_xamarin")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "sqlite3_xamarin")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pinvoke_ios_internal.cs")))
-		{
-			string cs = cs_pinvoke
-                .Replace("REPLACE_WITH_SIMPLE_DLL_NAME", "internal")
-                .Replace("REPLACE_WITH_ACTUAL_DLL_NAME", "__Internal")
-                .Replace("REPLACE_WITH_CALLING_CONVENTION", "Cdecl")
-                ;
-			tw.Write(cs);
-		}
 
 		// --------------------------------
 		// assign all the guids

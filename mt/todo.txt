@@ -12,6 +12,9 @@ AssemblyInfo stuff, version numbers
 
 lib and bundle packages
 
+preload from arch directory stuff.  subdirectory
+by cpu arch.
+
 --
 
 missing test for sqlite3_exec with a hook.
