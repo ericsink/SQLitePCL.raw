@@ -133,68 +133,11 @@ public static class projects
 		}
 	}
 
-	public static config_csproj find(string area, string env)
-    {
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			if (cfg.area == area && cfg.env == env)
-			{
-				return cfg;
-			}
-		}
-        return null;
-    }
-
-	public static config_csproj find(string name)
-    {
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			if (cfg.name == name)
-			{
-				return cfg;
-			}
-		}
-        return null;
-    }
-
-	public static config_csproj find(string area, string what, string env, string cpu)
-    {
-		foreach (config_csproj cfg in projects.items_csproj)
-		{
-			if (cfg.area == area && cfg.what == what && cfg.env == env && cfg.cpu == cpu)
-			{
-				return cfg;
-			}
-		}
-        return null;
-    }
-
-    public static config_csproj find_name(string name)
-    {
-        config_csproj cfg = find(name);
-        if (cfg != null)
-        {
-            return cfg;
-        }
-		throw new Exception(string.Format("csproj not found {0}", name));
-    }
-
 }
 
-public interface config_info
+public class config_esqlite3
 {
-	string get_name();
-}
-
-public class config_esqlite3 : config_info
-{
-	public string guid;
 	public string toolset;
-
-	private void add_product(List<string> a, string s)
-	{
-		a.Add(Path.Combine(get_name(), "bin", "release", s));
-	}
 
 	public string get_name()
 	{
@@ -268,47 +211,21 @@ public static class config_cs
 					
 }
 
-public class config_csproj : config_info
+public class config_csproj
 {
     public string area;
     public string what; // TODO call this provider_name ?
     public string name;
-	public string guid;
+	//public string guid;
 	public string assemblyname;
 	public string env;
     public string nuget_override_target_env;
-    public bool CopyNuGetImplementations;
 	public string cpu = "anycpu";
-	public List<string> csfiles_src = new List<string>();
-	public List<string> csfiles_bld = new List<string>();
-	public List<string> defines = new List<string>();
-	public List<string> runtimes = new List<string>();
-	public Dictionary<string,string> deps = new Dictionary<string,string>();
-
-    string root_name
-    {
-        get
-        {
-            return gen.ROOT_NAME;
-        }
-    }
 
     public string get_name()
     {
         return name;
     }
-
-	public string fixed_cpu()
-	{
-		if (cpu == "anycpu")
-		{
-			return "Any CPU";
-		}
-		else
-		{
-			return cpu;
-		}
-	}
 
 	private void add_product(List<string> a, string s)
 	{
@@ -1911,30 +1828,6 @@ public static class gen
         {
             string cs1 = txt.Replace(oldstr, newstr);
             tw.Write(cs1);
-        }
-    }
-
-    static void fix_version(string path)
-    {
-        replace(path, "1.0.0-PLACEHOLDER", NUSPEC_VERSION);
-    }
-
-    static void fix_guid(string path, string guid)
-    {
-        var a = File.ReadAllLines(path);
-        using (TextWriter tw = new StreamWriter(path))
-        {
-            foreach (var s in a)
-            {
-                if (s.Contains("ProjectGuid"))
-                {
-                    tw.WriteLine("<ProjectGuid>{0}</ProjectGuid>", guid);
-                }
-                else
-                {
-                    tw.WriteLine(s);
-                }
-            }
         }
     }
 
