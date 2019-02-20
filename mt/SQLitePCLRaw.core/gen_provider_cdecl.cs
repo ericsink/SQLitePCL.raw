@@ -1207,10 +1207,8 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-		static void Load<T>(IGetFunctionPtr gf, out T del)
-			where T : class
+		static Delegate Load(IGetFunctionPtr gf, Type delegate_type)
 		{
-			var delegate_type = typeof(T);
 			// TODO check here to make sure the type is a delegate of some kind?
 			// just in case we introduce other properties later?
 			var name = delegate_type.Name;
@@ -1226,145 +1224,144 @@ namespace SQLitePCL
 			var fn_ptr = gf.GetFunctionPtr(name);
 			if (fn_ptr != IntPtr.Zero)
 			{
-				var d = Marshal.GetDelegateForFunctionPointer<T>(fn_ptr);
-				del = d;
+				var d = Marshal.GetDelegateForFunctionPointer(fn_ptr, delegate_type);
+				return d;
 			}
 			else
 			{
 				//System.Console.WriteLine("Warning: {0} not found", name);
-				del = null;
+				return null;
 			}
 		}
 
 		static public void Setup(IGetFunctionPtr gf)
 		{
-			Load(gf, out sqlite3_close);
-			Load(gf, out sqlite3_close_v2);
-			Load(gf, out sqlite3_enable_shared_cache);
-			Load(gf, out sqlite3_interrupt);
-			Load(gf, out sqlite3_finalize);
-			Load(gf, out sqlite3_reset);
-			Load(gf, out sqlite3_clear_bindings);
-			Load(gf, out sqlite3_stmt_status);
-			Load(gf, out sqlite3_bind_parameter_name);
-			Load(gf, out sqlite3_column_database_name);
-			Load(gf, out sqlite3_column_decltype);
-			Load(gf, out sqlite3_column_name);
-			Load(gf, out sqlite3_column_origin_name);
-			Load(gf, out sqlite3_column_table_name);
-			Load(gf, out sqlite3_column_text);
-			Load(gf, out sqlite3_errmsg);
-			Load(gf, out sqlite3_db_readonly);
-			Load(gf, out sqlite3_db_filename);
-			Load(gf, out sqlite3_prepare);
-			Load(gf, out sqlite3_prepare_v2);
-			Load(gf, out sqlite3_db_status);
-			Load(gf, out sqlite3_complete);
-			Load(gf, out sqlite3_compileoption_used);
-			Load(gf, out sqlite3_compileoption_get);
-			Load(gf, out sqlite3_table_column_metadata);
-			Load(gf, out sqlite3_value_text);
-			Load(gf, out sqlite3_enable_load_extension);
-			Load(gf, out sqlite3_load_extension);
-			Load(gf, out sqlite3_initialize);
-			Load(gf, out sqlite3_shutdown);
-			Load(gf, out sqlite3_libversion);
-			Load(gf, out sqlite3_libversion_number);
-			Load(gf, out sqlite3_threadsafe);
-			Load(gf, out sqlite3_sourceid);
-			Load(gf, out sqlite3_malloc);
-			Load(gf, out sqlite3_realloc);
-			Load(gf, out sqlite3_free);
-			Load(gf, out sqlite3_open);
-			Load(gf, out sqlite3_open_v2);
-			Load(gf, out sqlite3_vfs_find);
-			Load(gf, out sqlite3_last_insert_rowid);
-			Load(gf, out sqlite3_changes);
-			Load(gf, out sqlite3_total_changes);
-			Load(gf, out sqlite3_memory_used);
-			Load(gf, out sqlite3_memory_highwater);
-			Load(gf, out sqlite3_status);
-			Load(gf, out sqlite3_busy_timeout);
-			Load(gf, out sqlite3_bind_blob);
-			Load(gf, out sqlite3_bind_zeroblob);
-			Load(gf, out sqlite3_bind_double);
-			Load(gf, out sqlite3_bind_int);
-			Load(gf, out sqlite3_bind_int64);
-			Load(gf, out sqlite3_bind_null);
-			Load(gf, out sqlite3_bind_text);
-			Load(gf, out sqlite3_bind_parameter_count);
-			Load(gf, out sqlite3_bind_parameter_index);
-			Load(gf, out sqlite3_column_count);
-			Load(gf, out sqlite3_data_count);
-			Load(gf, out sqlite3_step);
-			Load(gf, out sqlite3_sql);
-			Load(gf, out sqlite3_column_double);
-			Load(gf, out sqlite3_column_int);
-			Load(gf, out sqlite3_column_int64);
-			Load(gf, out sqlite3_column_blob);
-			Load(gf, out sqlite3_column_bytes);
-			Load(gf, out sqlite3_column_type);
-			Load(gf, out sqlite3_aggregate_count);
-			Load(gf, out sqlite3_value_blob);
-			Load(gf, out sqlite3_value_bytes);
-			Load(gf, out sqlite3_value_double);
-			Load(gf, out sqlite3_value_int);
-			Load(gf, out sqlite3_value_int64);
-			Load(gf, out sqlite3_value_type);
-			Load(gf, out sqlite3_user_data);
-			Load(gf, out sqlite3_result_blob);
-			Load(gf, out sqlite3_result_double);
-			Load(gf, out sqlite3_result_error);
-			Load(gf, out sqlite3_result_int);
-			Load(gf, out sqlite3_result_int64);
-			Load(gf, out sqlite3_result_null);
-			Load(gf, out sqlite3_result_text);
-			Load(gf, out sqlite3_result_zeroblob);
-			// TODO sqlite3_result_value 
-			Load(gf, out sqlite3_result_error_toobig);
-			Load(gf, out sqlite3_result_error_nomem);
-			Load(gf, out sqlite3_result_error_code);
-			Load(gf, out sqlite3_aggregate_context);
-			Load(gf, out sqlite3_key);
-			Load(gf, out sqlite3_rekey);
-			Load(gf, out sqlite3_config_none);
-			Load(gf, out sqlite3_config_int);
-			Load(gf, out sqlite3_config_log);
-			Load(gf, out sqlite3_create_function_v2);
-			Load(gf, out sqlite3_create_collation);
-			Load(gf, out sqlite3_update_hook);
-			Load(gf, out sqlite3_commit_hook);
-			Load(gf, out sqlite3_profile);
-			Load(gf, out sqlite3_progress_handler);
-			Load(gf, out sqlite3_trace);
-			Load(gf, out sqlite3_rollback_hook);
-			Load(gf, out sqlite3_db_handle);
-			Load(gf, out sqlite3_next_stmt);
-			Load(gf, out sqlite3_stmt_busy);
-			Load(gf, out sqlite3_stmt_readonly);
-			Load(gf, out sqlite3_exec);
-			Load(gf, out sqlite3_get_autocommit);
-			Load(gf, out sqlite3_extended_result_codes);
-			Load(gf, out sqlite3_errcode);
-			Load(gf, out sqlite3_extended_errcode);
-			Load(gf, out sqlite3_errstr);
-			Load(gf, out sqlite3_log);
-			Load(gf, out sqlite3_file_control);
-			Load(gf, out sqlite3_backup_init);
-			Load(gf, out sqlite3_backup_step);
-			Load(gf, out sqlite3_backup_finish);
-			Load(gf, out sqlite3_backup_remaining);
-			Load(gf, out sqlite3_backup_pagecount);
-			Load(gf, out sqlite3_blob_open);
-			Load(gf, out sqlite3_blob_write);
-			Load(gf, out sqlite3_blob_read);
-			Load(gf, out sqlite3_blob_bytes);
-			Load(gf, out sqlite3_blob_close);
-			Load(gf, out sqlite3_wal_autocheckpoint);
-			Load(gf, out sqlite3_wal_checkpoint);
-			Load(gf, out sqlite3_wal_checkpoint_v2);
-			Load(gf, out sqlite3_set_authorizer);
-			Load(gf, out sqlite3_win32_set_directory);
+			sqlite3_close = (MyDelegateTypes.sqlite3_close) Load(gf, typeof(MyDelegateTypes.sqlite3_close));
+			sqlite3_close_v2 = (MyDelegateTypes.sqlite3_close_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_close_v2));
+			sqlite3_enable_shared_cache = (MyDelegateTypes.sqlite3_enable_shared_cache) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_shared_cache));
+			sqlite3_interrupt = (MyDelegateTypes.sqlite3_interrupt) Load(gf, typeof(MyDelegateTypes.sqlite3_interrupt));
+			sqlite3_finalize = (MyDelegateTypes.sqlite3_finalize) Load(gf, typeof(MyDelegateTypes.sqlite3_finalize));
+			sqlite3_reset = (MyDelegateTypes.sqlite3_reset) Load(gf, typeof(MyDelegateTypes.sqlite3_reset));
+			sqlite3_clear_bindings = (MyDelegateTypes.sqlite3_clear_bindings) Load(gf, typeof(MyDelegateTypes.sqlite3_clear_bindings));
+			sqlite3_stmt_status = (MyDelegateTypes.sqlite3_stmt_status) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_status));
+			sqlite3_bind_parameter_name = (MyDelegateTypes.sqlite3_bind_parameter_name) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_name));
+			sqlite3_column_database_name = (MyDelegateTypes.sqlite3_column_database_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_database_name));
+			sqlite3_column_decltype = (MyDelegateTypes.sqlite3_column_decltype) Load(gf, typeof(MyDelegateTypes.sqlite3_column_decltype));
+			sqlite3_column_name = (MyDelegateTypes.sqlite3_column_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_name));
+			sqlite3_column_origin_name = (MyDelegateTypes.sqlite3_column_origin_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_origin_name));
+			sqlite3_column_table_name = (MyDelegateTypes.sqlite3_column_table_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_table_name));
+			sqlite3_column_text = (MyDelegateTypes.sqlite3_column_text) Load(gf, typeof(MyDelegateTypes.sqlite3_column_text));
+			sqlite3_errmsg = (MyDelegateTypes.sqlite3_errmsg) Load(gf, typeof(MyDelegateTypes.sqlite3_errmsg));
+			sqlite3_db_readonly = (MyDelegateTypes.sqlite3_db_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_db_readonly));
+			sqlite3_db_filename = (MyDelegateTypes.sqlite3_db_filename) Load(gf, typeof(MyDelegateTypes.sqlite3_db_filename));
+			sqlite3_prepare = (MyDelegateTypes.sqlite3_prepare) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare));
+			sqlite3_prepare_v2 = (MyDelegateTypes.sqlite3_prepare_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v2));
+			sqlite3_db_status = (MyDelegateTypes.sqlite3_db_status) Load(gf, typeof(MyDelegateTypes.sqlite3_db_status));
+			sqlite3_complete = (MyDelegateTypes.sqlite3_complete) Load(gf, typeof(MyDelegateTypes.sqlite3_complete));
+			sqlite3_compileoption_used = (MyDelegateTypes.sqlite3_compileoption_used) Load(gf, typeof(MyDelegateTypes.sqlite3_compileoption_used));
+			sqlite3_compileoption_get = (MyDelegateTypes.sqlite3_compileoption_get) Load(gf, typeof(MyDelegateTypes.sqlite3_compileoption_get));
+			sqlite3_table_column_metadata = (MyDelegateTypes.sqlite3_table_column_metadata) Load(gf, typeof(MyDelegateTypes.sqlite3_table_column_metadata));
+			sqlite3_value_text = (MyDelegateTypes.sqlite3_value_text) Load(gf, typeof(MyDelegateTypes.sqlite3_value_text));
+			sqlite3_enable_load_extension = (MyDelegateTypes.sqlite3_enable_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_load_extension));
+			sqlite3_load_extension = (MyDelegateTypes.sqlite3_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_load_extension));
+			sqlite3_initialize = (MyDelegateTypes.sqlite3_initialize) Load(gf, typeof(MyDelegateTypes.sqlite3_initialize));
+			sqlite3_shutdown = (MyDelegateTypes.sqlite3_shutdown) Load(gf, typeof(MyDelegateTypes.sqlite3_shutdown));
+			sqlite3_libversion = (MyDelegateTypes.sqlite3_libversion) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion));
+			sqlite3_libversion_number = (MyDelegateTypes.sqlite3_libversion_number) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion_number));
+			sqlite3_threadsafe = (MyDelegateTypes.sqlite3_threadsafe) Load(gf, typeof(MyDelegateTypes.sqlite3_threadsafe));
+			sqlite3_sourceid = (MyDelegateTypes.sqlite3_sourceid) Load(gf, typeof(MyDelegateTypes.sqlite3_sourceid));
+			sqlite3_malloc = (MyDelegateTypes.sqlite3_malloc) Load(gf, typeof(MyDelegateTypes.sqlite3_malloc));
+			sqlite3_realloc = (MyDelegateTypes.sqlite3_realloc) Load(gf, typeof(MyDelegateTypes.sqlite3_realloc));
+			sqlite3_free = (MyDelegateTypes.sqlite3_free) Load(gf, typeof(MyDelegateTypes.sqlite3_free));
+			sqlite3_open = (MyDelegateTypes.sqlite3_open) Load(gf, typeof(MyDelegateTypes.sqlite3_open));
+			sqlite3_open_v2 = (MyDelegateTypes.sqlite3_open_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_open_v2));
+			sqlite3_vfs_find = (MyDelegateTypes.sqlite3_vfs_find) Load(gf, typeof(MyDelegateTypes.sqlite3_vfs_find));
+			sqlite3_last_insert_rowid = (MyDelegateTypes.sqlite3_last_insert_rowid) Load(gf, typeof(MyDelegateTypes.sqlite3_last_insert_rowid));
+			sqlite3_changes = (MyDelegateTypes.sqlite3_changes) Load(gf, typeof(MyDelegateTypes.sqlite3_changes));
+			sqlite3_total_changes = (MyDelegateTypes.sqlite3_total_changes) Load(gf, typeof(MyDelegateTypes.sqlite3_total_changes));
+			sqlite3_memory_used = (MyDelegateTypes.sqlite3_memory_used) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_used));
+			sqlite3_memory_highwater = (MyDelegateTypes.sqlite3_memory_highwater) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_highwater));
+			sqlite3_status = (MyDelegateTypes.sqlite3_status) Load(gf, typeof(MyDelegateTypes.sqlite3_status));
+			sqlite3_busy_timeout = (MyDelegateTypes.sqlite3_busy_timeout) Load(gf, typeof(MyDelegateTypes.sqlite3_busy_timeout));
+			sqlite3_bind_blob = (MyDelegateTypes.sqlite3_bind_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_blob));
+			sqlite3_bind_zeroblob = (MyDelegateTypes.sqlite3_bind_zeroblob) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_zeroblob));
+			sqlite3_bind_double = (MyDelegateTypes.sqlite3_bind_double) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_double));
+			sqlite3_bind_int = (MyDelegateTypes.sqlite3_bind_int) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_int));
+			sqlite3_bind_int64 = (MyDelegateTypes.sqlite3_bind_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_int64));
+			sqlite3_bind_null = (MyDelegateTypes.sqlite3_bind_null) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_null));
+			sqlite3_bind_text = (MyDelegateTypes.sqlite3_bind_text) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_text));
+			sqlite3_bind_parameter_count = (MyDelegateTypes.sqlite3_bind_parameter_count) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_count));
+			sqlite3_bind_parameter_index = (MyDelegateTypes.sqlite3_bind_parameter_index) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_index));
+			sqlite3_column_count = (MyDelegateTypes.sqlite3_column_count) Load(gf, typeof(MyDelegateTypes.sqlite3_column_count));
+			sqlite3_data_count = (MyDelegateTypes.sqlite3_data_count) Load(gf, typeof(MyDelegateTypes.sqlite3_data_count));
+			sqlite3_step = (MyDelegateTypes.sqlite3_step) Load(gf, typeof(MyDelegateTypes.sqlite3_step));
+			sqlite3_sql = (MyDelegateTypes.sqlite3_sql) Load(gf, typeof(MyDelegateTypes.sqlite3_sql));
+			sqlite3_column_double = (MyDelegateTypes.sqlite3_column_double) Load(gf, typeof(MyDelegateTypes.sqlite3_column_double));
+			sqlite3_column_int = (MyDelegateTypes.sqlite3_column_int) Load(gf, typeof(MyDelegateTypes.sqlite3_column_int));
+			sqlite3_column_int64 = (MyDelegateTypes.sqlite3_column_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_column_int64));
+			sqlite3_column_blob = (MyDelegateTypes.sqlite3_column_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_column_blob));
+			sqlite3_column_bytes = (MyDelegateTypes.sqlite3_column_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_column_bytes));
+			sqlite3_column_type = (MyDelegateTypes.sqlite3_column_type) Load(gf, typeof(MyDelegateTypes.sqlite3_column_type));
+			sqlite3_aggregate_count = (MyDelegateTypes.sqlite3_aggregate_count) Load(gf, typeof(MyDelegateTypes.sqlite3_aggregate_count));
+			sqlite3_value_blob = (MyDelegateTypes.sqlite3_value_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_value_blob));
+			sqlite3_value_bytes = (MyDelegateTypes.sqlite3_value_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_value_bytes));
+			sqlite3_value_double = (MyDelegateTypes.sqlite3_value_double) Load(gf, typeof(MyDelegateTypes.sqlite3_value_double));
+			sqlite3_value_int = (MyDelegateTypes.sqlite3_value_int) Load(gf, typeof(MyDelegateTypes.sqlite3_value_int));
+			sqlite3_value_int64 = (MyDelegateTypes.sqlite3_value_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_value_int64));
+			sqlite3_value_type = (MyDelegateTypes.sqlite3_value_type) Load(gf, typeof(MyDelegateTypes.sqlite3_value_type));
+			sqlite3_user_data = (MyDelegateTypes.sqlite3_user_data) Load(gf, typeof(MyDelegateTypes.sqlite3_user_data));
+			sqlite3_result_blob = (MyDelegateTypes.sqlite3_result_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_result_blob));
+			sqlite3_result_double = (MyDelegateTypes.sqlite3_result_double) Load(gf, typeof(MyDelegateTypes.sqlite3_result_double));
+			sqlite3_result_error = (MyDelegateTypes.sqlite3_result_error) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error));
+			sqlite3_result_int = (MyDelegateTypes.sqlite3_result_int) Load(gf, typeof(MyDelegateTypes.sqlite3_result_int));
+			sqlite3_result_int64 = (MyDelegateTypes.sqlite3_result_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_result_int64));
+			sqlite3_result_null = (MyDelegateTypes.sqlite3_result_null) Load(gf, typeof(MyDelegateTypes.sqlite3_result_null));
+			sqlite3_result_text = (MyDelegateTypes.sqlite3_result_text) Load(gf, typeof(MyDelegateTypes.sqlite3_result_text));
+			sqlite3_result_zeroblob = (MyDelegateTypes.sqlite3_result_zeroblob) Load(gf, typeof(MyDelegateTypes.sqlite3_result_zeroblob));
+			sqlite3_result_error_toobig = (MyDelegateTypes.sqlite3_result_error_toobig) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_toobig));
+			sqlite3_result_error_nomem = (MyDelegateTypes.sqlite3_result_error_nomem) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_nomem));
+			sqlite3_result_error_code = (MyDelegateTypes.sqlite3_result_error_code) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_code));
+			sqlite3_aggregate_context = (MyDelegateTypes.sqlite3_aggregate_context) Load(gf, typeof(MyDelegateTypes.sqlite3_aggregate_context));
+			sqlite3_key = (MyDelegateTypes.sqlite3_key) Load(gf, typeof(MyDelegateTypes.sqlite3_key));
+			sqlite3_rekey = (MyDelegateTypes.sqlite3_rekey) Load(gf, typeof(MyDelegateTypes.sqlite3_rekey));
+			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
+			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
+			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
+			sqlite3_create_function_v2 = (MyDelegateTypes.sqlite3_create_function_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_create_function_v2));
+			sqlite3_create_collation = (MyDelegateTypes.sqlite3_create_collation) Load(gf, typeof(MyDelegateTypes.sqlite3_create_collation));
+			sqlite3_update_hook = (MyDelegateTypes.sqlite3_update_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_update_hook));
+			sqlite3_commit_hook = (MyDelegateTypes.sqlite3_commit_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_commit_hook));
+			sqlite3_profile = (MyDelegateTypes.sqlite3_profile) Load(gf, typeof(MyDelegateTypes.sqlite3_profile));
+			sqlite3_progress_handler = (MyDelegateTypes.sqlite3_progress_handler) Load(gf, typeof(MyDelegateTypes.sqlite3_progress_handler));
+			sqlite3_trace = (MyDelegateTypes.sqlite3_trace) Load(gf, typeof(MyDelegateTypes.sqlite3_trace));
+			sqlite3_rollback_hook = (MyDelegateTypes.sqlite3_rollback_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_rollback_hook));
+			sqlite3_db_handle = (MyDelegateTypes.sqlite3_db_handle) Load(gf, typeof(MyDelegateTypes.sqlite3_db_handle));
+			sqlite3_next_stmt = (MyDelegateTypes.sqlite3_next_stmt) Load(gf, typeof(MyDelegateTypes.sqlite3_next_stmt));
+			sqlite3_stmt_busy = (MyDelegateTypes.sqlite3_stmt_busy) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_busy));
+			sqlite3_stmt_readonly = (MyDelegateTypes.sqlite3_stmt_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_readonly));
+			sqlite3_exec = (MyDelegateTypes.sqlite3_exec) Load(gf, typeof(MyDelegateTypes.sqlite3_exec));
+			sqlite3_get_autocommit = (MyDelegateTypes.sqlite3_get_autocommit) Load(gf, typeof(MyDelegateTypes.sqlite3_get_autocommit));
+			sqlite3_extended_result_codes = (MyDelegateTypes.sqlite3_extended_result_codes) Load(gf, typeof(MyDelegateTypes.sqlite3_extended_result_codes));
+			sqlite3_errcode = (MyDelegateTypes.sqlite3_errcode) Load(gf, typeof(MyDelegateTypes.sqlite3_errcode));
+			sqlite3_extended_errcode = (MyDelegateTypes.sqlite3_extended_errcode) Load(gf, typeof(MyDelegateTypes.sqlite3_extended_errcode));
+			sqlite3_errstr = (MyDelegateTypes.sqlite3_errstr) Load(gf, typeof(MyDelegateTypes.sqlite3_errstr));
+			sqlite3_log = (MyDelegateTypes.sqlite3_log) Load(gf, typeof(MyDelegateTypes.sqlite3_log));
+			sqlite3_file_control = (MyDelegateTypes.sqlite3_file_control) Load(gf, typeof(MyDelegateTypes.sqlite3_file_control));
+			sqlite3_backup_init = (MyDelegateTypes.sqlite3_backup_init) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_init));
+			sqlite3_backup_step = (MyDelegateTypes.sqlite3_backup_step) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_step));
+			sqlite3_backup_finish = (MyDelegateTypes.sqlite3_backup_finish) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_finish));
+			sqlite3_backup_remaining = (MyDelegateTypes.sqlite3_backup_remaining) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_remaining));
+			sqlite3_backup_pagecount = (MyDelegateTypes.sqlite3_backup_pagecount) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_pagecount));
+			sqlite3_blob_open = (MyDelegateTypes.sqlite3_blob_open) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_open));
+			sqlite3_blob_write = (MyDelegateTypes.sqlite3_blob_write) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_write));
+			sqlite3_blob_read = (MyDelegateTypes.sqlite3_blob_read) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_read));
+			sqlite3_blob_bytes = (MyDelegateTypes.sqlite3_blob_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_bytes));
+			sqlite3_blob_close = (MyDelegateTypes.sqlite3_blob_close) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_close));
+			sqlite3_wal_autocheckpoint = (MyDelegateTypes.sqlite3_wal_autocheckpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_autocheckpoint));
+			sqlite3_wal_checkpoint = (MyDelegateTypes.sqlite3_wal_checkpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint));
+			sqlite3_wal_checkpoint_v2 = (MyDelegateTypes.sqlite3_wal_checkpoint_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint_v2));
+			sqlite3_set_authorizer = (MyDelegateTypes.sqlite3_set_authorizer) Load(gf, typeof(MyDelegateTypes.sqlite3_set_authorizer));
+			sqlite3_win32_set_directory = (MyDelegateTypes.sqlite3_win32_set_directory) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory));
 		}
 
 		public static MyDelegateTypes.sqlite3_close sqlite3_close;
@@ -1449,7 +1446,6 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_result_null sqlite3_result_null;
 		public static MyDelegateTypes.sqlite3_result_text sqlite3_result_text;
 		public static MyDelegateTypes.sqlite3_result_zeroblob sqlite3_result_zeroblob;
-		// TODO sqlite3_result_value 
 		public static MyDelegateTypes.sqlite3_result_error_toobig sqlite3_result_error_toobig;
 		public static MyDelegateTypes.sqlite3_result_error_nomem sqlite3_result_error_nomem;
 		public static MyDelegateTypes.sqlite3_result_error_code sqlite3_result_error_code;
@@ -1493,8 +1489,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint;
 		public static MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2;
 		public static MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer;
-		public static MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory ;
-
+		public static MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory;
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
