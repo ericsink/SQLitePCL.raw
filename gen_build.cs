@@ -34,20 +34,8 @@ public static class projects
 	//
 	public static void init()
 	{
-        init_csproj();
-
 		init_esqlite3();
 	}
-
-    private static void init_csproj()
-    {
-        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "android"));
-        items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "ios_unified"));
-        // TODO items_csproj.Add(config_csproj.create_embedded("e_sqlite3", "watchos"));
-
-        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "android"));
-        items_csproj.Add(config_csproj.create_embedded("sqlcipher", "ios_unified"));
-    }
 
 	private static void init_esqlite3()
 	{
@@ -190,23 +178,6 @@ public static class projects
         }
 		throw new Exception(string.Format("csproj not found {0}", name));
     }
-
-	public static config_csproj find_ugly(string env)
-	{
-        config_csproj cfg = find("ugly", env);
-        if (cfg == null)
-        {
-            // TODO need to find one that is compatible with env
-            // TODO this should be smarter
-            cfg = find("ugly", "netstandard11");
-            //cfg = find("ugly", "profile259");
-        }
-        if (cfg != null)
-        {
-            return cfg;
-        }
-		throw new Exception(string.Format("ugly not found for {0}", env));
-	}
 
 }
 
@@ -398,62 +369,6 @@ public class config_csproj : config_info
         {
             return gen.ROOT_NAME;
         }
-    }
-
-    public static config_csproj create_embedded(string what, string env)
-    {
-        var cfg = new config_csproj();
-        cfg.area = "lib";
-        switch (env)
-        {
-            case "ios_unified":
-			case "watchos":
-                cfg.name = string.Format("{0}.lib.{1}.{2}.{3}", cfg.root_name, what, env, "static");
-                break;
-            default:
-                cfg.name = string.Format("{0}.lib.{1}.{2}", cfg.root_name, what, env);
-                break;
-        }
-        cfg.what = what;
-        cfg.assemblyname = string.Format("{0}.lib.{1}", cfg.root_name, what);
-        cfg.env = env;
-        switch (cfg.env)
-        {
-            case "ios_unified":
-            case "watchos":
-                switch (what)
-                {
-                    case "e_sqlite3":
-                        cfg.defines.Add("IOS_PACKAGED_E_SQLITE3");
-                        break;
-                    case "sqlcipher":
-                        cfg.defines.Add("IOS_PACKAGED_SQLCIPHER");
-                        break;
-                    default:
-                        throw new Exception(what);
-                }
-                break;
-        }
-        cfg.csfiles_src.Add("embedded_init.cs");
-        switch (cfg.env)
-        {
-            case "ios_unified":
-            case "watchos":
-                switch (what)
-                {
-                    case "e_sqlite3":
-                    case "sqlcipher":
-                        cfg.csfiles_src.Add("imp_ios_internal.cs");
-                        break;
-                    default:
-                        throw new Exception(what);
-                }
-                break;
-            default:
-                break;
-        }
-
-        return cfg;
     }
 
 	public bool is_portable()
