@@ -28,7 +28,7 @@ public static class projects
 	public static List<config_csproj> items_csproj = new List<config_csproj>();
 
 	// nuspec files only
-	public static List<config_esqlite3> items_esqlite3 = new List<config_esqlite3>();
+	public static List<string> items_esqlite3 = new List<string>();
 
 	// This function is called by Main to initialize the project lists.
 	//
@@ -39,12 +39,12 @@ public static class projects
 
 	private static void init_esqlite3()
 	{
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110_xp" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v110_wp80" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v120" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v120_wp81" });
-		items_esqlite3.Add(new config_esqlite3 { toolset="v140" });
+		items_esqlite3.Add("v110_xp");
+		items_esqlite3.Add("v110");
+		items_esqlite3.Add("v110_wp80");
+		items_esqlite3.Add("v120");
+		items_esqlite3.Add("v120_wp81");
+		items_esqlite3.Add("v140");
 	}
 
 	public static string get_nuget_target_path(string env)
@@ -135,24 +135,16 @@ public static class projects
 
 }
 
-public class config_esqlite3
+public static class config_esqlite3
 {
-	public string toolset;
-
-	public string get_name()
+	public static string get_name(string toolset)
 	{
-        // TODO could include the word dynamic here
 		return string.Format("lib.e_sqlite3.{0}", toolset);
 	}
 
-	public string get_title()
+	public static string get_id(string toolset)
 	{
-		return string.Format("Native code only (e_sqlite3, compiled with {0}) for SQLitePCLRaw", toolset);
-	}
-
-	public string get_id()
-	{
-		return string.Format("{0}.{1}", gen.ROOT_NAME, get_name());
+		return string.Format("{0}.{1}", gen.ROOT_NAME, get_name(toolset));
 	}
 
 }
@@ -428,13 +420,13 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_esqlite3(string top, string cb_bin, config_esqlite3 cfg)
+	private static void gen_nuspec_esqlite3(string top, string cb_bin, string toolset)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = cfg.get_id();
+		string id = config_esqlite3.get_id(toolset);
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -463,15 +455,15 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			Action<string,string,string,string> write_file_entry = (toolset, flavor, arch, rid) =>
+			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
 			{
 				f.WriteStartElement("file");
-				f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "win", toolset, flavor, arch, "e_sqlite3.dll"));
+				f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "win", a_toolset, flavor, arch, "e_sqlite3.dll"));
 				f.WriteAttributeString("target", string.Format("runtimes\\{0}\\native\\", rid));
 				f.WriteEndElement(); // file
 			};
 
-			switch (cfg.toolset)
+			switch (toolset)
 			{
 				case "v110_xp":
 					write_file_entry("v110", "xp", "x86", "win-x86");
@@ -502,13 +494,13 @@ public static class gen
 					write_file_entry("v120", "wp81", "x86", "wpa81-x86");
 					break;
 				default:
-					throw new NotImplementedException(string.Format("esqlite3 nuspec: {0}", cfg.toolset));
+					throw new NotImplementedException(string.Format("esqlite3 nuspec: {0}", toolset));
 			}
 
 			string tname;
-			switch (cfg.toolset) {
+			switch (toolset) {
 				case "v110_xp":
-					tname = gen_nuget_targets_pinvoke_anycpu(top, cfg.get_id(), cfg.toolset);
+					tname = gen_nuget_targets_pinvoke_anycpu(top, id, toolset);
                     if (tname != null) 
                     {
                         f.WriteStartElement("file");
@@ -522,7 +514,7 @@ public static class gen
                     }
 					break;
 				default:
-					tname = gen_nuget_targets_sqlite3_itself(top, cfg.get_id(), cfg.toolset);
+					tname = gen_nuget_targets_sqlite3_itself(top, id, toolset);
                     if (tname != null) 
                     {
                         f.WriteStartElement("file");
@@ -1869,9 +1861,9 @@ public static class gen
             }
 		}
 
-		foreach (config_esqlite3 cfg in projects.items_esqlite3)
+		foreach (var toolset in projects.items_esqlite3)
 		{
-			gen_nuspec_esqlite3(top, cb_bin, cfg);
+			gen_nuspec_esqlite3(top, cb_bin, toolset);
 		}
 
 		gen_nuspec_e_sqlite3(top, cb_bin, "osx");
@@ -1913,9 +1905,9 @@ public static class gen
                     tw.WriteLine("../nuget pack {0}.nuspec", id);
                 }
 			}
-			foreach (config_esqlite3 cfg in projects.items_esqlite3)
+			foreach (var toolset in projects.items_esqlite3)
 			{
-				string id = cfg.get_id();
+				string id = config_esqlite3.get_id(toolset);
 				tw.WriteLine("../nuget pack {0}.nuspec", id);
 			}
 			tw.WriteLine("ls *.nupkg");
@@ -1949,9 +1941,9 @@ public static class gen
                     tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
                 }
 			}
-			foreach (config_esqlite3 cfg in projects.items_esqlite3)
+			foreach (var toolset in projects.items_esqlite3)
 			{
-				string id = cfg.get_id();
+				string id = config_esqlite3.get_id(toolset);
 				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", id, NUSPEC_VERSION, src);
 			}
 		}
