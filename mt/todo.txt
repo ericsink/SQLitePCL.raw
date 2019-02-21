@@ -1,11 +1,5 @@
 
-separate or fix bundle_sqlcipher for
-the e_ vs regular issue.  need another
-build of batteries?
-
 fix the targets files
-
-fix the bundle dependencies
 
 consider:  inclusion of assemblies in
 nuspec such that it errors if the expected
@@ -13,6 +7,8 @@ assemblies are not there?  currently, if the
 nuspec files are generated when the mt dir
 is not built, there are no errors, and pack
 will build empty packages.
+
+find_dlls should only accept release mode
 
 default load, so the setup call can be optional
 in many or most cases
@@ -32,7 +28,9 @@ maybe don't do bundle_winsqlite3?
 
 chg cb build scripts to use VS 2017
 
-rename sqlcipher to e_sqlcipher
+rename sqlcipher to e_sqlcipher.  or maybe keep the
+old name in cb (so we can still build v1 pkgs)
+and carefully rename it everywhere for v2.
 
 test on uwp
 

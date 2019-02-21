@@ -803,26 +803,9 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-	enum SQLCipherBundleKind
+	private static void gen_nuspec_bundle_e_sqlcipher(string top, string dir_mt, List<dll_info> dlls)
 	{
-		Unofficial,
-		Zetetic,
-	}
-
-	private static void gen_nuspec_bundle_sqlcipher(string top, SQLCipherBundleKind kind, string dir_mt, List<dll_info> dlls)
-    {
-		string id;
-		switch (kind)
-		{
-			case SQLCipherBundleKind.Unofficial:
-				id = string.Format("{0}.bundle_sqlcipher", gen.ROOT_NAME);
-				break;
-			case SQLCipherBundleKind.Zetetic:
-				id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
-				break;
-			default:
-				throw new NotImplementedException();
-		}
+		var id = string.Format("{0}.bundle_e_sqlcipher", gen.ROOT_NAME);
 
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -837,34 +820,60 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			switch (kind)
-			{
-				case SQLCipherBundleKind.Unofficial:
-					f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.");
-					break;
-				case SQLCipherBundleKind.Zetetic:
-					f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: reference the official SQLCipher builds from Zetetic, which are not included in this package");
-					break;
-				default:
-					throw new NotImplementedException();
-			}
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.");
 
 			f.WriteStartElement("dependencies");
 
-			WhichLib lib_dep;
-			switch (kind)
+            write_bundle_dependency_group(f, WhichLib.SQLCIPHER);
+            
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlcipher")
+				)
 			{
-				case SQLCipherBundleKind.Unofficial:
-					lib_dep = WhichLib.SQLCIPHER;
-					break;
-				case SQLCipherBundleKind.Zetetic:
-					lib_dep = WhichLib.NONE;
-					break;
-				default:
-					throw new NotImplementedException();
+				write_nuspec_file_entry_lib(
+						dll.get_src_path(dir_mt), 
+						dll.tfm,
+						f
+						);
 			}
 
-            write_bundle_dependency_group(f, lib_dep);
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
+	private static void gen_nuspec_bundle_zetetic(string top, string dir_mt, List<dll_info> dlls)
+    {
+		var id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			write_nuspec_common_metadata(id, f);
+			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: reference the official SQLCipher builds from Zetetic, which are not included in this package");
+
+			f.WriteStartElement("dependencies");
+
+            write_bundle_dependency_group(f, WhichLib.NONE);
             
 			f.WriteEndElement(); // dependencies
 
@@ -1356,8 +1365,8 @@ public static class gen
         gen_nuspec_bundle_green(top, dir_mt, dlls);
         gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
         gen_nuspec_bundle_winsqlite3(top, dir_mt, dlls);
-        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial, dir_mt, dlls);
-        gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic, dir_mt, dlls);
+        gen_nuspec_bundle_e_sqlcipher(top, dir_mt, dlls);
+        gen_nuspec_bundle_zetetic(top, dir_mt, dlls);
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
