@@ -1,6 +1,4 @@
 
-chg make_cb_path param 'name' to WhichLib
-
 distinction between win-arm and win8-arm ?
 
 just one lib pkg each for e_sqlite3

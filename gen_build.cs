@@ -39,6 +39,17 @@ public static class gen
 		NETCOREAPP,
 	}
 
+	static string AsString(this WhichLib e)
+	{
+		switch (e)
+		{
+			case WhichLib.E_SQLITE3: return "e_sqlite3";
+			case WhichLib.SQLCIPHER: return "sqlcipher";
+			default:
+				throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
+		}
+	}
+
 	static string AsString(this TFM e)
 	{
 		switch (e)
@@ -339,29 +350,32 @@ public static class gen
 
 	static string make_cb_path_win(
 		string cb_bin,
-		string name,
+		WhichLib lib,
 		string toolset,
 		string flavor,
 		string arch
 		)
 	{
+		var name = lib.AsString();
 		return Path.Combine(cb_bin, name, "win", toolset, flavor, arch, string.Format("{0}.dll", name));
 	}
 
 	static string make_cb_path_linux(
 		string cb_bin,
-		string name,
+		WhichLib lib,
 		string cpu
 		)
 	{
+		var name = lib.AsString();
 		return Path.Combine(cb_bin, name, "linux", cpu, string.Format("lib{0}.so", name));
 	}
 
 	static string make_cb_path_mac(
 		string cb_bin,
-		string name
+		WhichLib lib
 		)
 	{
+		var name = lib.AsString();
 		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
 	}
 
@@ -391,7 +405,7 @@ public static class gen
 			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
 			{
 				write_nuspec_file_entry_native(
-					make_cb_path_win(cb_bin, "e_sqlite3", a_toolset, flavor, arch),
+					make_cb_path_win(cb_bin, WhichLib.E_SQLITE3, a_toolset, flavor, arch),
 					rid,
 					f
 					);
@@ -517,7 +531,7 @@ public static class gen
 			(cpu, rid) =>
 			{
 				write_nuspec_file_entry_native(
-					make_cb_path_linux(cb_bin, "e_sqlite3", cpu),
+					make_cb_path_linux(cb_bin, WhichLib.E_SQLITE3, cpu),
 					rid,
 					f
 					);
@@ -527,7 +541,7 @@ public static class gen
             {
                 case "osx":
 					write_nuspec_file_entry_native(
-						make_cb_path_mac(cb_bin, "e_sqlite3"),
+						make_cb_path_mac(cb_bin, WhichLib.E_SQLITE3),
 						"osx-x64",
 						f
 						);
@@ -604,39 +618,39 @@ public static class gen
 			switch (plat) {
 				case "windows":
 					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "x86"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x86"),
 						"win-x86",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "x64"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x64"),
 						"win-x64",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "arm"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "arm"),
 						"win-arm", // TODO the other one uses win8-arm
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x64"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x64"),
 						"win10-x64",
 						TFM.UWP,
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x86"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x86"),
 						"win10-x86",
 						TFM.UWP,
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "arm"),
+						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "arm"),
 						"win10-arm",
 						TFM.UWP,
 						f
@@ -646,7 +660,7 @@ public static class gen
 					break;
 				case "osx":
 					write_nuspec_file_entry_native(
-						make_cb_path_mac(cb_bin, "sqlcipher"),
+						make_cb_path_mac(cb_bin, WhichLib.SQLCIPHER),
 						"osx-x64",
 						f
 						);
@@ -655,13 +669,13 @@ public static class gen
 					break;
 				case "linux":
 					write_nuspec_file_entry_native(
-						make_cb_path_linux(cb_bin, "sqlcipher", "x64"),
+						make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x64"),
 						"linux-x64",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						make_cb_path_linux(cb_bin, "sqlcipher", "x86"),
+						make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x86"),
 						"linux-x86",
 						f
 						);
