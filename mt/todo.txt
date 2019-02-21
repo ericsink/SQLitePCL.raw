@@ -3,9 +3,6 @@ chg release notes in nuspec to reference a URL
 
 distinction between win-arm and win8-arm ?
 
-just one lib pkg each for e_sqlite3
-and sqlcipher
-
 what nuspec does dotnet pack generate?
 
 what are the empty dep groups for?
@@ -13,8 +10,6 @@ what are the empty dep groups for?
 maybe don't do bundle_winsqlite3?
 
 chg cb build scripts to use VS 2017
-
-fix cb paths
 
 rename sqlcipher to e_sqlcipher
 
@@ -24,9 +19,6 @@ restore those win32 set directory calls somewhere
 
 default load, so the setup call can be optional
 in many or most cases
-
-stuff in csproj so we can do dotnet pack?
-probably not.
 
 AssemblyInfo stuff, version numbers
 
@@ -59,9 +51,6 @@ more xunit test cases
 goal is to have no ifdefs in core
 
 chgs to intptr dispose?  #166  SafeHandle
-
-version of gen_build which only does the nugets
-for packaging e_sqlite and sqlcipher builds
 
 chg to SourceGear name?
 
