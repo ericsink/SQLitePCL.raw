@@ -1,4 +1,23 @@
 
+fix the targets files
+
+fix the bundle dependencies
+
+consider:  inclusion of assemblies in
+nuspec such that it errors if the expected
+assemblies are not there?  currently, if the
+nuspec files are generated when the mt dir
+is not built, there are no errors, and pack
+will build empty packages.
+
+default load, so the setup call can be optional
+in many or most cases
+
+maybe the Setup calls should return the sqlite
+version?
+
+AssemblyInfo stuff, version numbers
+
 chg release notes in nuspec to reference a URL
 
 distinction between win-arm and win8-arm ?
@@ -14,11 +33,6 @@ rename sqlcipher to e_sqlcipher
 test on uwp
 
 restore those win32 set directory calls somewhere
-
-default load, so the setup call can be optional
-in many or most cases
-
-AssemblyInfo stuff, version numbers
 
 preload from arch directory stuff.  subdirectory
 by cpu arch.
