@@ -44,7 +44,7 @@ public static class gen
 		switch (e)
 		{
 			case WhichLib.E_SQLITE3: return "e_sqlite3";
-			case WhichLib.SQLCIPHER: return "sqlcipher";
+			case WhichLib.SQLCIPHER: return "sqlcipher"; // TODO e_
 			default:
 				throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
 		}
@@ -498,13 +498,13 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_e_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = string.Format("SQLitePCLRaw.lib.sqlcipher");
+		string id = string.Format("SQLitePCLRaw.lib.e_sqlcipher");
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -524,8 +524,8 @@ public static class gen
 			foreach (
 				var dll in dlls
 					.Where(d => 
-						(d.project_subdir == "SQLitePCLRaw.lib.sqlcipher.ios")
-						|| (d.project_subdir == "SQLitePCLRaw.lib.sqlcipher.android")
+						(d.project_subdir == "SQLitePCLRaw.lib.e_sqlcipher.ios")
+						|| (d.project_subdir == "SQLitePCLRaw.lib.e_sqlcipher.android")
 						)
 				)
 			{
@@ -772,7 +772,7 @@ public static class gen
 	{
 		NONE,
 		E_SQLITE3,
-		SQLCIPHER,
+		SQLCIPHER, // TODO e_
 	}
 
     private static void write_bundle_dependency_group(XmlWriter f, TFM tfm, WhichLib what)
@@ -845,6 +845,7 @@ public static class gen
         }
         else if (what == WhichLib.SQLCIPHER)
         {
+			// TODO just one
             switch (tfm_deps)
             {
                 case TFM.ANDROID:
@@ -1482,7 +1483,7 @@ public static class gen
         gen_nuspec_ugly(top, dir_mt, dlls);
 
 		gen_nuspec_e_sqlite3(top, cb_bin, dir_mt, dlls);
-		gen_nuspec_sqlcipher(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_e_sqlcipher(top, cb_bin, dir_mt, dlls);
 
         gen_nuspec_bundle_green(top, dir_mt, dlls);
         gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
@@ -1503,7 +1504,7 @@ public static class gen
             tw.WriteLine("../nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
 
 			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../nuget pack {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME);
 
             tw.WriteLine("../nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
@@ -1523,7 +1524,7 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);

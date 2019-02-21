@@ -3,8 +3,6 @@ chg release notes in nuspec to reference a URL
 
 distinction between win-arm and win8-arm ?
 
-what nuspec does dotnet pack generate?
-
 what are the empty dep groups for?
 
 maybe don't do bundle_winsqlite3?
@@ -21,8 +19,6 @@ default load, so the setup call can be optional
 in many or most cases
 
 AssemblyInfo stuff, version numbers
-
-lib and bundle packages
 
 preload from arch directory stuff.  subdirectory
 by cpu arch.
