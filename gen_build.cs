@@ -24,54 +24,52 @@ public static class gen
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
-	static class TFM
+	enum TFM
 	{
-		public const string IOS = "Xamarin.iOS10";
-		public const string ANDROID = "MonoAndroid";
-		public const string UWP = "uap10.0";
+		NONE,
+		IOS,
+		ANDROID,
+		UWP,
+		NETSTANDARD11,
+		NETSTANDARD20,
+		NET35,
+		NET40,
+		NET45,
+		XAMARIN_MAC,
+		NETCOREAPP,
 	}
 
-	static string get_nuget_framework_name(string env)
+	static string AsString(this TFM e)
 	{
-		switch (env)
+		switch (e)
 		{
-			case "ios":
-				return TFM.IOS;
-			case "macos":
-				return "Xamarin.Mac20";
-			case "watchos":
-				return "Xamarin.WatchOS";
-			case "android":
-				return TFM.ANDROID;
-			case "net45":
-				return "net45";
-			case "net40":
-				return "net40";
-			case "net35":
-				return "net35";
-			case "wp80":
-				return "wp8";
-			case "wp81_sl":
-				return "wp81";
-			case "wpa81":
-				return "wpa81";
-			case "uwp10":
-				return TFM.UWP;
-			case "win8":
-				return "win8";
-			case "win81":
-				return "win81";
-			case "netstandard11":
-				return "netstandard1.1";
-			case "netstandard10":
-				return "netstandard1.0";
-            case "netcoreapp":
-                return "netcoreapp";
+			case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
+			case TFM.IOS: return "Xamarin.iOS10";
+			case TFM.ANDROID: return "MonoAndroid";
+			case TFM.UWP: return "uap10.0";
+			case TFM.NETSTANDARD11: return "netstandard1.1";
+			case TFM.NETSTANDARD20: return "netstandard2.0";
+			case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
+			case TFM.NET35: return "net35";
+			case TFM.NET40: return "net40";
+			case TFM.NET45: return "net45";
+			case TFM.NETCOREAPP: return "netcoreapp";
 			default:
-				throw new Exception(env);
+				throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
 		}
 	}
-					
+
+	static TFM str_to_tfm(string s)
+	{
+		switch (s.ToLower().Trim())
+		{
+			case "netstandard1.1": return TFM.NETSTANDARD11;
+			case "netstandard2.0": return TFM.NETSTANDARD20;
+			default:
+				throw new NotImplementedException(string.Format("str_to_tfm not found: {0}", s));
+		}
+	}
+
     static string rid_front_half(string toolset)
     {
         switch (toolset)
@@ -102,11 +100,11 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
-	private static void write_nuspec_file_entry_lib(string src, string tfm, XmlWriter f)
+	private static void write_nuspec_file_entry_lib(string src, TFM tfm, XmlWriter f)
 	{
 		write_nuspec_file_entry(
 			src,
-			string.Format("lib\\{0}\\", tfm),
+			string.Format("lib\\{0}\\", tfm.AsString()),
 			f
 			);
 	}
@@ -120,24 +118,24 @@ public static class gen
 			);
 	}
 
-	private static void write_nuspec_file_entry_nativeassets(string src, string rid, string tfm, XmlWriter f)
+	private static void write_nuspec_file_entry_nativeassets(string src, string rid, TFM tfm, XmlWriter f)
 	{
 		write_nuspec_file_entry(
 			src,
-			string.Format("runtimes\\{0}\\nativeassets\\{1}\\", rid, tfm),
+			string.Format("runtimes\\{0}\\nativeassets\\{1}\\", rid, tfm.AsString()),
 			f
 			);
 	}
 
-	private static void write_empty(XmlWriter f, string top, string tfm)
+	private static void write_empty(XmlWriter f, string top, TFM tfm)
     {
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference");
 
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), tfm));
+		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), tfm.AsString()));
 
 		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", tfm));
-		f.WriteAttributeString("target", string.Format("lib\\{0}", tfm));
+		f.WriteAttributeString("src", string.Format("empty\\{0}\\", tfm.AsString()));
+		f.WriteAttributeString("target", string.Format("lib\\{0}", tfm.AsString()));
 		f.WriteEndElement(); // file
     }
 
@@ -184,16 +182,16 @@ public static class gen
     private const int DEP_NONE = 0;
     private const int DEP_CORE = 1;
 
-    private static void write_dependency_group(XmlWriter f, string env, int flags)
+    private static void write_dependency_group(XmlWriter f, TFM tfm, int flags)
     {
         f.WriteStartElement("group");
-        if (env != null)
+        if (tfm != TFM.NONE)
         {
-            f.WriteAttributeString("targetFramework", get_nuget_framework_name(env));
-            switch (env)
+            f.WriteAttributeString("targetFramework", tfm.AsString());
+            switch (tfm)
             {
-                case "uwp10":
-                case "netstandard11":
+                case TFM.UWP:
+                case TFM.NETSTANDARD11:
                     add_dep_netstandard(f);
                     break;
             }
@@ -210,7 +208,8 @@ public static class gen
 		public string project_subdir {get;set;}
 		public string config {get;set;}
 		public string dll {get;set;}
-		public string tfm {get;set;}
+		public string tfm_dir_name {get;set;}
+		public TFM tfm => str_to_tfm(tfm_dir_name);
 		public string get_src_path(string dir)
 		{
 			return Path.Combine(
@@ -218,7 +217,7 @@ public static class gen
 				project_subdir,
 				"bin",
 				config,
-				tfm,
+				tfm_dir_name,
 				dll
 				);
 		}
@@ -250,7 +249,7 @@ public static class gen
 								{
 									project_subdir = project_name,
 									config = config_name,
-									tfm = target_name,
+									tfm_dir_name = target_name,
 									dll = dll_name,
 								}
 								);
@@ -302,19 +301,15 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_dependency_group(f, "android", DEP_NONE);
-            write_dependency_group(f, "ios", DEP_NONE);
-            write_dependency_group(f, "macos", DEP_NONE);
-            // TODO write_dependency_group(f, "watchos", DEP_NONE);
-            write_dependency_group(f, "net35", DEP_NONE);
-            write_dependency_group(f, "net40", DEP_NONE);
-            write_dependency_group(f, "net45", DEP_NONE);
-            write_dependency_group(f, "win81", DEP_NONE);
-            write_dependency_group(f, "wpa81", DEP_NONE);
-            write_dependency_group(f, "wp80", DEP_NONE);
-            write_dependency_group(f, "uwp10", DEP_NONE);
-            write_dependency_group(f, "netstandard11", DEP_NONE);
-            write_dependency_group(f, null, DEP_NONE);
+            write_dependency_group(f, TFM.ANDROID, DEP_NONE);
+            write_dependency_group(f, TFM.IOS, DEP_NONE);
+            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_NONE);
+            write_dependency_group(f, TFM.NET35, DEP_NONE);
+            write_dependency_group(f, TFM.NET40, DEP_NONE);
+            write_dependency_group(f, TFM.NET45, DEP_NONE);
+            write_dependency_group(f, TFM.UWP, DEP_NONE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_NONE);
+            write_dependency_group(f, TFM.NONE, DEP_NONE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -421,9 +416,9 @@ public static class gen
                         f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
                         f.WriteEndElement(); // file
 
-                        write_empty(f, top, "net35");
-                        write_empty(f, top, "netstandard1.0");
-                        write_empty(f, top, "netstandard2.0");
+                        write_empty(f, top, TFM.NET35);
+                        write_empty(f, top, TFM.NETSTANDARD11);
+                        write_empty(f, top, TFM.NETSTANDARD20);
                     }
 					break;
 				default:
@@ -451,7 +446,7 @@ public static class gen
 	{
 		public string id {get;set;}
 		public string src {get;set;}
-		public string tfm {get;set;}
+		public TFM tfm {get;set;}
 	}
 
 	private static void gen_nuspec_embedded(
@@ -560,7 +555,7 @@ public static class gen
 
             if (plat == "osx")
             {
-                write_empty(f, top, "Xamarin.Mac20");
+                write_empty(f, top, TFM.XAMARIN_MAC);
                 tname = string.Format("{0}.Xamarin.Mac20.targets", id);
                 gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: true);
 
@@ -570,9 +565,9 @@ public static class gen
                 f.WriteEndElement(); // file
             }
 
-            write_empty(f, top, "net35");
-            write_empty(f, top, "netstandard1.0");
-            write_empty(f, top, "netstandard2.0");
+            write_empty(f, top, TFM.NET35);
+            write_empty(f, top, TFM.NETSTANDARD11);
+            write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
 
@@ -687,7 +682,7 @@ public static class gen
 
             if (plat == "osx")
             {
-                write_empty(f, top, "Xamarin.Mac20");
+                write_empty(f, top, TFM.XAMARIN_MAC);
                 tname = string.Format("{0}.Xamarin.Mac20.targets", id);
                 gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: true);
 
@@ -697,10 +692,10 @@ public static class gen
                 f.WriteEndElement(); // file
             }
 
-            write_empty(f, top, "net35");
+            write_empty(f, top, TFM.NET35);
             write_empty(f, top, TFM.UWP);
-            write_empty(f, top, "netstandard1.0");
-            write_empty(f, top, "netstandard2.0");
+            write_empty(f, top, TFM.NETSTANDARD11);
+            write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
 
@@ -740,19 +735,15 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_dependency_group(f, "android", DEP_CORE);
-            write_dependency_group(f, "ios", DEP_CORE);
-            write_dependency_group(f, "macos", DEP_CORE);
-            // TODO write_dependency_group(f, "watchos", DEP_CORE);
-            write_dependency_group(f, "net35", DEP_CORE);
-            write_dependency_group(f, "net40", DEP_CORE);
-            write_dependency_group(f, "net45", DEP_CORE);
-            write_dependency_group(f, "win81", DEP_CORE);
-            write_dependency_group(f, "wpa81", DEP_CORE);
-            write_dependency_group(f, "wp80", DEP_CORE);
-            write_dependency_group(f, "uwp10", DEP_CORE);
-            write_dependency_group(f, "netstandard11", DEP_CORE);
-            write_dependency_group(f, null, DEP_CORE);
+            write_dependency_group(f, TFM.ANDROID, DEP_CORE);
+            write_dependency_group(f, TFM.IOS, DEP_CORE);
+            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_CORE);
+            write_dependency_group(f, TFM.NET35, DEP_CORE);
+            write_dependency_group(f, TFM.NET40, DEP_CORE);
+            write_dependency_group(f, TFM.NET45, DEP_CORE);
+            write_dependency_group(f, TFM.UWP, DEP_CORE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
+            write_dependency_group(f, TFM.NONE, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -804,7 +795,7 @@ public static class gen
 
 			// --------
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", TFM.UWP);
+			f.WriteAttributeString("targetFramework", TFM.UWP.AsString());
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
@@ -839,51 +830,64 @@ public static class gen
 		}
 	}
 
-    private static void write_bundle_dependency_group(XmlWriter f, string env, string what)
+	enum IncludeLib
+	{
+		YES,
+		NO,
+	}
+
+	enum WhichLib
+	{
+		NONE,
+		E_SQLITE3,
+		SQLCIPHER,
+	}
+
+    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm, WhichLib what)
     {
-        write_bundle_dependency_group(f, env, env, what, true);
+        write_bundle_dependency_group(f, tfm, tfm, what, IncludeLib.YES);
     }
 
-    private static void write_bundle_dependency_group(XmlWriter f, string env, string what, bool lib)
+    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm, WhichLib what, IncludeLib lib)
     {
-        write_bundle_dependency_group(f, env, env, what, lib);
+        write_bundle_dependency_group(f, tfm, tfm, what, lib);
     }
 
-    private static void write_bundle_dependency_group(XmlWriter f, string env_target, string env_deps, string what, bool lib)
+    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm_target, TFM tfm_deps, WhichLib what, IncludeLib lib)
     {
         f.WriteStartElement("group");
-        f.WriteAttributeString("targetFramework", get_nuget_framework_name(env_target));
+        f.WriteAttributeString("targetFramework", tfm_target.AsString());
 
         add_dep_core(f);
 
-        if (lib)
+        if (lib == IncludeLib.YES)
         {
-        if (what == "e_sqlite3")
+        if (what == WhichLib.E_SQLITE3)
         {
-            switch (env_deps)
+            switch (tfm_deps)
             {
-                case "android":
+                case TFM.ANDROID:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.android", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "macos":
+                case TFM.XAMARIN_MAC:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.osx", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "ios":
+                case TFM.IOS:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.ios", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "net35":
-                case "net40":
-                case "net45":
-                case "netstandard11": // TODO because this is used for netcoreapp, kinda hackish
+                case TFM.NET35:
+                case TFM.NET40:
+                case TFM.NET45:
+                case TFM.NETSTANDARD11: // TODO because this is used for netcoreapp, kinda hackish
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
@@ -907,33 +911,32 @@ public static class gen
                     break;
             }
         }
-        else if (what == "sqlcipher")
+        else if (what == WhichLib.SQLCIPHER)
         {
-            switch (env_deps)
+            switch (tfm_deps)
             {
-                case "android":
+                case TFM.ANDROID:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.android", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "macos":
+                case TFM.XAMARIN_MAC:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.osx", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "ios":
-                case "watchos":
+                case TFM.IOS:
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}.static", gen.ROOT_NAME, env_deps));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.ios", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "net35":
-                case "net40":
-                case "net45":
-                case "netstandard11": // TODO because this is used for netcoreapp, kinda hackish
+                case TFM.NET35:
+                case TFM.NET40:
+                case TFM.NET45:
+                case TFM.NETSTANDARD11: // TODO because this is used for netcoreapp, kinda hackish
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
@@ -949,7 +952,7 @@ public static class gen
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
-                case "uwp10":
+                case TFM.UWP:
                     f.WriteStartElement("dependency");
                     f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
@@ -1017,34 +1020,30 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			bool lib_deps;
+			IncludeLib lib_deps;
 			switch (kind)
 			{
 				case SQLCipherBundleKind.Unofficial:
-					lib_deps = true;
+					lib_deps = IncludeLib.YES;
 					break;
 				case SQLCipherBundleKind.Zetetic:
-					lib_deps = false;
+					lib_deps = IncludeLib.NO;
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 
-            write_bundle_dependency_group(f, "android", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "ios", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "macos", "sqlcipher", lib_deps);
-            // TODO write_bundle_dependency_group(f, "watchos", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "net35", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "net40", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "net45", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "wpa81", "wpa81", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "win8", "win8", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "uwp10", "sqlcipher");
+            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.IOS, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.NET35, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.NET40, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.NET45, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.SQLCIPHER, lib_deps);
+            write_bundle_dependency_group(f, TFM.UWP, WhichLib.SQLCIPHER);
             
-            write_dependency_group(f, "netstandard11", DEP_CORE);
-            write_dependency_group(f, null, DEP_CORE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
+            write_dependency_group(f, TFM.NONE, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -1094,22 +1093,17 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, "android", "e_sqlite3");
-            write_bundle_dependency_group(f, "ios", "e_sqlite3");
-            write_bundle_dependency_group(f, "macos", "e_sqlite3");
-            // TODO write_bundle_dependency_group(f, "watchos", "e_sqlite3");
-            write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
-            write_bundle_dependency_group(f, "wp80", "e_sqlite3");
-            write_bundle_dependency_group(f, "win8", "e_sqlite3");
-            write_bundle_dependency_group(f, "win81", "e_sqlite3");
-            write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
-            write_bundle_dependency_group(f, "net35", "e_sqlite3");
-            write_bundle_dependency_group(f, "net40", "e_sqlite3");
-            write_bundle_dependency_group(f, "net45", "e_sqlite3");
-            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3", true);
+            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.IOS, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.UWP, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET35, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET40, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET45, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.E_SQLITE3, IncludeLib.YES);
             
-            write_dependency_group(f, "netstandard11", DEP_CORE);
-            write_dependency_group(f, null, DEP_CORE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
+            write_dependency_group(f, TFM.NONE, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -1159,22 +1153,17 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, "android", "e_sqlite3");
-            write_bundle_dependency_group(f, "ios", "sqlite3");
-            write_bundle_dependency_group(f, "macos", "e_sqlite3");
-            // TODO write_bundle_dependency_group(f, "watchos", "sqlite3");
-            write_bundle_dependency_group(f, "wpa81", "e_sqlite3");
-            write_bundle_dependency_group(f, "wp80", "e_sqlite3");
-            write_bundle_dependency_group(f, "win8", "e_sqlite3");
-            write_bundle_dependency_group(f, "win81", "e_sqlite3");
-            write_bundle_dependency_group(f, "uwp10", "e_sqlite3");
-            write_bundle_dependency_group(f, "net35", "e_sqlite3");
-            write_bundle_dependency_group(f, "net40", "e_sqlite3");
-            write_bundle_dependency_group(f, "net45", "e_sqlite3");
-            write_bundle_dependency_group(f, "netcoreapp", "netstandard11", "e_sqlite3", true);
+            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.IOS, WhichLib.NONE);
+            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.UWP, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET35, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET40, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NET45, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.E_SQLITE3, IncludeLib.YES);
 
-            write_dependency_group(f, "netstandard11", DEP_CORE);
-            write_dependency_group(f, null, DEP_CORE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
+            write_dependency_group(f, TFM.NONE, DEP_CORE);
 
 			f.WriteEndElement(); // dependencies
 
