@@ -357,6 +357,34 @@ public static class gen
 		}
 	}
 
+	static string make_cb_path_win(
+		string cb_bin,
+		string name,
+		string toolset,
+		string flavor,
+		string arch
+		)
+	{
+		return Path.Combine(cb_bin, name, "win", toolset, flavor, arch, string.Format("{0}.dll", name));
+	}
+
+	static string make_cb_path_linux(
+		string cb_bin,
+		string name,
+		string cpu
+		)
+	{
+		return Path.Combine(cb_bin, name, "linux", cpu, string.Format("lib{0}.so", name));
+	}
+
+	static string make_cb_path_mac(
+		string cb_bin,
+		string name
+		)
+	{
+		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
+	}
+
 	private static void gen_nuspec_e_sqlite3_win(string top, string cb_bin)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -395,7 +423,7 @@ public static class gen
 			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
 			{
 				write_nuspec_file_entry_native(
-					Path.Combine(cb_bin, "e_sqlite3", "win", a_toolset, flavor, arch, "e_sqlite3.dll"),
+					make_cb_path_win(cb_bin, "e_sqlite3", a_toolset, flavor, arch),
 					rid,
 					f
 					);
@@ -539,7 +567,7 @@ public static class gen
 			(cpu, rid) =>
 			{
 				write_nuspec_file_entry_native(
-					Path.Combine(cb_bin, "e_sqlite3", "linux", cpu, "libe_sqlite3.so"),
+					make_cb_path_linux(cb_bin, "e_sqlite3", cpu),
 					rid,
 					f
 					);
@@ -549,7 +577,7 @@ public static class gen
             {
                 case "osx":
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "e_sqlite3", "mac", "libe_sqlite3.dylib"),
+						make_cb_path_mac(cb_bin, "e_sqlite3"),
 						"osx-x64",
 						f
 						);
@@ -640,39 +668,39 @@ public static class gen
 			switch (plat) {
 				case "windows":
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x86", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "x86"),
 						"win-x86",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x64", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "x64"),
 						"win-x64",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "arm", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "plain", "arm"),
 						"win-arm", // TODO the other one uses win8-arm
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x64", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x64"),
 						"win10-x64",
 						"uap10.0",
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x86", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x86"),
 						"win10-x86",
 						"uap10.0",
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
-						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "arm", "sqlcipher.dll"),
+						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "arm"),
 						"win10-arm",
 						"uap10.0",
 						f
@@ -682,7 +710,7 @@ public static class gen
 					break;
 				case "osx":
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "mac", "libsqlcipher.dylib"),
+						make_cb_path_mac(cb_bin, "sqlcipher"),
 						"osx-x64",
 						f
 						);
@@ -691,13 +719,13 @@ public static class gen
 					break;
 				case "linux":
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "linux", "x64", "libsqlcipher.so"),
+						make_cb_path_linux(cb_bin, "sqlcipher", "x64"),
 						"linux-x64",
 						f
 						);
 
 					write_nuspec_file_entry_native(
-						Path.Combine(cb_bin, "sqlcipher", "linux", "x86", "libsqlcipher.so"),
+						make_cb_path_linux(cb_bin, "sqlcipher", "x86"),
 						"linux-x86",
 						f
 						);

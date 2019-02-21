@@ -1,14 +1,10 @@
 
 distinction between win-arm and win8-arm ?
 
-uwp:  just win10-cpu RID, or with nativeassets?
-
 just one lib pkg each for e_sqlite3
 and sqlcipher
 
 what nuspec does dotnet pack generate?
-
-rm provders from bundle nuspecs
 
 what are the empty dep groups for?
 
