@@ -498,143 +498,6 @@ public static class gen
 		}
 	}
 
-#if not
-	class config_embedded
-	{
-		public string id {get;set;}
-		public string src {get;set;}
-		public TFM tfm {get;set;}
-	}
-
-	private static void gen_nuspec_embedded(
-		string top,
-		config_embedded cfg
-		)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		var id = cfg.id;
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-            write_nuspec_file_entry_lib(
-					cfg.src,
-					cfg.tfm,
-                    f
-                    );
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuspec_e_sqlite3_otherplat(string top, string cb_bin, string plat)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.{0}", plat);
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", string.Format("Native code only (e_sqlite3, {0}) for SQLitePCLRaw", plat));
-			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			string tname = string.Format("{0}.targets", id);
-			Action<string, string> write_linux_item = 
-			(cpu, rid) =>
-			{
-				write_nuspec_file_entry_native(
-					make_cb_path_linux(cb_bin, WhichLib.E_SQLITE3, cpu),
-					rid,
-					f
-					);
-			};
-
-            switch (plat)
-            {
-                case "osx":
-					write_nuspec_file_entry_native(
-						make_cb_path_mac(cb_bin, WhichLib.E_SQLITE3),
-						"osx-x64",
-						f
-						);
-                    gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
-                    break;
-                case "linux":
-					write_linux_item("x64", "linux-x64");
-					write_linux_item("x86", "linux-x86");
-					write_linux_item("armhf", "linux-arm");
-					write_linux_item("armsf", "linux-armel");
-					write_linux_item("arm64", "linux-arm64");
-					write_linux_item("musl-x64", "linux-musl-x64");
-					write_linux_item("musl-x64", "alpine-x64");
-
-                    gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
-                    break;
-                default:
-                    throw new Exception();
-            }
-
-            f.WriteStartElement("file");
-            f.WriteAttributeString("src", tname);
-            f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
-            f.WriteEndElement(); // file
-
-            if (plat == "osx")
-            {
-                write_empty(f, top, TFM.XAMARIN_MAC);
-                tname = string.Format("{0}.Xamarin.Mac20.targets", id);
-                gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: true);
-
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", tname);
-                f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
-                f.WriteEndElement(); // file
-            }
-
-            write_empty(f, top, TFM.NET35);
-            write_empty(f, top, TFM.NETSTANDARD11);
-            write_empty(f, top, TFM.NETSTANDARD20);
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-#endif
-
 	private static void gen_nuspec_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -1618,52 +1481,14 @@ public static class gen
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);
 
+		gen_nuspec_e_sqlite3(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_sqlcipher(top, cb_bin, dir_mt, dlls);
+
         gen_nuspec_bundle_green(top, dir_mt, dlls);
         gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
         gen_nuspec_bundle_winsqlite3(top, dir_mt, dlls);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial, dir_mt, dlls);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic, dir_mt, dlls);
-
-#if not
-		var items_embedded = new config_embedded[]
-		{
-			new config_embedded
-			{
-				id = "SQLitePCLRaw.lib.e_sqlite3.android",
-				src = "TODO",
-				tfm = TFM.ANDROID
-			},
-			new config_embedded
-			{
-				id = "SQLitePCLRaw.lib.e_sqlite3.ios",
-				src = "TODO",
-				tfm = TFM.IOS
-			},
-			new config_embedded
-			{
-				id = "SQLitePCLRaw.lib.sqlcipher.android",
-				src = "TODO",
-				tfm = TFM.ANDROID
-			},
-			new config_embedded
-			{
-				id = "SQLitePCLRaw.lib.sqlcipher.ios",
-				src = "TODO",
-				tfm = TFM.IOS
-			},
-		};
-
-		foreach (var cfg in items_embedded)
-		{
-			gen_nuspec_embedded(
-				top, 
-				cfg
-				);
-		}
-#endif
-
-		gen_nuspec_e_sqlite3(top, cb_bin, dir_mt, dlls);
-		gen_nuspec_sqlcipher(top, cb_bin, dir_mt, dlls);
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
@@ -1676,14 +1501,15 @@ public static class gen
 		{
             tw.WriteLine("../nuget pack {0}.core.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
+
+			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.nuspec", gen.ROOT_NAME);
+
             tw.WriteLine("../nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_sqlcipher.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
-
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.nuspec", gen.ROOT_NAME);
 
 			tw.WriteLine("ls *.nupkg");
 		}
@@ -1695,14 +1521,15 @@ public static class gen
 			tw.WriteLine("ls *.nupkg");
 			tw.WriteLine("../nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
 	}
 }
