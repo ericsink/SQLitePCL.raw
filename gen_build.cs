@@ -76,6 +76,7 @@ public static class gen
 		{
 			case "netstandard1.1": return TFM.NETSTANDARD11;
 			case "netstandard2.0": return TFM.NETSTANDARD20;
+			case "xamarin.ios10": return TFM.IOS;
 			default:
 				throw new NotImplementedException(string.Format("str_to_tfm not found: {0}", s));
 		}
@@ -379,13 +380,13 @@ public static class gen
 		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
 	}
 
-	private static void gen_nuspec_e_sqlite3_win(string top, string cb_bin)
+	private static void gen_nuspec_e_sqlite3(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3.windows");
+		string id = string.Format("SQLitePCLRaw.lib.e_sqlite3");
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -401,6 +402,21 @@ public static class gen
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
+
+			foreach (
+				var dll in dlls
+					.Where(d => 
+						(d.project_subdir == "SQLitePCLRaw.lib.e_sqlite3.ios")
+						|| (d.project_subdir == "SQLitePCLRaw.lib.e_sqlite3.android")
+						)
+				)
+			{
+				write_nuspec_file_entry_lib(
+						dll.get_src_path(dir_mt), 
+						dll.tfm,
+						f
+						);
+			}
 
 			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
 			{
@@ -418,8 +434,34 @@ public static class gen
 			write_file_entry("v140", "appcontainer", "x64", "win10-x64");
 			write_file_entry("v140", "appcontainer", "x86", "win10-x86");
 
+			Action<string, string> write_linux_item = 
+			(cpu, rid) =>
+			{
+				write_nuspec_file_entry_native(
+					make_cb_path_linux(cb_bin, WhichLib.E_SQLITE3, cpu),
+					rid,
+					f
+					);
+			};
+
+			write_nuspec_file_entry_native(
+				make_cb_path_mac(cb_bin, WhichLib.E_SQLITE3),
+				"osx-x64",
+				f
+				);
+
+			write_linux_item("x64", "linux-x64");
+			write_linux_item("x86", "linux-x86");
+			write_linux_item("armhf", "linux-arm");
+			write_linux_item("armsf", "linux-armel");
+			write_linux_item("arm64", "linux-arm64");
+			write_linux_item("musl-x64", "linux-musl-x64");
+			write_linux_item("musl-x64", "alpine-x64");
+
 #if TODO // targets file
 			string tname;
+			gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
+			gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
 			switch (toolset) {
 				case "v110_xp":
 					tname = gen_nuget_targets_pinvoke_anycpu(top, id, toolset);
@@ -456,6 +498,7 @@ public static class gen
 		}
 	}
 
+#if not
 	class config_embedded
 	{
 		public string id {get;set;}
@@ -590,14 +633,15 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
+#endif
 
-	private static void gen_nuspec_sqlcipher(string top, string cb_bin, string plat)
+	private static void gen_nuspec_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string id = string.Format("SQLitePCLRaw.lib.sqlcipher.{0}", plat);
+		string id = string.Format("SQLitePCLRaw.lib.sqlcipher");
 		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
 		{
 			f.WriteStartDocument();
@@ -607,88 +651,98 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", string.Format("Native code only (sqlcipher, {0}) for SQLitePCLRaw", plat));
+			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
 
-			string tname = string.Format("{0}.targets", id);
-			switch (plat) {
-				case "windows":
-					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x86"),
-						"win-x86",
+			foreach (
+				var dll in dlls
+					.Where(d => 
+						(d.project_subdir == "SQLitePCLRaw.lib.sqlcipher.ios")
+						|| (d.project_subdir == "SQLitePCLRaw.lib.sqlcipher.android")
+						)
+				)
+			{
+				write_nuspec_file_entry_lib(
+						dll.get_src_path(dir_mt), 
+						dll.tfm,
 						f
 						);
-
-					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x64"),
-						"win-x64",
-						f
-						);
-
-					write_nuspec_file_entry_native(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "arm"),
-						"win-arm", // TODO the other one uses win8-arm
-						f
-						);
-
-					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x64"),
-						"win10-x64",
-						TFM.UWP,
-						f
-						);
-
-					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x86"),
-						"win10-x86",
-						TFM.UWP,
-						f
-						);
-
-					write_nuspec_file_entry_nativeassets(
-						make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "arm"),
-						"win10-arm",
-						TFM.UWP,
-						f
-						);
-
-					gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
-					break;
-				case "osx":
-					write_nuspec_file_entry_native(
-						make_cb_path_mac(cb_bin, WhichLib.SQLCIPHER),
-						"osx-x64",
-						f
-						);
-
-					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: false);
-					break;
-				case "linux":
-					write_nuspec_file_entry_native(
-						make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x64"),
-						"linux-x64",
-						f
-						);
-
-					write_nuspec_file_entry_native(
-						make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x86"),
-						"linux-x86",
-						f
-						);
-
-					// TODO arm?
-
-					// TODO musl?
-
-					gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
-					break;
-				default:
-					throw new Exception();
 			}
+
+			write_nuspec_file_entry_native(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x86"),
+				"win-x86",
+				f
+				);
+
+			write_nuspec_file_entry_native(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x64"),
+				"win-x64",
+				f
+				);
+
+			write_nuspec_file_entry_native(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "arm"),
+				"win-arm", // TODO the other one uses win8-arm
+				f
+				);
+
+			write_nuspec_file_entry_nativeassets(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x64"),
+				"win10-x64",
+				TFM.UWP,
+				f
+				);
+
+			write_nuspec_file_entry_nativeassets(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x86"),
+				"win10-x86",
+				TFM.UWP,
+				f
+				);
+
+			write_nuspec_file_entry_nativeassets(
+				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "arm"),
+				"win10-arm",
+				TFM.UWP,
+				f
+				);
+
+			write_nuspec_file_entry_native(
+				make_cb_path_mac(cb_bin, WhichLib.SQLCIPHER),
+				"osx-x64",
+				f
+				);
+
+			write_nuspec_file_entry_native(
+				make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x64"),
+				"linux-x64",
+				f
+				);
+
+			write_nuspec_file_entry_native(
+				make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x86"),
+				"linux-x86",
+				f
+				);
+
+			// TODO linux arm?
+
+			// TODO linux musl?
+
+#if TODO // targets file
+			string tname = string.Format("{0}.targets", id);
+
+			gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
+
+			gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: false);
+
+			gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
+
 			f.WriteStartElement("file");
 			f.WriteAttributeString("src", tname);
 			f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
@@ -705,6 +759,7 @@ public static class gen
                 f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
                 f.WriteEndElement(); // file
             }
+#endif
 
             write_empty(f, top, TFM.NET35);
             write_empty(f, top, TFM.UWP);
@@ -1562,12 +1617,14 @@ public static class gen
 
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);
+
         gen_nuspec_bundle_green(top, dir_mt, dlls);
         gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
         gen_nuspec_bundle_winsqlite3(top, dir_mt, dlls);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Unofficial, dir_mt, dlls);
         gen_nuspec_bundle_sqlcipher(top, SQLCipherBundleKind.Zetetic, dir_mt, dlls);
 
+#if not
 		var items_embedded = new config_embedded[]
 		{
 			new config_embedded
@@ -1603,14 +1660,10 @@ public static class gen
 				cfg
 				);
 		}
+#endif
 
-		gen_nuspec_e_sqlite3_win(top, cb_bin);
-		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "osx");
-		gen_nuspec_e_sqlite3_otherplat(top, cb_bin, "linux");
-
-		gen_nuspec_sqlcipher(top, cb_bin, "windows");
-		gen_nuspec_sqlcipher(top, cb_bin, "osx");
-		gen_nuspec_sqlcipher(top, cb_bin, "linux");
+		gen_nuspec_e_sqlite3(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_sqlcipher(top, cb_bin, dir_mt, dlls);
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
 		{
@@ -1629,18 +1682,9 @@ public static class gen
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
 
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.windows.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.osx.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.linux.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.nuspec", gen.ROOT_NAME);
 
-			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.windows.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.osx.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.sqlcipher.linux.nuspec", gen.ROOT_NAME);
-
-			foreach (var cfg in items_embedded)
-			{
-				tw.WriteLine("../nuget pack {0}.nuspec", cfg.id);
-			}
 			tw.WriteLine("ls *.nupkg");
 		}
 
@@ -1657,18 +1701,8 @@ public static class gen
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.windows.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.osx.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.linux.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-
-			foreach (var cfg in items_embedded)
-			{
-				tw.WriteLine("../nuget push -Source {2} {0}.{1}.nupkg", cfg.id, NUSPEC_VERSION, src);
-			}
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../nuget push -Source {2} {0}.lib.sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
 	}
 }
