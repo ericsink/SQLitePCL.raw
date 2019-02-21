@@ -1,4 +1,6 @@
 
+chg release notes in nuspec to reference a URL
+
 distinction between win-arm and win8-arm ?
 
 just one lib pkg each for e_sqlite3
