@@ -643,11 +643,13 @@ public static class gen
 					f.WriteAttributeString("target", string.Format("runtimes\\win-x64\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
+					// TODO the other one uses win8-arm
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "arm", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win-arm\\native\\sqlcipher.dll"));
 					f.WriteEndElement(); // file
 
+					// TODO note difference below with the e_sqlite3 version
 					f.WriteStartElement("file");
 					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x64", "sqlcipher.dll"));
 					f.WriteAttributeString("target", string.Format("runtimes\\win10-x64\\nativeassets\\uap10.0\\sqlcipher.dll"));
