@@ -20,49 +20,11 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-public static class projects
+public static class gen
 {
-    public static string rid_front_half(string toolset)
-    {
-        switch (toolset)
-        {
-            case "v110_xp":
-				// for our builds, v110_xp should always correspond to a win-whatever RID
-                return "win";
-            case "v110":
-                return "win8";
-            case "v110_wp80":
-                return "wp80";
-            case "v120":
-                return "win81";
-            case "v120_wp81":
-                return "wpa81";
-            case "v140":
-                return "win10";
-            default:
-                throw new Exception();
-        }
-    }
+    public const string ROOT_NAME = "SQLitePCLRaw";
 
-}
-
-public static class config_e_sqlite3_win
-{
-	public static string get_name(string toolset)
-	{
-		return string.Format("lib.e_sqlite3.{0}", toolset);
-	}
-
-	public static string get_id(string toolset)
-	{
-		return string.Format("{0}.{1}", gen.ROOT_NAME, get_name(toolset));
-	}
-
-}
-
-public static class config_cs
-{
-	public static string get_nuget_framework_name(string env)
+	static string get_nuget_framework_name(string env)
 	{
 		switch (env)
 		{
@@ -103,18 +65,27 @@ public static class config_cs
 		}
 	}
 					
-}
-
-public class config_embedded
-{
-	public string id {get;set;}
-	public string src {get;set;}
-	public string target_env {get;set;}
-}
-
-public static class gen
-{
-    public const string ROOT_NAME = "SQLitePCLRaw";
+    static string rid_front_half(string toolset)
+    {
+        switch (toolset)
+        {
+            case "v110_xp":
+				// for our builds, v110_xp should always correspond to a win-whatever RID
+                return "win";
+            case "v110":
+                return "win8";
+            case "v110_wp80":
+                return "wp80";
+            case "v120":
+                return "win81";
+            case "v120_wp81":
+                return "wpa81";
+            case "v140":
+                return "win10";
+            default:
+                throw new Exception();
+        }
+    }
 
 	private static void write_nuspec_file_entry(string src, string target, XmlWriter f)
 	{
@@ -211,7 +182,7 @@ public static class gen
         f.WriteStartElement("group");
         if (env != null)
         {
-            f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env));
+            f.WriteAttributeString("targetFramework", get_nuget_framework_name(env));
             switch (env)
             {
                 case "uwp10":
@@ -469,6 +440,13 @@ public static class gen
 		}
 	}
 
+	class config_embedded
+	{
+		public string id {get;set;}
+		public string src {get;set;}
+		public string target_env {get;set;}
+	}
+
 	private static void gen_nuspec_embedded(
 		string top,
 		config_embedded cfg
@@ -495,7 +473,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			var tfm = config_cs.get_nuget_framework_name(cfg.target_env);
+			var tfm = get_nuget_framework_name(cfg.target_env);
             write_nuspec_file_entry_lib(
 					cfg.src,
 					tfm,
@@ -820,7 +798,7 @@ public static class gen
 
 			// --------
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name("uwp10"));
+			f.WriteAttributeString("targetFramework", get_nuget_framework_name("uwp10"));
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
@@ -868,7 +846,7 @@ public static class gen
     private static void write_bundle_dependency_group(XmlWriter f, string env_target, string env_deps, string what, bool lib)
     {
         f.WriteStartElement("group");
-        f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env_target));
+        f.WriteAttributeString("targetFramework", get_nuget_framework_name(env_target));
 
         add_dep_core(f);
 
@@ -1274,7 +1252,7 @@ public static class gen
 			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 
-			var front = projects.rid_front_half(toolset);
+			var front = rid_front_half(toolset);
 			Action<string> write_item = (cpu) =>
 			{
 				f.WriteStartElement("ItemGroup");
