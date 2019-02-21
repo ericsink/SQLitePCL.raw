@@ -1,4 +1,8 @@
 
+separate or fix bundle_sqlcipher for
+the e_ vs regular issue.  need another
+build of batteries?
+
 fix the targets files
 
 fix the bundle dependencies

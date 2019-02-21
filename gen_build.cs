@@ -772,40 +772,33 @@ public static class gen
 		SQLCIPHER, // TODO e_
 	}
 
-    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm, WhichLib what)
-    {
-        write_bundle_dependency_group(f, tfm, tfm, what, IncludeLib.YES);
-    }
-
-    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm, WhichLib what, IncludeLib lib)
-    {
-        write_bundle_dependency_group(f, tfm, tfm, what, lib);
-    }
-
-    private static void write_bundle_dependency_group(XmlWriter f, TFM tfm_target, TFM tfm_deps, WhichLib what, IncludeLib lib)
+    private static void write_bundle_dependency_group(XmlWriter f, WhichLib what)
     {
         f.WriteStartElement("group");
-        f.WriteAttributeString("targetFramework", tfm_target.AsString());
 
         add_dep_core(f);
 
-        if (lib == IncludeLib.YES)
-        {
-			if (what == WhichLib.E_SQLITE3)
-			{
-				f.WriteStartElement("dependency");
-				f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME));
-				f.WriteAttributeString("version", NUSPEC_VERSION);
-				f.WriteEndElement(); // dependency
-			}
-			else if (what == WhichLib.SQLCIPHER)
-			{
-				f.WriteStartElement("dependency");
-				f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
-				f.WriteAttributeString("version", NUSPEC_VERSION);
-				f.WriteEndElement(); // dependency
-			}
-        }
+		if (what == WhichLib.E_SQLITE3)
+		{
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME));
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+		}
+		else if (what == WhichLib.SQLCIPHER)
+		{
+			f.WriteStartElement("dependency");
+			f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
+			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteEndElement(); // dependency
+		}
+		else if (what == WhichLib.NONE)
+		{
+		}
+		else
+		{
+			throw new NotImplementedException();
+		}
 
         f.WriteEndElement(); // group
     }
@@ -858,31 +851,21 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			IncludeLib lib_deps;
+			WhichLib lib_dep;
 			switch (kind)
 			{
 				case SQLCipherBundleKind.Unofficial:
-					lib_deps = IncludeLib.YES;
+					lib_dep = WhichLib.SQLCIPHER;
 					break;
 				case SQLCipherBundleKind.Zetetic:
-					lib_deps = IncludeLib.NO;
+					lib_dep = WhichLib.NONE;
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 
-            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.IOS, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.NET35, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.NET40, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.NET45, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.SQLCIPHER, lib_deps);
-            write_bundle_dependency_group(f, TFM.UWP, WhichLib.SQLCIPHER);
+            write_bundle_dependency_group(f, lib_dep);
             
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
-            write_dependency_group(f, TFM.NONE, DEP_CORE);
-
 			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
@@ -930,18 +913,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.IOS, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.UWP, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET35, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET40, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET45, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.E_SQLITE3, IncludeLib.YES);
+            write_bundle_dependency_group(f, WhichLib.E_SQLITE3);
             
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
-            write_dependency_group(f, TFM.NONE, DEP_CORE);
-
 			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
@@ -989,17 +962,9 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, TFM.ANDROID, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.IOS, WhichLib.NONE);
-            write_bundle_dependency_group(f, TFM.XAMARIN_MAC, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.UWP, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET35, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET40, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NET45, WhichLib.E_SQLITE3);
-            write_bundle_dependency_group(f, TFM.NETCOREAPP, TFM.NETSTANDARD11, WhichLib.E_SQLITE3, IncludeLib.YES);
+			// TODO how to get this to use the system sqlite for ios?
 
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
-            write_dependency_group(f, TFM.NONE, DEP_CORE);
+            write_bundle_dependency_group(f, WhichLib.E_SQLITE3);
 
 			f.WriteEndElement(); // dependencies
 
