@@ -872,11 +872,6 @@ public static class gen
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.provider.winsqlite3.uwp10", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
 			f.WriteEndElement(); // group
 
 			f.WriteEndElement(); // dependencies
@@ -922,24 +917,6 @@ public static class gen
         f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env_target));
 
         add_dep_core(f);
-
-        if (
-                ((env_deps == "ios") || (env_deps == "watchos"))
-                && (what != "sqlite3")
-           )
-        {
-            f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, "internal", env_deps));
-            f.WriteAttributeString("version", NUSPEC_VERSION);
-            f.WriteEndElement(); // dependency
-        }
-        else
-        {
-            f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.provider.{1}.{2}", gen.ROOT_NAME, what, env_deps));
-            f.WriteAttributeString("version", NUSPEC_VERSION);
-            f.WriteEndElement(); // dependency
-        }
 
         if (lib)
         {
