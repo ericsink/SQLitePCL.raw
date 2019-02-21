@@ -22,11 +22,6 @@ using System.Xml;
 
 public static class projects
 {
-	public static string get_nuget_target_path(string tfm)
-	{
-		return string.Format("lib\\{0}\\", tfm);
-	}
-
     public static string rid_front_half(string toolset)
     {
         switch (toolset)
@@ -129,6 +124,33 @@ public static class gen
 		f.WriteEndElement(); // file
 	}
 
+	private static void write_nuspec_file_entry_lib(string src, string tfm, XmlWriter f)
+	{
+		write_nuspec_file_entry(
+			src,
+			string.Format("lib\\{0}\\", tfm),
+			f
+			);
+	}
+
+	private static void write_nuspec_file_entry_native(string src, string rid, XmlWriter f)
+	{
+		write_nuspec_file_entry(
+			src,
+			string.Format("runtimes\\{0}\\native\\", rid),
+			f
+			);
+	}
+
+	private static void write_nuspec_file_entry_nativeassets(string src, string rid, string tfm, XmlWriter f)
+	{
+		write_nuspec_file_entry(
+			src,
+			string.Format("runtimes\\{0}\\nativeassets\\{1}\\", rid, tfm),
+			f
+			);
+	}
+
 	private static void write_empty(XmlWriter f, string top, string tfm)
     {
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference");
@@ -211,7 +233,6 @@ public static class gen
 		public string config {get;set;}
 		public string dll {get;set;}
 		public string tfm {get;set;}
-		public string target_path => projects.get_nuget_target_path(tfm);
 		public string get_src_path(string dir)
 		{
 			return Path.Combine(
@@ -321,9 +342,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.core")
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}
@@ -373,10 +394,11 @@ public static class gen
 
 			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
 			{
-				f.WriteStartElement("file");
-				f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "win", a_toolset, flavor, arch, "e_sqlite3.dll"));
-				f.WriteAttributeString("target", string.Format("runtimes\\{0}\\native\\", rid));
-				f.WriteEndElement(); // file
+				write_nuspec_file_entry_native(
+					Path.Combine(cb_bin, "e_sqlite3", "win", a_toolset, flavor, arch, "e_sqlite3.dll"),
+					rid,
+					f
+					);
 			};
 
 			write_file_entry("v140", "plain", "x86", "win-x86");
@@ -463,9 +485,9 @@ public static class gen
 			f.WriteStartElement("files");
 
 			var tfm = config_cs.get_nuget_framework_name(cfg.target_env);
-            write_nuspec_file_entry(
+            write_nuspec_file_entry_lib(
 					cfg.src,
-					projects.get_nuget_target_path(tfm),
+					tfm,
                     f
                     );
 
@@ -513,50 +535,34 @@ public static class gen
 			f.WriteStartElement("files");
 
 			string tname = string.Format("{0}.targets", id);
+			Action<string, string> write_linux_item = 
+			(cpu, rid) =>
+			{
+				write_nuspec_file_entry_native(
+					Path.Combine(cb_bin, "e_sqlite3", "linux", cpu, "libe_sqlite3.so"),
+					rid,
+					f
+					);
+			};
+
             switch (plat)
             {
                 case "osx":
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "mac", "libe_sqlite3.dylib"));
-                    f.WriteAttributeString("target", "runtimes\\osx-x64\\native\\libe_sqlite3.dylib");
-                    f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "e_sqlite3", "mac", "libe_sqlite3.dylib"),
+						"osx-x64",
+						f
+						);
                     gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
                     break;
                 case "linux":
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "x64", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-x64\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "x86", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-x86\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "armhf", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-arm\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "armsf", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-armel\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "musl-x64", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-musl-x64\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "musl-x64", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\alpine-x64\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
-
-                    f.WriteStartElement("file");
-                    f.WriteAttributeString("src", Path.Combine(cb_bin, "e_sqlite3", "linux", "arm64", "libe_sqlite3.so"));
-                    f.WriteAttributeString("target", "runtimes\\linux-arm64\\native\\libe_sqlite3.so");
-                    f.WriteEndElement(); // file
+					write_linux_item("x64", "linux-x64");
+					write_linux_item("x86", "linux-x86");
+					write_linux_item("armhf", "linux-arm");
+					write_linux_item("armsf", "linux-armel");
+					write_linux_item("arm64", "linux-arm64");
+					write_linux_item("musl-x64", "linux-musl-x64");
+					write_linux_item("musl-x64", "alpine-x64");
 
                     gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
                     break;
@@ -633,60 +639,72 @@ public static class gen
 			string tname = string.Format("{0}.targets", id);
 			switch (plat) {
 				case "windows":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x86", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win-x86\\native\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x86", "sqlcipher.dll"),
+						"win-x86",
+						f
+						);
 
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x64", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win-x64\\native\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "x64", "sqlcipher.dll"),
+						"win-x64",
+						f
+						);
 
-					// TODO the other one uses win8-arm
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "arm", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win-arm\\native\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "plain", "arm", "sqlcipher.dll"),
+						"win-arm", // TODO the other one uses win8-arm
+						f
+						);
 
-					// TODO note difference below with the e_sqlite3 version
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x64", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win10-x64\\nativeassets\\uap10.0\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_nativeassets(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x64", "sqlcipher.dll"),
+						"win10-x64",
+						"uap10.0",
+						f
+						);
 
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x86", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win10-x86\\nativeassets\\uap10.0\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_nativeassets(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "x86", "sqlcipher.dll"),
+						"win10-x86",
+						"uap10.0",
+						f
+						);
 
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "arm", "sqlcipher.dll"));
-					f.WriteAttributeString("target", string.Format("runtimes\\win10-arm\\nativeassets\\uap10.0\\sqlcipher.dll"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_nativeassets(
+						Path.Combine(cb_bin, "sqlcipher", "win", "v140", "appcontainer", "arm", "sqlcipher.dll"),
+						"win10-arm",
+						"uap10.0",
+						f
+						);
 
 					gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
 					break;
 				case "osx":
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "mac", "libsqlcipher.dylib"));
-					f.WriteAttributeString("target", string.Format("runtimes\\osx-x64\\native\\libsqlcipher.dylib"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "mac", "libsqlcipher.dylib"),
+						"osx-x64",
+						f
+						);
 
 					gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: false);
 					break;
 				case "linux":
-					// TODO do we need amd64 version here?
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "linux", "x64", "libsqlcipher.so"),
+						"linux-x64",
+						f
+						);
 
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x64", "libsqlcipher.so"));
-					f.WriteAttributeString("target", string.Format("runtimes\\linux-x64\\native\\libsqlcipher.so"));
-					f.WriteEndElement(); // file
+					write_nuspec_file_entry_native(
+						Path.Combine(cb_bin, "sqlcipher", "linux", "x86", "libsqlcipher.so"),
+						"linux-x86",
+						f
+						);
 
-					f.WriteStartElement("file");
-					f.WriteAttributeString("src", Path.Combine(cb_bin, "sqlcipher", "linux", "x86", "libsqlcipher.so"));
-					f.WriteAttributeString("target", string.Format("runtimes\\linux-x86\\native\\libsqlcipher.so"));
-					f.WriteEndElement(); // file
+					// TODO arm?
+
+					// TODO musl?
 
 					gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
 					break;
@@ -790,9 +808,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.ugly")
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}
@@ -861,9 +879,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.winsqlite3")
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}
@@ -1107,9 +1125,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.sqlcipher")
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}
@@ -1184,9 +1202,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlite3")
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}
@@ -1262,9 +1280,9 @@ public static class gen
 					.Where(d => d.project_subdir == "SQLitePCLRaw.core") // TODO green
 				)
 			{
-				write_nuspec_file_entry(
+				write_nuspec_file_entry_lib(
 						dll.get_src_path(dir_mt), 
-						dll.target_path,
+						dll.tfm,
 						f
 						);
 			}

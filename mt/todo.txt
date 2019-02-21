@@ -1,8 +1,7 @@
 
-so what does net45/46/47 mean for platform?
-what tfm does mono use?
-
 distinction between win-arm and win8-arm ?
+
+uwp:  just win10-cpu RID, or with nativeassets?
 
 just one lib pkg each for e_sqlite3
 and sqlcipher
