@@ -794,111 +794,20 @@ public static class gen
 
         if (lib == IncludeLib.YES)
         {
-        if (what == WhichLib.E_SQLITE3)
-        {
-            switch (tfm_deps)
-            {
-                case TFM.ANDROID:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.android", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.XAMARIN_MAC:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.osx", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.IOS:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.ios", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.NET35:
-                case TFM.NET40:
-                case TFM.NET45:
-                case TFM.NETSTANDARD11: // TODO because this is used for netcoreapp, kinda hackish
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.windows", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.osx", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.linux", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                default:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.windows", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-            }
-        }
-        else if (what == WhichLib.SQLCIPHER)
-        {
-			// TODO just one
-            switch (tfm_deps)
-            {
-                case TFM.ANDROID:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.android", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.XAMARIN_MAC:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.osx", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.IOS:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.ios", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.NET35:
-                case TFM.NET40:
-                case TFM.NET45:
-                case TFM.NETSTANDARD11: // TODO because this is used for netcoreapp, kinda hackish
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.osx", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.linux", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                case TFM.UWP:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-                default:
-                    f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
-                    f.WriteAttributeString("version", NUSPEC_VERSION);
-                    f.WriteEndElement(); // dependency
-                    break;
-            }
-        }
+			if (what == WhichLib.E_SQLITE3)
+			{
+				f.WriteStartElement("dependency");
+				f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME));
+				f.WriteAttributeString("version", NUSPEC_VERSION);
+				f.WriteEndElement(); // dependency
+			}
+			else if (what == WhichLib.SQLCIPHER)
+			{
+				f.WriteStartElement("dependency");
+				f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
+				f.WriteAttributeString("version", NUSPEC_VERSION);
+				f.WriteEndElement(); // dependency
+			}
         }
 
         f.WriteEndElement(); // group
