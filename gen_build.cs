@@ -49,32 +49,6 @@ public static class projects
         }
     }
 
-    public static string cs_env_to_toolset(string env)
-    {
-	    switch (env) {
-		case "net45":
-			return "v110_xp";
-		case "net40":
-			return "v110_xp";
-		case "net35":
-			return "v110_xp";
-		case "wp80":
-			return "v110_wp80";
-		case "wp81_sl":
-			return "v120";
-		case "wpa81":
-			return "v120_wp81";
-		case "uwp10":
-			return "v140";
-		case "win8":
-			return "v110";
-		case "win81":
-			return "v120";
-		default:
-			throw new Exception(env);
-	    }
-    }
-
 }
 
 public static class config_e_sqlite3_win
@@ -937,9 +911,8 @@ public static class gen
                     f.WriteEndElement(); // dependency
                     break;
                 case "ios":
-                case "watchos":
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}.static", gen.ROOT_NAME, env_deps));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.ios", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
@@ -948,7 +921,7 @@ public static class gen
                 case "net45":
                 case "netstandard11": // TODO because this is used for netcoreapp, kinda hackish
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.v110_xp", gen.ROOT_NAME));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
 
@@ -964,7 +937,7 @@ public static class gen
                     break;
                 default:
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env_deps)));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
@@ -1020,7 +993,7 @@ public static class gen
                     break;
                 default:
                     f.WriteStartElement("dependency");
-                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.{1}", gen.ROOT_NAME, projects.cs_env_to_toolset(env_deps)));
+                    f.WriteAttributeString("id", string.Format("{0}.lib.sqlcipher.windows", gen.ROOT_NAME));
                     f.WriteAttributeString("version", NUSPEC_VERSION);
                     f.WriteEndElement(); // dependency
                     break;
