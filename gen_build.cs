@@ -24,18 +24,25 @@ public static class gen
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
+	static class TFM
+	{
+		public const string IOS = "Xamarin.iOS10";
+		public const string ANDROID = "MonoAndroid";
+		public const string UWP = "uap10.0";
+	}
+
 	static string get_nuget_framework_name(string env)
 	{
 		switch (env)
 		{
 			case "ios":
-				return "Xamarin.iOS10";
+				return TFM.IOS;
 			case "macos":
 				return "Xamarin.Mac20";
 			case "watchos":
 				return "Xamarin.WatchOS";
 			case "android":
-				return "MonoAndroid";
+				return TFM.ANDROID;
 			case "net45":
 				return "net45";
 			case "net40":
@@ -49,7 +56,7 @@ public static class gen
 			case "wpa81":
 				return "wpa81";
 			case "uwp10":
-				return "uap10.0";
+				return TFM.UWP;
 			case "win8":
 				return "win8";
 			case "win81":
@@ -444,7 +451,7 @@ public static class gen
 	{
 		public string id {get;set;}
 		public string src {get;set;}
-		public string target_env {get;set;}
+		public string tfm {get;set;}
 	}
 
 	private static void gen_nuspec_embedded(
@@ -473,10 +480,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			var tfm = get_nuget_framework_name(cfg.target_env);
             write_nuspec_file_entry_lib(
 					cfg.src,
-					tfm,
+					cfg.tfm,
                     f
                     );
 
@@ -623,21 +629,21 @@ public static class gen
 					write_nuspec_file_entry_nativeassets(
 						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x64"),
 						"win10-x64",
-						"uap10.0",
+						TFM.UWP,
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
 						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "x86"),
 						"win10-x86",
-						"uap10.0",
+						TFM.UWP,
 						f
 						);
 
 					write_nuspec_file_entry_nativeassets(
 						make_cb_path_win(cb_bin, "sqlcipher", "v140", "appcontainer", "arm"),
 						"win10-arm",
-						"uap10.0",
+						TFM.UWP,
 						f
 						);
 
@@ -692,7 +698,7 @@ public static class gen
             }
 
             write_empty(f, top, "net35");
-            write_empty(f, top, "uap10.0");
+            write_empty(f, top, TFM.UWP);
             write_empty(f, top, "netstandard1.0");
             write_empty(f, top, "netstandard2.0");
 
@@ -798,7 +804,7 @@ public static class gen
 
 			// --------
 			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", get_nuget_framework_name("uwp10"));
+			f.WriteAttributeString("targetFramework", TFM.UWP);
 
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
@@ -1565,25 +1571,25 @@ public static class gen
 			{
 				id = "SQLitePCLRaw.lib.e_sqlite3.android",
 				src = "TODO",
-				target_env = "android"
+				tfm = TFM.ANDROID
 			},
 			new config_embedded
 			{
 				id = "SQLitePCLRaw.lib.e_sqlite3.ios",
 				src = "TODO",
-				target_env = "ios"
+				tfm = TFM.IOS
 			},
 			new config_embedded
 			{
 				id = "SQLitePCLRaw.lib.sqlcipher.android",
 				src = "TODO",
-				target_env = "android"
+				tfm = TFM.ANDROID
 			},
 			new config_embedded
 			{
 				id = "SQLitePCLRaw.lib.sqlcipher.ios",
 				src = "TODO",
-				target_env = "ios"
+				tfm = TFM.IOS
 			},
 		};
 
