@@ -8,8 +8,6 @@ nuspec files are generated when the mt dir
 is not built, there are no errors, and pack
 will build empty packages.
 
-find_dlls should only accept release mode
-
 default load, so the setup call can be optional
 in many or most cases
 

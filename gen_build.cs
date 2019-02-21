@@ -1354,7 +1354,10 @@ public static class gen
 
 		// --------------------------------
 
-		var dlls = find_dlls(dir_mt);
+		var dlls = find_dlls(dir_mt)
+			.Where(d => d.config.ToLower() == "release")
+			.ToList()
+			;
 
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);
