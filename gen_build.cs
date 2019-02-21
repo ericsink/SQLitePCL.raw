@@ -279,7 +279,9 @@ public static class gen
 		)
 	{
 		f.WriteAttributeString("minClientVersion", "2.8.1");
+
 		f.WriteElementString("id", id);
+		f.WriteElementString("title", id);
 		f.WriteElementString("version", NUSPEC_VERSION);
 		f.WriteElementString("authors", "Eric Sink, et al");
 		f.WriteElementString("owners", "Eric Sink");
@@ -308,7 +310,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-            f.WriteElementString("title", id);
 			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.");
 
 			f.WriteStartElement("dependencies");
@@ -396,7 +397,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 
 			f.WriteEndElement(); // metadata
@@ -514,7 +514,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.");
 
 			f.WriteEndElement(); // metadata
@@ -662,7 +661,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
 
 			f.WriteStartElement("dependencies");
@@ -720,7 +718,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll");
 
 			f.WriteStartElement("dependencies");
@@ -847,7 +844,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			switch (kind)
 			{
 				case SQLCipherBundleKind.Unofficial:
@@ -930,7 +926,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included");
 
 			f.WriteStartElement("dependencies");
@@ -990,7 +985,6 @@ public static class gen
 
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("title", id);
 			f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included");
 
 			f.WriteStartElement("dependencies");
