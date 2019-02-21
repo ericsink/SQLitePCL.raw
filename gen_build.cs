@@ -662,8 +662,6 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO use a helper function to write these file entries
-
 			string tname = string.Format("{0}.targets", id);
 			switch (plat) {
 				case "windows":
@@ -934,7 +932,6 @@ public static class gen
 
     private static void write_bundle_dependency_group(XmlWriter f, string env_target, string env_deps, string what, bool lib)
     {
-        // --------
         f.WriteStartElement("group");
         f.WriteAttributeString("targetFramework", config_cs.get_nuget_framework_name(env_target));
 
@@ -1661,16 +1658,6 @@ public static class gen
 			f.WriteEndDocument();
 		}
 	}
-
-    static void replace(string path, string oldstr, string newstr)
-    {
-        string txt = File.ReadAllText(path);
-        using (TextWriter tw = new StreamWriter(path))
-        {
-            string cs1 = txt.Replace(oldstr, newstr);
-            tw.Write(cs1);
-        }
-    }
 
 	public static void Main(string[] args)
 	{
