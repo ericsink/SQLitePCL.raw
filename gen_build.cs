@@ -448,6 +448,66 @@ public static class gen
 		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
 	}
 
+	static void write_nuspec_file_entry_native_linux(
+		WhichLib lib,
+		string cb_bin,
+		string cpu_in_cb,
+		string rid,
+		XmlWriter f
+		)
+	{
+		write_nuspec_file_entry_native(
+			make_cb_path_linux(cb_bin, lib, cpu_in_cb),
+			rid,
+			f
+			);
+	}
+
+	static void write_nuspec_file_entry_native_win(
+		WhichLib lib,
+		string cb_bin,
+		string toolset,
+		string flavor,
+		string cpu,
+		string rid,
+		XmlWriter f
+		)
+	{
+		write_nuspec_file_entry_native(
+			make_cb_path_win(cb_bin, lib, toolset, flavor, cpu),
+			rid,
+			f
+			);
+	}
+
+	static void write_nuspec_file_entries_from_cb(
+		WhichLib lib,
+		string cb_bin,
+		XmlWriter f
+		)
+	{
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x86", "win-x86", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x64", "win-x64", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "arm", "win8-arm", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "arm", "win10-arm", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x64", "win10-x64", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x86", "win10-x86", f);
+
+		write_nuspec_file_entry_native(
+			make_cb_path_mac(cb_bin, lib),
+			"osx-x64",
+			f
+			);
+
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "x64", "linux-x64", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "x86", "linux-x86", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "armhf", "linux-arm", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "armsf", "linux-armel", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "arm64", "linux-arm64", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "linux-musl-x64", f);
+		write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "alpine-x64", f);
+	}
+
 	private static void gen_nuspec_e_sqlite3(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
@@ -485,51 +545,14 @@ public static class gen
 						);
 			}
 
-			Action<string,string,string,string> write_file_entry = (a_toolset, flavor, arch, rid) =>
-			{
-				write_nuspec_file_entry_native(
-					make_cb_path_win(cb_bin, WhichLib.E_SQLITE3, a_toolset, flavor, arch),
-					rid,
-					f
-					);
-			};
-
-			write_file_entry("v140", "plain", "x86", "win-x86");
-			write_file_entry("v140", "plain", "x64", "win-x64");
-			write_file_entry("v140", "plain", "arm", "win8-arm");
-			write_file_entry("v140", "appcontainer", "arm", "win10-arm");
-			write_file_entry("v140", "appcontainer", "x64", "win10-x64");
-			write_file_entry("v140", "appcontainer", "x86", "win10-x86");
-
-			Action<string, string> write_linux_item = 
-			(cpu, rid) =>
-			{
-				write_nuspec_file_entry_native(
-					make_cb_path_linux(cb_bin, WhichLib.E_SQLITE3, cpu),
-					rid,
-					f
-					);
-			};
-
-			write_nuspec_file_entry_native(
-				make_cb_path_mac(cb_bin, WhichLib.E_SQLITE3),
-				"osx-x64",
-				f
-				);
-
-			write_linux_item("x64", "linux-x64");
-			write_linux_item("x86", "linux-x86");
-			write_linux_item("armhf", "linux-arm");
-			write_linux_item("armsf", "linux-armel");
-			write_linux_item("arm64", "linux-arm64");
-			write_linux_item("musl-x64", "linux-musl-x64");
-			write_linux_item("musl-x64", "alpine-x64");
+			write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, cb_bin, f);
 
 			var tname = string.Format("{0}.targets", id);
-			gen_nuget_targets(tname, WhichLib.E_SQLITE3);
+			var path_targets = Path.Combine(top, tname);
+			gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
 			write_nuspec_file_entry(
-				tname,
-				string.Format("build"),
+				path_targets,
+				string.Format("build"), // TODO
 				f
 				);
 
@@ -578,81 +601,14 @@ public static class gen
 						);
 			}
 
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "x86"),
-				"win-x86",
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "x64"),
-				"win-x64",
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "arm"),
-				"win-arm", // TODO the other one uses win8-arm
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_nativeassets_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "x64"),
-				"win10-x64",
-				TFM.UWP,
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_nativeassets_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "x86"),
-				"win10-x86",
-				TFM.UWP,
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_nativeassets_rename(
-				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "arm"),
-				"win10-arm",
-				TFM.UWP,
-				E_SQLCIPHER_DLL,
-				f
-				);
-
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_mac(cb_bin, WhichLib.E_SQLCIPHER),
-				"osx-x64",
-				E_SQLCIPHER_DYLIB,
-				f
-				);
-
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_linux(cb_bin, WhichLib.E_SQLCIPHER, "x64"),
-				"linux-x64",
-				E_SQLCIPHER_SO,
-				f
-				);
-
-			write_nuspec_file_entry_native_rename(
-				make_cb_path_linux(cb_bin, WhichLib.E_SQLCIPHER, "x86"),
-				"linux-x86",
-				E_SQLCIPHER_SO,
-				f
-				);
-
-			// TODO linux arm?
-
-			// TODO linux musl?
+			write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, cb_bin, f);
 
 			var tname = string.Format("{0}.targets", id);
-			gen_nuget_targets(tname, WhichLib.E_SQLITE3);
+			var path_targets = Path.Combine(top, tname);
+			gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
 			write_nuspec_file_entry(
-				tname,
-				string.Format("build"),
+				path_targets,
+				string.Format("build"), // TODO
 				f
 				);
 
@@ -1034,17 +990,25 @@ public static class gen
 	static LibSuffix get_lib_suffix_from_rid(string rid)
 	{
 		var parts = rid.Split('-');
-		if (parts.Length != 2)
+		var front = parts[0].ToLower();
+		if (front.StartsWith("win"))
 		{
-			throw new Exception();
+			return LibSuffix.DLL;
 		}
-		switch (parts[0].ToLower())
+		else if (front.StartsWith("osx"))
 		{
-			case "win": return LibSuffix.DLL;
-			case "osx": return LibSuffix.DYLIB;
-			case "linux": return LibSuffix.SO;
-			default:
-				throw new NotImplementedException();
+			return LibSuffix.DYLIB;
+		}
+		else if (
+			front.StartsWith("linux")
+			|| front.StartsWith("alpine")
+			)
+		{
+			return LibSuffix.SO;
+		}
+		else
+		{
+			throw new NotImplementedException();
 		}
 	}
 
@@ -1083,7 +1047,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			write_nuget_target_item("win-x86", lib, f);
 			write_nuget_target_item("win-x64", lib, f);
-			write_nuget_target_item("win-arm", lib, f);
+			write_nuget_target_item("win8-arm", lib, f);
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteStartElement("ItemGroup");
@@ -1096,6 +1060,9 @@ public static class gen
 			write_nuget_target_item("linux-x86", lib, f);
 			write_nuget_target_item("linux-x64", lib, f);
 			write_nuget_target_item("linux-arm", lib, f);
+			write_nuget_target_item("linux-armel", lib, f);
+			write_nuget_target_item("linux-arm64", lib, f);
+			write_nuget_target_item("linux-x64", lib, f);
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteEndElement(); // Project
