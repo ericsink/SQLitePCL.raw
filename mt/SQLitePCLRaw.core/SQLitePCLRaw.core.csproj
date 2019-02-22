@@ -21,6 +21,7 @@
 -->
 
 <ItemGroup>
+    <Compile Include="IGetFunctionPointer.cs" />
     <Compile Include="setup.cs" />
     <Compile Include="attributes.cs" />
     <Compile Include="util.cs" />
