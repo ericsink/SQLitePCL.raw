@@ -28,34 +28,6 @@ namespace SQLitePCL
     using System;
     using System.Runtime.InteropServices;
 
-	static class NativeMethods_dlopen
-	{
-		const string SO = "dl";
-
-        public const int RTLD_NOW = 2; // for dlopen's flags 
-
-        [DllImport(SO)]
-        public static extern IntPtr dlopen(string dllToLoad, int flags);
-
-        [DllImport(SO)]
-        public static extern IntPtr dlsym(IntPtr hModule, string procedureName);
-
-        [DllImport(SO)]
-        public static extern int dlclose(IntPtr hModule);
-	}
-
-	static class NativeMethods_Win
-	{
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-        [DllImport("kernel32.dll")]
-        public static extern bool FreeLibrary(IntPtr hModule);
-	}
-
 	class GetFunctionPointer_Win : IGetFunctionPointer
 	{
 		readonly IntPtr _dll;
@@ -66,7 +38,7 @@ namespace SQLitePCL
 
 		public IntPtr GetFunctionPointer(string name)
 		{
-			var f = NativeMethods_Win.GetProcAddress(_dll, name);
+			var f = NativeLib_Win.GetProcAddress(_dll, name);
 			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
 			return f;
 		}
@@ -82,7 +54,7 @@ namespace SQLitePCL
 
 		public IntPtr GetFunctionPointer(string name)
 		{
-			var f = NativeMethods_dlopen.dlsym(_dll, name);
+			var f = NativeLib_dlopen.dlsym(_dll, name);
 			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
 			return f;
 		}
@@ -97,7 +69,7 @@ namespace SQLitePCL
 		{
 			try
 			{
-				dll = NativeMethods_Win.LoadLibrary(name);
+				dll = NativeLib_Win.LoadLibrary(name);
 				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
 				return true;
 			}
@@ -112,7 +84,7 @@ namespace SQLitePCL
 		{
 			try
 			{
-				dll = NativeMethods_dlopen.dlopen(name, NativeMethods_dlopen.RTLD_NOW);
+				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
 				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
 				return true;
 			}
@@ -125,7 +97,7 @@ namespace SQLitePCL
 
 		public static void Load_ios_internal()
 		{
-			var dll = NativeMethods_dlopen.dlopen(null, NativeMethods_dlopen.RTLD_NOW);
+			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
 			var gf = new GetFunctionPointer_dlopen(dll);
 			SQLite3Provider_Cdecl.Setup(gf);
 			raw.SetProvider(new SQLite3Provider_Cdecl());
