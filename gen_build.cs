@@ -46,6 +46,10 @@ public static class gen
 		SO,
 	}
 
+	// in cb, the sqlcipher builds do not have the e_ prefix.
+	// we do this so we can continue to build v1.
+	// but in v2, we want things to be called e_sqlcipher.
+
 	static string AsString_basename_in_cb(this WhichLib e)
 	{
 		switch (e)
@@ -68,9 +72,8 @@ public static class gen
 		}
 	}
 
-	static string AsString_libname_in_nupkg(this WhichLib e, LibSuffix suffix)
+	static string basename_to_libname(string basename, LibSuffix suffix)
 	{
-		var basename = e.AsString_basename_in_nupkg();
 		switch (suffix)
 		{
 			case LibSuffix.DLL:
@@ -82,6 +85,18 @@ public static class gen
 			default:
 				throw new NotImplementedException();
 		}
+	}
+
+	static string AsString_libname_in_nupkg(this WhichLib e, LibSuffix suffix)
+	{
+		var basename = e.AsString_basename_in_nupkg();
+		return basename_to_libname(basename, suffix);
+	}
+
+	static string AsString_libname_in_cb(this WhichLib e, LibSuffix suffix)
+	{
+		var basename = e.AsString_basename_in_cb();
+		return basename_to_libname(basename, suffix);
 	}
 
 	static string AsString(this TFM e)
@@ -155,56 +170,23 @@ public static class gen
 			);
 	}
 
-	private static void write_nuspec_file_entry_native(string src, string rid, XmlWriter f)
+	private static void write_nuspec_file_entry_native(string src, string rid, string filename, XmlWriter f)
 	{
 		write_nuspec_file_entry(
 			src,
-			string.Format("runtimes\\{0}\\native\\", rid),
+			string.Format("runtimes\\{0}\\native\\{1}", rid, filename),
 			f
 			);
 	}
 
-	private static void write_nuspec_file_entry_nativeassets(string src, string rid, TFM tfm, XmlWriter f)
+	private static void write_nuspec_file_entry_nativeassets(string src, string rid, TFM tfm, string filename, XmlWriter f)
 	{
 		write_nuspec_file_entry(
 			src,
-			string.Format("runtimes\\{0}\\nativeassets\\{1}\\", rid, tfm.AsString()),
+			string.Format("runtimes\\{0}\\nativeassets\\{1}\\{2}", rid, tfm.AsString(), filename),
 			f
 			);
 	}
-
-	// --------------------------------
-
-	// in cb, the sqlcipher builds do not have the e_ prefix.
-	// we do this so we can continue to build v1.
-	// but in v2, we want things to be called e_sqlcipher.
-	// so we have these special functions here to change names.
-
-	const string E_SQLCIPHER_DLL = "e_sqlcipher.dll";
-	const string E_SQLCIPHER_DYLIB = "libe_sqlcipher.dylib";
-	const string E_SQLCIPHER_SO = "libe_sqlcipher.so";
-
-	private static void write_nuspec_file_entry_native_rename(string src, string rid, string newname, XmlWriter f)
-	{
-		f.WriteComment("note rename in next line");
-		write_nuspec_file_entry(
-			src,
-			string.Format("runtimes\\{0}\\native\\{1}", rid, newname),
-			f
-			);
-	}
-
-	private static void write_nuspec_file_entry_nativeassets_rename(string src, string rid, TFM tfm, string newname, XmlWriter f)
-	{
-		f.WriteComment("note rename in next line");
-		write_nuspec_file_entry(
-			src,
-			string.Format("runtimes\\{0}\\nativeassets\\{1}\\{2}", rid, tfm.AsString(), newname),
-			f
-			);
-	}
-
-	// --------------------------------
 
 	private static void write_empty(XmlWriter f, string top, TFM tfm)
     {
@@ -425,8 +407,9 @@ public static class gen
 		string arch
 		)
 	{
-		var name = lib.AsString_basename_in_cb();
-		return Path.Combine(cb_bin, name, "win", toolset, flavor, arch, string.Format("{0}.dll", name));
+		var dir_name = lib.AsString_basename_in_cb();
+		var lib_name = lib.AsString_libname_in_cb(LibSuffix.DLL);
+		return Path.Combine(cb_bin, dir_name, "win", toolset, flavor, arch, lib_name);
 	}
 
 	static string make_cb_path_linux(
@@ -435,8 +418,9 @@ public static class gen
 		string cpu
 		)
 	{
-		var name = lib.AsString_basename_in_cb();
-		return Path.Combine(cb_bin, name, "linux", cpu, string.Format("lib{0}.so", name));
+		var dir_name = lib.AsString_basename_in_cb();
+		var lib_name = lib.AsString_libname_in_cb(LibSuffix.SO);
+		return Path.Combine(cb_bin, dir_name, "linux", cpu, lib_name);
 	}
 
 	static string make_cb_path_mac(
@@ -444,8 +428,9 @@ public static class gen
 		WhichLib lib
 		)
 	{
-		var name = lib.AsString_basename_in_cb();
-		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
+		var dir_name = lib.AsString_basename_in_cb();
+		var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
+		return Path.Combine(cb_bin, dir_name, "mac", lib_name);
 	}
 
 	static void write_nuspec_file_entry_native_linux(
@@ -456,9 +441,26 @@ public static class gen
 		XmlWriter f
 		)
 	{
+		var filename = lib.AsString_libname_in_nupkg(LibSuffix.SO);
 		write_nuspec_file_entry_native(
 			make_cb_path_linux(cb_bin, lib, cpu_in_cb),
 			rid,
+			filename,
+			f
+			);
+	}
+
+	static void write_nuspec_file_entry_native_mac(
+		WhichLib lib,
+		string cb_bin,
+		XmlWriter f
+		)
+	{
+		var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
+		write_nuspec_file_entry_native(
+			make_cb_path_mac(cb_bin, lib),
+			"osx-x64",
+			filename,
 			f
 			);
 	}
@@ -473,9 +475,11 @@ public static class gen
 		XmlWriter f
 		)
 	{
+		var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
 		write_nuspec_file_entry_native(
 			make_cb_path_win(cb_bin, lib, toolset, flavor, cpu),
 			rid,
+			filename,
 			f
 			);
 	}
@@ -493,11 +497,7 @@ public static class gen
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x64", "win10-x64", f);
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x86", "win10-x86", f);
 
-		write_nuspec_file_entry_native(
-			make_cb_path_mac(cb_bin, lib),
-			"osx-x64",
-			f
-			);
+		write_nuspec_file_entry_native_mac(lib, cb_bin, f);
 
 		write_nuspec_file_entry_native_linux(lib, cb_bin, "x64", "linux-x64", f);
 		write_nuspec_file_entry_native_linux(lib, cb_bin, "x86", "linux-x86", f);
@@ -1118,7 +1118,7 @@ public static class gen
 
             tw.WriteLine("../nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.bundle_sqlcipher.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("../nuget pack {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
             tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
 
@@ -1138,7 +1138,7 @@ public static class gen
 
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
