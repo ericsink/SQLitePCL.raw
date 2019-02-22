@@ -39,12 +39,12 @@ public static class gen
 		NETCOREAPP,
 	}
 
-	static string AsString(this WhichLib e)
+	static string AsString_in_cb(this WhichLib e)
 	{
 		switch (e)
 		{
 			case WhichLib.E_SQLITE3: return "e_sqlite3";
-			case WhichLib.SQLCIPHER: return "sqlcipher"; // TODO e_
+			case WhichLib.E_SQLCIPHER: return "sqlcipher"; // TODO no e_ prefix in cb yet
 			default:
 				throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
 		}
@@ -138,6 +138,39 @@ public static class gen
 			f
 			);
 	}
+
+	// --------------------------------
+
+	// in cb, the sqlcipher builds do not have the e_ prefix.
+	// we do this so we can continue to build v1.
+	// but in v2, we want things to be called e_sqlcipher.
+	// so we have these special functions here to change names.
+
+	const string E_SQLCIPHER_DLL = "e_sqlcipher.dll";
+	const string E_SQLCIPHER_DYLIB = "libe_sqlcipher.dylib";
+	const string E_SQLCIPHER_SO = "libe_sqlcipher.so";
+
+	private static void write_nuspec_file_entry_native_rename(string src, string rid, string newname, XmlWriter f)
+	{
+		f.WriteComment("note rename in next line");
+		write_nuspec_file_entry(
+			src,
+			string.Format("runtimes\\{0}\\native\\{1}", rid, newname),
+			f
+			);
+	}
+
+	private static void write_nuspec_file_entry_nativeassets_rename(string src, string rid, TFM tfm, string newname, XmlWriter f)
+	{
+		f.WriteComment("note rename in next line");
+		write_nuspec_file_entry(
+			src,
+			string.Format("runtimes\\{0}\\nativeassets\\{1}\\{2}", rid, tfm.AsString(), newname),
+			f
+			);
+	}
+
+	// --------------------------------
 
 	private static void write_empty(XmlWriter f, string top, TFM tfm)
     {
@@ -358,7 +391,7 @@ public static class gen
 		string arch
 		)
 	{
-		var name = lib.AsString();
+		var name = lib.AsString_in_cb();
 		return Path.Combine(cb_bin, name, "win", toolset, flavor, arch, string.Format("{0}.dll", name));
 	}
 
@@ -368,7 +401,7 @@ public static class gen
 		string cpu
 		)
 	{
-		var name = lib.AsString();
+		var name = lib.AsString_in_cb();
 		return Path.Combine(cb_bin, name, "linux", cpu, string.Format("lib{0}.so", name));
 	}
 
@@ -377,7 +410,7 @@ public static class gen
 		WhichLib lib
 		)
 	{
-		var name = lib.AsString();
+		var name = lib.AsString_in_cb();
 		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
 	}
 
@@ -535,60 +568,69 @@ public static class gen
 						);
 			}
 
-			write_nuspec_file_entry_native(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x86"),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "x86"),
 				"win-x86",
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_native(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "x64"),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "x64"),
 				"win-x64",
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_native(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "plain", "arm"),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "plain", "arm"),
 				"win-arm", // TODO the other one uses win8-arm
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_nativeassets(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x64"),
+			write_nuspec_file_entry_nativeassets_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "x64"),
 				"win10-x64",
 				TFM.UWP,
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_nativeassets(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "x86"),
+			write_nuspec_file_entry_nativeassets_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "x86"),
 				"win10-x86",
 				TFM.UWP,
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_nativeassets(
-				make_cb_path_win(cb_bin, WhichLib.SQLCIPHER, "v140", "appcontainer", "arm"),
+			write_nuspec_file_entry_nativeassets_rename(
+				make_cb_path_win(cb_bin, WhichLib.E_SQLCIPHER, "v140", "appcontainer", "arm"),
 				"win10-arm",
 				TFM.UWP,
+				E_SQLCIPHER_DLL,
 				f
 				);
 
-			write_nuspec_file_entry_native(
-				make_cb_path_mac(cb_bin, WhichLib.SQLCIPHER),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_mac(cb_bin, WhichLib.E_SQLCIPHER),
 				"osx-x64",
+				E_SQLCIPHER_DYLIB,
 				f
 				);
 
-			write_nuspec_file_entry_native(
-				make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x64"),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_linux(cb_bin, WhichLib.E_SQLCIPHER, "x64"),
 				"linux-x64",
+				E_SQLCIPHER_SO,
 				f
 				);
 
-			write_nuspec_file_entry_native(
-				make_cb_path_linux(cb_bin, WhichLib.SQLCIPHER, "x86"),
+			write_nuspec_file_entry_native_rename(
+				make_cb_path_linux(cb_bin, WhichLib.E_SQLCIPHER, "x86"),
 				"linux-x86",
+				E_SQLCIPHER_SO,
 				f
 				);
 
@@ -769,7 +811,7 @@ public static class gen
 	{
 		NONE,
 		E_SQLITE3,
-		SQLCIPHER, // TODO e_
+		E_SQLCIPHER,
 	}
 
     private static void write_bundle_dependency_group(XmlWriter f, WhichLib what)
@@ -785,7 +827,7 @@ public static class gen
 			f.WriteAttributeString("version", NUSPEC_VERSION);
 			f.WriteEndElement(); // dependency
 		}
-		else if (what == WhichLib.SQLCIPHER)
+		else if (what == WhichLib.E_SQLCIPHER)
 		{
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
@@ -824,7 +866,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichLib.SQLCIPHER);
+            write_bundle_dependency_group(f, WhichLib.E_SQLCIPHER);
             
 			f.WriteEndElement(); // dependencies
 

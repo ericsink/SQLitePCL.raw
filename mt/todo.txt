@@ -30,9 +30,7 @@ maybe don't do bundle_winsqlite3?
 
 chg cb build scripts to use VS 2017
 
-rename sqlcipher to e_sqlcipher.  or maybe keep the
-old name in cb (so we can still build v1 pkgs)
-and carefully rename it everywhere for v2.
+later: rename sqlcipher in cb to e_sqlcipher
 
 test on uwp
 
