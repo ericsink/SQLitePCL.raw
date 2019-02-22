@@ -39,7 +39,14 @@ public static class gen
 		NETCOREAPP,
 	}
 
-	static string AsString_in_cb(this WhichLib e)
+	enum LibSuffix
+	{
+		DLL,
+		DYLIB,
+		SO,
+	}
+
+	static string AsString_basename_in_cb(this WhichLib e)
 	{
 		switch (e)
 		{
@@ -47,6 +54,33 @@ public static class gen
 			case WhichLib.E_SQLCIPHER: return "sqlcipher"; // TODO no e_ prefix in cb yet
 			default:
 				throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
+		}
+	}
+
+	static string AsString_basename_in_nupkg(this WhichLib e)
+	{
+		switch (e)
+		{
+			case WhichLib.E_SQLITE3: return "e_sqlite3";
+			case WhichLib.E_SQLCIPHER: return "e_sqlcipher";
+			default:
+				throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
+		}
+	}
+
+	static string AsString_libname_in_nupkg(this WhichLib e, LibSuffix suffix)
+	{
+		var basename = e.AsString_basename_in_nupkg();
+		switch (suffix)
+		{
+			case LibSuffix.DLL:
+				return string.Format("{0}.dll", basename);
+			case LibSuffix.DYLIB:
+				return string.Format("lib{0}.dylib", basename);
+			case LibSuffix.SO:
+				return string.Format("lib{0}.so", basename);
+			default:
+				throw new NotImplementedException();
 		}
 	}
 
@@ -391,7 +425,7 @@ public static class gen
 		string arch
 		)
 	{
-		var name = lib.AsString_in_cb();
+		var name = lib.AsString_basename_in_cb();
 		return Path.Combine(cb_bin, name, "win", toolset, flavor, arch, string.Format("{0}.dll", name));
 	}
 
@@ -401,7 +435,7 @@ public static class gen
 		string cpu
 		)
 	{
-		var name = lib.AsString_in_cb();
+		var name = lib.AsString_basename_in_cb();
 		return Path.Combine(cb_bin, name, "linux", cpu, string.Format("lib{0}.so", name));
 	}
 
@@ -410,7 +444,7 @@ public static class gen
 		WhichLib lib
 		)
 	{
-		var name = lib.AsString_in_cb();
+		var name = lib.AsString_basename_in_cb();
 		return Path.Combine(cb_bin, name, "mac", string.Format("lib{0}.dylib", name));
 	}
 
@@ -491,37 +525,13 @@ public static class gen
 			write_linux_item("musl-x64", "linux-musl-x64");
 			write_linux_item("musl-x64", "alpine-x64");
 
-#if TODO // targets file
-			string tname;
-			gen_nuget_targets_linux(top, tname, "libe_sqlite3.so");
-			gen_nuget_targets_osx(top, tname, "libe_sqlite3.dylib", forxammac: false);
-			switch (toolset) {
-				case "v110_xp":
-					tname = gen_nuget_targets_pinvoke_anycpu(top, id, toolset);
-                    if (tname != null) 
-                    {
-                        f.WriteStartElement("file");
-                        f.WriteAttributeString("src", tname);
-                        f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
-                        f.WriteEndElement(); // file
-
-                        write_empty(f, top, TFM.NET35);
-                        write_empty(f, top, TFM.NETSTANDARD11);
-                        write_empty(f, top, TFM.NETSTANDARD20);
-                    }
-					break;
-				default:
-					tname = gen_nuget_targets_sqlite3_itself(top, id, toolset);
-                    if (tname != null) 
-                    {
-                        f.WriteStartElement("file");
-                        f.WriteAttributeString("src", tname);
-                        f.WriteAttributeString("target", string.Format("build\\{0}.targets", id));
-                        f.WriteEndElement(); // file
-                    }
-					break;
-			}
-#endif
+			var tname = string.Format("{0}.targets", id);
+			gen_nuget_targets(tname, WhichLib.E_SQLITE3);
+			write_nuspec_file_entry(
+				tname,
+				string.Format("build"),
+				f
+				);
 
 			f.WriteEndElement(); // files
 
@@ -638,37 +648,13 @@ public static class gen
 
 			// TODO linux musl?
 
-#if TODO // targets file
-			string tname = string.Format("{0}.targets", id);
-
-			gen_nuget_targets_windows(top, tname, "sqlcipher.dll");
-
-			gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: false);
-
-			gen_nuget_targets_linux(top, tname, "libsqlcipher.so");
-
-			f.WriteStartElement("file");
-			f.WriteAttributeString("src", tname);
-			f.WriteAttributeString("target", string.Format("build\\net35\\{0}.targets", id));
-			f.WriteEndElement(); // file
-
-            if (plat == "osx")
-            {
-                write_empty(f, top, TFM.XAMARIN_MAC);
-                tname = string.Format("{0}.Xamarin.Mac20.targets", id);
-                gen_nuget_targets_osx(top, tname, "libsqlcipher.dylib", forxammac: true);
-
-                f.WriteStartElement("file");
-                f.WriteAttributeString("src", tname);
-                f.WriteAttributeString("target", string.Format("build\\Xamarin.Mac20\\{0}.targets", id));
-                f.WriteEndElement(); // file
-            }
-#endif
-
-            write_empty(f, top, TFM.NET35);
-            write_empty(f, top, TFM.UWP);
-            write_empty(f, top, TFM.NETSTANDARD11);
-            write_empty(f, top, TFM.NETSTANDARD20);
+			var tname = string.Format("{0}.targets", id);
+			gen_nuget_targets(tname, WhichLib.E_SQLITE3);
+			write_nuspec_file_entry(
+				tname,
+				string.Format("build"),
+				f
+				);
 
 			f.WriteEndElement(); // files
 
@@ -1045,337 +1031,72 @@ public static class gen
 		}
 	}
 
-	private static string gen_nuget_targets_sqlite3_itself(string top, string id, string toolset)
+	static LibSuffix get_lib_suffix_from_rid(string rid)
 	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		// TODO should we put the cpu check code here, like the original version of this function (below)?
-
-		string tname = string.Format("{0}.targets", id);
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		var parts = rid.Split('-');
+		if (parts.Length != 2)
 		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			switch (toolset)
-			{
-				case "v110_xp":
-					// statically linked
-					break;
-				case "v110":
-					f.WriteStartElement("ItemGroup");
-					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
-					f.WriteStartElement("SDKReference");
-					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=11.0");
-					f.WriteEndElement(); // SDKReference
-					f.WriteEndElement(); // ItemGroup
-					break;
-				case "v120":
-					f.WriteStartElement("ItemGroup");
-					f.WriteAttributeString("Condition", " '$(Platform.Trim().Substring(0,3).ToLower())' != 'any' ");
-					f.WriteStartElement("SDKReference");
-					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=12.0");
-					f.WriteEndElement(); // SDKReference
-					f.WriteEndElement(); // ItemGroup
-					break;
-				case "v140":
-#if not // TODO do we need this?  we should, but testing says we don't.
-					f.WriteStartElement("ItemGroup");
-					f.WriteStartElement("SDKReference");
-					f.WriteAttributeString("Include", "Microsoft.VCLibs, Version=14.0");
-					f.WriteEndElement(); // SDKReference
-					f.WriteEndElement(); // ItemGroup
-#endif
-					break;
-			}
-
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", Guid.NewGuid().ToString()));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-
-			var front = rid_front_half(toolset);
-			Action<string> write_item = (cpu) =>
-			{
-				f.WriteStartElement("ItemGroup");
-				f.WriteAttributeString("Condition", string.Format(" '$(Platform.ToLower())' == '{0}' ", cpu.ToLower()));
-
-				f.WriteStartElement("Content");
-				// TODO call other.get_products() instead of hard-coding the sqlite3.dll name here
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\{0}-{1}\\native\\e_sqlite3.dll", front, cpu));
-				// TODO link
-				// TODO condition/exists ?
-				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-				f.WriteElementString("Pack", "false");
-				f.WriteEndElement(); // Content
-
-				f.WriteEndElement(); // ItemGroup
-			};
-
-			switch (toolset)
-			{
-				case "v110_xp":
-					write_item("x86");
-					write_item("x64");
-					write_item("arm");
-					break;
-				case "v110":
-					write_item("arm");
-					write_item("x64");
-					write_item("x86");
-					break;
-				case "v120":
-					write_item("arm");
-					write_item("x64");
-					write_item("x86");
-					break;
-				case "v140":
-					write_item("arm");
-					write_item("x64");
-					write_item("x86");
-					break;
-				case "v110_wp80":
-					write_item("arm");
-					write_item("x86");
-					break;
-				case "v120_wp81":
-					write_item("arm");
-					write_item("x86");
-					break;
-				default:
-					throw new NotImplementedException();
-			}
-
-			f.WriteEndElement(); // Target
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
+			throw new Exception();
 		}
-		return tname;
+		switch (parts[0].ToLower())
+		{
+			case "win": return LibSuffix.DLL;
+			case "osx": return LibSuffix.DYLIB;
+			case "linux": return LibSuffix.SO;
+			default:
+				throw new NotImplementedException();
+		}
 	}
 
-	// TODO change the name of this to something like dual arch
-	private static string gen_nuget_targets_pinvoke_anycpu(string top, string id, string toolset)
+	static void write_nuget_target_item(
+		string rid,
+		WhichLib lib,
+		XmlWriter f
+		)
+	{
+		var suffix = get_lib_suffix_from_rid(rid);
+		var filename = lib.AsString_libname_in_nupkg(suffix);
+
+		f.WriteStartElement("Content");
+		f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\{0}\\native\\{1}", rid, filename));
+		f.WriteElementString("Link", string.Format("native\\{0}\\{1}", rid, filename));
+		f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
+		f.WriteElementString("Pack", "false");
+		f.WriteEndElement(); // Content
+	}
+
+	private static void gen_nuget_targets(string dest, WhichLib lib)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
 		settings.OmitXmlDeclaration = false;
 
-		string tname = string.Format("{0}.targets", id);
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
+		using (XmlWriter f = XmlWriter.Create(dest, settings))
 		{
 			f.WriteStartDocument();
 			f.WriteComment("Automatically generated");
 
 			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
 			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			var guid = Guid.NewGuid().ToString();
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-			{
-				f.WriteStartElement("Content");
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine("runtimes\\win-x86\\native", "e_sqlite3.dll")));
-				// TODO condition/exists ?
-				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", "x86"));
-				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-				f.WriteElementString("Pack", "false");
-				f.WriteEndElement(); // Content
-			}
-			{
-				f.WriteStartElement("Content");
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\{0}", Path.Combine("runtimes\\win-x64\\native", "e_sqlite3.dll")));
-				// TODO condition/exists ?
-				f.WriteElementString("Link", string.Format("{0}\\e_sqlite3.dll", "x64"));
-				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-				f.WriteElementString("Pack", "false");
-				f.WriteEndElement(); // Content
-			}
+			write_nuget_target_item("win-x86", lib, f);
+			write_nuget_target_item("win-x64", lib, f);
+			write_nuget_target_item("win-arm", lib, f);
 			f.WriteEndElement(); // ItemGroup
-
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
-					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-		return tname;
-	}
-
-	private static void gen_nuget_targets_windows(string top, string tname, string filename)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			var guid = Guid.NewGuid().ToString();
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
-
-			f.WriteStartElement("ItemGroup");
-			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-
-			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win-x86\\native\\{0}", filename));
-			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
-
-			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\win-x64\\native\\{0}", filename));
-			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
-
-			f.WriteEndElement(); // ItemGroup
-
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
-					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuget_targets_osx(string top, string tname, string filename, bool forxammac)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			var guid = Guid.NewGuid().ToString();
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
-
-			if (forxammac)
-			{
-				f.WriteStartElement("NativeReference");
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
-				f.WriteElementString("Kind", "Dynamic");
-				f.WriteElementString("SmartLink", "False");
-				f.WriteEndElement(); // NativeReference
-			}
-			else
-			{
-				f.WriteStartElement("Content");
-				f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
-				f.WriteElementString("Link", filename);
-				f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-				f.WriteElementString("Pack", "false");
-				f.WriteEndElement(); // Content
-			}
-
+			write_nuget_target_item("osx-x64", lib, f);
 			f.WriteEndElement(); // ItemGroup
-
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
-					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
-			f.WriteEndElement(); // PropertyGroup
-
-			f.WriteEndElement(); // Project
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuget_targets_linux(string top, string tname, string filename)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, tname), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-			f.WriteAttributeString("ToolsVersion", "4.0");
-
-			var guid = Guid.NewGuid().ToString();
-			f.WriteStartElement("Target");
-			f.WriteAttributeString("Name", string.Format("InjectReference_{0}", guid));
-			f.WriteAttributeString("BeforeTargets", "ResolveAssemblyReferences");
 
 			f.WriteStartElement("ItemGroup");
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
-
-#if TODO // load library before dllimport doesn't seem to work on linux
-			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\linux-x64\\native\\{0}", filename));
-			f.WriteElementString("Link", string.Format("{0}\\{1}", "x64", filename));
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
-
-			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\linux-x86\\native\\{0}", filename));
-			f.WriteElementString("Link", string.Format("{0}\\{1}", "x86", filename));
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
-#else
-			f.WriteStartElement("Content");
-			f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\linux-x64\\native\\{0}", filename));
-			f.WriteElementString("Link", filename);
-			f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-            f.WriteElementString("Pack", "false");
-			f.WriteEndElement(); // Content
-#endif
-
+			write_nuget_target_item("linux-x86", lib, f);
+			write_nuget_target_item("linux-x64", lib, f);
+			write_nuget_target_item("linux-arm", lib, f);
 			f.WriteEndElement(); // ItemGroup
-
-			f.WriteEndElement(); // Target
-
-			f.WriteStartElement("PropertyGroup");
-			f.WriteElementString("ResolveAssemblyReferencesDependsOn", 
-					string.Format("$(ResolveAssemblyReferencesDependsOn);InjectReference_{0}", guid));
-			f.WriteEndElement(); // PropertyGroup
 
 			f.WriteEndElement(); // Project
 
