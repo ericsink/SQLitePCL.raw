@@ -1,4 +1,8 @@
 
+what is batteries_v2.sqlite3 for?
+
+maybe batteries now are per-bundle
+
 fix the targets files
 
 consider:  inclusion of assemblies in
