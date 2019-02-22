@@ -1,6 +1,4 @@
 
-fix the targets files
-
 consider:  chg inclusion of assemblies in
 nuspec such that it errors if the expected
 assemblies are not there?  currently, if the
@@ -24,8 +22,6 @@ IGetFunctionPointer?
 AssemblyInfo stuff, version numbers
 
 chg release notes in nuspec to reference a URL
-
-distinction between win-arm and win8-arm ?
 
 what are the empty dep groups for?
 
