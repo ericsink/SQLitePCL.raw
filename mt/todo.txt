@@ -1,8 +1,4 @@
 
-what is batteries_v2.sqlite3 for?
-
-maybe batteries now are per-bundle
-
 fix the targets files
 
 consider:  inclusion of assemblies in
@@ -26,7 +22,24 @@ distinction between win-arm and win8-arm ?
 
 what are the empty dep groups for?
 
-maybe don't do bundle_winsqlite3?
+maybe don't do bundle_winsqlite3?  it's kind of
+silly.  it doesn't actually bundle anything.  it
+just calls (something like) Setup.Load_winsqlite3().
+
+what is batteries_v2.sqlite3 for?
+
+maybe batteries now are per-bundle.  one
+function that figures out at runtime what
+to load.  for green, it would need to check
+to see if it's on iOS.
+
+will bundle_green have a problem because
+lib.e_sqlite3 is all one package?  so now
+the e_sqlite3 build for iOS is included,
+and we just have to have to require it not
+to be used?
+
+not sure we need bundle_green at all.
 
 chg cb build scripts to use VS 2017
 
@@ -55,8 +68,6 @@ the test suite passes using winsqlite3 and either
 calling convention.  why?
 
 DI for the utf8 stuff?  #202
-
-debug vs release builds?
 
 more xunit test cases
 
