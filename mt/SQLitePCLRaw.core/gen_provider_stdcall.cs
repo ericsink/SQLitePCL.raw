@@ -35,7 +35,7 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
-		public static void Setup(IGetFunctionPtr gf)
+		public static void Setup(IGetFunctionPointer gf)
 		{
 			NativeMethods.Setup(gf);
 		}
@@ -1207,7 +1207,7 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-		static Delegate Load(IGetFunctionPtr gf, Type delegate_type)
+		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
 		{
 			// TODO check here to make sure the type is a delegate of some kind?
 			// just in case we introduce other properties later?
@@ -1221,7 +1221,7 @@ namespace SQLitePCL
 					name = ep.Name;
 				}
 			}
-			var fn_ptr = gf.GetFunctionPtr(name);
+			var fn_ptr = gf.GetFunctionPointer(name);
 			if (fn_ptr != IntPtr.Zero)
 			{
 				var d = Marshal.GetDelegateForFunctionPointer(fn_ptr, delegate_type);
@@ -1234,7 +1234,7 @@ namespace SQLitePCL
 			}
 		}
 
-		static public void Setup(IGetFunctionPtr gf)
+		static public void Setup(IGetFunctionPointer gf)
 		{
 			sqlite3_close = (MyDelegateTypes.sqlite3_close) Load(gf, typeof(MyDelegateTypes.sqlite3_close));
 			sqlite3_close_v2 = (MyDelegateTypes.sqlite3_close_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_close_v2));

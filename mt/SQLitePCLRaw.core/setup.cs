@@ -28,9 +28,9 @@ namespace SQLitePCL
     using System;
     using System.Runtime.InteropServices;
 
-	interface IGetFunctionPtr
+	interface IGetFunctionPointer
 	{
-		IntPtr GetFunctionPtr(string name);
+		IntPtr GetFunctionPointer(string name);
 	}
 
 	static class NativeMethods_dlopen
@@ -61,15 +61,15 @@ namespace SQLitePCL
         public static extern bool FreeLibrary(IntPtr hModule);
 	}
 
-	class GetFunctionPtr_Win : IGetFunctionPtr
+	class GetFunctionPointer_Win : IGetFunctionPointer
 	{
 		readonly IntPtr _dll;
-		public GetFunctionPtr_Win(IntPtr dll)
+		public GetFunctionPointer_Win(IntPtr dll)
 		{
 			_dll = dll;
 		}
 
-		public IntPtr GetFunctionPtr(string name)
+		public IntPtr GetFunctionPointer(string name)
 		{
 			var f = NativeMethods_Win.GetProcAddress(_dll, name);
 			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
@@ -77,15 +77,15 @@ namespace SQLitePCL
 		}
 	}
 
-	class GetFunctionPtr_dlopen : IGetFunctionPtr
+	class GetFunctionPointer_dlopen : IGetFunctionPointer
 	{
 		readonly IntPtr _dll;
-		public GetFunctionPtr_dlopen(IntPtr dll)
+		public GetFunctionPointer_dlopen(IntPtr dll)
 		{
 			_dll = dll;
 		}
 
-		public IntPtr GetFunctionPtr(string name)
+		public IntPtr GetFunctionPointer(string name)
 		{
 			var f = NativeMethods_dlopen.dlsym(_dll, name);
 			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
@@ -131,7 +131,7 @@ namespace SQLitePCL
 		public static void Load_ios_internal()
 		{
 			var dll = NativeMethods_dlopen.dlopen(null, NativeMethods_dlopen.RTLD_NOW);
-			var gf = new GetFunctionPtr_dlopen(dll);
+			var gf = new GetFunctionPointer_dlopen(dll);
 			SQLite3Provider_Cdecl.Setup(gf);
 			raw.SetProvider(new SQLite3Provider_Cdecl());
 		}
@@ -141,13 +141,13 @@ namespace SQLitePCL
 			IntPtr dll;
 			if (try_win(name, out dll))
 			{
-				var gf = new GetFunctionPtr_Win(dll);
+				var gf = new GetFunctionPointer_Win(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
 			else if (try_dlopen(name, out dll))
 			{
-				var gf = new GetFunctionPtr_dlopen(dll);
+				var gf = new GetFunctionPointer_dlopen(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
