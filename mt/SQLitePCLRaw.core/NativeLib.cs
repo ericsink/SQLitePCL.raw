@@ -42,6 +42,22 @@ namespace SQLitePCL
 
         [DllImport(SO)]
         public static extern int dlclose(IntPtr hModule);
+
+		public static bool try_dlopen(string name, out IntPtr dll)
+		{
+			try
+			{
+				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
+				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
+				return true;
+			}
+			catch
+			{
+				dll = IntPtr.Zero;
+				return false;
+			}
+		}
+
 	}
 
 	static class NativeLib_Win
@@ -54,6 +70,22 @@ namespace SQLitePCL
 
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
+
+		public static bool try_LoadLibrary(string name, out IntPtr dll)
+		{
+			try
+			{
+				dll = LoadLibrary(name);
+				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
+				return true;
+			}
+			catch
+			{
+				dll = IntPtr.Zero;
+				return false;
+			}
+		}
+
 	}
 
 }

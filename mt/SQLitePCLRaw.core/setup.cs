@@ -33,36 +33,6 @@ namespace SQLitePCL
 		// the hope is that all use cases can be handled by
 		// adding the flexibility here
 
-		static bool try_win(string name, out IntPtr dll)
-		{
-			try
-			{
-				dll = NativeLib_Win.LoadLibrary(name);
-				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
-				return true;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
-		}
-
-		static bool try_dlopen(string name, out IntPtr dll)
-		{
-			try
-			{
-				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
-				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
-				return true;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
-		}
-
 		public static void Load_ios_internal()
 		{
 			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
@@ -74,13 +44,13 @@ namespace SQLitePCL
 		public static void Load(string name)
 		{
 			IntPtr dll;
-			if (try_win(name, out dll))
+			if (NativeLib_Win.try_LoadLibrary(name, out dll))
 			{
 				var gf = new GetFunctionPointer_Win(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
-			else if (try_dlopen(name, out dll))
+			else if (NativeLib_dlopen.try_dlopen(name, out dll))
 			{
 				var gf = new GetFunctionPointer_dlopen(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
