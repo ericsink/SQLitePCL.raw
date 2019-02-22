@@ -12,7 +12,10 @@ default load, so the setup call can be optional
 in many or most cases
 
 maybe the Setup calls should return the sqlite
-version?
+version et al?
+
+should try_dlopen and friends just return the
+IGetFunctionPointer?
 
 AssemblyInfo stuff, version numbers
 
