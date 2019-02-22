@@ -28,68 +28,36 @@ using System.Runtime.InteropServices;
 
 namespace SQLitePCL
 {
-	public static class Setup
+	class GetFunctionPointer_Win : IGetFunctionPointer
 	{
-		// the hope is that all use cases can be handled by
-		// adding the flexibility here
-
-		static bool try_win(string name, out IntPtr dll)
+		readonly IntPtr _dll;
+		public GetFunctionPointer_Win(IntPtr dll)
 		{
-			try
-			{
-				dll = NativeLib_Win.LoadLibrary(name);
-				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
-				return true;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
+			_dll = dll;
 		}
 
-		static bool try_dlopen(string name, out IntPtr dll)
+		public IntPtr GetFunctionPointer(string name)
 		{
-			try
-			{
-				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
-				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
-				return true;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
-		}
-
-		public static void Load_ios_internal()
-		{
-			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
-			var gf = new GetFunctionPointer_dlopen(dll);
-			SQLite3Provider_Cdecl.Setup(gf);
-			raw.SetProvider(new SQLite3Provider_Cdecl());
-		}
-
-		public static void Load(string name)
-		{
-			IntPtr dll;
-			if (try_win(name, out dll))
-			{
-				var gf = new GetFunctionPointer_Win(dll);
-				SQLite3Provider_Cdecl.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_Cdecl());
-			}
-			else if (try_dlopen(name, out dll))
-			{
-				var gf = new GetFunctionPointer_dlopen(dll);
-				SQLite3Provider_Cdecl.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_Cdecl());
-			}
-			else
-			{
-				throw new NotImplementedException();
-			}
+			var f = NativeLib_Win.GetProcAddress(_dll, name);
+			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+			return f;
 		}
 	}
+
+	class GetFunctionPointer_dlopen : IGetFunctionPointer
+	{
+		readonly IntPtr _dll;
+		public GetFunctionPointer_dlopen(IntPtr dll)
+		{
+			_dll = dll;
+		}
+
+		public IntPtr GetFunctionPointer(string name)
+		{
+			var f = NativeLib_dlopen.dlsym(_dll, name);
+			//System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+			return f;
+		}
+	}
+
 }

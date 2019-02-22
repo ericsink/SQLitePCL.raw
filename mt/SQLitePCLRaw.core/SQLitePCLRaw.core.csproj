@@ -22,6 +22,7 @@
 
 <ItemGroup>
     <Compile Include="IGetFunctionPointer.cs" />
+    <Compile Include="GetFunctionPointer.cs" />
     <Compile Include="NativeLib.cs" />
     <Compile Include="setup.cs" />
     <Compile Include="attributes.cs" />
