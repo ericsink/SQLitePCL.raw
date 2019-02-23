@@ -905,6 +905,11 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_bytes(blob.ptr);
         }
 
+        static public int sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
+        {
+            return _imp.sqlite3_blob_reopen(blob.ptr, rowid);
+        }
+
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
 			if (blob.already_disposed) return 0;

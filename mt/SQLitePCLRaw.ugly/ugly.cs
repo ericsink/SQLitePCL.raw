@@ -881,6 +881,12 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_blob_bytes(blob);
         }
 
+        public static void reopen(this sqlite3_blob blob, long rowid)
+        {
+            int rc = raw.sqlite3_blob_reopen(blob, rowid);
+            check_ok(rc);
+        }
+
         public static void close(this sqlite3_blob blob)
         {
             int rc = raw.sqlite3_blob_close(blob);

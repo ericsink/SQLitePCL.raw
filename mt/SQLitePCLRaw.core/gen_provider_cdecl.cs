@@ -257,6 +257,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_bytes(blob);
         }
 
+        int ISQLite3Provider.sqlite3_blob_reopen(IntPtr blob, long rowid)
+        {
+            return NativeMethods.sqlite3_blob_reopen(blob, rowid);
+        }
+
         int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_close(blob);
@@ -1356,6 +1361,7 @@ namespace SQLitePCL
 			sqlite3_blob_write = (MyDelegateTypes.sqlite3_blob_write) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_write));
 			sqlite3_blob_read = (MyDelegateTypes.sqlite3_blob_read) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_read));
 			sqlite3_blob_bytes = (MyDelegateTypes.sqlite3_blob_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_bytes));
+			sqlite3_blob_reopen = (MyDelegateTypes.sqlite3_blob_reopen) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_reopen));
 			sqlite3_blob_close = (MyDelegateTypes.sqlite3_blob_close) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_close));
 			sqlite3_wal_autocheckpoint = (MyDelegateTypes.sqlite3_wal_autocheckpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_autocheckpoint));
 			sqlite3_wal_checkpoint = (MyDelegateTypes.sqlite3_wal_checkpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint));
@@ -1484,6 +1490,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_blob_write sqlite3_blob_write;
 		public static MyDelegateTypes.sqlite3_blob_read sqlite3_blob_read;
 		public static MyDelegateTypes.sqlite3_blob_bytes sqlite3_blob_bytes;
+		public static MyDelegateTypes.sqlite3_blob_reopen sqlite3_blob_reopen;
 		public static MyDelegateTypes.sqlite3_blob_close sqlite3_blob_close;
 		public static MyDelegateTypes.sqlite3_wal_autocheckpoint sqlite3_wal_autocheckpoint;
 		public static MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint;
@@ -1904,6 +1911,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_blob_bytes(IntPtr blob);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_reopen(IntPtr blob, long rowid);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_blob_close(IntPtr blob);

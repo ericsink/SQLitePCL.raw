@@ -135,6 +135,62 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_blob_reopen()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                const int len_1 = 42;
+                const int len_2 = 87;
+
+                db.exec("CREATE TABLE foo (b blob);");
+                db.exec("INSERT INTO foo (b) VALUES (randomblob(?))", len_1);
+                long rowid_1 = db.last_insert_rowid();
+                db.exec("INSERT INTO foo (b) VALUES (randomblob(?))", len_2);
+                long rowid_2 = db.last_insert_rowid();
+
+                byte[] blob_1 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_1);
+                Assert.Equal(blob_1.Length, len_1);
+
+                byte[] blob_2 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_2);
+                Assert.Equal(blob_2.Length, len_2);
+
+				Func<sqlite3_blob, byte[], bool> Check =
+				(bh, ba) =>
+				{
+					int len = bh.bytes();
+					if (len != ba.Length)
+					{
+						return false;
+					}
+
+					byte[] buf = new byte[len];
+
+					bh.read(buf, 0);
+					for (int i=0; i<len; i++)
+					{
+						if (ba[i] != buf[i])
+						{
+							return false;
+						}
+					}
+					return true;
+				};
+
+                using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid_1, 0))
+				{
+					Assert.True(Check(bh, blob_1));
+					Assert.False(Check(bh, blob_2));
+
+					bh.reopen(rowid_2);
+
+					Assert.False(Check(bh, blob_1));
+					Assert.True(Check(bh, blob_2));
+				}
+            }
+
+        }
+
+        [Fact]
         public void test_blob_read()
         {
             using (sqlite3 db = ugly.open(":memory:"))
