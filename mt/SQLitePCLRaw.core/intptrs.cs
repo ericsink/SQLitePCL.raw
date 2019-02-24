@@ -182,6 +182,7 @@ namespace SQLitePCL
 			return rc;
 		}
 
+		// TODO rm
         internal IntPtr ptr => handle;
 
         // We keep track of the db connection handle for this stmt, even though
@@ -259,6 +260,7 @@ namespace SQLitePCL
 			return h;
         }
 
+		// TODO rm
         internal IntPtr ptr => handle;
 
         internal void add_stmt(sqlite3_stmt stmt)
