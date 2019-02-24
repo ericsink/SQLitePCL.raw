@@ -877,11 +877,10 @@ namespace SQLitePCL
 
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
-			backup.Dispose();
-			// TODO return code lost here
-			return 0;
+			return backup.manual_close();
         }
 
+		// this is called by the SafeHandle
         static internal int internal_sqlite3_backup_finish(IntPtr p)
         {
             return _imp.sqlite3_backup_finish(p);
@@ -929,11 +928,10 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
-			blob.Dispose();
-			// TODO return code lost here
-            return 0;
+			return blob.manual_close();
         }
 
+		// this is called by the SafeHandle
         static internal int internal_sqlite3_blob_close(IntPtr blob)
         {
 			return _imp.sqlite3_blob_close(blob);

@@ -42,6 +42,15 @@ namespace SQLitePCL
             // TODO check rc?
 			return true;
 		}
+
+		public int manual_close()
+		{
+			int rc = raw.internal_sqlite3_backup_finish(handle);
+			// TODO review.  should handle always be nulled here?
+			// TODO maybe called SetHandleAsInvalid instead?
+			handle = IntPtr.Zero;
+			return rc;
+		}
     }
 
     // typed wrapper for an IntPtr.  still opaque.  the upper layers can't
@@ -138,6 +147,15 @@ namespace SQLitePCL
 			int rc = raw.internal_sqlite3_blob_close(handle);
             // TODO check rc?
 			return true;
+		}
+
+		public int manual_close()
+		{
+			int rc = raw.internal_sqlite3_blob_close(handle);
+			// TODO review.  should handle always be nulled here?
+			// TODO maybe called SetHandleAsInvalid instead?
+			handle = IntPtr.Zero;
+			return rc;
 		}
     }
 
