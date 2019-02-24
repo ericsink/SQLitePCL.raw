@@ -878,6 +878,7 @@ namespace SQLitePCL
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
 			backup.Dispose();
+			// TODO return code lost here
 			return 0;
         }
 
@@ -929,6 +930,7 @@ namespace SQLitePCL
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
 			blob.Dispose();
+			// TODO return code lost here
             return 0;
         }
 
