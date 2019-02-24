@@ -85,7 +85,7 @@ namespace SQLitePCL
         // used by raw.sqlite3_result_* (which is internal to the
         // PCL assembly) to fetch the actual context pointer to pass 
         // back to sqlite.
-        public IntPtr ptr
+        internal IntPtr ptr
         {
             get
             {
@@ -125,7 +125,7 @@ namespace SQLitePCL
             _p = p;
         }
 
-        public IntPtr ptr
+        internal IntPtr ptr
         {
             get
             {
@@ -194,7 +194,7 @@ namespace SQLitePCL
 			return rc;
 		}
 
-        public IntPtr ptr
+        internal IntPtr ptr
         {
             get
             {
@@ -277,7 +277,7 @@ namespace SQLitePCL
 			return h;
         }
 
-        public IntPtr ptr
+        internal IntPtr ptr
         {
             get
             {
