@@ -119,7 +119,7 @@ namespace SQLitePCL
         string sqlite3_errstr(int rc); /* 3.7.15+ */
 
         int sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stmt, out string remain);
-        int sqlite3_step(IntPtr stmt);
+        int sqlite3_step(sqlite3_stmt stmt);
         int sqlite3_finalize(IntPtr stmt);
         int sqlite3_reset(IntPtr stmt);
         int sqlite3_clear_bindings(IntPtr stmt);

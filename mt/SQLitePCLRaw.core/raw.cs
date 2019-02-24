@@ -546,7 +546,7 @@ namespace SQLitePCL
 
         static public int sqlite3_step(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_step(stmt.ptr);
+            return _imp.sqlite3_step(stmt);
         }
 
 		// called by apps that want the return code
