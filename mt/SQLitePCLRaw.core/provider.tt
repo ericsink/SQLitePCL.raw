@@ -993,57 +993,57 @@ namespace SQLitePCL
             return util.from_utf8(NativeMethods.sqlite3_value_text(p));
         }
 
-        int ISQLite3Provider.sqlite3_bind_int(IntPtr stm, int paramIndex, int val)
+        int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
         {
             return NativeMethods.sqlite3_bind_int(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_int64(IntPtr stm, int paramIndex, long val)
+        int ISQLite3Provider.sqlite3_bind_int64(sqlite3_stmt stm, int paramIndex, long val)
         {
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_text(IntPtr stm, int paramIndex, string t)
+        int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, string t)
         {
             return NativeMethods.sqlite3_bind_text(stm, paramIndex, util.to_utf8(t), -1, new IntPtr(-1));
         }
 
-        int ISQLite3Provider.sqlite3_bind_double(IntPtr stm, int paramIndex, double val)
+        int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
         {
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob)
+        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, byte[] blob)
         {
             return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, blob.Length, new IntPtr(-1));
         }
 
-        int ISQLite3Provider.sqlite3_bind_blob(IntPtr stm, int paramIndex, byte[] blob, int nSize)
+        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, byte[] blob, int nSize)
         {
             return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, nSize, new IntPtr(-1));
         }
 
-        int ISQLite3Provider.sqlite3_bind_zeroblob(IntPtr stm, int paramIndex, int size)
+        int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
         {
             return NativeMethods.sqlite3_bind_zeroblob(stm, paramIndex, size);
         }
 
-        int ISQLite3Provider.sqlite3_bind_null(IntPtr stm, int paramIndex)
+        int ISQLite3Provider.sqlite3_bind_null(sqlite3_stmt stm, int paramIndex)
         {
             return NativeMethods.sqlite3_bind_null(stm, paramIndex);
         }
 
-        int ISQLite3Provider.sqlite3_bind_parameter_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_bind_parameter_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
 
-        string ISQLite3Provider.sqlite3_bind_parameter_name(IntPtr stm, int paramIndex)
+        string ISQLite3Provider.sqlite3_bind_parameter_name(sqlite3_stmt stm, int paramIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex));
         }
 
-        int ISQLite3Provider.sqlite3_bind_parameter_index(IntPtr stm, string paramName)
+        int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, string paramName)
         {
             return NativeMethods.sqlite3_bind_parameter_index(stm, util.to_utf8(paramName));
         }
@@ -1063,32 +1063,32 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_stmt_readonly(stm);
         }
 
-        int ISQLite3Provider.sqlite3_column_int(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_int(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int(stm, columnIndex);
         }
 
-        long ISQLite3Provider.sqlite3_column_int64(IntPtr stm, int columnIndex)
+        long ISQLite3Provider.sqlite3_column_int64(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_text(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_text(stm, columnIndex));
         }
 
-        string ISQLite3Provider.sqlite3_column_decltype(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
         }
 
-        double ISQLite3Provider.sqlite3_column_double(IntPtr stm, int columnIndex)
+        double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_double(stm, columnIndex);
         }
 
-        byte[] ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex)
+        byte[] ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_column_blob(stm, columnIndex);
             if (blobPointer == IntPtr.Zero)
@@ -1102,7 +1102,7 @@ namespace SQLitePCL
             return result;
         }
 
-        int ISQLite3Provider.sqlite3_column_blob(IntPtr stm, int columnIndex, byte[] result, int offset)
+        int ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex, byte[] result, int offset)
         {
             if (result == null || offset >= result.Length)
             {
@@ -1123,42 +1123,42 @@ namespace SQLitePCL
             return raw.SQLITE_OK;
         }
 
-        int ISQLite3Provider.sqlite3_column_type(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_type(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_type(stm, columnIndex);
         }
 
-        int ISQLite3Provider.sqlite3_column_bytes(IntPtr stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_bytes(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_bytes(stm, columnIndex);
         }
 
-        int ISQLite3Provider.sqlite3_column_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_column_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_column_count(stm);
         }
 
-        int ISQLite3Provider.sqlite3_data_count(IntPtr stm)
+        int ISQLite3Provider.sqlite3_data_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_data_count(stm);
         }
 
-        string ISQLite3Provider.sqlite3_column_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_name(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_name(stm, columnIndex));
         }
 
-        string ISQLite3Provider.sqlite3_column_origin_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_origin_name(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_origin_name(stm, columnIndex));
         }
 
-        string ISQLite3Provider.sqlite3_column_table_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_table_name(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_table_name(stm, columnIndex));
         }
 
-        string ISQLite3Provider.sqlite3_column_database_name(IntPtr stm, int columnIndex)
+        string ISQLite3Provider.sqlite3_column_database_name(sqlite3_stmt stm, int columnIndex)
         {
             return util.from_utf8(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
         }
@@ -1451,25 +1451,25 @@ namespace SQLitePCL
 		public delegate int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_bind_parameter_name(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_database_name(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_decltype(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_name(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_origin_name(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_table_name(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_text(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_errmsg(IntPtr db);
@@ -1570,37 +1570,37 @@ namespace SQLitePCL
 		public delegate int sqlite3_busy_timeout(IntPtr db, int ms);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_blob(IntPtr stmt, int index, byte[] val, int nSize, IntPtr nTransient);
+		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_zeroblob(IntPtr stmt, int index, int size);
+		public delegate int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_double(IntPtr stmt, int index, double val);
+		public delegate int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_int(IntPtr stmt, int index, int val);
+		public delegate int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_int64(IntPtr stmt, int index, long val);
+		public delegate int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_null(IntPtr stmt, int index);
+		public delegate int sqlite3_bind_null(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_text(IntPtr stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
+		public delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_parameter_count(IntPtr stmt);
+		public delegate int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_parameter_index(IntPtr stmt, byte[] strName);
+		public delegate int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_count(IntPtr stmt);
+		public delegate int sqlite3_column_count(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_data_count(IntPtr stmt);
+		public delegate int sqlite3_data_count(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_step(sqlite3_stmt stmt);
@@ -1609,22 +1609,22 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_sql(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate double sqlite3_column_double(IntPtr stmt, int index);
+		public delegate double sqlite3_column_double(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_int(IntPtr stmt, int index);
+		public delegate int sqlite3_column_int(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_column_int64(IntPtr stmt, int index);
+		public delegate long sqlite3_column_int64(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_blob(IntPtr stmt, int index);
+		public delegate IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_bytes(IntPtr stmt, int index);
+		public delegate int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_type(IntPtr stmt, int index);
+		public delegate int sqlite3_column_type(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_aggregate_count(IntPtr context);

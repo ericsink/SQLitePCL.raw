@@ -632,12 +632,12 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size)
         {
-            return _imp.sqlite3_bind_zeroblob(stmt.ptr, index, size);
+            return _imp.sqlite3_bind_zeroblob(stmt, index, size);
         }
 
         static public string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_bind_parameter_name(stmt.ptr, index);
+            return _imp.sqlite3_bind_parameter_name(stmt, index);
         }
 
         // probably unnecessary since we pass user_data back as one of the
@@ -746,42 +746,42 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int nSize)
         {
-            return _imp.sqlite3_bind_blob(stmt.ptr, index, blob, nSize);
+            return _imp.sqlite3_bind_blob(stmt, index, blob, nSize);
         }
 
         static public int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)
         {
-            return _imp.sqlite3_bind_double(stmt.ptr, index, val);
+            return _imp.sqlite3_bind_double(stmt, index, val);
         }
 
         static public int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val)
         {
-            return _imp.sqlite3_bind_int(stmt.ptr, index, val);
+            return _imp.sqlite3_bind_int(stmt, index, val);
         }
 
         static public int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val)
         {
-            return _imp.sqlite3_bind_int64(stmt.ptr, index, val);
+            return _imp.sqlite3_bind_int64(stmt, index, val);
         }
 
         static public int sqlite3_bind_null(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_bind_null(stmt.ptr, index);
+            return _imp.sqlite3_bind_null(stmt, index);
         }
 
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            return _imp.sqlite3_bind_text(stmt.ptr, index, val);
+            return _imp.sqlite3_bind_text(stmt, index, val);
         }
 
         static public int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_bind_parameter_count(stmt.ptr);
+            return _imp.sqlite3_bind_parameter_count(stmt);
         }
 
         static public int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName)
         {
-            return _imp.sqlite3_bind_parameter_index(stmt.ptr, strName);
+            return _imp.sqlite3_bind_parameter_index(stmt, strName);
         }
 
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)
@@ -796,77 +796,77 @@ namespace SQLitePCL
 
         static public string sqlite3_column_database_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_database_name(stmt.ptr, index);
+            return _imp.sqlite3_column_database_name(stmt, index);
         }
 
         static public string sqlite3_column_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_name(stmt.ptr, index);
+            return _imp.sqlite3_column_name(stmt, index);
         }
 
         static public string sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_origin_name(stmt.ptr, index);
+            return _imp.sqlite3_column_origin_name(stmt, index);
         }
 
         static public string sqlite3_column_table_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_table_name(stmt.ptr, index);
+            return _imp.sqlite3_column_table_name(stmt, index);
         }
 
         static public string sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_text(stmt.ptr, index);
+            return _imp.sqlite3_column_text(stmt, index);
         }
 
         static public int sqlite3_column_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_column_count(stmt.ptr);
+            return _imp.sqlite3_column_count(stmt);
         }
 
         static public int sqlite3_data_count(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_data_count(stmt.ptr);
+            return _imp.sqlite3_data_count(stmt);
         }
 
         static public double sqlite3_column_double(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_double(stmt.ptr, index);
+            return _imp.sqlite3_column_double(stmt, index);
         }
 
         static public int sqlite3_column_int(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_int(stmt.ptr, index);
+            return _imp.sqlite3_column_int(stmt, index);
         }
 
         static public long sqlite3_column_int64(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_int64(stmt.ptr, index);
+            return _imp.sqlite3_column_int64(stmt, index);
         }
 
         static public byte[] sqlite3_column_blob(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_blob(stmt.ptr, index);
+            return _imp.sqlite3_column_blob(stmt, index);
         }
 
         static public int sqlite3_column_blob(sqlite3_stmt stmt, int index, byte[] result, int offset)
         {
-            return _imp.sqlite3_column_blob(stmt.ptr, index, result, offset);
+            return _imp.sqlite3_column_blob(stmt, index, result, offset);
         }
 
         static public int sqlite3_column_bytes(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_bytes(stmt.ptr, index);
+            return _imp.sqlite3_column_bytes(stmt, index);
         }
 
         static public int sqlite3_column_type(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_type(stmt.ptr, index);
+            return _imp.sqlite3_column_type(stmt, index);
         }
 
         static public string sqlite3_column_decltype(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_decltype(stmt.ptr, index);
+            return _imp.sqlite3_column_decltype(stmt, index);
         }
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
