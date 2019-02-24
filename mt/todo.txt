@@ -1,4 +1,10 @@
 
+maybe funcs like sqlite3_blob_close,
+instead of calling Dispose, could call
+the actual function and then inform the
+safehandle somehow.  that way, apps that
+want the actual return value can do that.
+
 consider:  chg inclusion of assemblies in
 nuspec such that it errors if the expected
 assemblies are not there?  currently, if the
