@@ -92,7 +92,7 @@ namespace SQLitePCL
 
         int sqlite3_enable_shared_cache(int enable);
 
-        void sqlite3_interrupt(IntPtr db);
+        void sqlite3_interrupt(sqlite3 db);
 
         int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);
 
@@ -104,18 +104,18 @@ namespace SQLitePCL
         long sqlite3_memory_highwater(int resetFlag);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-        int sqlite3_db_readonly(IntPtr db, string dbName);
-        string sqlite3_db_filename(IntPtr db, string att);
-        string sqlite3_errmsg(IntPtr db);
-        long sqlite3_last_insert_rowid(IntPtr db);
-        int sqlite3_changes(IntPtr db);
-        int sqlite3_total_changes(IntPtr db);
-        int sqlite3_get_autocommit(IntPtr db);
-        int sqlite3_busy_timeout(IntPtr db, int ms);
+        int sqlite3_db_readonly(sqlite3 db, string dbName);
+        string sqlite3_db_filename(sqlite3 db, string att);
+        string sqlite3_errmsg(sqlite3 db);
+        long sqlite3_last_insert_rowid(sqlite3 db);
+        int sqlite3_changes(sqlite3 db);
+        int sqlite3_total_changes(sqlite3 db);
+        int sqlite3_get_autocommit(sqlite3 db);
+        int sqlite3_busy_timeout(sqlite3 db, int ms);
 
-        int sqlite3_extended_result_codes(IntPtr db, int onoff);
-        int sqlite3_errcode(IntPtr db);
-        int sqlite3_extended_errcode(IntPtr db);
+        int sqlite3_extended_result_codes(sqlite3 db, int onoff);
+        int sqlite3_errcode(sqlite3 db);
+        int sqlite3_extended_errcode(sqlite3 db);
         string sqlite3_errstr(int rc); /* 3.7.15+ */
 
         int sqlite3_prepare_v2(sqlite3 db, string sql, out IntPtr stmt, out string remain);
@@ -162,7 +162,7 @@ namespace SQLitePCL
         int sqlite3_backup_pagecount(sqlite3_backup backup);
         int sqlite3_backup_finish(IntPtr backup);
 
-        int sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob);
+        int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob);
         int sqlite3_blob_bytes(sqlite3_blob blob);
         int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
         int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
@@ -182,7 +182,7 @@ namespace SQLitePCL
         int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_scalar func);
         int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 
-        int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
+        int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
         void sqlite3_result_blob(IntPtr context, byte[] val);
         void sqlite3_result_double(IntPtr context, double val);
@@ -215,11 +215,11 @@ namespace SQLitePCL
         int sqlite3_compileoption_used(string sql);
         string sqlite3_compileoption_get(int n);
 
-        int sqlite3_wal_autocheckpoint(IntPtr db, int n);
-        int sqlite3_wal_checkpoint(IntPtr db, string dbName);
-        int sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed);
+        int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
+        int sqlite3_wal_checkpoint(sqlite3 db, string dbName);
+        int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-        int sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
+        int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
 
         int sqlite3_set_authorizer(IntPtr db, delegate_authorizer authorizer, object user_data);
 
@@ -227,11 +227,11 @@ namespace SQLitePCL
 
         // because the wp8 C++ layer wouldn't link unless built against sqlcipher
         // and the functionality is available with PRAGMAs
-        int sqlite3_key(IntPtr db, byte[] key, int keylen);
-        int sqlite3_rekey(IntPtr db, byte[] key, int keylen);
+        int sqlite3_key(sqlite3 db, byte[] key, int keylen);
+        int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
         // because it's deprecated and harmful
-        int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+        int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
         // because there's no good reason for a C# app to be calling the sqlite C memory allocator
         IntPtr sqlite3_malloc(int n);
@@ -246,11 +246,11 @@ namespace SQLitePCL
 
         // because these are inherently non-portable, and because the SQLite module
         // for WP8 doesn't even compile them in.
-        int sqlite3_load_extension(IntPtr db, byte[] fileName, byte[] procName, ref IntPtr pError);
+        int sqlite3_load_extension(sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
         // TODO
-        void sqlite3_interrupt(IntPtr db);
-        int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
+        void sqlite3_interrupt(sqlite3 db);
+        int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
 #endif
 
         int sqlite3_initialize();
@@ -260,7 +260,7 @@ namespace SQLitePCL
         int sqlite3_config(int op);
         int sqlite3_config(int op, int val);
 
-        int sqlite3_enable_load_extension(IntPtr db, int enable);
+        int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 
 #if not // utf16 versions, not needed since we're using utf8 everywhere

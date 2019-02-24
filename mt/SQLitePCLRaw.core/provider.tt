@@ -112,7 +112,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_enable_shared_cache(enable);
         }
 
-        void ISQLite3Provider.sqlite3_interrupt(IntPtr db)
+        void ISQLite3Provider.sqlite3_interrupt(sqlite3 db)
         {
             NativeMethods.sqlite3_interrupt(db);
         }
@@ -169,7 +169,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_compileoption_used(util.to_utf8(s));
         }
 
-        int ISQLite3Provider.sqlite3_table_column_metadata(IntPtr db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             IntPtr datatype_ptr;
             IntPtr collseq_ptr;
@@ -230,7 +230,7 @@ namespace SQLitePCL
             return rc;
         }
 
-        int ISQLite3Provider.sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg)
+        int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
@@ -245,7 +245,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
+        int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
         }
@@ -313,22 +313,22 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_next_stmt(db, stmt);
         }
 
-        long ISQLite3Provider.sqlite3_last_insert_rowid(IntPtr db)
+        long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
         {
             return NativeMethods.sqlite3_last_insert_rowid(db);
         }
 
-        int ISQLite3Provider.sqlite3_changes(IntPtr db)
+        int ISQLite3Provider.sqlite3_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_changes(db);
         }
 
-        int ISQLite3Provider.sqlite3_total_changes(IntPtr db)
+        int ISQLite3Provider.sqlite3_total_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_total_changes(db);
         }
 
-        int ISQLite3Provider.sqlite3_extended_result_codes(IntPtr db, int onoff)
+        int ISQLite3Provider.sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
@@ -338,37 +338,37 @@ namespace SQLitePCL
             return util.from_utf8(NativeMethods.sqlite3_errstr(rc));
         }
 
-        int ISQLite3Provider.sqlite3_errcode(IntPtr db)
+        int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_errcode(db);
         }
 
-        int ISQLite3Provider.sqlite3_extended_errcode(IntPtr db)
+        int ISQLite3Provider.sqlite3_extended_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_extended_errcode(db);
         }
 
-        int ISQLite3Provider.sqlite3_busy_timeout(IntPtr db, int ms)
+        int ISQLite3Provider.sqlite3_busy_timeout(sqlite3 db, int ms)
         {
             return NativeMethods.sqlite3_busy_timeout(db, ms);
         }
 
-        int ISQLite3Provider.sqlite3_get_autocommit(IntPtr db)
+        int ISQLite3Provider.sqlite3_get_autocommit(sqlite3 db)
         {
             return NativeMethods.sqlite3_get_autocommit(db);
         }
 
-        int ISQLite3Provider.sqlite3_db_readonly(IntPtr db, string dbName)
+        int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, string dbName)
         {
             return NativeMethods.sqlite3_db_readonly(db, util.to_utf8(dbName)); 
         }
         
-        string ISQLite3Provider.sqlite3_db_filename(IntPtr db, string att)
+        string ISQLite3Provider.sqlite3_db_filename(sqlite3 db, string att)
 	{
             return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
 	}
 
-        string ISQLite3Provider.sqlite3_errmsg(IntPtr db)
+        string ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
         {
             return util.from_utf8(NativeMethods.sqlite3_errmsg(db));
         }
@@ -408,7 +408,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_shutdown();
         }
 
-        int ISQLite3Provider.sqlite3_enable_load_extension(IntPtr db, int onoff)
+        int ISQLite3Provider.sqlite3_enable_load_extension(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
@@ -1183,17 +1183,17 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_finalize(stm);
         }
 
-        int ISQLite3Provider.sqlite3_wal_autocheckpoint(IntPtr db, int n)
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint(IntPtr db, string dbName)
+        int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, string dbName)
         {
             return NativeMethods.sqlite3_wal_checkpoint(db, util.to_utf8(dbName));
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(IntPtr db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
             return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
         }
@@ -1436,7 +1436,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_enable_shared_cache(int enable);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_interrupt(IntPtr db);
+		public delegate void sqlite3_interrupt(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_finalize(IntPtr stmt);
@@ -1472,22 +1472,22 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_errmsg(IntPtr db);
+		public delegate IntPtr sqlite3_errmsg(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_db_readonly(IntPtr db, byte[] dbName);
+		public delegate int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_db_filename(IntPtr db, byte[] att);
+		public delegate IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		public delegate int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
+		public delegate int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_complete(byte[] pSql);
@@ -1499,18 +1499,18 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_compileoption_get(int n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_table_column_metadata(IntPtr db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		public delegate int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_value_text(IntPtr p);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_enable_load_extension(
-		IntPtr db, int enable);
+		sqlite3 db, int enable);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_load_extension(
-		IntPtr db, byte[] fileName, byte[] procName, ref IntPtr pError);
+		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_initialize();
@@ -1549,13 +1549,13 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_last_insert_rowid(IntPtr db);
+		public delegate long sqlite3_last_insert_rowid(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_changes(IntPtr db);
+		public delegate int sqlite3_changes(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_total_changes(IntPtr db);
+		public delegate int sqlite3_total_changes(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate long sqlite3_memory_used();
@@ -1567,7 +1567,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_busy_timeout(IntPtr db, int ms);
+		public delegate int sqlite3_busy_timeout(sqlite3 db, int ms);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
@@ -1689,10 +1689,10 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_key(IntPtr db, byte[] key, int keylen);
+		public delegate int sqlite3_key(sqlite3 db, byte[] key, int keylen);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_rekey(IntPtr db, byte[] key, int keylen);
+		public delegate int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
 		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
 		// for all possible calls that we want to use.
@@ -1745,16 +1745,16 @@ namespace SQLitePCL
 		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, IntPtr pvParam, out IntPtr errMsg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_get_autocommit(IntPtr db);
+		public delegate int sqlite3_get_autocommit(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_extended_result_codes(IntPtr db, int onoff);
+		public delegate int sqlite3_extended_result_codes(sqlite3 db, int onoff);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_errcode(IntPtr db);
+		public delegate int sqlite3_errcode(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_extended_errcode(IntPtr db);
+		public delegate int sqlite3_extended_errcode(sqlite3 db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
@@ -1766,7 +1766,7 @@ namespace SQLitePCL
 		public delegate void sqlite3_log(int iErrCode, byte[] zFormat);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
+		public delegate int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate sqlite3_backup sqlite3_backup_init(IntPtr destDb, byte[] zDestName, IntPtr sourceDb, byte[] zSourceName);
@@ -1784,7 +1784,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_backup_finish(IntPtr backup);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_open(IntPtr db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
+		public delegate int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
@@ -1802,13 +1802,13 @@ namespace SQLitePCL
 		public delegate int sqlite3_blob_close(IntPtr blob);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_autocheckpoint(IntPtr db, int n);
+		public delegate int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_checkpoint(IntPtr db, byte[] dbName);
+		public delegate int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_checkpoint_v2(IntPtr db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
+		public delegate int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_set_authorizer(IntPtr db, NativeMethods.callback_authorizer cb, IntPtr pvUser);

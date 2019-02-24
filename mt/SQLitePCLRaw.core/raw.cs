@@ -326,7 +326,7 @@ namespace SQLitePCL
 
         static public void sqlite3_interrupt(sqlite3 db)
         {
-            _imp.sqlite3_interrupt(db.ptr);
+            _imp.sqlite3_interrupt(db);
         }
 
         static public void sqlite3_config_log(delegate_log f, object v)
@@ -391,7 +391,7 @@ namespace SQLitePCL
 
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            return _imp.sqlite3_db_status(db.ptr, op, out current, out highest, resetFlg);
+            return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
         static public string sqlite3_libversion()
@@ -431,7 +431,7 @@ namespace SQLitePCL
 
         static public int sqlite3_enable_load_extension(sqlite3 db, int onoff)
         {
-            return _imp.sqlite3_enable_load_extension(db.ptr, onoff);
+            return _imp.sqlite3_enable_load_extension(db, onoff);
         }
 
         static public string sqlite3_sourceid()
@@ -456,57 +456,57 @@ namespace SQLitePCL
 
         static public string sqlite3_errmsg(sqlite3 db)
         {
-            return _imp.sqlite3_errmsg(db.ptr);
+            return _imp.sqlite3_errmsg(db);
         }
 
         static public int sqlite3_db_readonly(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_db_readonly(db.ptr, dbName);
+            return _imp.sqlite3_db_readonly(db, dbName);
         }
 
         static public string sqlite3_db_filename(sqlite3 db, string att)
         {
-            return _imp.sqlite3_db_filename(db.ptr, att);
+            return _imp.sqlite3_db_filename(db, att);
         }
 
         static public long sqlite3_last_insert_rowid(sqlite3 db)
         {
-            return _imp.sqlite3_last_insert_rowid(db.ptr);
+            return _imp.sqlite3_last_insert_rowid(db);
         }
 
         static public int sqlite3_changes(sqlite3 db)
         {
-            return _imp.sqlite3_changes(db.ptr);
+            return _imp.sqlite3_changes(db);
         }
 
         static public int sqlite3_total_changes(sqlite3 db)
         {
-            return _imp.sqlite3_total_changes(db.ptr);
+            return _imp.sqlite3_total_changes(db);
         }
 
         static public int sqlite3_get_autocommit(sqlite3 db)
         {
-            return _imp.sqlite3_get_autocommit(db.ptr);
+            return _imp.sqlite3_get_autocommit(db);
         }
 
         static public int sqlite3_busy_timeout(sqlite3 db, int ms)
         {
-            return _imp.sqlite3_busy_timeout(db.ptr, ms);
+            return _imp.sqlite3_busy_timeout(db, ms);
         }
 
         static public int sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
-            return _imp.sqlite3_extended_result_codes(db.ptr, onoff);
+            return _imp.sqlite3_extended_result_codes(db, onoff);
         }
 
         static public int sqlite3_errcode(sqlite3 db)
         {
-            return _imp.sqlite3_errcode(db.ptr);
+            return _imp.sqlite3_errcode(db);
         }
 
         static public int sqlite3_extended_errcode(sqlite3 db)
         {
-            return _imp.sqlite3_extended_errcode(db.ptr);
+            return _imp.sqlite3_extended_errcode(db);
         }
 
         static public string sqlite3_errstr(int rc)
@@ -593,7 +593,7 @@ namespace SQLitePCL
 
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            return _imp.sqlite3_table_column_metadata(db.ptr, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+            return _imp.sqlite3_table_column_metadata(db, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
         }
 
         static public string sqlite3_sql(sqlite3_stmt stmt)
@@ -605,7 +605,7 @@ namespace SQLitePCL
         {
 #if not
             IntPtr p = _imp.sqlite3_db_handle(stmt.ptr);
-            Assert(p == stmt.db.ptr);
+            Assert(p == stmt.db);
 #endif
             return stmt.db;
         }
@@ -903,7 +903,7 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
-            return _imp.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
+            return _imp.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
         }
 
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
@@ -955,17 +955,17 @@ namespace SQLitePCL
 
         static public int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
-            return _imp.sqlite3_wal_autocheckpoint(db.ptr, n);
+            return _imp.sqlite3_wal_autocheckpoint(db, n);
         }
 
         static public int sqlite3_wal_checkpoint(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_wal_checkpoint(db.ptr, dbName);
+            return _imp.sqlite3_wal_checkpoint(db, dbName);
         }
 
         static public int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            return _imp.sqlite3_wal_checkpoint_v2(db.ptr, dbName, eMode, out logSize, out framesCheckPointed);
+            return _imp.sqlite3_wal_checkpoint_v2(db, dbName, eMode, out logSize, out framesCheckPointed);
         }
 
         static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
