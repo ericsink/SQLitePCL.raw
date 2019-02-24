@@ -563,17 +563,17 @@ namespace SQLitePCL
 
         static public int sqlite3_reset(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_reset(stmt.ptr);
+            return _imp.sqlite3_reset(stmt);
         }
 
         static public int sqlite3_clear_bindings(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_clear_bindings(stmt.ptr);
+            return _imp.sqlite3_clear_bindings(stmt);
         }
 
         public static int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg)
         {
-            return _imp.sqlite3_stmt_status(stmt.ptr, op, resetFlg);
+            return _imp.sqlite3_stmt_status(stmt, op, resetFlg);
         }
 
         static public int sqlite3_complete(string sql)
@@ -598,7 +598,7 @@ namespace SQLitePCL
 
         static public string sqlite3_sql(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_sql(stmt.ptr);
+            return _imp.sqlite3_sql(stmt);
         }
 
         static public sqlite3 sqlite3_db_handle(sqlite3_stmt stmt)
@@ -786,12 +786,12 @@ namespace SQLitePCL
 
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_stmt_busy(stmt.ptr);
+            return _imp.sqlite3_stmt_busy(stmt);
         }
 
         static public int sqlite3_stmt_readonly(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_stmt_readonly(stmt.ptr);
+            return _imp.sqlite3_stmt_readonly(stmt);
         }
 
         static public string sqlite3_column_database_name(sqlite3_stmt stmt, int index)

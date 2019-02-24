@@ -121,10 +121,10 @@ namespace SQLitePCL
         int sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stmt, out string remain);
         int sqlite3_step(sqlite3_stmt stmt);
         int sqlite3_finalize(IntPtr stmt);
-        int sqlite3_reset(IntPtr stmt);
-        int sqlite3_clear_bindings(IntPtr stmt);
-        int sqlite3_stmt_status(IntPtr stmt, int op, int resetFlg);
-        string sqlite3_sql(IntPtr stmt);
+        int sqlite3_reset(sqlite3_stmt stmt);
+        int sqlite3_clear_bindings(sqlite3_stmt stmt);
+        int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg);
+        string sqlite3_sql(sqlite3_stmt stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
         IntPtr sqlite3_next_stmt(IntPtr db, IntPtr stmt);
 
@@ -205,8 +205,8 @@ namespace SQLitePCL
         int sqlite3_value_type(IntPtr p);
         string sqlite3_value_text(IntPtr p);
 
-        int sqlite3_stmt_busy(IntPtr stmt);
-        int sqlite3_stmt_readonly(IntPtr stmt);
+        int sqlite3_stmt_busy(sqlite3_stmt stmt);
+        int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
         int sqlite3_exec(IntPtr db, string sql, delegate_exec callback, object user_data, out string errMsg);
 
