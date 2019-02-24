@@ -159,54 +159,46 @@ namespace SQLitePCL
 		}
     }
 
-    // typed wrapper for an IntPtr.  still opaque.
-    public class sqlite3_stmt : IDisposable
+    public class sqlite3_stmt : SafeHandle
     {
-        private readonly IntPtr _p;
-        private bool _disposed = false;
-        private readonly sqlite3 _db;
+        private sqlite3 _db;
 
-        internal sqlite3_stmt(IntPtr p, sqlite3 db)
+        internal static sqlite3_stmt From(IntPtr p, sqlite3 db)
         {
-            _p = p;
-            _db = db;
-            _db.add_stmt(this);
+			var h = new sqlite3_stmt();
+			h.SetHandle(p);
+            db.add_stmt(h);
+            h._db = db;
+			return h;
         }
 
-        ~sqlite3_stmt()
-        {
-            Dispose(false);
-        }
+		sqlite3_stmt() : base(IntPtr.Zero, true)
+		{
+		}
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+		public override bool IsInvalid => handle == IntPtr.Zero;
 
-        void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            raw.sqlite3_finalize(this);
-            // prev line calls set_already_disposed()
-        }
+		protected override bool ReleaseHandle()
+		{
+			int rc = raw.internal_sqlite3_finalize(handle);
+            // TODO check rc?
+			return true;
+		}
 
-        internal void set_already_disposed()
-        {
-            _db.remove_stmt(this);
-            _disposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-		internal bool already_disposed => _disposed;
+		public int manual_close()
+		{
+			int rc = raw.internal_sqlite3_finalize(handle);
+			// TODO review.  should handle always be nulled here?
+			// TODO maybe called SetHandleAsInvalid instead?
+			handle = IntPtr.Zero;
+			return rc;
+		}
 
         public IntPtr ptr
         {
             get
             {
-                return _p;
+                return handle;
             }
         }
 

@@ -514,7 +514,7 @@ namespace SQLitePCL
         {
             IntPtr p;
             int rc = _imp.sqlite3_prepare_v2(db.ptr, sql, out p, out tail);
-            stmt = new sqlite3_stmt(p, db);
+            stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
@@ -539,12 +539,16 @@ namespace SQLitePCL
             return _imp.sqlite3_step(stmt.ptr);
         }
 
+		// called by apps that want the return code
         static public int sqlite3_finalize(sqlite3_stmt stmt)
         {
-			if (stmt.already_disposed) return 0;
-            int rc = _imp.sqlite3_finalize(stmt.ptr);
-            stmt.set_already_disposed();
-            return rc;
+			return stmt.manual_close();
+        }
+
+		// called by the SafeHandle
+        static public int internal_sqlite3_finalize(IntPtr stmt)
+        {
+			return _imp.sqlite3_finalize(stmt);
         }
 
         static public int sqlite3_reset(sqlite3_stmt stmt)
@@ -875,6 +879,7 @@ namespace SQLitePCL
             return _imp.sqlite3_backup_pagecount(backup);
         }
 
+		// called by something that wants the return code
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
 			return backup.manual_close();
@@ -926,6 +931,7 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_read(blob, b, bOffset, n, offset);
         }
 
+		// called by something that wants the return code
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
 			return blob.manual_close();
