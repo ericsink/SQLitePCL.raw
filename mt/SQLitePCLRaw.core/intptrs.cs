@@ -85,13 +85,7 @@ namespace SQLitePCL
         // used by raw.sqlite3_result_* (which is internal to the
         // PCL assembly) to fetch the actual context pointer to pass 
         // back to sqlite.
-        internal IntPtr ptr
-        {
-            get
-            {
-                return _p;
-            }
-        }
+        internal IntPtr ptr => _p;
 
         // used by either the scalar or agg subclass, located
         // in util.cs, compiled into the platform assembly.  each
@@ -125,13 +119,7 @@ namespace SQLitePCL
             _p = p;
         }
 
-        internal IntPtr ptr
-        {
-            get
-            {
-                return _p;
-            }
-        }
+        internal IntPtr ptr => _p;
     }
 
     public class sqlite3_blob : SafeHandle
@@ -194,13 +182,7 @@ namespace SQLitePCL
 			return rc;
 		}
 
-        internal IntPtr ptr
-        {
-            get
-            {
-                return handle;
-            }
-        }
+        internal IntPtr ptr => handle;
 
         // We keep track of the db connection handle for this stmt, even though
         // the underlying sqlite C library keeps track of it as well.  On a call
@@ -277,13 +259,7 @@ namespace SQLitePCL
 			return h;
         }
 
-        internal IntPtr ptr
-        {
-            get
-            {
-                return handle;
-            }
-        }
+        internal IntPtr ptr => handle;
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
