@@ -156,11 +156,11 @@ namespace SQLitePCL
         int sqlite3_column_type(IntPtr stmt, int index);
         string sqlite3_column_decltype(IntPtr stmt, int index);
 
-        IntPtr sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName);
-        int sqlite3_backup_step(IntPtr backup, int nPage);
+        sqlite3_backup sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName);
+        int sqlite3_backup_step(sqlite3_backup backup, int nPage);
+        int sqlite3_backup_remaining(sqlite3_backup backup);
+        int sqlite3_backup_pagecount(sqlite3_backup backup);
         int sqlite3_backup_finish(IntPtr backup);
-        int sqlite3_backup_remaining(IntPtr backup);
-        int sqlite3_backup_pagecount(IntPtr backup);
 
         // TODO perhaps just one overload here, the other one above in raw
         int sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob);

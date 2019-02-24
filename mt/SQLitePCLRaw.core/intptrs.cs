@@ -28,51 +28,20 @@ namespace SQLitePCL
     using System;
     using System.Runtime.InteropServices;
 
-    // typed wrapper for an IntPtr.  still opaque.
-    public class sqlite3_backup : IDisposable
+    public class sqlite3_backup : SafeHandle
     {
-        private readonly IntPtr _p;
-        private bool _disposed = false;
-		internal bool already_disposed => _disposed;
+		sqlite3_backup() : base(IntPtr.Zero, true)
+		{
+		}
 
-        internal sqlite3_backup(IntPtr p)
-        {
-            _p = p;
-        }
+		public override bool IsInvalid => handle == IntPtr.Zero;
 
-        ~sqlite3_backup()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            raw.sqlite3_backup_finish(this);
-            // prev line calls set_already_disposed()
-        }
-
-        internal void set_already_disposed()
-        {
-            _disposed = true;
-            GC.SuppressFinalize(this);
-        }
-
-        public IntPtr ptr
-        {
-            get
-            {
-                return _p;
-            }
-        }
+		protected override bool ReleaseHandle()
+		{
+			int rc = raw.internal_sqlite3_backup_finish(handle);
+            // TODO check rc?
+			return true;
+		}
     }
 
     // typed wrapper for an IntPtr.  still opaque.  the upper layers can't

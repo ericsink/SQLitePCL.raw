@@ -285,29 +285,29 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
+        sqlite3_backup ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
         {
             return NativeMethods.sqlite3_backup_init(destDb, util.to_utf8(destName), sourceDb, util.to_utf8(sourceName));
         }
 
-        int ISQLite3Provider.sqlite3_backup_step(IntPtr backup, int nPage)
+        int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
             return NativeMethods.sqlite3_backup_step(backup, nPage);
+        }
+
+        int ISQLite3Provider.sqlite3_backup_remaining(sqlite3_backup backup)
+        {
+            return NativeMethods.sqlite3_backup_remaining(backup);
+        }
+
+        int ISQLite3Provider.sqlite3_backup_pagecount(sqlite3_backup backup)
+        {
+            return NativeMethods.sqlite3_backup_pagecount(backup);
         }
 
         int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_finish(backup);
-        }
-
-        int ISQLite3Provider.sqlite3_backup_remaining(IntPtr backup)
-        {
-            return NativeMethods.sqlite3_backup_remaining(backup);
-        }
-
-        int ISQLite3Provider.sqlite3_backup_pagecount(IntPtr backup)
-        {
-            return NativeMethods.sqlite3_backup_pagecount(backup);
         }
 
         IntPtr ISQLite3Provider.sqlite3_next_stmt(IntPtr db, IntPtr stmt)
@@ -1344,9 +1344,9 @@ namespace SQLitePCL
 			sqlite3_file_control = (MyDelegateTypes.sqlite3_file_control) Load(gf, typeof(MyDelegateTypes.sqlite3_file_control));
 			sqlite3_backup_init = (MyDelegateTypes.sqlite3_backup_init) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_init));
 			sqlite3_backup_step = (MyDelegateTypes.sqlite3_backup_step) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_step));
-			sqlite3_backup_finish = (MyDelegateTypes.sqlite3_backup_finish) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_finish));
 			sqlite3_backup_remaining = (MyDelegateTypes.sqlite3_backup_remaining) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_remaining));
 			sqlite3_backup_pagecount = (MyDelegateTypes.sqlite3_backup_pagecount) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_pagecount));
+			sqlite3_backup_finish = (MyDelegateTypes.sqlite3_backup_finish) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_finish));
 			sqlite3_blob_open = (MyDelegateTypes.sqlite3_blob_open) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_open));
 			sqlite3_blob_write = (MyDelegateTypes.sqlite3_blob_write) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_write));
 			sqlite3_blob_read = (MyDelegateTypes.sqlite3_blob_read) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_read));
@@ -1473,9 +1473,9 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_file_control sqlite3_file_control;
 		public static MyDelegateTypes.sqlite3_backup_init sqlite3_backup_init;
 		public static MyDelegateTypes.sqlite3_backup_step sqlite3_backup_step;
-		public static MyDelegateTypes.sqlite3_backup_finish sqlite3_backup_finish;
 		public static MyDelegateTypes.sqlite3_backup_remaining sqlite3_backup_remaining;
 		public static MyDelegateTypes.sqlite3_backup_pagecount sqlite3_backup_pagecount;
+		public static MyDelegateTypes.sqlite3_backup_finish sqlite3_backup_finish;
 		public static MyDelegateTypes.sqlite3_blob_open sqlite3_blob_open;
 		public static MyDelegateTypes.sqlite3_blob_write sqlite3_blob_write;
 		public static MyDelegateTypes.sqlite3_blob_read sqlite3_blob_read;
@@ -1876,19 +1876,19 @@ namespace SQLitePCL
 		public delegate int sqlite3_file_control(IntPtr db, byte[] zDbName, int op, IntPtr pArg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_backup_init(IntPtr destDb, byte[] zDestName, IntPtr sourceDb, byte[] zSourceName);
+		public delegate sqlite3_backup sqlite3_backup_init(IntPtr destDb, byte[] zDestName, IntPtr sourceDb, byte[] zSourceName);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_step(IntPtr backup, int nPage);
+		public delegate int sqlite3_backup_step(sqlite3_backup backup, int nPage);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_remaining(sqlite3_backup backup);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_pagecount(sqlite3_backup backup);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_backup_finish(IntPtr backup);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_remaining(IntPtr backup);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_pagecount(IntPtr backup);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_blob_open(IntPtr db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);

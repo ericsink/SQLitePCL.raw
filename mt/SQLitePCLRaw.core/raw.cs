@@ -857,31 +857,33 @@ namespace SQLitePCL
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
         {
-            IntPtr p = _imp.sqlite3_backup_init(destDb.ptr, destName, sourceDb.ptr, sourceName);
-            return new sqlite3_backup(p);
+            return _imp.sqlite3_backup_init(destDb.ptr, destName, sourceDb.ptr, sourceName);
         }
 
         static public int sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
-            return _imp.sqlite3_backup_step(backup.ptr, nPage);
-        }
-
-        static public int sqlite3_backup_finish(sqlite3_backup backup)
-        {
-			if (backup.already_disposed) return 0;
-            int rc = _imp.sqlite3_backup_finish(backup.ptr);
-            backup.set_already_disposed();
-            return rc;
+            return _imp.sqlite3_backup_step(backup, nPage);
         }
 
         static public int sqlite3_backup_remaining(sqlite3_backup backup)
         {
-            return _imp.sqlite3_backup_remaining(backup.ptr);
+            return _imp.sqlite3_backup_remaining(backup);
         }
 
         static public int sqlite3_backup_pagecount(sqlite3_backup backup)
         {
-            return _imp.sqlite3_backup_pagecount(backup.ptr);
+            return _imp.sqlite3_backup_pagecount(backup);
+        }
+
+        static public int sqlite3_backup_finish(sqlite3_backup backup)
+        {
+			backup.Dispose();
+			return 0;
+        }
+
+        static internal int internal_sqlite3_backup_finish(IntPtr p)
+        {
+            return _imp.sqlite3_backup_finish(p);
         }
 
         static public int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
