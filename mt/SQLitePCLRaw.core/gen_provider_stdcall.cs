@@ -242,32 +242,27 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
         }
 
-        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_open(db, util.to_utf8(sdb), util.to_utf8(table), util.to_utf8(col), rowid, flags, out blob);
         }
 
-        int ISQLite3Provider.sqlite3_blob_bytes(IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_bytes(blob);
         }
 
-        int ISQLite3Provider.sqlite3_blob_reopen(IntPtr blob, long rowid)
+        int ISQLite3Provider.sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
         {
             return NativeMethods.sqlite3_blob_reopen(blob, rowid);
         }
 
-        int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
-        {
-            return NativeMethods.sqlite3_blob_close(blob);
-        }
-
-        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
@@ -276,13 +271,18 @@ namespace SQLitePCL
 	    return rc;
         }
 
-        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
             IntPtr ptr = pinned.AddrOfPinnedObject();
             int rc = NativeMethods.sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
 	    return rc;
+        }
+
+        int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
+        {
+            return NativeMethods.sqlite3_blob_close(blob);
         }
 
         IntPtr ISQLite3Provider.sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName)
@@ -1891,19 +1891,19 @@ namespace SQLitePCL
 		public delegate int sqlite3_backup_pagecount(IntPtr backup);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_open(IntPtr db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out IntPtr blob);
+		public delegate int sqlite3_blob_open(IntPtr db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_write(IntPtr blob, IntPtr b, int n, int offset);
+		public delegate int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_read(IntPtr blob, IntPtr b, int n, int offset);
+		public delegate int sqlite3_blob_read(sqlite3_blob blob, IntPtr b, int n, int offset);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_bytes(IntPtr blob);
+		public delegate int sqlite3_blob_bytes(sqlite3_blob blob);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_reopen(IntPtr blob, long rowid);
+		public delegate int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_blob_close(IntPtr blob);

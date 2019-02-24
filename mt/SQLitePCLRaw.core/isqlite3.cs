@@ -162,13 +162,14 @@ namespace SQLitePCL
         int sqlite3_backup_remaining(IntPtr backup);
         int sqlite3_backup_pagecount(IntPtr backup);
 
-        int sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out IntPtr blob);
-        int sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out IntPtr blob);
-        int sqlite3_blob_bytes(IntPtr blob);
-        int sqlite3_blob_reopen(IntPtr blob, long rowid);
+        // TODO perhaps just one overload here, the other one above in raw
+        int sqlite3_blob_open(IntPtr db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob);
+        int sqlite3_blob_open(IntPtr db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob);
+        int sqlite3_blob_bytes(sqlite3_blob blob);
+        int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
+        int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
+        int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
         int sqlite3_blob_close(IntPtr blob);
-        int sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset);
-        int sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset);
 
         int sqlite3_config_log(delegate_log func, object v);
         void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v);

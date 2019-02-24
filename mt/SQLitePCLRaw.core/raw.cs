@@ -886,56 +886,53 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out p);
-            blob = new sqlite3_blob(p);
-            return rc;
+            return _imp.sqlite3_blob_open(db.ptr, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
         }
 
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_blob_open(db.ptr, sdb, table, col, rowid, flags, out p);
-            blob = new sqlite3_blob(p);
-            return rc;
+            return _imp.sqlite3_blob_open(db.ptr, sdb, table, col, rowid, flags, out blob);
         }
 
         static public int sqlite3_blob_bytes(sqlite3_blob blob)
         {
-            return _imp.sqlite3_blob_bytes(blob.ptr);
+            return _imp.sqlite3_blob_bytes(blob);
         }
 
         static public int sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
         {
-            return _imp.sqlite3_blob_reopen(blob.ptr, rowid);
-        }
-
-        static public int sqlite3_blob_close(sqlite3_blob blob)
-        {
-			if (blob.already_disposed) return 0;
-            int rc = _imp.sqlite3_blob_close(blob.ptr);
-            blob.set_already_disposed();
-            return rc;
+            return _imp.sqlite3_blob_reopen(blob, rowid);
         }
 
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int n, int offset)
         {
-            return _imp.sqlite3_blob_write(blob.ptr, b, 0, n, offset);
+            return _imp.sqlite3_blob_write(blob, b, 0, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int n, int offset)
         {
-            return _imp.sqlite3_blob_read(blob.ptr, b, 0, n, offset);
+            return _imp.sqlite3_blob_read(blob, b, 0, n, offset);
         }
 
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
-            return _imp.sqlite3_blob_write(blob.ptr, b, bOffset, n, offset);
+            return _imp.sqlite3_blob_write(blob, b, bOffset, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
         {
-            return _imp.sqlite3_blob_read(blob.ptr, b, bOffset, n, offset);
+            return _imp.sqlite3_blob_read(blob, b, bOffset, n, offset);
+        }
+
+        static public int sqlite3_blob_close(sqlite3_blob blob)
+        {
+			blob.Dispose();
+            return 0;
+        }
+
+        static internal int internal_sqlite3_blob_close(IntPtr blob)
+        {
+			return _imp.sqlite3_blob_close(blob);
         }
 
         static public int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
