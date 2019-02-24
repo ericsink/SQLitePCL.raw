@@ -167,12 +167,8 @@ namespace SQLitePCL
         int sqlite3_blob_bytes(IntPtr blob);
         int sqlite3_blob_reopen(IntPtr blob, long rowid);
         int sqlite3_blob_close(IntPtr blob);
-        int sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset);
-        int sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset); // TODO return blob[] ?
-
-        // these two overloads allow specification of an offset into the byte[]
         int sqlite3_blob_write(IntPtr blob, byte[] b, int bOffset, int n, int offset);
-        int sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset); // TODO return blob[] ?
+        int sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset);
 
         int sqlite3_config_log(delegate_log func, object v);
         void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v);

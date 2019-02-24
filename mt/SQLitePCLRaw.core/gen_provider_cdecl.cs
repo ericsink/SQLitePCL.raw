@@ -267,16 +267,6 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
-        int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int n, int offset)
-        {
-            return (this as ISQLite3Provider).sqlite3_blob_read(blob, b, 0, n, offset);
-        }
-
-        int ISQLite3Provider.sqlite3_blob_write(IntPtr blob, byte[] b, int n, int offset)
-        {
-            return (this as ISQLite3Provider).sqlite3_blob_write(blob, b, 0, n, offset);
-        }
-
         int ISQLite3Provider.sqlite3_blob_read(IntPtr blob, byte[] b, int bOffset, int n, int offset)
         {
             GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);

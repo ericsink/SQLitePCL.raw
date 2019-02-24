@@ -920,14 +920,12 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int n, int offset)
         {
-            // TODO why would anyone want to write a different number of bytes than the size of the array given?
-            return _imp.sqlite3_blob_write(blob.ptr, b, n, offset);
+            return _imp.sqlite3_blob_write(blob.ptr, b, 0, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int n, int offset)
         {
-            // TODO why would anyone want to read a different number of bytes than the size of the array given?
-            return _imp.sqlite3_blob_read(blob.ptr, b, n, offset);
+            return _imp.sqlite3_blob_read(blob.ptr, b, 0, n, offset);
         }
 
         static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
