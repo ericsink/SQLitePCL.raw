@@ -893,7 +893,7 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)
         {
-            return _imp.sqlite3_blob_open(db.ptr, sdb, table, col, rowid, flags, out blob);
+            return sqlite3_blob_open(db, sdb.to_utf8(), table.to_utf8(), col.to_utf8(), rowid, flags, out blob);
         }
 
         static public int sqlite3_blob_bytes(sqlite3_blob blob)

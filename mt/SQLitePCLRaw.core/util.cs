@@ -87,9 +87,9 @@ namespace SQLitePCL
 	}
     }
 
-    internal class util
+    internal static class util
     {
-        internal static byte[] to_utf8(string sourceText)
+        internal static byte[] to_utf8(this string sourceText)
         {
             if (sourceText == null)
             {
