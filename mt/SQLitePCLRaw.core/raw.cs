@@ -871,7 +871,7 @@ namespace SQLitePCL
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
         {
-            return _imp.sqlite3_backup_init(destDb.ptr, destName, sourceDb.ptr, sourceName);
+            return _imp.sqlite3_backup_init(destDb, destName, sourceDb, sourceName);
         }
 
         static public int sqlite3_backup_step(sqlite3_backup backup, int nPage)

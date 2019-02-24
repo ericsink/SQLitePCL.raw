@@ -156,7 +156,7 @@ namespace SQLitePCL
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
         string sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-        sqlite3_backup sqlite3_backup_init(IntPtr destDb, string destName, IntPtr sourceDb, string sourceName);
+        sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
         int sqlite3_backup_remaining(sqlite3_backup backup);
         int sqlite3_backup_pagecount(sqlite3_backup backup);
