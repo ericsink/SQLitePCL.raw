@@ -523,25 +523,25 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
             IntPtr p;
-            int rc = _imp.sqlite3_prepare_v2(db.ptr, sql, out p, out tail);
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
         {
-            return _imp.sqlite3_exec(db.ptr, sql, callback, user_data, out errMsg);
+            return _imp.sqlite3_exec(db, sql, callback, user_data, out errMsg);
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql, out string errMsg)
         {
-            return _imp.sqlite3_exec(db.ptr, sql, null, null, out errMsg);
+            return _imp.sqlite3_exec(db, sql, null, null, out errMsg);
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql)
         {
             string errmsg;
-            return _imp.sqlite3_exec(db.ptr, sql, null, null, out errmsg);
+            return _imp.sqlite3_exec(db, sql, null, null, out errmsg);
         }
 
         static public int sqlite3_step(sqlite3_stmt stmt)

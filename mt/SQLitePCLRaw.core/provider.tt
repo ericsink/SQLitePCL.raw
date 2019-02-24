@@ -125,7 +125,7 @@ namespace SQLitePCL
         }
 // TODO shouldn't there be a impl/bridge thing here
 
-        int ISQLite3Provider.sqlite3_exec(IntPtr db, string sql, delegate_exec func, object user_data, out string errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, string sql, delegate_exec func, object user_data, out string errMsg)
         {
             IntPtr errmsg_ptr;
             int rc;
@@ -207,7 +207,7 @@ namespace SQLitePCL
             return rc; 
         }
 
-        int ISQLite3Provider.sqlite3_prepare_v2(IntPtr db, string sql, out IntPtr stm, out string remain)
+        int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, string sql, out IntPtr stm, out string remain)
         {
             var ba_sql = util.to_utf8(sql);
             GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
@@ -1484,7 +1484,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_prepare(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_prepare_v2(IntPtr db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_db_status(IntPtr db, int op, out int current, out int highest, int resetFlg);
@@ -1742,7 +1742,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_exec(IntPtr db, byte[] strSql, NativeMethods.callback_exec cb, IntPtr pvParam, out IntPtr errMsg);
+		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, IntPtr pvParam, out IntPtr errMsg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_get_autocommit(IntPtr db);
