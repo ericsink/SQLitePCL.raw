@@ -277,7 +277,8 @@ namespace SQLitePCL
         {
             IntPtr p;
             int rc = _imp.sqlite3_open(filename, out p);
-            db = new sqlite3(p);
+			// TODO check rc?
+            db = sqlite3.New(p);
             return rc;
         }
 
@@ -285,7 +286,8 @@ namespace SQLitePCL
         {
             IntPtr p;
             int rc = _imp.sqlite3_open_v2(filename, out p, flags, vfs);
-            db = new sqlite3(p);
+			// TODO check rc?
+            db = sqlite3.New(p);
             return rc;
         }
         static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
@@ -293,20 +295,28 @@ namespace SQLitePCL
             return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
         }
 
-        static public int sqlite3_close_v2(sqlite3 db)
+		// called by the SafeHandle
+        static internal int internal_sqlite3_close_v2(IntPtr p)
         {
-			if (db.already_disposed) return 0;
-            int rc = _imp.sqlite3_close_v2(db.ptr);
-            db.set_already_disposed();
-            return rc;
+            return _imp.sqlite3_close_v2(p);
         }
 
+		// called by the SafeHandle
+        static internal int internal_sqlite3_close(IntPtr p)
+        {
+            return _imp.sqlite3_close(p);
+        }
+
+		// called by apps that want the return code
+        static public int sqlite3_close_v2(sqlite3 db)
+		{
+			return db.manual_close_v2();
+		}
+
+		// called by apps that want the return code
         static public int sqlite3_close(sqlite3 db)
         {
-			if (db.already_disposed) return 0;
-            int rc = _imp.sqlite3_close(db.ptr);
-            db.set_already_disposed();
-            return rc;
+			return db.manual_close();
         }
 
         static public int sqlite3_enable_shared_cache(int enable)

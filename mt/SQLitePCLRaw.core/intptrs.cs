@@ -218,21 +218,14 @@ namespace SQLitePCL
         }
     }
 
-    // typed wrapper for an IntPtr.  still opaque.
-    public class sqlite3 : IDisposable
+    public class sqlite3 : SafeHandle
     {
-        private readonly IntPtr _p;
-        private bool _disposed = false;
-		internal bool already_disposed => _disposed;
-
         // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
         private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
 
-        internal sqlite3(IntPtr p)
-        {
-            _p = p;
-            enable_sqlite3_next_stmt(true);
-        }
+		sqlite3() : base(IntPtr.Zero, true)
+		{
+		}
 
         public void enable_sqlite3_next_stmt(bool enabled)
         {
@@ -249,58 +242,46 @@ namespace SQLitePCL
             }
         }
 
-        ~sqlite3()
+		public override bool IsInvalid => handle == IntPtr.Zero;
+
+		protected override bool ReleaseHandle()
+		{
+			int rc = raw.internal_sqlite3_close_v2(handle);
+            // TODO check rc?
+			return true;
+		}
+
+		public int manual_close_v2()
+		{
+			int rc = raw.internal_sqlite3_close_v2(handle);
+			// TODO review.  should handle always be nulled here?
+			// TODO maybe called SetHandleAsInvalid instead?
+			handle = IntPtr.Zero;
+			return rc;
+		}
+
+		public int manual_close()
+		{
+			int rc = raw.internal_sqlite3_close(handle);
+			// TODO review.  should handle always be nulled here?
+			// TODO maybe called SetHandleAsInvalid instead?
+			handle = IntPtr.Zero;
+			return rc;
+		}
+
+        internal static sqlite3 New(IntPtr p)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (_disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                // We intentionally use sqlite3_close() here instead of sqlite3_close_v2().
-                // The latter is not supported on the sqlite3 library which is preinstalled
-                // with iOS.
-
-                // Note, however, that sqlite3_close() can fail.  And we are ignoring the
-                // return code, because the only thing we could do with it is to throw,
-                // which is somewhat forbidden from within Dispose().
-                //
-                // http://msdn.microsoft.com/en-us/library/bb386039.aspx
-
-                raw.sqlite3_close(this);
-                // prev line calls set_already_disposed()
-            }
-            else
-            {
-                // on old versions of SQLite, this will fail.
-                // this includes iOS versions prior to 8.2.
-                raw.sqlite3_close_v2(this);
-                // prev line calls set_already_disposed()
-            }
-        }
-
-        internal void set_already_disposed()
-        {
-            _disposed = true;
-            GC.SuppressFinalize(this);
+			var h = new sqlite3();
+			h.SetHandle(p);
+            h.enable_sqlite3_next_stmt(true);
+			return h;
         }
 
         public IntPtr ptr
         {
             get
             {
-                return _p;
+                return handle;
             }
         }
 
