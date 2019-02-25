@@ -209,7 +209,7 @@ namespace SQLitePCL
         }
     }
 
-    internal class hook_handle
+    internal class hook_handle : IDisposable
     {
 		IntPtr _p;
 
@@ -221,7 +221,7 @@ namespace SQLitePCL
 
         internal IntPtr ptr => _p;
 
-        internal void Dispose()
+        public void Dispose()
         {
 			var h = GCHandle.FromIntPtr(_p);
 			h.Free();
