@@ -291,8 +291,6 @@ namespace SQLitePCL
                 _stmts.TryRemove(s.ptr, out stmt);
             }
         }
-
-		internal commit_hook_info commit_hook;
     }
 }
 

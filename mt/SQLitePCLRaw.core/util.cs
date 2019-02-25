@@ -58,7 +58,7 @@ namespace SQLitePCL
 			foreach (var h in agg.Values) h.free();
 			if (update!=null) update.free();
 			if (rollback!=null) rollback.free();
-			//if (commit!=null) commit.free();
+			if (commit!=null) commit.free();
 			if (trace!=null) trace.free();
 			if (progress!=null) progress.free();
 			if (profile!=null) profile.free();
@@ -239,35 +239,34 @@ namespace SQLitePCL
         }
     };
 
-    public class SafeGCHandle : SafeHandle
-	{
-		public SafeGCHandle(object v, GCHandleType typ)
-			: base(IntPtr.Zero, true)
-		{
-            var h = GCHandle.Alloc(v, typ);
-			SetHandle(GCHandle.ToIntPtr(h));
-		}
-
-		public override bool IsInvalid => handle == IntPtr.Zero;
-
-		protected override bool ReleaseHandle()
-		{
-			var h = GCHandle.FromIntPtr(handle);
-			h.Free();
-			return true;
-		}
-
-	}
-
-    internal class commit_hook_pair
+    internal class commit_hook_info
     {
-        public delegate_commit _func { get; private set; }
-        public object _user_data { get; private set; }
+        private delegate_commit _func;
+        private object _user_data;
+        private GCHandle _h;
 
-        public commit_hook_pair(delegate_commit func, object v)
+        internal commit_hook_info(delegate_commit func, object v)
         {
             _func = func;
             _user_data = v;
+
+            _h = GCHandle.Alloc(this);
+        }
+
+        internal IntPtr ptr
+        {
+            get
+            {
+                return (IntPtr) _h;
+            }
+        }
+
+        internal static commit_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            commit_hook_info hi = h.Target as commit_hook_info;
+            // TODO assert(hi._h == h)
+            return hi;
         }
 
         internal int call()
@@ -275,22 +274,12 @@ namespace SQLitePCL
             return _func(_user_data);
         }
 
-        internal static commit_hook_pair from_ptr(IntPtr p)
+        internal void free()
         {
-            GCHandle h = (GCHandle) p;
-            commit_hook_pair hi = h.Target as commit_hook_pair;
-            // TODO assert(hi._h == h)
-            return hi;
+            _func = null;
+            _user_data = null;
+            _h.Free();
         }
-    }
-
-    internal class commit_hook_info : SafeGCHandle
-    {
-        internal commit_hook_info(delegate_commit func, object v) 
-			: base(new commit_hook_pair(func, v), GCHandleType.Normal)
-        {
-        }
-
     };
 
     internal class rollback_hook_info
