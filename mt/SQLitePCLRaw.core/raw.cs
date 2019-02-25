@@ -336,7 +336,7 @@ namespace SQLitePCL
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
         {
-            _imp.sqlite3_commit_hook(db.ptr, f, v);
+            _imp.sqlite3_commit_hook(db, f, v);
         }
 
         static public void sqlite3_rollback_hook(sqlite3 db, delegate_rollback f, object v)

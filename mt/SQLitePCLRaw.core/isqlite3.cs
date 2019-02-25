@@ -170,7 +170,7 @@ namespace SQLitePCL
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log func, object v);
-        void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v);
+        void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v);
         void sqlite3_trace(IntPtr db, delegate_trace func, object v);
         void sqlite3_profile(IntPtr db, delegate_profile func, object v);

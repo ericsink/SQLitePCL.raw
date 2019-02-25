@@ -434,29 +434,27 @@ namespace SQLitePCL
         [MonoPInvokeCallback (typeof(NativeMethods.callback_commit))]
         static int commit_hook_bridge_impl(IntPtr p)
         {
-            commit_hook_info hi = commit_hook_info.from_ptr(p);
+            commit_hook_pair hi = commit_hook_pair.from_ptr(p);
             return hi.call();
         }
 
 	NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_commit_hook(IntPtr db, delegate_commit func, object v)
+        void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
-		var info = hooks.getOrCreateFor(db);
-            if (info.commit != null)
-            {
-                // TODO maybe turn off the hook here, for now
-                info.commit.free();
-                info.commit = null;
-            }
+			if (db.commit_hook != null)
+			{
+                db.commit_hook.Dispose();
+                db.commit_hook = null;
+			}
 
             if (func != null)
             {
-                info.commit = new commit_hook_info(func, v);
-                NativeMethods.sqlite3_commit_hook(db, commit_hook_bridge, info.commit.ptr);
+				db.commit_hook = new commit_hook_info(func, v);
+                NativeMethods.sqlite3_commit_hook(db, commit_hook_bridge, db.commit_hook);
             }
             else
             {
-                NativeMethods.sqlite3_commit_hook(db, null, IntPtr.Zero);
+                NativeMethods.sqlite3_commit_hook(db, null, null);
             }
         }
 
@@ -1715,7 +1713,7 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_update_hook(IntPtr db, NativeMethods.callback_update func, IntPtr pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_commit_hook(IntPtr db, NativeMethods.callback_commit func, IntPtr pvUser);
+		public delegate IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, commit_hook_info pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_profile(IntPtr db, NativeMethods.callback_profile func, IntPtr pvUser);
