@@ -30,12 +30,6 @@ namespace SQLitePCL
     using System.Text;
     using System.Collections.Generic;
 
-    internal static class hooks
-    {
-		// TODO why is this static?
-        internal static IDisposable log;
-    }
-
     internal static class util
     {
         internal static byte[] to_utf8(this string sourceText)

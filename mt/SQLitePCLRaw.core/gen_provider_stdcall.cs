@@ -528,6 +528,8 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
+		static IDisposable disp_log_hook_handle;
+
         [MonoPInvokeCallback (typeof(NativeMethods.callback_log))]
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
         {
@@ -538,11 +540,11 @@ namespace SQLitePCL
 	NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
-            if (hooks.log != null)
+            if (disp_log_hook_handle != null)
             {
                 // TODO maybe turn off the hook here, for now
-                hooks.log.Dispose();
-                hooks.log = null;
+                disp_log_hook_handle.Dispose();
+                disp_log_hook_handle = null;
             }
 
 			NativeMethods.callback_log cb;
@@ -551,7 +553,7 @@ namespace SQLitePCL
             {
 				cb = log_hook_bridge;
                 hi = new log_hook_handle(func, v);
-				hooks.log = hi;
+				disp_log_hook_handle = hi;
             }
             else
             {
