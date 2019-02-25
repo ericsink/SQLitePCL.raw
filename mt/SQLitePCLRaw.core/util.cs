@@ -45,7 +45,7 @@ namespace SQLitePCL
 			public Dictionary<string, agg_function_hook_info> agg = new Dictionary<string, agg_function_hook_info>();
 			public update_hook_info update;
 			public rollback_hook_info rollback;
-			public commit_hook_info commit;
+			public commit_hook_handle commit;
 			public trace_hook_info trace;
 			public progress_handler_hook_info progress;
 			public profile_hook_info profile;
@@ -196,12 +196,12 @@ namespace SQLitePCL
         }
     };
 
-    internal class commit_hook_pair
+    internal class commit_hook_info
     {
         public delegate_commit _func { get; private set; }
         public object _user_data { get; private set; }
 
-        public commit_hook_pair(delegate_commit func, object v)
+        public commit_hook_info(delegate_commit func, object v)
         {
             _func = func;
             _user_data = v;
@@ -212,21 +212,21 @@ namespace SQLitePCL
             return _func(_user_data);
         }
 
-        internal static commit_hook_pair from_ptr(IntPtr p)
+        internal static commit_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
-            commit_hook_pair hi = h.Target as commit_hook_pair;
+            commit_hook_info hi = h.Target as commit_hook_info;
             return hi;
         }
     }
 
-     internal class commit_hook_info
+     internal class commit_hook_handle
     {
 		IntPtr _p;
 
-        internal commit_hook_info(delegate_commit func, object v)
+        internal commit_hook_handle(delegate_commit func, object v)
         {
-			var pair = new commit_hook_pair(func, v);
+			var pair = new commit_hook_info(func, v);
 			var h = GCHandle.Alloc(pair);
 			_p = GCHandle.ToIntPtr(h);
         }
