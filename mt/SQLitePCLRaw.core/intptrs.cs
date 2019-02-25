@@ -29,6 +29,49 @@ namespace SQLitePCL
 	using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
 
+    internal class SafeGCHandle : SafeHandle
+	{
+		public SafeGCHandle(object v, GCHandleType typ)
+			: base(IntPtr.Zero, true)
+		{
+			if (v != null)
+			{
+				var h = GCHandle.Alloc(v, typ);
+				SetHandle(GCHandle.ToIntPtr(h));
+			}
+		}
+
+		public override bool IsInvalid => handle == IntPtr.Zero;
+
+		protected override bool ReleaseHandle()
+		{
+			var h = GCHandle.FromIntPtr(handle);
+			h.Free();
+			return true;
+		}
+
+	}
+
+    internal class hook_handle : SafeGCHandle
+    {
+        internal hook_handle(object target)
+			: base(target, GCHandleType.Normal)
+        {
+        }
+
+		public IDisposable ForDispose()
+		{
+			if (IsInvalid)
+			{
+				return null;
+			}
+			else
+			{
+				return this;
+			}
+		}
+    }
+
     public class sqlite3_backup : SafeHandle
     {
 		sqlite3_backup() : base(IntPtr.Zero, true)
@@ -328,23 +371,23 @@ namespace SQLitePCL
 		    }
 	    }
 
-		internal hook_handles info;
+		internal hook_handles handles;
 
 		internal hook_handles GetHooks()
 		{
-			if (info == null)
+			if (handles == null)
 			{
-				info = new hook_handles();
+				handles = new hook_handles();
 			}
-			return info;
+			return handles;
 		}
 
 		private void dispose_hook_handles()
 		{
-			if (info != null)
+			if (handles != null)
 			{
-				info.Dispose();
-				info = null;
+				handles.Dispose();
+				handles = null;
 			}
 		}
 

@@ -96,49 +96,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class SafeGCHandle : SafeHandle
-	{
-		public SafeGCHandle(object v, GCHandleType typ)
-			: base(IntPtr.Zero, true)
-		{
-			if (v != null)
-			{
-				var h = GCHandle.Alloc(v, typ);
-				SetHandle(GCHandle.ToIntPtr(h));
-			}
-		}
-
-		public override bool IsInvalid => handle == IntPtr.Zero;
-
-		protected override bool ReleaseHandle()
-		{
-			var h = GCHandle.FromIntPtr(handle);
-			h.Free();
-			return true;
-		}
-
-	}
-
-    internal class hook_handle : SafeGCHandle
-    {
-        internal hook_handle(object target)
-			: base(target, GCHandleType.Normal)
-        {
-        }
-
-		public IDisposable ForDispose()
-		{
-			if (IsInvalid)
-			{
-				return null;
-			}
-			else
-			{
-				return this;
-			}
-		}
-    }
-
     internal class log_hook_info
     {
         private delegate_log _func;
