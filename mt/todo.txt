@@ -1,9 +1,4 @@
 
-consider remove .ptr and chg the marshal
-signatures to accept stmt/sqlite3, so we get
-AddRef/Release, but we also get control over
-the "constructor".
-
 consider:  chg inclusion of assemblies in
 nuspec such that it errors if the expected
 assemblies are not there?  currently, if the
@@ -80,8 +75,6 @@ DI for the utf8 stuff?  #202
 more xunit test cases
 
 goal is to have no ifdefs in core
-
-chgs to intptr dispose?  #166  SafeHandle
 
 chg to SourceGear name?
 

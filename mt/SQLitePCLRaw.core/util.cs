@@ -101,13 +101,11 @@ namespace SQLitePCL
 		public SafeGCHandle(object v, GCHandleType typ)
 			: base(IntPtr.Zero, true)
 		{
-            var h = GCHandle.Alloc(v, typ);
-			SetHandle(GCHandle.ToIntPtr(h));
-		}
-
-		protected SafeGCHandle()
-			: base(IntPtr.Zero, true)
-		{
+			if (v != null)
+			{
+				var h = GCHandle.Alloc(v, typ);
+				SetHandle(GCHandle.ToIntPtr(h));
+			}
 		}
 
 		public override bool IsInvalid => handle == IntPtr.Zero;
@@ -128,8 +126,16 @@ namespace SQLitePCL
         {
         }
 
-		protected hook_handle()
+		public IDisposable ForDispose()
 		{
+			if (IsInvalid)
+			{
+				return null;
+			}
+			else
+			{
+				return this;
+			}
 		}
     }
 
@@ -157,23 +163,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class log_hook_handle : hook_handle
-    {
-        internal log_hook_handle(delegate_log func, object v)
-			: base(new log_hook_info(func, v))
-        {
-        }
-
-		log_hook_handle()
-		{
-		}
-
-		public static log_hook_handle Null()
-		{
-			return new log_hook_handle();
-		}
-    }
-
     internal class commit_hook_info
     {
         public delegate_commit _func { get; private set; }
@@ -196,23 +185,6 @@ namespace SQLitePCL
             commit_hook_info hi = h.Target as commit_hook_info;
             return hi;
         }
-    }
-
-    internal class commit_hook_handle : hook_handle
-    {
-        internal commit_hook_handle(delegate_commit func, object v)
-			: base(new commit_hook_info(func, v))
-        {
-        }
-
-		commit_hook_handle()
-		{
-		}
-
-		public static commit_hook_handle Null()
-		{
-			return new commit_hook_handle();
-		}
     }
 
     internal class rollback_hook_info
@@ -240,23 +212,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class rollback_hook_handle : hook_handle
-    {
-        internal rollback_hook_handle(delegate_rollback func, object v)
-			: base(new rollback_hook_info(func, v))
-        {
-        }
-
-		rollback_hook_handle()
-		{
-		}
-
-		public static rollback_hook_handle Null()
-		{
-			return new rollback_hook_handle();
-		}
-    }
-
     internal class trace_hook_info
     {
         private delegate_trace _func;
@@ -279,23 +234,6 @@ namespace SQLitePCL
         {
             _func(_user_data, s);
         }
-    }
-
-    internal class trace_hook_handle : hook_handle
-    {
-        internal trace_hook_handle(delegate_trace func, object v)
-			: base(new trace_hook_info(func, v))
-        {
-        }
-
-		trace_hook_handle()
-		{
-		}
-
-		public static trace_hook_handle Null()
-		{
-			return new trace_hook_handle();
-		}
     }
 
     internal class profile_hook_info
@@ -322,23 +260,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class profile_hook_handle : hook_handle
-    {
-        internal profile_hook_handle(delegate_profile func, object v)
-			: base(new profile_hook_info(func, v))
-        {
-        }
-
-		profile_hook_handle()
-		{
-		}
-
-		public static profile_hook_handle Null()
-		{
-			return new profile_hook_handle();
-		}
-    }
-
     internal class progress_handler_hook_info
     {
         private delegate_progress_handler _func;
@@ -361,23 +282,6 @@ namespace SQLitePCL
         {
             return _func(_user_data);
         }
-    }
-
-    internal class progress_handler_hook_handle : hook_handle
-    {
-        internal progress_handler_hook_handle(delegate_progress_handler func, object v)
-			: base(new progress_handler_hook_info(func, v))
-        {
-        }
-
-		progress_handler_hook_handle()
-		{
-		}
-
-		public static progress_handler_hook_handle Null()
-		{
-			return new progress_handler_hook_handle();
-		}
     }
 
     internal class update_hook_info
@@ -404,23 +308,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class update_hook_handle : hook_handle
-    {
-        internal update_hook_handle(delegate_update func, object v)
-			: base(new update_hook_info(func, v))
-        {
-        }
-
-		update_hook_handle()
-		{
-		}
-
-		public static update_hook_handle Null()
-		{
-			return new update_hook_handle();
-		}
-    }
-
     internal class collation_hook_info
     {
         private delegate_collation _func;
@@ -443,23 +330,6 @@ namespace SQLitePCL
         {
             return _func(_user_data, s1, s2);
         }
-    }
-
-    internal class collation_hook_handle : hook_handle
-    {
-        internal collation_hook_handle(delegate_collation func, object v)
-			: base(new collation_hook_info(func, v))
-        {
-        }
-
-		collation_hook_handle()
-		{
-		}
-
-		public static collation_hook_handle Null()
-		{
-			return new collation_hook_handle();
-		}
     }
 
     internal class exec_hook_info
@@ -501,23 +371,6 @@ namespace SQLitePCL
         }
     }
 
-    internal class exec_hook_handle : hook_handle
-    {
-        internal exec_hook_handle(delegate_exec func, object v)
-			: base(new exec_hook_info(func, v))
-        {
-        }
-
-		exec_hook_handle()
-		{
-		}
-
-		public static exec_hook_handle Null()
-		{
-			return new exec_hook_handle();
-		}
-    }
-
     internal class function_hook_info
     {
         private delegate_function_scalar _func_scalar;
@@ -537,14 +390,21 @@ namespace SQLitePCL
             }
         }
 
-        internal function_hook_info(
+        public function_hook_info(
 			delegate_function_scalar func_scalar,
+			object user_data
+			)
+        {
+			_func_scalar = func_scalar;
+            _user_data = user_data;
+        }
+
+        public function_hook_info(
 			delegate_function_aggregate_step func_step, 
 			delegate_function_aggregate_final func_final, 
 			object user_data
 			)
         {
-			_func_scalar = func_scalar;
             _func_step = func_step;
             _func_final = func_final;
             _user_data = user_data;
@@ -648,45 +508,6 @@ namespace SQLitePCL
 
     }
 
-    internal class function_hook_handle : hook_handle
-    {
-        private function_hook_handle(
-			delegate_function_scalar func_scalar,
-			delegate_function_aggregate_step func_step, 
-			delegate_function_aggregate_final func_final, 
-			object v
-			)
-			: base(new function_hook_info(func_scalar, func_step, func_final, v))
-        {
-        }
-
-        internal function_hook_handle(
-			delegate_function_scalar func_scalar,
-			object v
-			)
-			: this(func_scalar, null, null, v)
-        {
-        }
-
-        internal function_hook_handle(
-			delegate_function_aggregate_step func_step, 
-			delegate_function_aggregate_final func_final, 
-			object v
-			)
-			: this(null, func_step, func_final, v)
-        {
-        }
-
-		function_hook_handle()
-		{
-		}
-
-		public static function_hook_handle Null()
-		{
-			return new function_hook_handle();
-		}
-    }
-
     internal class authorizer_hook_info
     {
         private delegate_authorizer _func;
@@ -709,23 +530,6 @@ namespace SQLitePCL
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }
-    }
-
-    internal class authorizer_hook_handle : hook_handle
-    {
-        internal authorizer_hook_handle(delegate_authorizer func, object v)
-			: base(new authorizer_hook_info(func, v))
-        {
-        }
-
-		authorizer_hook_handle()
-		{
-		}
-
-		public static authorizer_hook_handle Null()
-		{
-			return new authorizer_hook_handle();
-		}
     }
 
 }

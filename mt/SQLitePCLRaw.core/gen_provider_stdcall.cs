@@ -126,19 +126,20 @@ namespace SQLitePCL
             int rc;
 
 			NativeMethods.callback_exec cb;
-			exec_hook_handle hi;
+			exec_hook_info hi;
             if (func != null)
             {
 				cb = exec_hook_bridge;
-                hi = new exec_hook_handle(func, user_data);
+                hi = new exec_hook_info(func, user_data);
             }
             else
             {
 				cb = null;
-                hi = exec_hook_handle.Null();
+                hi = null;
             }
-			rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), cb, hi, out errmsg_ptr);
-			hi.Dispose();
+			var h = new hook_handle(hi);
+			rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), cb, h, out errmsg_ptr);
+			h.Dispose();
 
             if (errmsg_ptr == IntPtr.Zero)
             {
@@ -449,19 +450,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_commit cb;
-			commit_hook_handle hi;
+			commit_hook_info hi;
             if (func != null)
             {
 				cb = commit_hook_bridge;
-                hi = new commit_hook_handle(func, v);
-				info.commit = hi;
+                hi = new commit_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = commit_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_commit_hook(db, cb, hi);
+			var h = new hook_handle(hi);
+			NativeMethods.sqlite3_commit_hook(db, cb, h);
+			info.commit = h.ForDispose();
         }
 
         // ----------------------------------------------------------------
@@ -497,21 +499,22 @@ namespace SQLitePCL
             // 1 is SQLITE_UTF8
 			int arg4 = 1 | flags;
 			NativeMethods.callback_scalar_function cb;
-			function_hook_handle hi;
+			function_hook_info hi;
             if (func != null)
             {
 				cb = scalar_function_hook_bridge;
-                hi = new function_hook_handle(func, v);
+                hi = new function_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = function_hook_handle.Null();
+				hi = null;
             }
-			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi, cb, null, null, null);
+			var h = new hook_handle(hi);
+			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, h, cb, null, null, null);
 			if (rc == 0)
 			{
-				info.scalar[key] = hi;
+				info.scalar[key] = h.ForDispose();
 			}
 			return rc;
         }
@@ -548,19 +551,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_log cb;
-			log_hook_handle hi;
+			log_hook_info hi;
             if (func != null)
             {
 				cb = log_hook_bridge;
-                hi = new log_hook_handle(func, v);
-				disp_log_hook_handle = hi;
+                hi = new log_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = log_hook_handle.Null();
+				hi = null;
             }
-			var rc = NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, cb, hi);
+			var h = new hook_handle(hi);
+			disp_log_hook_handle = h; // TODO if valid
+			var rc = NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, cb, h);
 			return rc;
         }
 
@@ -613,24 +617,25 @@ namespace SQLitePCL
 			int arg4 = 1 | flags;
 			NativeMethods.callback_agg_function_step cb_step;
 			NativeMethods.callback_agg_function_final cb_final;
-			function_hook_handle hi;
+			function_hook_info hi;
             if (func_step != null)
             {
                 // TODO both func_step and func_final must be non-null
 				cb_step = agg_function_hook_bridge_step;
 				cb_final = agg_function_hook_bridge_final;
-                hi = new function_hook_handle(func_step, func_final, v);
+                hi = new function_hook_info(func_step, func_final, v);
             }
             else
             {
 				cb_step = null;
 				cb_final = null;
-				hi = function_hook_handle.Null();
+				hi = null;
             }
-			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi, null, cb_step, cb_final, null);
+			var h = new hook_handle(hi);
+			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, h, null, cb_step, cb_final, null);
 			if (rc == 0)
 			{
-				info.agg[key] = hi;
+				info.agg[key] = h.ForDispose();
 			}
 			return rc;
         }
@@ -673,21 +678,22 @@ namespace SQLitePCL
 
             // 1 is SQLITE_UTF8
 			NativeMethods.callback_collation cb;
-			collation_hook_handle hi;
+			collation_hook_info hi;
             if (func != null)
             {
 				cb = collation_hook_bridge;
-                hi = new collation_hook_handle(func, v);
+                hi = new collation_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = collation_hook_handle.Null();
+				hi = null;
             }
-			int rc = NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, hi, cb);
+			var h = new hook_handle(hi);
+			int rc = NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, h, cb);
 			if (rc == 0)
 			{
-				info.collation[name] = hi;
+				info.collation[name] = h.ForDispose();
 			}
 			return rc;
         }
@@ -716,19 +722,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_update cb;
-			update_hook_handle hi;
+			update_hook_info hi;
             if (func != null)
             {
 				cb = update_hook_bridge;
-                hi = new update_hook_handle(func, v);
-                info.update = hi;
+                hi = new update_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = update_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_update_hook(db, cb, hi);
+			var h = new hook_handle(hi);
+            info.update = h.ForDispose();
+			NativeMethods.sqlite3_update_hook(db, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -755,19 +762,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_rollback cb;
-			rollback_hook_handle hi;
+			rollback_hook_info hi;
             if (func != null)
             {
 				cb = rollback_hook_bridge;
-                hi = new rollback_hook_handle(func, v);
-                info.rollback = hi;
+                hi = new rollback_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = rollback_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_rollback_hook(db, cb, hi);
+			var h = new hook_handle(hi);
+			info.rollback = h.ForDispose();
+			NativeMethods.sqlite3_rollback_hook(db, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -794,19 +802,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_trace cb;
-			trace_hook_handle hi;
+			trace_hook_info hi;
             if (func != null)
             {
 				cb = trace_hook_bridge;
-                hi = new trace_hook_handle(func, v);
-                info.trace = hi;
+                hi = new trace_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = trace_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_trace(db, cb, hi);
+			var h = new hook_handle(hi);
+			info.trace = h.ForDispose();
+			NativeMethods.sqlite3_trace(db, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -833,19 +842,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_profile cb;
-			profile_hook_handle hi;
+			profile_hook_info hi;
             if (func != null)
             {
 				cb = profile_hook_bridge;
-                hi = new profile_hook_handle(func, v);
-                info.profile = hi;
+                hi = new profile_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = profile_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_profile(db, cb, hi);
+			var h = new hook_handle(hi);
+			info.profile = h.ForDispose();
+			NativeMethods.sqlite3_profile(db, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -872,19 +882,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_progress_handler cb;
-			progress_handler_hook_handle hi;
+			progress_handler_hook_info hi;
             if (func != null)
             {
 				cb = progress_handler_hook_bridge;
-                hi = new progress_handler_hook_handle(func, v);
-                info.progress = hi;
+                hi = new progress_handler_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = progress_handler_hook_handle.Null();
+				hi = null;
             }
-			NativeMethods.sqlite3_progress_handler(db, instructions, cb, hi);
+			var h = new hook_handle(hi);
+			info.progress = h.ForDispose();
+			NativeMethods.sqlite3_progress_handler(db, instructions, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -913,19 +924,20 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_authorizer cb;
-			authorizer_hook_handle hi;
+			authorizer_hook_info hi;
             if (func != null)
             {
 				cb = authorizer_hook_bridge;
-                hi = new authorizer_hook_handle(func, v);
-                info.authorizer = hi;
+                hi = new authorizer_hook_info(func, v);
             }
             else
             {
 				cb = null;
-				hi = authorizer_hook_handle.Null();
+				hi = null;
             }
-			return NativeMethods.sqlite3_set_authorizer(db, cb, hi);
+			var h = new hook_handle(hi);
+			info.authorizer = h.ForDispose();
+			return NativeMethods.sqlite3_set_authorizer(db, cb, h);
         }
 
         // ----------------------------------------------------------------
@@ -1869,28 +1881,28 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_config")]
-		public delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, log_hook_handle pvUser);
+		public delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, collation_hook_handle pvUser, NativeMethods.callback_collation func);
+		public delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, update_hook_handle pvUser);
+		public delegate IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, commit_hook_handle pvUser);
+		public delegate IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, profile_hook_handle pvUser);
+		public delegate IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, progress_handler_hook_handle pvUser);
+		public delegate IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, trace_hook_handle pvUser);
+		public delegate IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, rollback_hook_handle pvUser);
+		public delegate IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_db_handle(IntPtr stmt);
@@ -1905,7 +1917,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, exec_hook_handle pvParam, out IntPtr errMsg);
+		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_get_autocommit(sqlite3 db);
@@ -1974,13 +1986,13 @@ namespace SQLitePCL
 		public delegate int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, authorizer_hook_handle pvUser);
+		public delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
 		public delegate int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, function_hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
+		public delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
 	}
 
