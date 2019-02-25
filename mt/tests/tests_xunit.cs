@@ -1172,7 +1172,7 @@ namespace SQLitePCL.Tests
             {
                 int count = 0;
 
-                delegate_progress_handler handler = obj => 
+                delegate_progress handler = obj => 
                     {
                         Assert.Equal(obj, "user_data");
                         count++;

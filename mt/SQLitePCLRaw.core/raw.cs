@@ -354,7 +354,7 @@ namespace SQLitePCL
             _imp.sqlite3_profile(db, f, v);
         }
 
-        static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v)
+        static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
             _imp.sqlite3_progress_handler(db, instructions, func, v);
         }

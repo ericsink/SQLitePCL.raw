@@ -864,14 +864,14 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_progress_handler))]
-        static int progress_handler_hook_bridge_impl(IntPtr p)
+        static int progress_hook_bridge_impl(IntPtr p)
         {
-            progress_handler_hook_info hi = progress_handler_hook_info.from_ptr(p);
+            progress_hook_info hi = progress_hook_info.from_ptr(p);
             return hi.call();
         }
 
-        readonly NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
-        void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v)
+        readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
+        void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
 		var info = db.GetHooks();
             if (info.progress != null)
@@ -882,11 +882,11 @@ namespace SQLitePCL
             }
 
 			NativeMethods.callback_progress_handler cb;
-			progress_handler_hook_info hi;
+			progress_hook_info hi;
             if (func != null)
             {
-				cb = progress_handler_hook_bridge;
-                hi = new progress_handler_hook_info(func, v);
+				cb = progress_hook_bridge;
+                hi = new progress_hook_info(func, v);
             }
             else
             {

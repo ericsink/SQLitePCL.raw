@@ -260,21 +260,21 @@ namespace SQLitePCL
         }
     }
 
-    internal class progress_handler_hook_info
+    internal class progress_hook_info
     {
-        private delegate_progress_handler _func;
+        private delegate_progress _func;
         private object _user_data;
 
-        internal progress_handler_hook_info(delegate_progress_handler func, object v)
+        internal progress_hook_info(delegate_progress func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static progress_handler_hook_info from_ptr(IntPtr p)
+        internal static progress_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle)p;
-            progress_handler_hook_info hi = h.Target as progress_handler_hook_info;
+            progress_hook_info hi = h.Target as progress_hook_info;
             return hi;
         }
 
