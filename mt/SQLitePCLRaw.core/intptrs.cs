@@ -171,6 +171,7 @@ namespace SQLitePCL
 		{
 			int rc = raw.internal_sqlite3_finalize(handle);
             // TODO check rc?
+			_db.remove_stmt(this);
 			return true;
 		}
 
@@ -180,10 +181,11 @@ namespace SQLitePCL
 			// TODO review.  should handle always be nulled here?
 			// TODO maybe called SetHandleAsInvalid instead?
 			handle = IntPtr.Zero;
+			_db.remove_stmt(this);
 			return rc;
 		}
 
-		// TODO rm
+		// TODO rm?  used by the next_stmt code.
         internal IntPtr ptr => handle;
 
         // We keep track of the db connection handle for this stmt, even though
@@ -204,27 +206,9 @@ namespace SQLitePCL
 
     public class sqlite3 : SafeHandle
     {
-        // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
-        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
-
 		sqlite3() : base(IntPtr.Zero, true)
 		{
 		}
-
-        public void enable_sqlite3_next_stmt(bool enabled)
-        {
-            if (enabled)
-            {
-                if (_stmts == null)
-                {
-                    _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
-                }
-            }
-            else
-            {
-                _stmts = null;
-            }
-        }
 
 		public override bool IsInvalid => handle == IntPtr.Zero;
 
@@ -264,8 +248,23 @@ namespace SQLitePCL
 			return h;
         }
 
-		// TODO rm
-        internal IntPtr ptr => handle;
+        // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
+        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
+
+        public void enable_sqlite3_next_stmt(bool enabled)
+        {
+            if (enabled)
+            {
+                if (_stmts == null)
+                {
+                    _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+                }
+            }
+            else
+            {
+                _stmts = null;
+            }
+        }
 
         internal void add_stmt(sqlite3_stmt stmt)
         {
