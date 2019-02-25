@@ -448,8 +448,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.commit = new commit_hook_handle(func, v);
-                NativeMethods.sqlite3_commit_hook(db, commit_hook_bridge, info.commit.ptr);
+                var hi = new commit_hook_handle(func, v);
+				info.commit = hi;
+                NativeMethods.sqlite3_commit_hook(db, commit_hook_bridge, hi.ptr);
             }
             else
             {
@@ -536,8 +537,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                hooks.log = new log_hook_handle(func, v);
-                return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, log_hook_bridge, hooks.log.ptr);
+                var hi = new log_hook_handle(func, v);
+				hooks.log = hi;
+                return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, log_hook_bridge, hi.ptr);
             }
             else
             {
@@ -686,8 +688,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.update = new update_hook_handle(func, v);
-                NativeMethods.sqlite3_update_hook(db, update_hook_bridge, info.update.ptr);
+                var hi = new update_hook_handle(func, v);
+                info.update = hi;
+                NativeMethods.sqlite3_update_hook(db, update_hook_bridge, hi.ptr);
             }
             else
             {
@@ -720,8 +723,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.rollback = new rollback_hook_handle(func, v);
-                NativeMethods.sqlite3_rollback_hook(db, rollback_hook_bridge, info.rollback.ptr);
+                var hi = new rollback_hook_handle(func, v);
+                info.rollback = hi;
+                NativeMethods.sqlite3_rollback_hook(db, rollback_hook_bridge, hi.ptr);
             }
             else
             {
@@ -754,8 +758,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.trace = new trace_hook_handle(func, v);
-                NativeMethods.sqlite3_trace(db, trace_hook_bridge, info.trace.ptr);
+                var hi = new trace_hook_handle(func, v);
+                info.trace = hi;
+                NativeMethods.sqlite3_trace(db, trace_hook_bridge, hi.ptr);
             }
             else
             {
@@ -788,8 +793,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.profile = new profile_hook_handle(func, v);
-                NativeMethods.sqlite3_profile(db, profile_hook_bridge, info.profile.ptr);
+                var hi = new profile_hook_handle(func, v);
+                info.profile = hi;
+                NativeMethods.sqlite3_profile(db, profile_hook_bridge, hi.ptr);
             }
             else
             {
@@ -822,8 +828,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.progress = new progress_handler_hook_handle(func, v);
-                NativeMethods.sqlite3_progress_handler(db, instructions, progress_handler_hook_bridge, info.progress.ptr);
+                var hi = new progress_handler_hook_handle(func, v);
+                info.progress = hi;
+                NativeMethods.sqlite3_progress_handler(db, instructions, progress_handler_hook_bridge, hi.ptr);
             }
             else
             {
@@ -858,8 +865,9 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.authorizer = new authorizer_hook_handle(func, v);
-                return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, info.authorizer.ptr);
+                var hi = new authorizer_hook_handle(func, v);
+                info.authorizer = hi;
+                return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, hi.ptr);
             }
             else
             {
