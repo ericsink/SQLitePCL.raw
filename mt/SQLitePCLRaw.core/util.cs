@@ -239,34 +239,15 @@ namespace SQLitePCL
         }
     };
 
-    internal class commit_hook_info
+    internal class commit_hook_pair
     {
-        private delegate_commit _func;
-        private object _user_data;
-        private GCHandle _h;
+        public delegate_commit _func { get; private set; }
+        public object _user_data { get; private set; }
 
-        internal commit_hook_info(delegate_commit func, object v)
+        public commit_hook_pair(delegate_commit func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
-        }
-
-        internal static commit_hook_info from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            commit_hook_info hi = h.Target as commit_hook_info;
-            // TODO assert(hi._h == h)
-            return hi;
         }
 
         internal int call()
@@ -274,11 +255,32 @@ namespace SQLitePCL
             return _func(_user_data);
         }
 
+        internal static commit_hook_pair from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            commit_hook_pair hi = h.Target as commit_hook_pair;
+            return hi;
+        }
+    }
+
+     internal class commit_hook_info
+    {
+		IntPtr _p;
+
+        internal commit_hook_info(delegate_commit func, object v)
+        {
+			var pair = new commit_hook_pair(func, v);
+			var h = GCHandle.Alloc(pair);
+			_p = GCHandle.ToIntPtr(h);
+        }
+
+        internal IntPtr ptr => _p;
+
         internal void free()
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
+			var h = GCHandle.FromIntPtr(_p);
+			h.Free();
+			_p = IntPtr.Zero;
         }
     };
 

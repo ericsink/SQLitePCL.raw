@@ -431,7 +431,7 @@ namespace SQLitePCL
         [MonoPInvokeCallback (typeof(NativeMethods.callback_commit))]
         static int commit_hook_bridge_impl(IntPtr p)
         {
-            commit_hook_info hi = commit_hook_info.from_ptr(p);
+            commit_hook_pair hi = commit_hook_pair.from_ptr(p);
             return hi.call();
         }
 
