@@ -154,6 +154,26 @@ namespace SQLitePCL
         }
     }
 
+    public class SafeGCHandle : SafeHandle
+	{
+		public SafeGCHandle(object v, GCHandleType typ)
+			: base(IntPtr.Zero, true)
+		{
+            var h = GCHandle.Alloc(v, typ);
+			SetHandle(GCHandle.ToIntPtr(h));
+		}
+
+		public override bool IsInvalid => handle == IntPtr.Zero;
+
+		protected override bool ReleaseHandle()
+		{
+			var h = GCHandle.FromIntPtr(handle);
+			h.Free();
+			return true;
+		}
+
+	}
+
     internal class log_hook_info
     {
         private delegate_log _func;
@@ -210,24 +230,14 @@ namespace SQLitePCL
         }
     }
 
-    internal class hook_handle : IDisposable
+    internal class hook_handle : SafeGCHandle
     {
-		IntPtr _p;
-
         internal hook_handle(object target)
+			: base(target, GCHandleType.Normal)
         {
-			var h = GCHandle.Alloc(target);
-			_p = GCHandle.ToIntPtr(h);
         }
 
-        internal IntPtr ptr => _p;
-
-        public void Dispose()
-        {
-			var h = GCHandle.FromIntPtr(_p);
-			h.Free();
-			_p = IntPtr.Zero;
-        }
+        internal IntPtr ptr => handle;
     }
 
     internal class commit_hook_handle : hook_handle
