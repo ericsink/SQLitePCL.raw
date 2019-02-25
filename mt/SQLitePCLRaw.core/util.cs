@@ -179,6 +179,18 @@ namespace SQLitePCL
 
 	}
 
+    internal class hook_handle : SafeGCHandle
+    {
+        internal hook_handle(object target)
+			: base(target, GCHandleType.Normal)
+        {
+        }
+
+		protected hook_handle()
+		{
+		}
+    }
+
     internal class log_hook_info
     {
         private delegate_log _func;
@@ -209,6 +221,15 @@ namespace SQLitePCL
 			: base(new log_hook_info(func, v))
         {
         }
+
+		log_hook_handle()
+		{
+		}
+
+		public static log_hook_handle Null()
+		{
+			return new log_hook_handle();
+		}
     }
 
     internal class commit_hook_info
@@ -235,26 +256,21 @@ namespace SQLitePCL
         }
     }
 
-    internal class hook_handle : SafeGCHandle
-    {
-        internal hook_handle(object target)
-			: base(target, GCHandleType.Normal)
-        {
-        }
-
-		protected hook_handle()
-		{
-		}
-
-        internal IntPtr ptr => handle;
-    }
-
     internal class commit_hook_handle : hook_handle
     {
         internal commit_hook_handle(delegate_commit func, object v)
 			: base(new commit_hook_info(func, v))
         {
         }
+
+		commit_hook_handle()
+		{
+		}
+
+		public static commit_hook_handle Null()
+		{
+			return new commit_hook_handle();
+		}
     }
 
     internal class rollback_hook_info
@@ -288,6 +304,15 @@ namespace SQLitePCL
 			: base(new rollback_hook_info(func, v))
         {
         }
+
+		rollback_hook_handle()
+		{
+		}
+
+		public static rollback_hook_handle Null()
+		{
+			return new rollback_hook_handle();
+		}
     }
 
     internal class trace_hook_info
@@ -320,6 +345,15 @@ namespace SQLitePCL
 			: base(new trace_hook_info(func, v))
         {
         }
+
+		trace_hook_handle()
+		{
+		}
+
+		public static trace_hook_handle Null()
+		{
+			return new trace_hook_handle();
+		}
     }
 
     internal class profile_hook_info
@@ -352,6 +386,15 @@ namespace SQLitePCL
 			: base(new profile_hook_info(func, v))
         {
         }
+
+		profile_hook_handle()
+		{
+		}
+
+		public static profile_hook_handle Null()
+		{
+			return new profile_hook_handle();
+		}
     }
 
     internal class progress_handler_hook_info
@@ -384,6 +427,15 @@ namespace SQLitePCL
 			: base(new progress_handler_hook_info(func, v))
         {
         }
+
+		progress_handler_hook_handle()
+		{
+		}
+
+		public static progress_handler_hook_handle Null()
+		{
+			return new progress_handler_hook_handle();
+		}
     }
 
     internal class update_hook_info
@@ -416,6 +468,15 @@ namespace SQLitePCL
 			: base(new update_hook_info(func, v))
         {
         }
+
+		update_hook_handle()
+		{
+		}
+
+		public static update_hook_handle Null()
+		{
+			return new update_hook_handle();
+		}
     }
 
     internal class collation_hook_info
@@ -448,6 +509,15 @@ namespace SQLitePCL
 			: base(new collation_hook_info(func, v))
         {
         }
+
+		collation_hook_handle()
+		{
+		}
+
+		public static collation_hook_handle Null()
+		{
+			return new collation_hook_handle();
+		}
     }
 
     internal class exec_hook_info
@@ -506,59 +576,9 @@ namespace SQLitePCL
 		}
     }
 
-    internal class scalar_function_hook_info
+    internal class function_hook_info
     {
-        private delegate_function_scalar _func;
-        private object _user_data;
-
-        internal scalar_function_hook_info(delegate_function_scalar func, object v)
-        {
-            _func = func;
-            _user_data = v;
-        }
-
-        internal static scalar_function_hook_info from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            scalar_function_hook_info hi = h.Target as scalar_function_hook_info;
-            return hi;
-        }
-
-        private class scalar_sqlite3_context : sqlite3_context
-        {
-            public scalar_sqlite3_context(IntPtr p, object v) : base(v)
-            {
-                set_context_ptr(p);
-            }
-        }
-
-        internal void call(IntPtr context, int num_args, IntPtr argsptr)
-        {
-            scalar_sqlite3_context ctx = new scalar_sqlite3_context(context, _user_data);
-
-            sqlite3_value[] a = new sqlite3_value[num_args];
-            // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
-            int ptr_size = Marshal.SizeOf(typeof(IntPtr));
-            for (int i=0; i<num_args; i++)
-            {
-                IntPtr vp = Marshal.ReadIntPtr(argsptr, i * ptr_size);
-                a[i] = new sqlite3_value(vp);
-            }
-
-            _func(ctx, _user_data, a);
-        }
-    }
-
-    internal class scalar_function_hook_handle : hook_handle
-    {
-        internal scalar_function_hook_handle(delegate_function_scalar func, object v)
-			: base(new scalar_function_hook_info(func, v))
-        {
-        }
-    }
-
-    internal class agg_function_hook_info
-    {
+        private delegate_function_scalar _func_scalar;
         private delegate_function_aggregate_step _func_step;
         private delegate_function_aggregate_final _func_final;
         private object _user_data;
@@ -575,17 +595,23 @@ namespace SQLitePCL
             }
         }
 
-        internal agg_function_hook_info(delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final, object user_data)
+        internal function_hook_info(
+			delegate_function_scalar func_scalar,
+			delegate_function_aggregate_step func_step, 
+			delegate_function_aggregate_final func_final, 
+			object user_data
+			)
         {
+			_func_scalar = func_scalar;
             _func_step = func_step;
             _func_final = func_final;
             _user_data = user_data;
         }
 
-        internal static agg_function_hook_info from_ptr(IntPtr p)
+        internal static function_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
-            agg_function_hook_info hi = h.Target as agg_function_hook_info;
+            function_hook_info hi = h.Target as function_hook_info;
             return hi;
         }
 
@@ -627,6 +653,30 @@ namespace SQLitePCL
             return ctx;
         }
 
+        private class scalar_sqlite3_context : sqlite3_context
+        {
+            public scalar_sqlite3_context(IntPtr p, object v) : base(v)
+            {
+                set_context_ptr(p);
+            }
+        }
+
+        internal void call_scalar(IntPtr context, int num_args, IntPtr argsptr)
+        {
+            scalar_sqlite3_context ctx = new scalar_sqlite3_context(context, _user_data);
+
+            sqlite3_value[] a = new sqlite3_value[num_args];
+            // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
+            int ptr_size = Marshal.SizeOf(typeof(IntPtr));
+            for (int i=0; i<num_args; i++)
+            {
+                IntPtr vp = Marshal.ReadIntPtr(argsptr, i * ptr_size);
+                a[i] = new sqlite3_value(vp);
+            }
+
+            _func_scalar(ctx, _user_data, a);
+        }
+
         internal void call_step(IntPtr context, IntPtr agg_context, int num_args, IntPtr argsptr)
         {
             sqlite3_context ctx = get_context(context, agg_context);
@@ -656,12 +706,43 @@ namespace SQLitePCL
 
     }
 
-    internal class agg_function_hook_handle : hook_handle
+    internal class function_hook_handle : hook_handle
     {
-        internal agg_function_hook_handle(delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final, object v)
-			: base(new agg_function_hook_info(func_step, func_final, v))
+        private function_hook_handle(
+			delegate_function_scalar func_scalar,
+			delegate_function_aggregate_step func_step, 
+			delegate_function_aggregate_final func_final, 
+			object v
+			)
+			: base(new function_hook_info(func_scalar, func_step, func_final, v))
         {
         }
+
+        internal function_hook_handle(
+			delegate_function_scalar func_scalar,
+			object v
+			)
+			: this(func_scalar, null, null, v)
+        {
+        }
+
+        internal function_hook_handle(
+			delegate_function_aggregate_step func_step, 
+			delegate_function_aggregate_final func_final, 
+			object v
+			)
+			: this(null, func_step, func_final, v)
+        {
+        }
+
+		function_hook_handle()
+		{
+		}
+
+		public static function_hook_handle Null()
+		{
+			return new function_hook_handle();
+		}
     }
 
     internal class authorizer_hook_info
@@ -694,6 +775,15 @@ namespace SQLitePCL
 			: base(new authorizer_hook_info(func, v))
         {
         }
+
+		authorizer_hook_handle()
+		{
+		}
+
+		public static authorizer_hook_handle Null()
+		{
+			return new authorizer_hook_handle();
+		}
     }
 
 }
