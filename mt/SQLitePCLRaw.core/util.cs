@@ -40,16 +40,16 @@ namespace SQLitePCL
 		    // correct here, since the .NET notion of case-insensitivity is different (more
 		    // complete) than SQLite's notion.
 
-			public Dictionary<string, collation_hook_info> collation = new Dictionary<string, collation_hook_info>();
-			public Dictionary<string, scalar_function_hook_info> scalar = new Dictionary<string, scalar_function_hook_info>();
-			public Dictionary<string, agg_function_hook_info> agg = new Dictionary<string, agg_function_hook_info>();
-			public update_hook_info update;
-			public rollback_hook_info rollback;
+			public Dictionary<string, collation_hook_handle> collation = new Dictionary<string, collation_hook_handle>();
+			public Dictionary<string, scalar_function_hook_handle> scalar = new Dictionary<string, scalar_function_hook_handle>();
+			public Dictionary<string, agg_function_hook_handle> agg = new Dictionary<string, agg_function_hook_handle>();
+			public update_hook_handle update;
+			public rollback_hook_handle rollback;
 			public commit_hook_handle commit;
-			public trace_hook_info trace;
-			public progress_handler_hook_info progress;
-			public profile_hook_info profile;
-            public authorizer_hook_info authorizer;
+			public trace_hook_handle trace;
+			public progress_handler_hook_handle progress;
+			public profile_hook_handle profile;
+            public authorizer_hook_handle authorizer;
 
 		    public void Dispose()
 		    {
@@ -66,7 +66,7 @@ namespace SQLitePCL
 		    }
 	    }
 
-        internal static log_hook_info log;
+        internal static log_hook_handle log;
 
         private static System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info> _hooks_by_db = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info>();
 
@@ -157,29 +157,17 @@ namespace SQLitePCL
     {
         private delegate_log _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal log_hook_info(delegate_log func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static log_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             log_hook_info hi = h.Target as log_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -187,14 +175,15 @@ namespace SQLitePCL
         {
             _func(_user_data, rc, msg);
         }
+    }
 
-        internal void Dispose()
+    internal class log_hook_handle : hook_handle
+    {
+        internal log_hook_handle(delegate_log func, object v)
+			: base(new log_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
     internal class commit_hook_info
     {
@@ -220,14 +209,13 @@ namespace SQLitePCL
         }
     }
 
-     internal class commit_hook_handle
+    internal class hook_handle
     {
 		IntPtr _p;
 
-        internal commit_hook_handle(delegate_commit func, object v)
+        internal hook_handle(object target)
         {
-			var pair = new commit_hook_info(func, v);
-			var h = GCHandle.Alloc(pair);
+			var h = GCHandle.Alloc(target);
 			_p = GCHandle.ToIntPtr(h);
         }
 
@@ -239,28 +227,25 @@ namespace SQLitePCL
 			h.Free();
 			_p = IntPtr.Zero;
         }
-    };
+    }
+
+    internal class commit_hook_handle : hook_handle
+    {
+        internal commit_hook_handle(delegate_commit func, object v)
+			: base(new commit_hook_info(func, v))
+        {
+        }
+    }
 
     internal class rollback_hook_info
     {
         private delegate_rollback _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal rollback_hook_info(delegate_rollback func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static rollback_hook_info from_ptr(IntPtr p)
@@ -275,42 +260,31 @@ namespace SQLitePCL
         {
             _func(_user_data);
         }
+    }
 
-        internal void Dispose()
+    internal class rollback_hook_handle : hook_handle
+    {
+        internal rollback_hook_handle(delegate_rollback func, object v)
+			: base(new rollback_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
     internal class trace_hook_info
     {
         private delegate_trace _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal trace_hook_info(delegate_trace func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static trace_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             trace_hook_info hi = h.Target as trace_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -318,42 +292,31 @@ namespace SQLitePCL
         {
             _func(_user_data, s);
         }
+    }
 
-        internal void Dispose()
+    internal class trace_hook_handle : hook_handle
+    {
+        internal trace_hook_handle(delegate_trace func, object v)
+			: base(new trace_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
     internal class profile_hook_info
     {
         private delegate_profile _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal profile_hook_info(delegate_profile func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static profile_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             profile_hook_info hi = h.Target as profile_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -361,42 +324,31 @@ namespace SQLitePCL
         {
             _func(_user_data, s, elapsed);
         }
+    }
 
-        internal void Dispose()
+    internal class profile_hook_handle : hook_handle
+    {
+        internal profile_hook_handle(delegate_profile func, object v)
+			: base(new profile_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
     internal class progress_handler_hook_info
     {
         private delegate_progress_handler _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal progress_handler_hook_info(delegate_progress_handler func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr)_h;
-            }
         }
 
         internal static progress_handler_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle)p;
             progress_handler_hook_info hi = h.Target as progress_handler_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -404,42 +356,31 @@ namespace SQLitePCL
         {
             return _func(_user_data);
         }
+    }
 
-        internal void Dispose()
+    internal class progress_handler_hook_handle : hook_handle
+    {
+        internal progress_handler_hook_handle(delegate_progress_handler func, object v)
+			: base(new progress_handler_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
     internal class update_hook_info
     {
         private delegate_update _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal update_hook_info(delegate_update func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static update_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             update_hook_info hi = h.Target as update_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -447,43 +388,31 @@ namespace SQLitePCL
         {
             _func(_user_data, typ, db, tbl, rowid);
         }
+    }
 
-        internal void Dispose()
+    internal class update_hook_handle : hook_handle
+    {
+        internal update_hook_handle(delegate_update func, object v)
+			: base(new update_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-
-    };
+    }
 
     internal class collation_hook_info
     {
         private delegate_collation _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal collation_hook_info(delegate_collation func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static collation_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             collation_hook_info hi = h.Target as collation_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -491,43 +420,31 @@ namespace SQLitePCL
         {
             return _func(_user_data, s1, s2);
         }
+    }
 
-        internal void Dispose()
+    internal class collation_hook_handle : hook_handle
+    {
+        internal collation_hook_handle(delegate_collation func, object v)
+			: base(new collation_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-
-    };
+    }
 
     internal class exec_hook_info
     {
         private delegate_exec _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal exec_hook_info(delegate_exec func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static exec_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             exec_hook_info hi = h.Target as exec_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -550,43 +467,31 @@ namespace SQLitePCL
 
             return _func(_user_data, values, names);
         }
+    }
 
-        internal void Dispose()
+    internal class exec_hook_handle : hook_handle
+    {
+        internal exec_hook_handle(delegate_exec func, object v)
+			: base(new exec_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-
-    };
+    }
 
     internal class scalar_function_hook_info
     {
         private delegate_function_scalar _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal scalar_function_hook_info(delegate_function_scalar func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static scalar_function_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             scalar_function_hook_info hi = h.Target as scalar_function_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -613,22 +518,21 @@ namespace SQLitePCL
 
             _func(ctx, _user_data, a);
         }
+    }
 
-        internal void Dispose()
+    internal class scalar_function_hook_handle : hook_handle
+    {
+        internal scalar_function_hook_handle(delegate_function_scalar func, object v)
+			: base(new scalar_function_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-
-    };
+    }
 
     internal class agg_function_hook_info
     {
         private delegate_function_aggregate_step _func_step;
         private delegate_function_aggregate_final _func_final;
         private object _user_data;
-        private GCHandle _h;
 
         private class agg_sqlite3_context : sqlite3_context
         {
@@ -647,23 +551,12 @@ namespace SQLitePCL
             _func_step = func_step;
             _func_final = func_final;
             _user_data = user_data;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
         }
 
         internal static agg_function_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             agg_function_hook_info hi = h.Target as agg_function_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -732,43 +625,31 @@ namespace SQLitePCL
             h.Free();
         }
 
-        internal void Dispose()
-        {
-            _func_step = null;
-            _func_final = null;
-            _user_data = null;
-            _h.Free();
-        }
+    }
 
-    };
+    internal class agg_function_hook_handle : hook_handle
+    {
+        internal agg_function_hook_handle(delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final, object v)
+			: base(new agg_function_hook_info(func_step, func_final, v))
+        {
+        }
+    }
 
     internal class authorizer_hook_info
     {
         private delegate_authorizer _func;
         private object _user_data;
-        private GCHandle _h;
 
         internal authorizer_hook_info(delegate_authorizer func, object v)
         {
             _func = func;
             _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr)_h;
-            }
         }
 
         internal static authorizer_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle)p;
             authorizer_hook_info hi = h.Target as authorizer_hook_info;
-            // TODO assert(hi._h == h)
             return hi;
         }
 
@@ -776,14 +657,15 @@ namespace SQLitePCL
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }
+    }
 
-        internal void Dispose()
+    internal class authorizer_hook_handle : hook_handle
+    {
+        internal authorizer_hook_handle(delegate_authorizer func, object v)
+			: base(new authorizer_hook_info(func, v))
         {
-            _func = null;
-            _user_data = null;
-            _h.Free();
         }
-    };
+    }
 
 }
 

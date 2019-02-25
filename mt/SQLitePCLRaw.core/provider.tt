@@ -132,7 +132,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                exec_hook_info hi = new exec_hook_info(func, user_data);
+                var hi = new exec_hook_handle(func, user_data);
                 rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), exec_hook_bridge, hi.ptr, out errmsg_ptr);
                 hi.Dispose();
             }
@@ -482,7 +482,7 @@ namespace SQLitePCL
 		var info = hooks.getOrCreateFor(db);
             if (info.scalar.ContainsKey(key))
             {
-                scalar_function_hook_info hi = info.scalar[key];
+                var hi = info.scalar[key];
 
                 // TODO maybe turn off the hook here, for now
                 hi.Dispose();
@@ -494,7 +494,7 @@ namespace SQLitePCL
 			int arg4 = 1 | flags;
             if (func != null)
             {
-                scalar_function_hook_info hi = new scalar_function_hook_info(func, v);
+                var hi = new scalar_function_hook_handle(func, v);
                 int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi.ptr, scalar_function_hook_bridge, null, null, null);
                 if (rc == 0)
                 {
@@ -539,7 +539,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                hooks.log = new log_hook_info(func, v);
+                hooks.log = new log_hook_handle(func, v);
                 return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, log_hook_bridge, hooks.log.ptr);
             }
             else
@@ -585,7 +585,7 @@ namespace SQLitePCL
 		var info = hooks.getOrCreateFor(db);
             if (info.agg.ContainsKey(key))
             {
-                agg_function_hook_info hi = info.agg[key];
+                var hi = info.agg[key];
 
                 // TODO maybe turn off the hook here, for now
                 hi.Dispose();
@@ -598,7 +598,7 @@ namespace SQLitePCL
             if (func_step != null)
             {
                 // TODO both func_step and func_final must be non-null
-                agg_function_hook_info hi = new agg_function_hook_info(func_step, func_final, v);
+                var hi = new agg_function_hook_handle(func_step, func_final, v);
                 int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, hi.ptr, null, agg_function_hook_bridge_step, agg_function_hook_bridge_final, null);
                 if (rc == 0)
                 {
@@ -639,7 +639,7 @@ namespace SQLitePCL
 		var info = hooks.getOrCreateFor(db);
             if (info.collation.ContainsKey(name))
             {
-                collation_hook_info hi = info.collation[name];
+                var hi = info.collation[name];
 
                 // TODO maybe turn off the hook here, for now
                 hi.Dispose();
@@ -650,7 +650,7 @@ namespace SQLitePCL
             // 1 is SQLITE_UTF8
             if (func != null)
             {
-                collation_hook_info hi = new collation_hook_info(func, v);
+                var hi = new collation_hook_handle(func, v);
                 int rc = NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, hi.ptr, collation_hook_bridge);
                 if (rc == 0)
                 {
@@ -689,7 +689,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.update = new update_hook_info(func, v);
+                info.update = new update_hook_handle(func, v);
                 NativeMethods.sqlite3_update_hook(db, update_hook_bridge, info.update.ptr);
             }
             else
@@ -723,7 +723,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.rollback = new rollback_hook_info(func, v);
+                info.rollback = new rollback_hook_handle(func, v);
                 NativeMethods.sqlite3_rollback_hook(db, rollback_hook_bridge, info.rollback.ptr);
             }
             else
@@ -757,7 +757,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.trace = new trace_hook_info(func, v);
+                info.trace = new trace_hook_handle(func, v);
                 NativeMethods.sqlite3_trace(db, trace_hook_bridge, info.trace.ptr);
             }
             else
@@ -791,7 +791,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.profile = new profile_hook_info(func, v);
+                info.profile = new profile_hook_handle(func, v);
                 NativeMethods.sqlite3_profile(db, profile_hook_bridge, info.profile.ptr);
             }
             else
@@ -825,7 +825,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.progress = new progress_handler_hook_info(func, v);
+                info.progress = new progress_handler_hook_handle(func, v);
                 NativeMethods.sqlite3_progress_handler(db, instructions, progress_handler_hook_bridge, info.progress.ptr);
             }
             else
@@ -861,7 +861,7 @@ namespace SQLitePCL
 
             if (func != null)
             {
-                info.authorizer = new authorizer_hook_info(func, v);
+                info.authorizer = new authorizer_hook_handle(func, v);
                 return NativeMethods.sqlite3_set_authorizer(db, authorizer_hook_bridge, info.authorizer.ptr);
             }
             else
