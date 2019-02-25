@@ -55,40 +55,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_open_v2(util.to_utf8(filename), out db, flags, util.to_utf8(vfs));
         }
 
-    #pragma warning disable 649
-    private struct sqlite3_vfs
-    {
-        public int iVersion;
-        public int szOsFile;
-        public int mxPathname;
-        public IntPtr pNext;
-        public IntPtr zName;
-        public IntPtr pAppData;
-        public IntPtr xOpen;
-        public SQLiteDeleteDelegate xDelete;
-        public IntPtr xAccess;
-        public IntPtr xFullPathname;
-        public IntPtr xDlOpen;
-        public IntPtr xDlError;
-        public IntPtr xDlSym;
-        public IntPtr xDlClose;
-        public IntPtr xRandomness;
-        public IntPtr xSleep;
-        public IntPtr xCurrentTime;
-        public IntPtr xGetLastError;
+		#pragma warning disable 649
+		private struct sqlite3_vfs
+		{
+			public int iVersion;
+			public int szOsFile;
+			public int mxPathname;
+			public IntPtr pNext;
+			public IntPtr zName;
+			public IntPtr pAppData;
+			public IntPtr xOpen;
+			public SQLiteDeleteDelegate xDelete;
+			public IntPtr xAccess;
+			public IntPtr xFullPathname;
+			public IntPtr xDlOpen;
+			public IntPtr xDlError;
+			public IntPtr xDlSym;
+			public IntPtr xDlClose;
+			public IntPtr xRandomness;
+			public IntPtr xSleep;
+			public IntPtr xCurrentTime;
+			public IntPtr xGetLastError;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
-    }
-    #pragma warning restore 649
-	
-	int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
-	{
-	    IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(util.to_utf8(vfs));
-	    // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
-	    sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
-	    return vstruct.xDelete(ptrVfs, util.to_utf8(filename), 1);
-	}
+			[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+			public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
+		}
+		#pragma warning restore 649
+		
+		int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
+		{
+			IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(util.to_utf8(vfs));
+			// this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
+			sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
+			return vstruct.xDelete(ptrVfs, util.to_utf8(filename), 1);
+		}
 
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
@@ -118,7 +118,7 @@ namespace SQLitePCL
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
-// TODO shouldn't there be a impl/bridge thing here
+		// TODO shouldn't there be a impl/bridge thing here?
 
         int ISQLite3Provider.sqlite3_exec(sqlite3 db, string sql, delegate_exec func, object user_data, out string errMsg)
         {
@@ -266,7 +266,7 @@ namespace SQLitePCL
             IntPtr ptr = pinned.AddrOfPinnedObject();
             int rc = NativeMethods.sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
-	    return rc;
+			return rc;
         }
 
         int ISQLite3Provider.sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
@@ -275,7 +275,7 @@ namespace SQLitePCL
             IntPtr ptr = pinned.AddrOfPinnedObject();
             int rc = NativeMethods.sqlite3_blob_write(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
             pinned.Free();
-	    return rc;
+			return rc;
         }
 
         int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
@@ -364,9 +364,9 @@ namespace SQLitePCL
         }
         
         string ISQLite3Provider.sqlite3_db_filename(sqlite3 db, string att)
-	{
+		{
             return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
-	}
+		}
 
         string ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
         {
@@ -441,7 +441,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.commit != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -483,9 +483,9 @@ namespace SQLitePCL
 
         int my_sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_scalar func)
         {
-        // the keys for this dictionary are nargs.name, not just the name
+			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.scalar.ContainsKey(key))
             {
                 var h_old = info.scalar[key];
@@ -595,14 +595,14 @@ namespace SQLitePCL
             hi.call_final(context, agg);
         }
 
-	NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
-	NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
+		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
+		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
         int my_sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-        // the keys for this dictionary are nargs.name, not just the name
+			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.agg.ContainsKey(key))
             {
                 var h_old = info.agg[key];
@@ -665,7 +665,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation func)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.collation.ContainsKey(name))
             {
                 var h_old = info.collation[name];
@@ -713,7 +713,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.update != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -753,7 +753,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.rollback != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -793,7 +793,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.trace != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -833,7 +833,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.profile != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -873,7 +873,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.progress != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -915,7 +915,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
-		var info = db.GetHooks();
+			var info = db.GetHooks();
             if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
