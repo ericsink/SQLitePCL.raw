@@ -1,4 +1,7 @@
 
+dictionaries in hooks_handles probably need
+to be Concurrent
+
 consider:  chg inclusion of assemblies in
 nuspec such that it errors if the expected
 assemblies are not there?  currently, if the
@@ -80,6 +83,4 @@ chg to SourceGear name?
 
 instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?
-
-can the hook_info classes be simplified?
 
