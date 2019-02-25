@@ -127,16 +127,20 @@ namespace SQLitePCL
             IntPtr errmsg_ptr;
             int rc;
 
+			NativeMethods.callback_exec cb;
+			exec_hook_handle hi;
             if (func != null)
             {
-                var hi = new exec_hook_handle(func, user_data);
-                rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), exec_hook_bridge, hi.ptr, out errmsg_ptr);
-                hi.Dispose();
+				cb = exec_hook_bridge;
+                hi = new exec_hook_handle(func, user_data);
             }
             else
             {
-                rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), null, IntPtr.Zero, out errmsg_ptr);
+				cb = null;
+                hi = exec_hook_handle.Null();
             }
+			rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), cb, hi, out errmsg_ptr);
+			hi.Dispose();
 
             if (errmsg_ptr == IntPtr.Zero)
             {
@@ -1852,7 +1856,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, IntPtr pvParam, out IntPtr errMsg);
+		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, exec_hook_handle pvParam, out IntPtr errMsg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_get_autocommit(sqlite3 db);

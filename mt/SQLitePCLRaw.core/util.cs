@@ -154,13 +154,18 @@ namespace SQLitePCL
         }
     }
 
-    public class SafeGCHandle : SafeHandle
+    internal class SafeGCHandle : SafeHandle
 	{
 		public SafeGCHandle(object v, GCHandleType typ)
 			: base(IntPtr.Zero, true)
 		{
             var h = GCHandle.Alloc(v, typ);
 			SetHandle(GCHandle.ToIntPtr(h));
+		}
+
+		protected SafeGCHandle()
+			: base(IntPtr.Zero, true)
+		{
 		}
 
 		public override bool IsInvalid => handle == IntPtr.Zero;
@@ -236,6 +241,10 @@ namespace SQLitePCL
 			: base(target, GCHandleType.Normal)
         {
         }
+
+		protected hook_handle()
+		{
+		}
 
         internal IntPtr ptr => handle;
     }
@@ -486,6 +495,15 @@ namespace SQLitePCL
 			: base(new exec_hook_info(func, v))
         {
         }
+
+		exec_hook_handle()
+		{
+		}
+
+		public static exec_hook_handle Null()
+		{
+			return new exec_hook_handle();
+		}
     }
 
     internal class scalar_function_hook_info
