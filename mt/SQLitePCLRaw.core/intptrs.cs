@@ -26,7 +26,7 @@
 namespace SQLitePCL
 {
     using System;
-	using System.Collections.Generic;
+	using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
 
     public class sqlite3_backup : SafeHandle
@@ -249,7 +249,7 @@ namespace SQLitePCL
         }
 
         // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
-        private System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
+        private ConcurrentDictionary<IntPtr, sqlite3_stmt> _stmts = null;
 
         public void enable_sqlite3_next_stmt(bool enabled)
         {
@@ -257,7 +257,7 @@ namespace SQLitePCL
             {
                 if (_stmts == null)
                 {
-                    _stmts = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr, sqlite3_stmt>();
+                    _stmts = new ConcurrentDictionary<IntPtr, sqlite3_stmt>();
                 }
             }
             else
@@ -290,8 +290,7 @@ namespace SQLitePCL
         {
             if (_stmts != null)
             {
-                sqlite3_stmt stmt;
-                _stmts.TryRemove(s.ptr, out stmt);
+                _stmts.TryRemove(s.ptr, out var stmt);
             }
         }
 
@@ -303,9 +302,9 @@ namespace SQLitePCL
 		    // correct here, since the .NET notion of case-insensitivity is different (more
 		    // complete) than SQLite's notion.
 
-			public Dictionary<string, IDisposable> collation = new Dictionary<string, IDisposable>();
-			public Dictionary<string, IDisposable> scalar = new Dictionary<string, IDisposable>();
-			public Dictionary<string, IDisposable> agg = new Dictionary<string, IDisposable>();
+			public ConcurrentDictionary<string, IDisposable> collation = new ConcurrentDictionary<string, IDisposable>();
+			public ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
+			public ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
 			public IDisposable update;
 			public IDisposable rollback;
 			public IDisposable commit;

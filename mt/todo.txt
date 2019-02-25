@@ -1,7 +1,4 @@
 
-dictionaries in hooks_handles probably need
-to be Concurrent
-
 consider:  chg inclusion of assemblies in
 nuspec such that it errors if the expected
 assemblies are not there?  currently, if the

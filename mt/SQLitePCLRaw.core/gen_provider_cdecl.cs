@@ -493,7 +493,7 @@ namespace SQLitePCL
                 // TODO maybe turn off the hook here, for now
                 h_old.Dispose();
 
-                info.scalar.Remove(key);
+                info.scalar.TryRemove(key, out var unused);
             }
 
             // 1 is SQLITE_UTF8
@@ -610,7 +610,7 @@ namespace SQLitePCL
                 // TODO maybe turn off the hook here, for now
                 h_old.Dispose();
 
-                info.agg.Remove(key);
+                info.agg.TryRemove(key, out var unused);
             }
 
             // 1 is SQLITE_UTF8
@@ -673,7 +673,7 @@ namespace SQLitePCL
                 // TODO maybe turn off the hook here, for now
                 h_old.Dispose();
 
-                info.collation.Remove(name);
+                info.collation.TryRemove(name, out var unused);
             }
 
             // 1 is SQLITE_UTF8
