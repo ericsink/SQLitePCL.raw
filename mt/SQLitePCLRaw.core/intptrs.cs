@@ -231,6 +231,7 @@ namespace SQLitePCL
 		{
 			int rc = raw.internal_sqlite3_close_v2(handle);
             // TODO check rc?
+			dispose_hook_handles();
 			return true;
 		}
 
@@ -240,6 +241,7 @@ namespace SQLitePCL
 			// TODO review.  should handle always be nulled here?
 			// TODO maybe called SetHandleAsInvalid instead?
 			handle = IntPtr.Zero;
+			dispose_hook_handles();
 			return rc;
 		}
 
@@ -249,6 +251,7 @@ namespace SQLitePCL
 			// TODO review.  should handle always be nulled here?
 			// TODO maybe called SetHandleAsInvalid instead?
 			handle = IntPtr.Zero;
+			dispose_hook_handles();
 			return rc;
 		}
 
@@ -291,6 +294,27 @@ namespace SQLitePCL
                 _stmts.TryRemove(s.ptr, out stmt);
             }
         }
+
+		internal hooks.hook_handles info;
+
+		internal hooks.hook_handles GetHooks()
+		{
+			if (info == null)
+			{
+				info = new hooks.hook_handles();
+			}
+			return info;
+		}
+
+		private void dispose_hook_handles()
+		{
+			if (info != null)
+			{
+				info.Dispose();
+				info = null;
+			}
+		}
+
     }
 }
 

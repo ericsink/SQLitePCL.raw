@@ -336,57 +336,57 @@ namespace SQLitePCL
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
         {
-            _imp.sqlite3_commit_hook(db.ptr, f, v);
+            _imp.sqlite3_commit_hook(db, f, v);
         }
 
         static public void sqlite3_rollback_hook(sqlite3 db, delegate_rollback f, object v)
         {
-            _imp.sqlite3_rollback_hook(db.ptr, f, v);
+            _imp.sqlite3_rollback_hook(db, f, v);
         }
 
         static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
         {
-            _imp.sqlite3_trace(db.ptr, f, v);
+            _imp.sqlite3_trace(db, f, v);
         }
 
         static public void sqlite3_profile(sqlite3 db, delegate_profile f, object v)
         {
-            _imp.sqlite3_profile(db.ptr, f, v);
+            _imp.sqlite3_profile(db, f, v);
         }
 
         static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v)
         {
-            _imp.sqlite3_progress_handler(db.ptr, instructions, func, v);
+            _imp.sqlite3_progress_handler(db, instructions, func, v);
         }
 
         static public void sqlite3_update_hook(sqlite3 db, delegate_update f, object v)
         {
-            _imp.sqlite3_update_hook(db.ptr, f, v);
+            _imp.sqlite3_update_hook(db, f, v);
         }
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
-            return _imp.sqlite3_create_collation(db.ptr, name, v, f);
+            return _imp.sqlite3_create_collation(db, name, v, f);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func);
+            return _imp.sqlite3_create_function(db, name, nArg, v, func);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, v, func_step, func_final);
+            return _imp.sqlite3_create_function(db, name, nArg, v, func_step, func_final);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func);
+            return _imp.sqlite3_create_function(db, name, nArg, flags, v, func);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db.ptr, name, nArg, flags, v, func_step, func_final);
+            return _imp.sqlite3_create_function(db, name, nArg, flags, v, func_step, func_final);
         }
 
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
@@ -970,7 +970,7 @@ namespace SQLitePCL
 
         static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
         {
-            return _imp.sqlite3_set_authorizer(db.ptr, authorizer, user_data);
+            return _imp.sqlite3_set_authorizer(db, authorizer, user_data);
         }
 
         static public int sqlite3_win32_set_directory(int typ, string path)

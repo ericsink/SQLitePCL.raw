@@ -32,7 +32,7 @@ namespace SQLitePCL
 
     internal static class hooks
     {
-	    internal class info
+	    internal class hook_handles
 	    {
 		    // TODO note that sqlite function names can be case-insensitive.  but we're using
 		    // a dictionary with a string key to keep track of them.  this has the potential
@@ -53,39 +53,21 @@ namespace SQLitePCL
 
 		    public void Dispose()
 		    {
-			foreach (var h in collation.Values) h.Dispose();
-			foreach (var h in scalar.Values) h.Dispose();
-			foreach (var h in agg.Values) h.Dispose();
-			if (update!=null) update.Dispose();
-			if (rollback!=null) rollback.Dispose();
-			if (commit!=null) commit.Dispose();
-			if (trace!=null) trace.Dispose();
-			if (progress!=null) progress.Dispose();
-			if (profile!=null) profile.Dispose();
-			if (authorizer!=null) authorizer.Dispose();
+				foreach (var h in collation.Values) h.Dispose();
+				foreach (var h in scalar.Values) h.Dispose();
+				foreach (var h in agg.Values) h.Dispose();
+				if (update!=null) update.Dispose();
+				if (rollback!=null) rollback.Dispose();
+				if (commit!=null) commit.Dispose();
+				if (trace!=null) trace.Dispose();
+				if (progress!=null) progress.Dispose();
+				if (profile!=null) profile.Dispose();
+				if (authorizer!=null) authorizer.Dispose();
 		    }
 	    }
 
 		// TODO why is this static?
         internal static IDisposable log;
-
-        private static System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info> _hooks_by_db = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info>();
-
-	internal static info getOrCreateFor(IntPtr db)
-	{
-		info i;
-                i = _hooks_by_db.GetOrAdd(db, (unused) => new info());
-                return i;
-	}
-
-	internal static void removeFor(IntPtr db)
-	{
-		info i;
-                if (_hooks_by_db.TryRemove(db, out i))
-                {
-	            i.Dispose();
-                }
-	}
     }
 
     internal static class util

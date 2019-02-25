@@ -170,17 +170,17 @@ namespace SQLitePCL
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log func, object v);
-        void sqlite3_commit_hook(IntPtr db, delegate_commit func, object v);
-        void sqlite3_rollback_hook(IntPtr db, delegate_rollback func, object v);
-        void sqlite3_trace(IntPtr db, delegate_trace func, object v);
-        void sqlite3_profile(IntPtr db, delegate_profile func, object v);
-        void sqlite3_progress_handler(IntPtr db, int instructions, delegate_progress_handler func, object v);
-        void sqlite3_update_hook(IntPtr db, delegate_update func, object v);
-        int sqlite3_create_collation(IntPtr db, string name, object v, delegate_collation func);
-        int sqlite3_create_function(IntPtr db, string name, int nArg, object v, delegate_function_scalar func);
-        int sqlite3_create_function(IntPtr db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
-        int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_scalar func);
-        int sqlite3_create_function(IntPtr db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
+        void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
+        void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
+        void sqlite3_trace(sqlite3 db, delegate_trace func, object v);
+        void sqlite3_profile(sqlite3 db, delegate_profile func, object v);
+        void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress_handler func, object v);
+        void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);
+        int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation func);
+        int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func);
+        int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
+        int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func);
+        int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 
         int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
@@ -221,7 +221,7 @@ namespace SQLitePCL
 
         int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
 
-        int sqlite3_set_authorizer(IntPtr db, delegate_authorizer authorizer, object user_data);
+        int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
 #if not // maybe never
 

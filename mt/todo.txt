@@ -1,4 +1,6 @@
 
+bridge fields readonly?
+
 consider remove .ptr and chg the marshal
 signatures to accept stmt/sqlite3, so we get
 AddRef/Release, but we also get control over
