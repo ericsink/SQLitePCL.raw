@@ -1,4 +1,6 @@
 
+consider default enable_next_stmt() to false
+
 review the weird stuff agg functions do
 with the context pointer
 
@@ -59,12 +61,6 @@ preload from arch directory stuff.  subdirectory
 by cpu arch.
 
 --
-
-missing test for sqlite3_exec with a hook.
-it would probably crash, since the implementation
-doesn't gc protect the delegate?  or is this one
-a special case because the delegate only lives
-as long as the call?
 
 deal with stdcall/winsqlite3 in Setup
 

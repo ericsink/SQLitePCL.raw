@@ -471,6 +471,34 @@ namespace SQLitePCL.Tests
 	}
 
         [Fact]
+        public void test_exec_callback()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+
+				const int count = 13;
+
+				for (int i=0; i<count; i++)
+				{
+					db.exec("INSERT INTO foo (x) VALUES (?)", i);
+				}
+
+				int count_cb = 0;
+				delegate_exec cb = 
+					(user_data, values, names) =>
+					{
+						count_cb++;
+						return 0;
+					};
+
+				raw.sqlite3_exec(db, "SELECT * from foo", cb, null, out var errmsg);
+
+				Assert.Equal(count, count_cb);
+            }
+        }
+
+        [Fact]
         public void test_backup()
         {
             using (sqlite3 db = ugly.open(":memory:"))
