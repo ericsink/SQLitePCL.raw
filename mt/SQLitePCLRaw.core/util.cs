@@ -40,16 +40,16 @@ namespace SQLitePCL
 		    // correct here, since the .NET notion of case-insensitivity is different (more
 		    // complete) than SQLite's notion.
 
-			public Dictionary<string, collation_hook_handle> collation = new Dictionary<string, collation_hook_handle>();
-			public Dictionary<string, scalar_function_hook_handle> scalar = new Dictionary<string, scalar_function_hook_handle>();
-			public Dictionary<string, agg_function_hook_handle> agg = new Dictionary<string, agg_function_hook_handle>();
-			public update_hook_handle update;
-			public rollback_hook_handle rollback;
-			public commit_hook_handle commit;
-			public trace_hook_handle trace;
-			public progress_handler_hook_handle progress;
-			public profile_hook_handle profile;
-            public authorizer_hook_handle authorizer;
+			public Dictionary<string, IDisposable> collation = new Dictionary<string, IDisposable>();
+			public Dictionary<string, IDisposable> scalar = new Dictionary<string, IDisposable>();
+			public Dictionary<string, IDisposable> agg = new Dictionary<string, IDisposable>();
+			public IDisposable update;
+			public IDisposable rollback;
+			public IDisposable commit;
+			public IDisposable trace;
+			public IDisposable progress;
+			public IDisposable profile;
+            public IDisposable authorizer;
 
 		    public void Dispose()
 		    {
@@ -66,7 +66,8 @@ namespace SQLitePCL
 		    }
 	    }
 
-        internal static log_hook_handle log;
+		// TODO why is this static?
+        internal static IDisposable log;
 
         private static System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info> _hooks_by_db = new System.Collections.Concurrent.ConcurrentDictionary<IntPtr,info>();
 
