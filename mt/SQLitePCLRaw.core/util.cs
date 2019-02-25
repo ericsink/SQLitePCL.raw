@@ -32,40 +32,6 @@ namespace SQLitePCL
 
     internal static class hooks
     {
-	    internal class hook_handles
-	    {
-		    // TODO note that sqlite function names can be case-insensitive.  but we're using
-		    // a dictionary with a string key to keep track of them.  this has the potential
-		    // to cause problems.  fixing it with a case-insensitive string comparer is not
-		    // correct here, since the .NET notion of case-insensitivity is different (more
-		    // complete) than SQLite's notion.
-
-			public Dictionary<string, IDisposable> collation = new Dictionary<string, IDisposable>();
-			public Dictionary<string, IDisposable> scalar = new Dictionary<string, IDisposable>();
-			public Dictionary<string, IDisposable> agg = new Dictionary<string, IDisposable>();
-			public IDisposable update;
-			public IDisposable rollback;
-			public IDisposable commit;
-			public IDisposable trace;
-			public IDisposable progress;
-			public IDisposable profile;
-            public IDisposable authorizer;
-
-		    public void Dispose()
-		    {
-				foreach (var h in collation.Values) h.Dispose();
-				foreach (var h in scalar.Values) h.Dispose();
-				foreach (var h in agg.Values) h.Dispose();
-				if (update!=null) update.Dispose();
-				if (rollback!=null) rollback.Dispose();
-				if (commit!=null) commit.Dispose();
-				if (trace!=null) trace.Dispose();
-				if (progress!=null) progress.Dispose();
-				if (profile!=null) profile.Dispose();
-				if (authorizer!=null) authorizer.Dispose();
-		    }
-	    }
-
 		// TODO why is this static?
         internal static IDisposable log;
     }
