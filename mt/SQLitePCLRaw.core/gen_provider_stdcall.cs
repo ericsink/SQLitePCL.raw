@@ -131,7 +131,7 @@ namespace SQLitePCL
             {
                 exec_hook_info hi = new exec_hook_info(func, user_data);
                 rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), exec_hook_bridge, hi.ptr, out errmsg_ptr);
-                hi.free();
+                hi.Dispose();
             }
             else
             {
@@ -442,7 +442,7 @@ namespace SQLitePCL
             if (info.commit != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.commit.free();
+                info.commit.Dispose();
                 info.commit = null;
             }
 
@@ -482,7 +482,7 @@ namespace SQLitePCL
                 scalar_function_hook_info hi = info.scalar[key];
 
                 // TODO maybe turn off the hook here, for now
-                hi.free();
+                hi.Dispose();
 
                 info.scalar.Remove(key);
             }
@@ -530,7 +530,7 @@ namespace SQLitePCL
             if (hooks.log != null)
             {
                 // TODO maybe turn off the hook here, for now
-                hooks.log.free();
+                hooks.log.Dispose();
                 hooks.log = null;
             }
 
@@ -585,7 +585,7 @@ namespace SQLitePCL
                 agg_function_hook_info hi = info.agg[key];
 
                 // TODO maybe turn off the hook here, for now
-                hi.free();
+                hi.Dispose();
 
                 info.agg.Remove(key);
             }
@@ -639,7 +639,7 @@ namespace SQLitePCL
                 collation_hook_info hi = info.collation[name];
 
                 // TODO maybe turn off the hook here, for now
-                hi.free();
+                hi.Dispose();
 
                 info.collation.Remove(name);
             }
@@ -680,7 +680,7 @@ namespace SQLitePCL
             if (info.update != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.update.free();
+                info.update.Dispose();
                 info.update = null;
             }
 
@@ -714,7 +714,7 @@ namespace SQLitePCL
             if (info.rollback != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.rollback.free();
+                info.rollback.Dispose();
                 info.rollback = null;
             }
 
@@ -748,7 +748,7 @@ namespace SQLitePCL
             if (info.trace != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.trace.free();
+                info.trace.Dispose();
                 info.trace = null;
             }
 
@@ -782,7 +782,7 @@ namespace SQLitePCL
             if (info.profile != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.profile.free();
+                info.profile.Dispose();
                 info.profile = null;
             }
 
@@ -816,7 +816,7 @@ namespace SQLitePCL
             if (info.progress != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.progress.free();
+                info.progress.Dispose();
                 info.progress = null;
             }
 
@@ -852,7 +852,7 @@ namespace SQLitePCL
             if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
-                info.authorizer.free();
+                info.authorizer.Dispose();
                 info.authorizer = null;
             }
 

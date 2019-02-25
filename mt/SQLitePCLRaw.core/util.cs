@@ -51,18 +51,18 @@ namespace SQLitePCL
 			public profile_hook_info profile;
             public authorizer_hook_info authorizer;
 
-		    public void free()
+		    public void Dispose()
 		    {
-			foreach (var h in collation.Values) h.free();
-			foreach (var h in scalar.Values) h.free();
-			foreach (var h in agg.Values) h.free();
-			if (update!=null) update.free();
-			if (rollback!=null) rollback.free();
-			if (commit!=null) commit.free();
-			if (trace!=null) trace.free();
-			if (progress!=null) progress.free();
-			if (profile!=null) profile.free();
-			if (authorizer!=null) authorizer.free();
+			foreach (var h in collation.Values) h.Dispose();
+			foreach (var h in scalar.Values) h.Dispose();
+			foreach (var h in agg.Values) h.Dispose();
+			if (update!=null) update.Dispose();
+			if (rollback!=null) rollback.Dispose();
+			if (commit!=null) commit.Dispose();
+			if (trace!=null) trace.Dispose();
+			if (progress!=null) progress.Dispose();
+			if (profile!=null) profile.Dispose();
+			if (authorizer!=null) authorizer.Dispose();
 		    }
 	    }
 
@@ -82,7 +82,7 @@ namespace SQLitePCL
 		info i;
                 if (_hooks_by_db.TryRemove(db, out i))
                 {
-	            i.free();
+	            i.Dispose();
                 }
 	}
     }
@@ -153,49 +153,6 @@ namespace SQLitePCL
         }
     }
 
-	// TODO experiment
-    internal class hook_info<T>
-		where T : class
-    {
-        private T _func;
-        private object _user_data;
-        private GCHandle _h;
-
-        internal hook_info(T func, object v)
-        {
-            _func = func;
-            _user_data = v;
-
-            _h = GCHandle.Alloc(this);
-        }
-
-        internal IntPtr ptr
-        {
-            get
-            {
-                return (IntPtr) _h;
-            }
-        }
-
-        internal static hook_info<T> from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            hook_info<T> hi = h.Target as hook_info<T>;
-            // TODO assert(hi._h == h)
-            return hi;
-        }
-
-        internal T func => _func;
-		internal object data => _user_data;
-
-        internal void free()
-        {
-            _func = null;
-            _user_data = null;
-            _h.Free();
-        }
-    };
-
     internal class log_hook_info
     {
         private delegate_log _func;
@@ -231,7 +188,7 @@ namespace SQLitePCL
             _func(_user_data, rc, msg);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -276,7 +233,7 @@ namespace SQLitePCL
 
         internal IntPtr ptr => _p;
 
-        internal void free()
+        internal void Dispose()
         {
 			var h = GCHandle.FromIntPtr(_p);
 			h.Free();
@@ -319,7 +276,7 @@ namespace SQLitePCL
             _func(_user_data);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -362,7 +319,7 @@ namespace SQLitePCL
             _func(_user_data, s);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -405,7 +362,7 @@ namespace SQLitePCL
             _func(_user_data, s, elapsed);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -448,7 +405,7 @@ namespace SQLitePCL
             return _func(_user_data);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -491,7 +448,7 @@ namespace SQLitePCL
             _func(_user_data, typ, db, tbl, rowid);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -535,7 +492,7 @@ namespace SQLitePCL
             return _func(_user_data, s1, s2);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -594,7 +551,7 @@ namespace SQLitePCL
             return _func(_user_data, values, names);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -657,7 +614,7 @@ namespace SQLitePCL
             _func(ctx, _user_data, a);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
@@ -775,7 +732,7 @@ namespace SQLitePCL
             h.Free();
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func_step = null;
             _func_final = null;
@@ -820,7 +777,7 @@ namespace SQLitePCL
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }
 
-        internal void free()
+        internal void Dispose()
         {
             _func = null;
             _user_data = null;
