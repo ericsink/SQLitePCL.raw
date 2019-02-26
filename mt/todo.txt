@@ -1,4 +1,17 @@
 
+consider keeping the dllimport versions
+around as well?  but then do we need separate
+provider assemblies again?
+
+seems silly to keep dllimport versions around
+just for the search path feature.
+
+UWP WACK will barf on dllimports that are
+wrong, right?
+
+runtimeconfig.dev.json
+	AdditionalProbingingPath
+
 LoadLibrary vs LoadLibraryEx
 
 bundles:
