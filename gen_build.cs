@@ -558,6 +558,10 @@ public static class gen
 				f
 				);
 
+			write_empty(f, top, TFM.NET35);
+			write_empty(f, top, TFM.NETSTANDARD11);
+			write_empty(f, top, TFM.NETSTANDARD20);
+
 			f.WriteEndElement(); // files
 
 			f.WriteEndElement(); // package
