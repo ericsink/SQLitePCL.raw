@@ -1,6 +1,9 @@
 
 run gen_build.cs under dotnet core
 
+the nuspec/targets files should be committed
+to the repo
+
 consider default enable_next_stmt() to false
 
 review the weird stuff agg functions do
