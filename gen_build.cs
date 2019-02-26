@@ -1029,7 +1029,7 @@ public static class gen
 
 		f.WriteStartElement("Content");
 		f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\{0}\\native\\{1}", rid, filename));
-		f.WriteElementString("Link", string.Format("native\\{0}\\{1}", rid, filename));
+		f.WriteElementString("Link", string.Format("runtimes\\{0}\\native\\{1}", rid, filename));
 		f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
 		f.WriteElementString("Pack", "false");
 		f.WriteEndElement(); // Content
