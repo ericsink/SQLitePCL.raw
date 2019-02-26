@@ -22,10 +22,10 @@ in general, only one of the following is true:
 		macos, dylib suffix
 		everything else, so suffix
 
-Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-appdomain.currentdomain.basedirectory
-assembly.codebase
-current working directory
+Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) -- netstandard 2.0
+appdomain.currentdomain.basedirectory -- not in netcore
+assembly.codebase -- netstandard 1.5
+current working directory -- netstandard 1.3
 
 ios: either system or internal
 
@@ -42,6 +42,9 @@ mono on linux
     subdirs from the targets file
 
 cdecl vs stdcall?
+
+maybe everything which needs a targets file should
+also need to pass more info (a path) to Setup
 
 --
 

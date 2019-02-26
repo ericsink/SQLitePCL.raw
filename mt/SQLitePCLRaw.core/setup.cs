@@ -24,40 +24,187 @@
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
 using System;
+using System.IO;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace SQLitePCL
 {
+	enum LibSuffix
+	{
+		DLL,
+		DYLIB,
+		SO,
+	}
+
+	enum Loader
+	{
+		win,
+		dlopen,
+	}
+
 	public static class Setup
 	{
-		// the hope is that all use cases can be handled by
-		// adding the flexibility here
-
-		public static void Load_ios_internal()
+		static string basename_to_libname(string basename, LibSuffix suffix)
 		{
-			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
-			var gf = new GetFunctionPointer_dlopen(dll);
-			SQLite3Provider_Cdecl.Setup(gf);
-			raw.SetProvider(new SQLite3Provider_Cdecl());
+			switch (suffix)
+			{
+				case LibSuffix.DLL:
+					return string.Format("{0}.dll", basename);
+				case LibSuffix.DYLIB:
+					return string.Format("lib{0}.dylib", basename);
+				case LibSuffix.SO:
+					return string.Format("lib{0}.so", basename);
+				default:
+					throw new NotImplementedException();
+			}
 		}
 
-		public static void Load(string name)
+		static bool TryLoad(string name, Loader plat, out IGetFunctionPointer gf)
 		{
-			IGetFunctionPointer gf;
-			if (NativeLib_Win.try_Load(name, out gf))
+			if (plat == Loader.win)
 			{
-				SQLite3Provider_Cdecl.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_Cdecl());
+				if (NativeLib_Win.try_Load(name, out var api))
+				{
+					gf = api;
+					return true;
+				}
+				else
+				{
+					gf = null;
+					return false;
+				}
 			}
-			else if (NativeLib_dlopen.try_Load(name, out gf))
+			else if (plat == Loader.dlopen)
 			{
-				SQLite3Provider_Cdecl.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_Cdecl());
+				if (NativeLib_dlopen.try_Load(name, out var api))
+				{
+					gf = api;
+					return true;
+				}
+				else
+				{
+					gf = null;
+					return false;
+				}
 			}
 			else
 			{
 				throw new NotImplementedException();
 			}
 		}
+
+		static Loader WhichLoader()
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				return Loader.win;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				return Loader.dlopen;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+				return Loader.dlopen;
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		static LibSuffix WhichLibSuffix()
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				return LibSuffix.DLL;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				return LibSuffix.SO;
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+				return LibSuffix.DYLIB;
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		static bool Search(
+			IList<string> a, 
+			Loader plat, 
+			out string name,
+			out IGetFunctionPointer gf
+			)
+		{
+			foreach (var s in a)
+			{
+				if (TryLoad(s, plat, out var api))
+				{
+					name = s;
+					gf = api;
+					return true;
+				}
+			}
+			name = null;
+			gf = null;
+			return false;
+		}
+
+		static List<string> MakeProbesFor(
+			string basename,
+			LibSuffix suffix
+			)
+		{
+			var a = new List<string>();
+
+			a.Add(basename);
+
+			var libname = basename_to_libname(basename, suffix);
+			a.Add(libname);
+
+#if not // TODO GetCurrentDirectory is in netstandard 1.3
+			var cwd = System.IO.Directory.GetCurrentDirectory();
+#endif
+
+#if not // TODO GetExecutingAssembly is only in netstandard 2.0
+			var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+#endif
+
+			// TODO add other names and paths, depending on platform
+
+			return a;
+		}
+
+		public static void Load_ios_internal()
+		{
+			// TODO err check this
+			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
+			var gf = new GetFunctionPointer_dlopen(dll);
+			SQLite3Provider_Cdecl.Setup(gf);
+			raw.SetProvider(new SQLite3Provider_Cdecl());
+		}
+
+		public static string Load(string basename)
+		{
+			var plat = WhichLoader();
+			var suffix = WhichLibSuffix();
+			var a = MakeProbesFor(basename, suffix);
+			if (Search(a, plat, out var lib, out var gf))
+			{
+				SQLite3Provider_Cdecl.Setup(gf);
+				raw.SetProvider(new SQLite3Provider_Cdecl());
+				return lib;
+			}
+			else
+			{
+				return null;
+			}
+		}
 	}
 }
+
