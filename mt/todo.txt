@@ -1,4 +1,6 @@
 
+run gen_build.cs under dotnet core
+
 consider default enable_next_stmt() to false
 
 review the weird stuff agg functions do

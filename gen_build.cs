@@ -1071,6 +1071,19 @@ public static class gen
 		}
 	}
 
+	private static void gen_assemblyinfo(string root, string dir_mt, string assemblyname)
+	{
+		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_mt, assemblyname, "Generated", "AssemblyInfo.cs")))
+		{
+			string cs1 = cs
+				.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + assemblyname + '"')
+				.Replace("REPLACE_WITH_ASSEMBLY_VERSION", '"' + ASSEMBLY_VERSION + '"')
+				;
+			tw.Write(cs1);
+		}
+	}
+
 	public static void Main(string[] args)
 	{
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
@@ -1088,6 +1101,10 @@ public static class gen
 			.Where(d => d.config.ToLower() == "release")
 			.ToList()
 			;
+
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.core");
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.ugly");
+		// TODO others here too
 
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);
