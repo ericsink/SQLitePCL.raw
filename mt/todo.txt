@@ -1,4 +1,11 @@
 
+bundles:
+	green
+	e_sqlite3
+	e_sqlcipher
+	zetetic
+	winsqlite3
+
 run gen_build.cs under dotnet core
 
 the nuspec/targets files should be committed
