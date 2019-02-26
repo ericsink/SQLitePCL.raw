@@ -1,4 +1,18 @@
 
+new sn key for lib.e_sqlcipher
+
+core had:
+	raw
+	intptrs
+	isqlite3
+	bait
+	assemblyinfo
+
+providers had:
+	util.cs
+	pinvoke_whatever
+	assemblyinfo
+
 consider keeping the dllimport versions
 around as well?  but then do we need separate
 provider assemblies again?
