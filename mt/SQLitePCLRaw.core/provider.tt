@@ -3,6 +3,7 @@
 <#@ parameter name='NAME' #>
 <#@ parameter name='CONV' #>
 <#@ parameter name='KIND' #>
+<#@ parameter name='NAME_FOR_DLLIMPORT' #>
 /*
    Copyright 2014-2019 Zumero, LLC
 
@@ -1302,7 +1303,7 @@ namespace SQLitePCL
 	else if (KIND == "dllimport")
 	{
 #>
-        private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
+        private const string SQLITE_DLL = "<#= NAME_FOR_DLLIMPORT #>";
 
 <#
 		write_api_entries(KIND);
