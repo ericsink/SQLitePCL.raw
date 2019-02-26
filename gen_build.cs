@@ -1118,13 +1118,6 @@ public static class gen
         gen_nuspec_bundle_e_sqlcipher(top, dir_mt, dlls);
         gen_nuspec_bundle_zetetic(top, dir_mt, dlls);
 
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "build.ps1")))
-		{
-			// our build configs for ancient PCL profiles require an old version of nuget
-			tw.WriteLine("../nuget_old.exe restore sqlitepcl.sln");
-			tw.WriteLine("msbuild /p:Configuration=Release sqlitepcl.sln");
-		}
-
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
 		{
             tw.WriteLine("../nuget pack {0}.core.nuspec", gen.ROOT_NAME);
