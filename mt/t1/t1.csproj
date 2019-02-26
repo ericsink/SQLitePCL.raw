@@ -10,4 +10,8 @@
 	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
 </ItemGroup>
 
+<ItemGroup>
+    <PackageReference Include="sqlitepclraw.lib.e_sqlite3" Version="2.0.0" />
+</ItemGroup>
+
 </Project>

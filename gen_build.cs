@@ -202,9 +202,9 @@ public static class gen
 		f.WriteEndElement(); // file
     }
 
-	public const int MAJOR_VERSION = 1;
-	public const int MINOR_VERSION = 1;
-	public const int PATCH_VERSION = 14;
+	public const int MAJOR_VERSION = 2;
+	public const int MINOR_VERSION = 0;
+	public const int PATCH_VERSION = 0;
 	public static string NUSPEC_VERSION_PRE = string.Format("{0}.{1}.{2}-pre{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -216,7 +216,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -554,7 +554,7 @@ public static class gen
 			gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
 			write_nuspec_file_entry(
 				path_targets,
-				string.Format("build"), // TODO
+				string.Format("build\\net45"), // TODO
 				f
 				);
 
@@ -610,7 +610,7 @@ public static class gen
 			gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
 			write_nuspec_file_entry(
 				path_targets,
-				string.Format("build"), // TODO
+				string.Format("build\\net45"), // TODO
 				f
 				);
 

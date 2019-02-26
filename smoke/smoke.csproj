@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="1.1.12-pre20181218100044" />
-    <PackageReference Include="sqlitepclraw.ugly" Version="1.1.12-pre20181218100044" />
+    <PackageReference Include="sqlitepclraw.core" Version="2.0.0" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="2.0.0" />
   </ItemGroup>
 
 </Project>

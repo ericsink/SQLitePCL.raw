@@ -155,14 +155,16 @@ namespace SQLitePCL
 			return false;
 		}
 
-		static List<string> MakeProbesFor(
+		static List<string> MakePossibilitiesFor(
 			string basename,
 			LibSuffix suffix
 			)
 		{
 			var a = new List<string>();
 
+#if not
 			a.Add(basename);
+#endif
 
 			var libname = basename_to_libname(basename, suffix);
 			a.Add(libname);
@@ -192,10 +194,18 @@ namespace SQLitePCL
 		public static string Load(string basename)
 		{
 			var plat = WhichLoader();
+			//System.Console.WriteLine("plat: {0}", plat);
 			var suffix = WhichLibSuffix();
-			var a = MakeProbesFor(basename, suffix);
+			//System.Console.WriteLine("suffix: {0}", suffix);
+			var a = MakePossibilitiesFor(basename, suffix);
+			//System.Console.WriteLine("possibilities:");
+			foreach (var s in a)
+			{
+				//System.Console.WriteLine("    {0}", s);
+			}
 			if (Search(a, plat, out var lib, out var gf))
 			{
+				//System.Console.WriteLine("found: {0}", lib);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 				return lib;

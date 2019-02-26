@@ -49,7 +49,7 @@ namespace SQLitePCL
 			{
 				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
 				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
-				return true;
+				return dll != IntPtr.Zero;
 			}
 			catch
 			{
@@ -90,7 +90,7 @@ namespace SQLitePCL
 			{
 				dll = LoadLibrary(name);
 				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
-				return true;
+				return dll != IntPtr.Zero;
 			}
 			catch
 			{

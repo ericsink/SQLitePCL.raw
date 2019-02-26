@@ -13,7 +13,8 @@ namespace t1
         {
 			//SQLitePCL.Setup.Load("./libe_sqlite3.so");
 			//SQLitePCL.Setup.Load("./libe_sqlite3.dylib");
-			SQLitePCL.Setup.Load("e_sqlite3.dll");
+			var lib = SQLitePCL.Setup.Load("e_sqlite3");
+			System.Console.WriteLine("Load returned: {0}", lib);
 			//SQLitePCL.Setup.Load("c:/windows/system32/winsqlite3.dll");
 
 			using (var db = ugly.open(":memory:"))
