@@ -43,16 +43,14 @@ namespace SQLitePCL
 
 		public static void Load(string name)
 		{
-			IntPtr dll;
-			if (NativeLib_Win.try_LoadLibrary(name, out dll))
+			IGetFunctionPointer gf;
+			if (NativeLib_Win.try_Load(name, out gf))
 			{
-				var gf = new GetFunctionPointer_Win(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}
-			else if (NativeLib_dlopen.try_dlopen(name, out dll))
+			else if (NativeLib_dlopen.try_Load(name, out gf))
 			{
-				var gf = new GetFunctionPointer_dlopen(dll);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 			}

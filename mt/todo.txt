@@ -106,9 +106,6 @@ in many or most cases
 maybe the Setup calls should return the sqlite
 version et al?
 
-should try_dlopen and friends just return the
-IGetFunctionPointer?
-
 chg release notes in nuspec to reference a URL
 
 what are the empty dep groups for?

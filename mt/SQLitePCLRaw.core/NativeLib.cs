@@ -58,6 +58,19 @@ namespace SQLitePCL
 			}
 		}
 
+		public static bool try_Load(string name, out IGetFunctionPointer gf)
+		{
+			if (try_dlopen(name, out var ptr))
+			{
+				gf = new GetFunctionPointer_dlopen(ptr);
+				return true;
+			}
+			else
+			{
+				gf = null;
+				return false;
+			}
+		}
 	}
 
 	static class NativeLib_Win
@@ -86,6 +99,19 @@ namespace SQLitePCL
 			}
 		}
 
+		public static bool try_Load(string name, out IGetFunctionPointer gf)
+		{
+			if (try_LoadLibrary(name, out var ptr))
+			{
+				gf = new GetFunctionPointer_Win(ptr);
+				return true;
+			}
+			else
+			{
+				gf = null;
+				return false;
+			}
+		}
 	}
 
 }
