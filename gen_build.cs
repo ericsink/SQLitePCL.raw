@@ -1074,7 +1074,9 @@ public static class gen
 	private static void gen_assemblyinfo(string root, string dir_mt, string assemblyname)
 	{
 		string cs = File.ReadAllText(Path.Combine(root, "src/cs/AssemblyInfo.cs"));
-		using (TextWriter tw = new StreamWriter(Path.Combine(dir_mt, assemblyname, "Generated", "AssemblyInfo.cs")))
+		var dir_gen = Path.Combine(dir_mt, assemblyname, "Generated");
+		Directory.CreateDirectory(dir_gen);
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_gen, "AssemblyInfo.cs")))
 		{
 			string cs1 = cs
 				.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + assemblyname + '"')
@@ -1104,7 +1106,10 @@ public static class gen
 
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.core");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.ugly");
-		// TODO others here too
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.android");
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.ios");
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.android");
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.ios");
 
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);

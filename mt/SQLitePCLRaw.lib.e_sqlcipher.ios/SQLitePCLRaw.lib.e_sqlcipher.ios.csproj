@@ -4,9 +4,11 @@
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.sqlcipher.snk</AssemblyOriginatorKeyFile>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 <ItemGroup>
+    <Compile Include="Generated\AssemblyInfo.cs" />
     <Compile Include="..\..\src\cs\embedded_init.cs" />
     <Compile Include="imp_ios_internal.cs" />
 </ItemGroup>
