@@ -131,6 +131,7 @@ public static class gen
 		}
 	}
 
+	#if not
     static string rid_front_half(string toolset)
     {
         switch (toolset)
@@ -152,6 +153,7 @@ public static class gen
                 throw new Exception();
         }
     }
+#endif
 
 	private static void write_nuspec_file_entry(string src, string target, XmlWriter f)
 	{
@@ -1123,39 +1125,38 @@ public static class gen
         gen_nuspec_bundle_e_sqlcipher(top, dir_mt, dlls);
         gen_nuspec_bundle_zetetic(top, dir_mt, dlls);
 
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.ps1")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.bat")))
 		{
-            tw.WriteLine("../nuget pack {0}.core.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.core.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
 
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("../nuget pack {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("..\\nuget pack {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("..\\nuget pack {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME);
 
-            tw.WriteLine("../nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("../nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.bundle_green.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
 
-			tw.WriteLine("ls *.nupkg");
+            tw.WriteLine("dir *.nupkg");
 		}
 
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.ps1")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 
-			tw.WriteLine("ls *.nupkg");
-			tw.WriteLine("../nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("../nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
 	}
 }
