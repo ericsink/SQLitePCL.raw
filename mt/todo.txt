@@ -29,8 +29,6 @@ version et al?
 should try_dlopen and friends just return the
 IGetFunctionPointer?
 
-AssemblyInfo stuff, version numbers
-
 chg release notes in nuspec to reference a URL
 
 what are the empty dep groups for?
@@ -54,7 +52,8 @@ to be used?
 
 not sure we need bundle_green at all.
 
-chg cb build scripts to use VS 2017
+chg cb build scripts to use VS 2017, partly
+so we can get arm64 on uwp
 
 later: rename sqlcipher in cb to e_sqlcipher
 

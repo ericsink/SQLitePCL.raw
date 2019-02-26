@@ -6,7 +6,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Zumero, LLC")]
 [assembly: AssemblyProduct("SQLitePCLRaw")]
-[assembly: AssemblyCopyright("Copyright 2014-2018 Zumero, LLC.")]
+[assembly: AssemblyCopyright("Copyright 2014-2019 Zumero, LLC.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
