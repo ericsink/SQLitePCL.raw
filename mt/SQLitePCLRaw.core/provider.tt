@@ -1,6 +1,8 @@
 <#@ template language="C#" #>
 <#@ output extension=".cs"#>
+<#@ parameter name='NAME' #>
 <#@ parameter name='CONV' #>
+<#@ parameter name='KIND' #>
 /*
    Copyright 2014-2019 Zumero, LLC
 
@@ -26,6 +28,18 @@
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
+<#
+	if (
+		(KIND == "dynamic")
+		|| (KIND == "dllimport")
+		)
+	{
+	}
+	else
+	{
+		throw new NotImplementedException();
+	}
+#>
 namespace SQLitePCL
 {
     using System;
@@ -34,14 +48,21 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    sealed class SQLite3Provider_<#= CONV #> : ISQLite3Provider
+    sealed class SQLite3Provider_<#= NAME #> : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
 
+<#
+	if (KIND == "dynamic")
+	{
+#>
 		public static void Setup(IGetFunctionPointer gf)
 		{
 			NativeMethods.Setup(gf);
 		}
+<#
+	}
+#>
 
         int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
         {
@@ -1273,34 +1294,45 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
-		{
-			// TODO check here to make sure the type is a delegate of some kind?
-			// just in case we introduce other properties later?
-			var name = delegate_type.Name;
-			foreach (var attr in delegate_type.GetTypeInfo().GetCustomAttributes())
-			{
-				if (attr.GetType() == typeof(EntryPointAttribute))
-				{
-					var ep = attr as EntryPointAttribute;
-					//System.Console.WriteLine("{0} EntryPoint {1}", name, ep.Name);
-					name = ep.Name;
-				}
-			}
-			var fn_ptr = gf.GetFunctionPointer(name);
-			if (fn_ptr != IntPtr.Zero)
-			{
-				var d = Marshal.GetDelegateForFunctionPointer(fn_ptr, delegate_type);
-				return d;
-			}
-			else
-			{
-				//System.Console.WriteLine("Warning: {0} not found", name);
-				return null;
-			}
-		}
+<#
+	if (KIND == "dynamic")
+	{
+		write_dynamic_load_stuff();
+	}
+	else if (KIND == "dllimport")
+	{
+#>
+        private const string SQLITE_DLL = "REPLACE_WITH_ACTUAL_DLL_NAME";
 
 <#
+		write_api_entries(KIND);
+	}
+#>
+
+<#
+	write_callback_delegates();
+#>
+	}
+
+<#
+	if (KIND == "dynamic")
+	{
+#>
+	static class MyDelegateTypes
+	{
+<#
+	write_api_entries(KIND);
+#>
+	}
+<#
+	}
+#>
+
+    }
+}
+<#+
+	void write_dynamic_load_stuff()
+	{
 	string[] funcs = new string[]
 	{
 		"sqlite3_close",
@@ -1433,27 +1465,56 @@ namespace SQLitePCL
 		"sqlite3_win32_set_directory",
 	};
 #>
+		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
+		{
+			// TODO check here to make sure the type is a delegate of some kind?
+			// just in case we introduce other properties later?
+			var name = delegate_type.Name;
+			foreach (var attr in delegate_type.GetTypeInfo().GetCustomAttributes())
+			{
+				if (attr.GetType() == typeof(EntryPointAttribute))
+				{
+					var ep = attr as EntryPointAttribute;
+					//System.Console.WriteLine("{0} EntryPoint {1}", name, ep.Name);
+					name = ep.Name;
+				}
+			}
+			var fn_ptr = gf.GetFunctionPointer(name);
+			if (fn_ptr != IntPtr.Zero)
+			{
+				var d = Marshal.GetDelegateForFunctionPointer(fn_ptr, delegate_type);
+				return d;
+			}
+			else
+			{
+				//System.Console.WriteLine("Warning: {0} not found", name);
+				return null;
+			}
+		}
+
 		static public void Setup(IGetFunctionPointer gf)
 		{
-<#
+<#+
 	foreach (var s in funcs)
 	{
 #>
 			<#= s #> = (MyDelegateTypes.<#= s #>) Load(gf, typeof(MyDelegateTypes.<#= s #>));
-<#
+<#+
 	}
 #>
 		}
 
-<#
+<#+
 	foreach (var s in funcs)
 	{
 #>
 		public static MyDelegateTypes.<#= s #> <#= s #>;
-<#
+<#+
 	}
+	}
+	void write_callback_delegates()
+	{
 #>
-
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
 
@@ -1495,404 +1556,424 @@ namespace SQLitePCL
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
+<#+
 	}
 
-	static class MyDelegateTypes
+	void write_api_entries(string k)
 	{
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_close(IntPtr db);
+		string attr;
+		string attr_unicode;
+		string front;
+		string attr_sqlite3_config;
+		if (k == "dynamic")
+		{
+			attr_unicode = "[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
+			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
+			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
+			front = "public delegate";
+		}
+		else if (k == "dllimport")
+		{
+			attr_unicode = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
+			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
+			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
+			front = "public static extern";
+		}
+		else
+		{
+			throw new NotImplementedException();
+		}
+#>
+		<#= attr #>
+		<#= front #> int sqlite3_close(IntPtr db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_close_v2(IntPtr db);
+		<#= attr #>
+		<#= front #> int sqlite3_close_v2(IntPtr db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_enable_shared_cache(int enable);
+		<#= attr #>
+		<#= front #> int sqlite3_enable_shared_cache(int enable);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_interrupt(sqlite3 db);
+		<#= attr #>
+		<#= front #> void sqlite3_interrupt(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_finalize(IntPtr stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_finalize(IntPtr stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_reset(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_reset(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_clear_bindings(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_clear_bindings(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
+		<#= attr #>
+		<#= front #> int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_errmsg(sqlite3 db);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_errmsg(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
+		<#= attr #>
+		<#= front #> int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		<#= attr #>
+		<#= front #> int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		<#= attr #>
+		<#= front #> int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
+		<#= attr #>
+		<#= front #> int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_complete(byte[] pSql);
+		<#= attr #>
+		<#= front #> int sqlite3_complete(byte[] pSql);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_compileoption_used(byte[] pSql);
+		<#= attr #>
+		<#= front #> int sqlite3_compileoption_used(byte[] pSql);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_compileoption_get(int n);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_compileoption_get(int n);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		<#= attr #>
+		<#= front #> int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_value_text(IntPtr p);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_value_text(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_enable_load_extension(
+		<#= attr #>
+		<#= front #> int sqlite3_enable_load_extension(
 		sqlite3 db, int enable);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_load_extension(
+		<#= attr #>
+		<#= front #> int sqlite3_load_extension(
 		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_initialize();
+		<#= attr #>
+		<#= front #> int sqlite3_initialize();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_shutdown();
+		<#= attr #>
+		<#= front #> int sqlite3_shutdown();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_libversion();
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_libversion();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_libversion_number();
+		<#= attr #>
+		<#= front #> int sqlite3_libversion_number();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_threadsafe();
+		<#= attr #>
+		<#= front #> int sqlite3_threadsafe();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_sourceid();
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_sourceid();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_malloc(int n);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_malloc(int n);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_realloc(IntPtr p, int n);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_realloc(IntPtr p, int n);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_free(IntPtr p);
+		<#= attr #>
+		<#= front #> void sqlite3_free(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_open(byte[] filename, out IntPtr db);
+		<#= attr #>
+		<#= front #> int sqlite3_open(byte[] filename, out IntPtr db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
+		<#= attr #>
+		<#= front #> int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_vfs_find(byte[] vfs);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_last_insert_rowid(sqlite3 db);
+		<#= attr #>
+		<#= front #> long sqlite3_last_insert_rowid(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_changes(sqlite3 db);
+		<#= attr #>
+		<#= front #> int sqlite3_changes(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_total_changes(sqlite3 db);
+		<#= attr #>
+		<#= front #> int sqlite3_total_changes(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_memory_used();
+		<#= attr #>
+		<#= front #> long sqlite3_memory_used();
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_memory_highwater(int resetFlag);
+		<#= attr #>
+		<#= front #> long sqlite3_memory_highwater(int resetFlag);
 		
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
+		<#= attr #>
+		<#= front #> int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_busy_timeout(sqlite3 db, int ms);
+		<#= attr #>
+		<#= front #> int sqlite3_busy_timeout(sqlite3 db, int ms);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_null(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_null(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
+		<#= attr #>
+		<#= front #> int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_count(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_column_count(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_data_count(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_data_count(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_step(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_step(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_sql(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_sql(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate double sqlite3_column_double(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> double sqlite3_column_double(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_int(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> int sqlite3_column_int(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_column_int64(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> long sqlite3_column_int64(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_column_type(sqlite3_stmt stmt, int index);
+		<#= attr #>
+		<#= front #> int sqlite3_column_type(sqlite3_stmt stmt, int index);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_aggregate_count(IntPtr context);
+		<#= attr #>
+		<#= front #> int sqlite3_aggregate_count(IntPtr context);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_value_blob(IntPtr p);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_value_blob(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_value_bytes(IntPtr p);
+		<#= attr #>
+		<#= front #> int sqlite3_value_bytes(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate double sqlite3_value_double(IntPtr p);
+		<#= attr #>
+		<#= front #> double sqlite3_value_double(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_value_int(IntPtr p);
+		<#= attr #>
+		<#= front #> int sqlite3_value_int(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate long sqlite3_value_int64(IntPtr p);
+		<#= attr #>
+		<#= front #> long sqlite3_value_int64(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_value_type(IntPtr p);
+		<#= attr #>
+		<#= front #> int sqlite3_value_type(IntPtr p);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_user_data(IntPtr context);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_user_data(IntPtr context);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
+		<#= attr #>
+		<#= front #> void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_double(IntPtr context, double val);
+		<#= attr #>
+		<#= front #> void sqlite3_result_double(IntPtr context, double val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
+		<#= attr #>
+		<#= front #> void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_int(IntPtr context, int val);
+		<#= attr #>
+		<#= front #> void sqlite3_result_int(IntPtr context, int val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_int64(IntPtr context, long val);
+		<#= attr #>
+		<#= front #> void sqlite3_result_int64(IntPtr context, long val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_null(IntPtr context);
+		<#= attr #>
+		<#= front #> void sqlite3_result_null(IntPtr context);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
+		<#= attr #>
+		<#= front #> void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_zeroblob(IntPtr context, int n);
+		<#= attr #>
+		<#= front #> void sqlite3_result_zeroblob(IntPtr context, int n);
 
 		// TODO sqlite3_result_value 
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_error_toobig(IntPtr context);
+		<#= attr #>
+		<#= front #> void sqlite3_result_error_toobig(IntPtr context);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_error_nomem(IntPtr context);
+		<#= attr #>
+		<#= front #> void sqlite3_result_error_nomem(IntPtr context);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_error_code(IntPtr context, int code);
+		<#= attr #>
+		<#= front #> void sqlite3_result_error_code(IntPtr context, int code);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_key(sqlite3 db, byte[] key, int keylen);
+		<#= attr #>
+		<#= front #> int sqlite3_key(sqlite3 db, byte[] key, int keylen);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
+		<#= attr #>
+		<#= front #> int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
 		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
 		// for all possible calls that we want to use.
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		[EntryPoint("sqlite3_config")]
-		public delegate int sqlite3_config_none(int op);
+		<#= attr_sqlite3_config #>
+		<#= front #> int sqlite3_config_none(int op);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		[EntryPoint("sqlite3_config")]
-		public delegate int sqlite3_config_int(int op, int val);
+		<#= attr_sqlite3_config #>
+		<#= front #> int sqlite3_config_int(int op, int val);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		[EntryPoint("sqlite3_config")]
-		public delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
+		<#= attr_sqlite3_config #>
+		<#= front #> int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
+		<#= attr #>
+		<#= front #> int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_db_handle(IntPtr stmt);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_db_handle(IntPtr stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_stmt_busy(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_stmt_busy(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_stmt_readonly(sqlite3_stmt stmt);
+		<#= attr #>
+		<#= front #> int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
+		<#= attr #>
+		<#= front #> int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_get_autocommit(sqlite3 db);
+		<#= attr #>
+		<#= front #> int sqlite3_get_autocommit(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_extended_result_codes(sqlite3 db, int onoff);
+		<#= attr #>
+		<#= front #> int sqlite3_extended_result_codes(sqlite3 db, int onoff);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_errcode(sqlite3 db);
+		<#= attr #>
+		<#= front #> int sqlite3_errcode(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_extended_errcode(sqlite3 db);
+		<#= attr #>
+		<#= front #> int sqlite3_extended_errcode(sqlite3 db);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
+		<#= attr #>
+		<#= front #> IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 
 		// depend on the caller to format the string.
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_log(int iErrCode, byte[] zFormat);
+		<#= attr #>
+		<#= front #> void sqlite3_log(int iErrCode, byte[] zFormat);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
+		<#= attr #>
+		<#= front #> int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte[] zDestName, sqlite3 sourceDb, byte[] zSourceName);
+		<#= attr #>
+		<#= front #> sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte[] zDestName, sqlite3 sourceDb, byte[] zSourceName);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_step(sqlite3_backup backup, int nPage);
+		<#= attr #>
+		<#= front #> int sqlite3_backup_step(sqlite3_backup backup, int nPage);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_remaining(sqlite3_backup backup);
+		<#= attr #>
+		<#= front #> int sqlite3_backup_remaining(sqlite3_backup backup);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_pagecount(sqlite3_backup backup);
+		<#= attr #>
+		<#= front #> int sqlite3_backup_pagecount(sqlite3_backup backup);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_backup_finish(IntPtr backup);
+		<#= attr #>
+		<#= front #> int sqlite3_backup_finish(IntPtr backup);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_read(sqlite3_blob blob, IntPtr b, int n, int offset);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_read(sqlite3_blob blob, IntPtr b, int n, int offset);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_bytes(sqlite3_blob blob);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_bytes(sqlite3_blob blob);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_blob_close(IntPtr blob);
+		<#= attr #>
+		<#= front #> int sqlite3_blob_close(IntPtr blob);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
+		<#= attr #>
+		<#= front #> int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
+		<#= attr #>
+		<#= front #> int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
+		<#= attr #>
+		<#= front #> int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
+		<#= attr #>
+		<#= front #> int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
-		public delegate int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
+		<#= attr_unicode #>
+		<#= front #> int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
+		<#= attr #>
+		<#= front #> int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
+<#+
 	}
-
-    }
-}
+#>
