@@ -1,10 +1,83 @@
 
+LoadLibrary vs LoadLibraryEx
+
 bundles:
 	green
 	e_sqlite3
 	e_sqlcipher
 	zetetic
 	winsqlite3
+
+figure out plats
+	ios
+	macos
+	win
+	android
+	linux
+	other?
+
+in general, only one of the following is true:
+	win, LoadLibrary, dll suffix
+	everything else, dlopen
+		macos, dylib suffix
+		everything else, so suffix
+
+Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+appdomain.currentdomain.basedirectory
+assembly.codebase
+current working directory
+
+ios: either system or internal
+
+android: std places
+	just load e_sqlite3?
+
+.net core: should find from rid, just
+load "e_sqlite3" ?
+
+mono on mac
+Xamarin.Mac
+mono on linux
+.net framework on windows
+    subdirs from the targets file
+
+cdecl vs stdcall?
+
+--
+
+add sqlite3_key et al to the pinvoke list?
+
+have setup return the one that was used
+
+string passed to LoadLibrary/dlopen
+dlopen vs loadlib
+
+constructing the string:
+	basename
+		e_sqlite3
+		e_sqlcipher
+		sqlite3
+		sqlcipher
+	add dll/dylib/so
+	path
+		starting
+			cwd
+			executingassembly.location
+			other?
+		subdir
+			nothing?
+			native/rid (targets)
+
+perhaps just autogen a big list of permutations to try.
+and then a loop that tries them.
+
+use runtime platform info to reduce the size of the list.
+
+or gen the list at runtime, using runtime platform info
+to only gen the ones that make sense.  allows a custom
+basename more easily.  gen_permutations_for().
+
+--
 
 run gen_build.cs under dotnet core
 
