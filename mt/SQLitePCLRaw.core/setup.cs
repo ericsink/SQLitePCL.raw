@@ -169,6 +169,9 @@ namespace SQLitePCL
 			var libname = basename_to_libname(basename, suffix);
 			a.Add(libname);
 
+			// TODO a hack for testing.  works relative to cwd.
+			a.Add(Path.Combine("runtimes", "win-x64", "native", libname));
+
 #if not // TODO GetCurrentDirectory is in netstandard 1.3
 			var cwd = System.IO.Directory.GetCurrentDirectory();
 #endif
