@@ -1,4 +1,10 @@
 ..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.core.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.dynamic.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.e_sqlite3.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.e_sqlcipher.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.sqlite3.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.sqlcipher.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.provider.winsqlite3.2.0.0.nupkg
 ..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.ugly.2.0.0.nupkg
 ..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.lib.e_sqlite3.2.0.0.nupkg
 ..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.lib.e_sqlcipher.2.0.0.nupkg

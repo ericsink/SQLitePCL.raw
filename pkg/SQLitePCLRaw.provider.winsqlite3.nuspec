@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.8.1">
+    <id>SQLitePCLRaw.provider.winsqlite3</id>
+    <title>SQLitePCLRaw.provider.winsqlite3</title>
+    <version>2.0.0</version>
+    <authors>Eric Sink, et al</authors>
+    <owners>Eric Sink</owners>
+    <copyright>Copyright 2014-2019 Zumero, LLC</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/ericsink/SQLitePCL.raw</projectUrl>
+    <summary>A Portable Class Library (PCL) for low-level (raw) access to SQLite</summary>
+    <tags>sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp</tags>
+    <releaseNotes>TODO url</releaseNotes>
+    <description>TODO</description>
+    <dependencies>
+      <group targetFramework="MonoAndroid">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="Xamarin.Mac20">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="net35">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="net45">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="uap10.0">
+        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group targetFramework="netstandard1.1">
+        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+      <group>
+        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard1.1\SQLitePCLRaw.core.dll" target="lib\netstandard1.1\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard1.1\SQLitePCLRaw.impl.callbacks.dll" target="lib\netstandard1.1\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard1.1\SQLitePCLRaw.provider.winsqlite3.dll" target="lib\netstandard1.1\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard2.0\SQLitePCLRaw.core.dll" target="lib\netstandard2.0\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard2.0\SQLitePCLRaw.impl.callbacks.dll" target="lib\netstandard2.0\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.provider.winsqlite3\bin\Release\netstandard2.0\SQLitePCLRaw.provider.winsqlite3.dll" target="lib\netstandard2.0\" />
+  </files>
+</package>

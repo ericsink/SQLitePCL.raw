@@ -632,6 +632,63 @@ public static class gen
 		f.WriteEndElement();
 	}
 
+	private static void gen_nuspec_provider(string top, string dir_mt, List<dll_info> dlls, string name)
+	{
+		string id = string.Format("{0}.provider.{1}", gen.ROOT_NAME, name);
+
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = false;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+		{
+			f.WriteStartDocument();
+			f.WriteComment("Automatically generated");
+
+			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+			f.WriteStartElement("metadata");
+			write_nuspec_common_metadata(id, f);
+			f.WriteElementString("description", "TODO");
+
+			f.WriteStartElement("dependencies");
+
+            write_dependency_group(f, TFM.ANDROID, DEP_CORE);
+            write_dependency_group(f, TFM.IOS, DEP_CORE);
+            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_CORE);
+            write_dependency_group(f, TFM.NET35, DEP_CORE);
+            write_dependency_group(f, TFM.NET40, DEP_CORE);
+            write_dependency_group(f, TFM.NET45, DEP_CORE);
+            write_dependency_group(f, TFM.UWP, DEP_CORE);
+            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
+            write_dependency_group(f, TFM.NONE, DEP_CORE);
+
+			f.WriteEndElement(); // dependencies
+
+			f.WriteEndElement(); // metadata
+
+			f.WriteStartElement("files");
+
+			foreach (
+				var dll in dlls
+					.Where(d => d.project_subdir == id)
+				)
+			{
+				write_nuspec_file_entry_lib(
+						dll.get_src_path(dir_mt), 
+						dll.tfm,
+						f
+						);
+			}
+
+			f.WriteEndElement(); // files
+
+			f.WriteEndElement(); // package
+
+			f.WriteEndDocument();
+		}
+	}
+
 	private static void gen_nuspec_ugly(string top, string dir_mt, List<dll_info> dlls)
 	{
 		string id = string.Format("{0}.ugly", gen.ROOT_NAME);
@@ -1108,21 +1165,34 @@ public static class gen
 			.ToList()
 			;
 
+		var providers = new string[]
+		{
+			"dynamic",
+			"e_sqlite3",
+			"e_sqlcipher",
+			"sqlite3",
+			"sqlcipher",
+			"winsqlite3",
+		};
+
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.core");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.impl.callbacks");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.dynamic");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.e_sqlite3");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.e_sqlcipher");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.sqlite3");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.sqlcipher");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.winsqlite3");
+		foreach (var s in providers)
+		{
+			gen_assemblyinfo(root, dir_mt, string.Format("SQLitePCLRaw.provider.{0}", s));
+		}
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.ugly");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.android");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.ios");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.android");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.ios");
 
+
         gen_nuspec_core(top, root, dir_mt, dlls);
+		foreach (var s in providers)
+		{
+			gen_nuspec_provider(top, dir_mt, dlls, s);
+		}
         gen_nuspec_ugly(top, dir_mt, dlls);
 
 		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt, dlls);
@@ -1140,6 +1210,12 @@ public static class gen
             tw.WriteLine("mkdir nupkg");
 
             tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.core.nuspec", gen.ROOT_NAME);
+
+			foreach (var s in providers)
+			{
+				tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.provider.{1}.nuspec", gen.ROOT_NAME, s);
+			}
+
             tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.ugly.nuspec", gen.ROOT_NAME);
 
 			tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
@@ -1159,6 +1235,12 @@ public static class gen
             const string src = "https://www.nuget.org/api/v2/package";
 
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+
+			foreach (var s in providers)
+			{
+				tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.provider.{3}.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src, s);
+			}
+
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
