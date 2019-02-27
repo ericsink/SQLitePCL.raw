@@ -973,7 +973,7 @@ public static class gen
 
 	private static void gen_assemblyinfo(string root, string dir_mt, string assemblyname)
 	{
-		string cs = File.ReadAllText(Path.Combine(root, "src/common/AssemblyInfo.cs"));
+		string cs = File.ReadAllText(Path.Combine(root, "src/common/AssemblyInfo.cs.template"));
 		var dir_gen = Path.Combine(dir_mt, assemblyname, "Generated");
 		Directory.CreateDirectory(dir_gen);
 		using (TextWriter tw = new StreamWriter(Path.Combine(dir_gen, "AssemblyInfo.cs")))
