@@ -172,6 +172,31 @@ public static class gen
 			);
 	}
 
+	static string make_mt_path(
+		string mt_dir,
+		string name,
+		TFM tfm
+		)
+	{
+		return Path.Combine(
+			mt_dir,
+			name,
+			"bin",
+			"Release",
+			tfm.AsString(),
+			string.Format("{0}.dll", name)
+			);
+	}
+
+	private static void write_nuspec_file_entry_lib_mt(string mt_dir, string name, TFM tfm, XmlWriter f)
+	{
+		write_nuspec_file_entry(
+			make_mt_path(mt_dir, name, tfm),
+			string.Format("lib\\{0}\\", tfm.AsString()),
+			f
+			);
+	}
+
 	private static void write_nuspec_file_entry_native(string src, string rid, string filename, XmlWriter f)
 	{
 		write_nuspec_file_entry(
@@ -343,7 +368,7 @@ public static class gen
 		f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 	}
 
-	private static void gen_nuspec_core(string top, string root, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_core(string top, string root, string dir_mt)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -379,17 +404,19 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.core")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -1188,7 +1215,7 @@ public static class gen
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.ios");
 
 
-        gen_nuspec_core(top, root, dir_mt, dlls);
+        gen_nuspec_core(top, root, dir_mt);
 		foreach (var s in providers)
 		{
 			gen_nuspec_provider(top, dir_mt, dlls, s);
