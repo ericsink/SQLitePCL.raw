@@ -29,13 +29,16 @@ namespace SQLitePCL
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
-	public sealed class EntryPointAttribute : Attribute
+	public sealed class PreserveAttribute : System.Attribute
 	{
-		public string Name { get; private set; }
-		public EntryPointAttribute (string name) 
-		{ 
-			Name = name;
-		}
+		public bool AllMembers;
+		public bool Conditional;
 	}
+
+	public sealed class MonoPInvokeCallbackAttribute : Attribute
+	{
+		public MonoPInvokeCallbackAttribute (Type t) { }
+	}
+
 }
 

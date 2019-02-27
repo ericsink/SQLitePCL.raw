@@ -17,6 +17,7 @@
 
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.impl.callbacks\SQLitePCLRaw.impl.callbacks.csproj" />
 </ItemGroup>
 
 <ItemGroup>
@@ -26,8 +27,6 @@
     <Compile Include="NativeLib.cs" />
     <Compile Include="setup.cs" />
     <Compile Include="attributes.cs" />
-    <Compile Include="hook_handles.cs" />
-    <Compile Include="hook_info.cs" />
 
     <Compile Include="Generated\provider_cdecl.cs" />
     <Compile Include="Generated\provider_stdcall.cs" />

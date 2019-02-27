@@ -30,31 +30,31 @@ namespace SQLitePCL
     using System.Text;
     using System.Collections.Generic;
 
-    internal class log_hook_info
+    public class log_hook_info
     {
         private delegate_log _func;
         private object _user_data;
 
-        internal log_hook_info(delegate_log func, object v)
+        public log_hook_info(delegate_log func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static log_hook_info from_ptr(IntPtr p)
+        public static log_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             log_hook_info hi = h.Target as log_hook_info;
             return hi;
         }
 
-        internal void call(int rc, string msg)
+        public void call(int rc, string msg)
         {
             _func(_user_data, rc, msg);
         }
     }
 
-    internal class commit_hook_info
+    public class commit_hook_info
     {
         public delegate_commit _func { get; private set; }
         public object _user_data { get; private set; }
@@ -65,12 +65,12 @@ namespace SQLitePCL
             _user_data = v;
         }
 
-        internal int call()
+        public int call()
         {
             return _func(_user_data);
         }
 
-        internal static commit_hook_info from_ptr(IntPtr p)
+        public static commit_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             commit_hook_info hi = h.Target as commit_hook_info;
@@ -78,18 +78,18 @@ namespace SQLitePCL
         }
     }
 
-    internal class rollback_hook_info
+    public class rollback_hook_info
     {
         private delegate_rollback _func;
         private object _user_data;
 
-        internal rollback_hook_info(delegate_rollback func, object v)
+        public rollback_hook_info(delegate_rollback func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static rollback_hook_info from_ptr(IntPtr p)
+        public static rollback_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             rollback_hook_info hi = h.Target as rollback_hook_info;
@@ -97,151 +97,151 @@ namespace SQLitePCL
             return hi;
         }
 
-        internal void call()
+        public void call()
         {
             _func(_user_data);
         }
     }
 
-    internal class trace_hook_info
+    public class trace_hook_info
     {
         private delegate_trace _func;
         private object _user_data;
 
-        internal trace_hook_info(delegate_trace func, object v)
+        public trace_hook_info(delegate_trace func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static trace_hook_info from_ptr(IntPtr p)
+        public static trace_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             trace_hook_info hi = h.Target as trace_hook_info;
             return hi;
         }
 
-        internal void call(string s)
+        public void call(string s)
         {
             _func(_user_data, s);
         }
     }
 
-    internal class profile_hook_info
+    public class profile_hook_info
     {
         private delegate_profile _func;
         private object _user_data;
 
-        internal profile_hook_info(delegate_profile func, object v)
+        public profile_hook_info(delegate_profile func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static profile_hook_info from_ptr(IntPtr p)
+        public static profile_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             profile_hook_info hi = h.Target as profile_hook_info;
             return hi;
         }
 
-        internal void call(string s, long elapsed)
+        public void call(string s, long elapsed)
         {
             _func(_user_data, s, elapsed);
         }
     }
 
-    internal class progress_hook_info
+    public class progress_hook_info
     {
         private delegate_progress _func;
         private object _user_data;
 
-        internal progress_hook_info(delegate_progress func, object v)
+        public progress_hook_info(delegate_progress func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static progress_hook_info from_ptr(IntPtr p)
+        public static progress_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle)p;
             progress_hook_info hi = h.Target as progress_hook_info;
             return hi;
         }
 
-        internal int call()
+        public int call()
         {
             return _func(_user_data);
         }
     }
 
-    internal class update_hook_info
+    public class update_hook_info
     {
         private delegate_update _func;
         private object _user_data;
 
-        internal update_hook_info(delegate_update func, object v)
+        public update_hook_info(delegate_update func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static update_hook_info from_ptr(IntPtr p)
+        public static update_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             update_hook_info hi = h.Target as update_hook_info;
             return hi;
         }
 
-        internal void call(int typ, string db, string tbl, long rowid)
+        public void call(int typ, string db, string tbl, long rowid)
         {
             _func(_user_data, typ, db, tbl, rowid);
         }
     }
 
-    internal class collation_hook_info
+    public class collation_hook_info
     {
         private delegate_collation _func;
         private object _user_data;
 
-        internal collation_hook_info(delegate_collation func, object v)
+        public collation_hook_info(delegate_collation func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static collation_hook_info from_ptr(IntPtr p)
+        public static collation_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             collation_hook_info hi = h.Target as collation_hook_info;
             return hi;
         }
 
-        internal int call(string s1, string s2)
+        public int call(string s1, string s2)
         {
             return _func(_user_data, s1, s2);
         }
     }
 
-    internal class exec_hook_info
+    public class exec_hook_info
     {
         private delegate_exec _func;
         private object _user_data;
 
-        internal exec_hook_info(delegate_exec func, object v)
+        public exec_hook_info(delegate_exec func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static exec_hook_info from_ptr(IntPtr p)
+        public static exec_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             exec_hook_info hi = h.Target as exec_hook_info;
             return hi;
         }
 
-        internal int call(int n, IntPtr values_ptr, IntPtr names_ptr)
+        public int call(int n, IntPtr values_ptr, IntPtr names_ptr)
         {
             string[] values = new string[n];
             string[] names = new string[n];
@@ -262,7 +262,7 @@ namespace SQLitePCL
         }
     }
 
-    internal class function_hook_info
+    public class function_hook_info
     {
         private delegate_function_scalar _func_scalar;
         private delegate_function_aggregate_step _func_step;
@@ -301,7 +301,7 @@ namespace SQLitePCL
             _user_data = user_data;
         }
 
-        internal static function_hook_info from_ptr(IntPtr p)
+        public static function_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle) p;
             function_hook_info hi = h.Target as function_hook_info;
@@ -354,7 +354,7 @@ namespace SQLitePCL
             }
         }
 
-        internal void call_scalar(IntPtr context, int num_args, IntPtr argsptr)
+        public void call_scalar(IntPtr context, int num_args, IntPtr argsptr)
         {
             scalar_sqlite3_context ctx = new scalar_sqlite3_context(context, _user_data);
 
@@ -370,7 +370,7 @@ namespace SQLitePCL
             _func_scalar(ctx, _user_data, a);
         }
 
-        internal void call_step(IntPtr context, IntPtr agg_context, int num_args, IntPtr argsptr)
+        public void call_step(IntPtr context, IntPtr agg_context, int num_args, IntPtr argsptr)
         {
             sqlite3_context ctx = get_context(context, agg_context);
 
@@ -386,7 +386,7 @@ namespace SQLitePCL
             _func_step(ctx, _user_data, a);
         }
 
-        internal void call_final(IntPtr context, IntPtr agg_context)
+        public void call_final(IntPtr context, IntPtr agg_context)
         {
             sqlite3_context ctx = get_context(context, agg_context);
 
@@ -399,25 +399,25 @@ namespace SQLitePCL
 
     }
 
-    internal class authorizer_hook_info
+    public class authorizer_hook_info
     {
         private delegate_authorizer _func;
         private object _user_data;
 
-        internal authorizer_hook_info(delegate_authorizer func, object v)
+        public authorizer_hook_info(delegate_authorizer func, object v)
         {
             _func = func;
             _user_data = v;
         }
 
-        internal static authorizer_hook_info from_ptr(IntPtr p)
+        public static authorizer_hook_info from_ptr(IntPtr p)
         {
             GCHandle h = (GCHandle)p;
             authorizer_hook_info hi = h.Target as authorizer_hook_info;
             return hi;
         }
 
-        internal int call(int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view)
+        public int call(int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view)
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }

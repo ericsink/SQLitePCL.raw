@@ -29,7 +29,7 @@ namespace SQLitePCL
 	using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
 
-    internal class SafeGCHandle : SafeHandle
+    public class SafeGCHandle : SafeHandle
 	{
 		public SafeGCHandle(object v, GCHandleType typ)
 			: base(IntPtr.Zero, true)
@@ -52,9 +52,9 @@ namespace SQLitePCL
 
 	}
 
-    internal class hook_handle : SafeGCHandle
+    public class hook_handle : SafeGCHandle
     {
-        internal hook_handle(object target)
+        public hook_handle(object target)
 			: base(target, GCHandleType.Normal)
         {
         }
@@ -72,7 +72,7 @@ namespace SQLitePCL
 		}
     }
 
-	internal class hook_handles : IDisposable
+	public class hook_handles : IDisposable
 	{
 		// TODO note that sqlite function names can be case-insensitive.  but we're using
 		// a dictionary with a string key to keep track of them.  this has the potential
