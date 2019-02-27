@@ -1,4 +1,8 @@
 
+the top half of the provider class is the
+same for dynamic vs dllimport.  use a partial
+class and share it?
+
 new sn key for lib.e_sqlcipher.  hmmm.
 should we just use the same one as before?
 and why do we have the same key for 
