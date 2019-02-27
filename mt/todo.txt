@@ -1,16 +1,4 @@
 
-consider:  chg inclusion of assemblies in
-nuspec such that it errors if the expected
-assemblies are not there?  currently, if the
-nuspec files are generated when the mt dir
-is not built, there are no errors, and pack
-will build empty packages.
-
-also, scan is finding stuff that shouldn't
-be included
-
---
-
 should the impl.callbacks assembly get included
 in each provider nuspec, or should it be its own
 nuspec?

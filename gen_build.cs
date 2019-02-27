@@ -309,44 +309,6 @@ public static class gen
 		}
 	}
 
-	static List<dll_info> find_dlls(
-		string dir
-		)
-	{
-		var a = new List<dll_info>();
-		foreach (var dir_project in Directory.GetDirectories(dir, "SQLitePCLRaw.*"))
-		{
-			var project_name = Path.GetFileName(dir_project);
-			var dir_bin = Path.Combine(dir_project, "bin");
-			if (Directory.Exists(dir_bin))
-			{
-				foreach (var dir_config in Directory.GetDirectories(dir_bin))
-				{
-					foreach (var dir_tfm in Directory.GetDirectories(dir_config))
-					{
-						foreach (var dll_path in Directory.GetFiles(dir_tfm, "*.dll"))
-						{
-							var config_name = Path.GetFileName(dir_config);
-							var target_name = Path.GetFileName(dir_tfm);
-							var dll_name = Path.GetFileName(dll_path);
-							System.Console.WriteLine("{0} - {1} - {2} - {3}", project_name, config_name, target_name, dll_name);
-							a.Add(
-								new dll_info
-								{
-									project_subdir = project_name,
-									config = config_name,
-									tfm_dir_name = target_name,
-									dll = dll_name,
-								}
-								);
-						}
-					}
-				}
-			}
-		}
-		return a;
-	}
-
 	private static void write_nuspec_common_metadata(
 		string id,
 		XmlWriter f
@@ -535,7 +497,7 @@ public static class gen
 		write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "alpine-x64", f);
 	}
 
-	private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin, string dir_mt)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -557,20 +519,19 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => 
-						(d.project_subdir == "SQLitePCLRaw.lib.e_sqlite3.ios")
-						|| (d.project_subdir == "SQLitePCLRaw.lib.e_sqlite3.android")
-						)
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.lib.e_sqlite3.ios",
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.lib.e_sqlite3.android",
+					TFM.ANDROID,
+					f
+					);
 
 			write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, cb_bin, f);
 
@@ -595,7 +556,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin, string dir_mt)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -617,20 +578,19 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => 
-						(d.project_subdir == "SQLitePCLRaw.lib.e_sqlcipher.ios")
-						|| (d.project_subdir == "SQLitePCLRaw.lib.e_sqlcipher.android")
-						)
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.lib.e_sqlcipher.ios",
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.lib.e_sqlcipher.android",
+					TFM.ANDROID,
+					f
+					);
 
 			write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, cb_bin, f);
 
@@ -659,7 +619,7 @@ public static class gen
 		f.WriteEndElement();
 	}
 
-	private static void gen_nuspec_provider(string top, string dir_mt, List<dll_info> dlls, string name)
+	private static void gen_nuspec_provider(string top, string dir_mt, string name)
 	{
 		string id = string.Format("{0}.provider.{1}", gen.ROOT_NAME, name);
 
@@ -696,17 +656,21 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == id)
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			// TODO add impl.callbacks?
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -716,7 +680,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_ugly(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_ugly(string top, string dir_mt)
 	{
 		string id = string.Format("{0}.ugly", gen.ROOT_NAME);
 
@@ -753,17 +717,19 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.ugly")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					id,
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -773,7 +739,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt)
     {
 		string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
 
@@ -811,17 +777,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.winsqlite3")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			// TODO
 
 			f.WriteEndElement(); // files
 
@@ -875,7 +831,7 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-	private static void gen_nuspec_bundle_e_sqlcipher(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_bundle_e_sqlcipher(string top, string dir_mt)
 	{
 		var id = string.Format("{0}.bundle_e_sqlcipher", gen.ROOT_NAME);
 
@@ -904,17 +860,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlcipher")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			// TODO
 
 			f.WriteEndElement(); // files
 
@@ -924,7 +870,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_zetetic(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_bundle_zetetic(string top, string dir_mt)
     {
 		var id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
 
@@ -953,17 +899,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.sqlcipher")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			// TODO
 
 			f.WriteEndElement(); // files
 
@@ -973,7 +909,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_e_sqlite3(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_bundle_e_sqlite3(string top, string dir_mt)
 	{
 		string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
 
@@ -1002,17 +938,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.batteries_v2.e_sqlite3")
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
+			// TODO
 
 			f.WriteEndElement(); // files
 
@@ -1022,7 +948,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_bundle_green(string top, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_bundle_green(string top, string dir_mt)
 	{
 		string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
 
@@ -1053,19 +979,7 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-#if not
-			foreach (
-				var dll in dlls
-					.Where(d => d.project_subdir == "SQLitePCLRaw.core") // TODO green
-				)
-			{
-				write_nuspec_file_entry_lib(
-						dll.get_src_path(dir_mt), 
-						dll.tfm,
-						f
-						);
-			}
-#endif
+			// TODO
 
 			f.WriteEndElement(); // files
 
@@ -1187,11 +1101,6 @@ public static class gen
 
 		// --------------------------------
 
-		var dlls = find_dlls(dir_mt)
-			.Where(d => d.config.ToLower() == "release")
-			.ToList()
-			;
-
 		var providers = new string[]
 		{
 			"dynamic",
@@ -1218,18 +1127,18 @@ public static class gen
         gen_nuspec_core(top, root, dir_mt);
 		foreach (var s in providers)
 		{
-			gen_nuspec_provider(top, dir_mt, dlls, s);
+			gen_nuspec_provider(top, dir_mt, s);
 		}
-        gen_nuspec_ugly(top, dir_mt, dlls);
+        gen_nuspec_ugly(top, dir_mt);
 
-		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt, dlls);
-		gen_nuspec_lib_e_sqlcipher(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt);
+		gen_nuspec_lib_e_sqlcipher(top, cb_bin, dir_mt);
 
-        gen_nuspec_bundle_green(top, dir_mt, dlls);
-        gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
-        gen_nuspec_bundle_winsqlite3(top, dir_mt, dlls);
-        gen_nuspec_bundle_e_sqlcipher(top, dir_mt, dlls);
-        gen_nuspec_bundle_zetetic(top, dir_mt, dlls);
+        gen_nuspec_bundle_green(top, dir_mt);
+        gen_nuspec_bundle_e_sqlite3(top, dir_mt);
+        gen_nuspec_bundle_winsqlite3(top, dir_mt);
+        gen_nuspec_bundle_e_sqlcipher(top, dir_mt);
+        gen_nuspec_bundle_zetetic(top, dir_mt);
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.bat")))
 		{
