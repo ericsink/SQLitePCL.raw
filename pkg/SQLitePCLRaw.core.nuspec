@@ -17,7 +17,7 @@
     <description>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.core\bin\Release\netstandard1.1\SQLitePCLRaw.core.dll" target="lib\netstandard1.1\" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.core\bin\Release\netstandard2.0\SQLitePCLRaw.core.dll" target="lib\netstandard2.0\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.core\bin\Release\netstandard1.1\SQLitePCLRaw.core.dll" target="lib\netstandard1.1\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.core\bin\Release\netstandard2.0\SQLitePCLRaw.core.dll" target="lib\netstandard2.0\" />
   </files>
 </package>

@@ -17,8 +17,8 @@
     <description>This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.lib.e_sqlcipher.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlcipher.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\mt\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\MonoAndroid\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlcipher.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlcipher.ios.dll" target="lib\Xamarin.iOS10\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\MonoAndroid\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid\" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\arm\sqlcipher.dll" target="runtimes\win8-arm\native\e_sqlcipher.dll" />

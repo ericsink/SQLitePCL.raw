@@ -3,7 +3,7 @@ csc /w:4 gen_build.cs
 
 call .\gen.bat
 
-cd mt
+cd src
 
 cd SQLitePCLRaw.core
 dotnet build -c Release
