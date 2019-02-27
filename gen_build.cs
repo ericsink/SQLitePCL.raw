@@ -131,30 +131,6 @@ public static class gen
 		}
 	}
 
-	#if not
-    static string rid_front_half(string toolset)
-    {
-        switch (toolset)
-        {
-            case "v110_xp":
-				// for our builds, v110_xp should always correspond to a win-whatever RID
-                return "win";
-            case "v110":
-                return "win8";
-            case "v110_wp80":
-                return "wp80";
-            case "v120":
-                return "win81";
-            case "v120_wp81":
-                return "wpa81";
-            case "v140":
-                return "win10";
-            default:
-                throw new Exception();
-        }
-    }
-#endif
-
 	private static void write_nuspec_file_entry(string src, string target, XmlWriter f)
 	{
 		f.WriteStartElement("file");
@@ -289,32 +265,12 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-	class dll_info
-	{
-		public string project_subdir {get;set;}
-		public string config {get;set;}
-		public string dll {get;set;}
-		public string tfm_dir_name {get;set;}
-		public TFM tfm => str_to_tfm(tfm_dir_name);
-		public string get_src_path(string dir)
-		{
-			return Path.Combine(
-				dir,
-				project_subdir,
-				"bin",
-				config,
-				tfm_dir_name,
-				dll
-				);
-		}
-	}
-
 	private static void write_nuspec_common_metadata(
 		string id,
 		XmlWriter f
 		)
 	{
-		f.WriteAttributeString("minClientVersion", "2.8.1");
+		f.WriteAttributeString("minClientVersion", "2.8.1"); // TODO this is wrong
 
 		f.WriteElementString("id", id);
 		f.WriteElementString("title", id);
