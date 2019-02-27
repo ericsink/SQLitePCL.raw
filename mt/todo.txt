@@ -1,4 +1,20 @@
 
+consider:  chg inclusion of assemblies in
+nuspec such that it errors if the expected
+assemblies are not there?  currently, if the
+nuspec files are generated when the mt dir
+is not built, there are no errors, and pack
+will build empty packages.
+
+also, scan is finding stuff that shouldn't
+be included
+
+--
+
+should the impl.callbacks assembly get included
+in each provider nuspec, or should it be its own
+nuspec?
+
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
 underlying sqlcipher version?
@@ -14,18 +30,6 @@ the android and ios versions of this?
 same goes for e_sqlite3.
 
 --
-
-core had:
-	raw
-	intptrs
-	isqlite3
-	bait
-	assemblyinfo
-
-providers had:
-	util.cs
-	pinvoke_whatever
-	assemblyinfo
 
 runtimeconfig.dev.json
 	AdditionalProbingingPath
@@ -115,20 +119,10 @@ basename more easily.  gen_permutations_for().
 
 run gen_build.cs under dotnet core
 
-the nuspec/targets files should be committed
-to the repo
-
 consider default enable_next_stmt() to false
 
 review the weird stuff agg functions do
 with the context pointer
-
-consider:  chg inclusion of assemblies in
-nuspec such that it errors if the expected
-assemblies are not there?  currently, if the
-nuspec files are generated when the mt dir
-is not built, there are no errors, and pack
-will build empty packages.
 
 in setup, check the current OS somehow so
 that some checks (like LoadLibrary on non-Windows)
