@@ -18,7 +18,7 @@
   </metadata>
   <files>
     <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlite3.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlite3.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlite3.android\bin\Release\MonoAndroid\SQLitePCLRaw.lib.e_sqlite3.android.dll" target="lib\MonoAndroid\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlite3.android\bin\Release\MonoAndroid80\SQLitePCLRaw.lib.e_sqlite3.android.dll" target="lib\MonoAndroid80\" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x86\e_sqlite3.dll" target="runtimes\win-x86\native\e_sqlite3.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x64\e_sqlite3.dll" target="runtimes\win-x64\native\e_sqlite3.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\arm\e_sqlite3.dll" target="runtimes\win8-arm\native\e_sqlite3.dll" />

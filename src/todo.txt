@@ -1,4 +1,7 @@
 
+nuspec isn't finding the lib.e_sqlite3/e_sqlcipher
+assemblies in android.  monoandroid80.  80.  etc.
+
 nuspecs should contain relative paths
 
 should the impl.callbacks assembly get included

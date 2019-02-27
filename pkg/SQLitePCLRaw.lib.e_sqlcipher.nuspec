@@ -18,7 +18,7 @@
   </metadata>
   <files>
     <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlcipher.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlcipher.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\MonoAndroid\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\MonoAndroid80\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid80\" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\arm\sqlcipher.dll" target="runtimes\win8-arm\native\e_sqlcipher.dll" />

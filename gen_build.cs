@@ -105,7 +105,7 @@ public static class gen
 		{
 			case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
 			case TFM.IOS: return "Xamarin.iOS10";
-			case TFM.ANDROID: return "MonoAndroid";
+			case TFM.ANDROID: return "MonoAndroid80";
 			case TFM.UWP: return "uap10.0";
 			case TFM.NETSTANDARD11: return "netstandard1.1";
 			case TFM.NETSTANDARD20: return "netstandard2.0";
