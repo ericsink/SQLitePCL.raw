@@ -510,7 +510,7 @@ public static class gen
 		write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "alpine-x64", f);
 	}
 
-	private static void gen_nuspec_e_sqlite3(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -570,7 +570,7 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_e_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
+	private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin, string dir_mt, List<dll_info> dlls)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -1127,8 +1127,8 @@ public static class gen
         gen_nuspec_core(top, root, dir_mt, dlls);
         gen_nuspec_ugly(top, dir_mt, dlls);
 
-		gen_nuspec_e_sqlite3(top, cb_bin, dir_mt, dlls);
-		gen_nuspec_e_sqlcipher(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt, dlls);
+		gen_nuspec_lib_e_sqlcipher(top, cb_bin, dir_mt, dlls);
 
         gen_nuspec_bundle_green(top, dir_mt, dlls);
         gen_nuspec_bundle_e_sqlite3(top, dir_mt, dlls);
