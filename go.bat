@@ -17,6 +17,22 @@ cd SQLitePCLRaw.provider.e_sqlite3
 dotnet build -c Release
 cd ..
 
+cd SQLitePCLRaw.provider.e_sqlcipher
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.provider.sqlite3
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.provider.sqlcipher
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.provider.winsqlite3
+dotnet build -c Release
+cd ..
+
 cd SQLitePCLRaw.ugly
 dotnet build -c Release
 cd ..
