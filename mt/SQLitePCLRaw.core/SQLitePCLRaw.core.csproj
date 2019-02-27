@@ -8,19 +8,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-<!--
-<PropertyGroup>
-   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-</PropertyGroup> 
--->
-
-<!--
-<Target Name="autogen" BeforeTargets="BeforeBuild">
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_cdecl.cs -p:CONV=Cdecl provider.tt"/>
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_stdcall.cs -p:CONV=StdCall provider.tt"/>
-</Target>
--->
-
 <ItemGroup>
     <Compile Include="Generated\AssemblyInfo.cs" />
     <Compile Include="raw.cs" />
