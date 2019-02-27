@@ -194,10 +194,8 @@ public static class gen
     {
 		f.WriteComment("empty directory in lib to avoid nuget adding a reference");
 
-		Directory.CreateDirectory(Path.Combine(Path.Combine(top, "empty"), tfm.AsString()));
-
 		f.WriteStartElement("file");
-		f.WriteAttributeString("src", string.Format("empty\\{0}\\", tfm.AsString()));
+		f.WriteAttributeString("src", "empty\\");
 		f.WriteAttributeString("target", string.Format("lib\\{0}", tfm.AsString()));
 		f.WriteEndElement(); // file
     }
@@ -1095,12 +1093,12 @@ public static class gen
 	public static void Main(string[] args)
 	{
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
-		string top = Path.Combine(root, "bld");
+		string top = Path.Combine(root, "pkg");
 		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
 		string dir_mt = Path.Combine(root, "mt");
 
 		// --------------------------------
-		// create the bld directory
+		// create the pkg directory
 		Directory.CreateDirectory(top);
 
 		// --------------------------------
@@ -1138,6 +1136,8 @@ public static class gen
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.bat")))
 		{
+            tw.WriteLine("mkdir empty");
+
             tw.WriteLine("..\\nuget pack {0}.core.nuspec", gen.ROOT_NAME);
             tw.WriteLine("..\\nuget pack {0}.ugly.nuspec", gen.ROOT_NAME);
 
