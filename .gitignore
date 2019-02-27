@@ -11,6 +11,7 @@ project.lock.json
 *.nuget.props
 *.nuget.targets
 /Tests/packages
+/pkg/nupkg
 /bld
 /gen_build.exe
 

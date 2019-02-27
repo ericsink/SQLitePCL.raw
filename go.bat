@@ -59,6 +59,6 @@ cd ..
 
 cd ..
 
-cd bld
+cd pkg
 call .\pack.bat
 

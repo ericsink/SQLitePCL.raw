@@ -1,9 +1,9 @@
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.core.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.ugly.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.lib.e_sqlite3.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.core.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.ugly.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.lib.e_sqlite3.2.0.0.nupkg
 ..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.lib.e_sqlcipher.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.bundle_green.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.bundle_e_sqlite3.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.bundle_e_sqlcipher.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.bundle_zetetic.2.0.0.nupkg
-..\nuget push -Source https://www.nuget.org/api/v2/package SQLitePCLRaw.bundle_winsqlite3.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.bundle_green.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.bundle_e_sqlite3.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.bundle_e_sqlcipher.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.bundle_zetetic.2.0.0.nupkg
+..\nuget push -Source https://www.nuget.org/api/v2/package .\nupkg\SQLitePCLRaw.bundle_winsqlite3.2.0.0.nupkg
