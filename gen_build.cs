@@ -233,14 +233,6 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-    private static void add_dep_netstandard(XmlWriter f)
-    {
-        f.WriteStartElement("dependency");
-        f.WriteAttributeString("id", "NETStandard.Library");
-        f.WriteAttributeString("version", "1.6.0");
-        f.WriteEndElement(); // dependency
-    }
-
     private const int DEP_NONE = 0;
     private const int DEP_CORE = 1;
 
@@ -250,13 +242,6 @@ public static class gen
         if (tfm != TFM.NONE)
         {
             f.WriteAttributeString("targetFramework", tfm.AsString());
-            switch (tfm)
-            {
-                case TFM.UWP:
-                case TFM.NETSTANDARD11:
-                    add_dep_netstandard(f);
-                    break;
-            }
         }
         if ((flags & DEP_CORE) != 0)
         {
@@ -303,20 +288,6 @@ public static class gen
 			f.WriteStartElement("metadata");
 			write_nuspec_common_metadata(id, f);
 			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.");
-
-			f.WriteStartElement("dependencies");
-
-            write_dependency_group(f, TFM.ANDROID, DEP_NONE);
-            write_dependency_group(f, TFM.IOS, DEP_NONE);
-            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_NONE);
-            write_dependency_group(f, TFM.NET35, DEP_NONE);
-            write_dependency_group(f, TFM.NET40, DEP_NONE);
-            write_dependency_group(f, TFM.NET45, DEP_NONE);
-            write_dependency_group(f, TFM.UWP, DEP_NONE);
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_NONE);
-            write_dependency_group(f, TFM.NONE, DEP_NONE);
-
-			f.WriteEndElement(); // dependencies
 
 			f.WriteEndElement(); // metadata
 
