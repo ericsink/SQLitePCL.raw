@@ -233,23 +233,6 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-    private const int DEP_NONE = 0;
-    private const int DEP_CORE = 1;
-
-    private static void write_dependency_group(XmlWriter f, TFM tfm, int flags)
-    {
-        f.WriteStartElement("group");
-        if (tfm != TFM.NONE)
-        {
-            f.WriteAttributeString("targetFramework", tfm.AsString());
-        }
-        if ((flags & DEP_CORE) != 0)
-        {
-            add_dep_core(f);
-        }
-        f.WriteEndElement(); // group
-    }
-
 	private static void write_nuspec_common_metadata(
 		string id,
 		XmlWriter f
@@ -567,15 +550,9 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_dependency_group(f, TFM.ANDROID, DEP_CORE);
-            write_dependency_group(f, TFM.IOS, DEP_CORE);
-            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_CORE);
-            write_dependency_group(f, TFM.NET35, DEP_CORE);
-            write_dependency_group(f, TFM.NET40, DEP_CORE);
-            write_dependency_group(f, TFM.NET45, DEP_CORE);
-            write_dependency_group(f, TFM.UWP, DEP_CORE);
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
-            write_dependency_group(f, TFM.NONE, DEP_CORE);
+			f.WriteStartElement("group");
+            add_dep_core(f);
+			f.WriteEndElement(); // group
 
 			f.WriteEndElement(); // dependencies
 
@@ -628,15 +605,9 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_dependency_group(f, TFM.ANDROID, DEP_CORE);
-            write_dependency_group(f, TFM.IOS, DEP_CORE);
-            write_dependency_group(f, TFM.XAMARIN_MAC, DEP_CORE);
-            write_dependency_group(f, TFM.NET35, DEP_CORE);
-            write_dependency_group(f, TFM.NET40, DEP_CORE);
-            write_dependency_group(f, TFM.NET45, DEP_CORE);
-            write_dependency_group(f, TFM.UWP, DEP_CORE);
-            write_dependency_group(f, TFM.NETSTANDARD11, DEP_CORE);
-            write_dependency_group(f, TFM.NONE, DEP_CORE);
+			f.WriteStartElement("group");
+            add_dep_core(f);
+			f.WriteEndElement(); // group
 
 			f.WriteEndElement(); // dependencies
 

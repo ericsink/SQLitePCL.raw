@@ -16,30 +16,6 @@
     <releaseNotes>TODO url</releaseNotes>
     <description>These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.</description>
     <dependencies>
-      <group targetFramework="MonoAndroid">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="Xamarin.iOS10">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="Xamarin.Mac20">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="net35">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="net40">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="net45">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="uap10.0">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
-      <group targetFramework="netstandard1.1">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0" />
-      </group>
       <group>
         <dependency id="SQLitePCLRaw.core" version="2.0.0" />
       </group>
