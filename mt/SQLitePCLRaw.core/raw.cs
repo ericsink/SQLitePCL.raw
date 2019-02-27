@@ -612,7 +612,7 @@ namespace SQLitePCL
 
         static public sqlite3_stmt sqlite3_next_stmt(sqlite3 db, sqlite3_stmt stmt)
         {
-            IntPtr p = _imp.sqlite3_next_stmt(db, stmt);
+            IntPtr p = _imp.sqlite3_next_stmt(db, (stmt != null) ? stmt.ptr : IntPtr.Zero);
 
             if (p == IntPtr.Zero)
             {

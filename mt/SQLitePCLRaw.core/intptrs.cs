@@ -29,49 +29,6 @@ namespace SQLitePCL
 	using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
 
-    internal class SafeGCHandle : SafeHandle
-	{
-		public SafeGCHandle(object v, GCHandleType typ)
-			: base(IntPtr.Zero, true)
-		{
-			if (v != null)
-			{
-				var h = GCHandle.Alloc(v, typ);
-				SetHandle(GCHandle.ToIntPtr(h));
-			}
-		}
-
-		public override bool IsInvalid => handle == IntPtr.Zero;
-
-		protected override bool ReleaseHandle()
-		{
-			var h = GCHandle.FromIntPtr(handle);
-			h.Free();
-			return true;
-		}
-
-	}
-
-    internal class hook_handle : SafeGCHandle
-    {
-        internal hook_handle(object target)
-			: base(target, GCHandleType.Normal)
-        {
-        }
-
-		public IDisposable ForDispose()
-		{
-			if (IsInvalid)
-			{
-				return null;
-			}
-			else
-			{
-				return this;
-			}
-		}
-    }
-
     public class sqlite3_backup : SafeHandle
     {
 		sqlite3_backup() : base(IntPtr.Zero, true)
@@ -259,7 +216,7 @@ namespace SQLitePCL
 		{
 			int rc = raw.internal_sqlite3_close_v2(handle);
             // TODO check rc?
-			dispose_hook_handles();
+			dispose_extra();
 			return true;
 		}
 
@@ -269,7 +226,7 @@ namespace SQLitePCL
 			// TODO review.  should handle always be nulled here?
 			// TODO maybe called SetHandleAsInvalid instead?
 			handle = IntPtr.Zero;
-			dispose_hook_handles();
+			dispose_extra();
 			return rc;
 		}
 
@@ -279,7 +236,7 @@ namespace SQLitePCL
 			// TODO review.  should handle always be nulled here?
 			// TODO maybe called SetHandleAsInvalid instead?
 			handle = IntPtr.Zero;
-			dispose_hook_handles();
+			dispose_extra();
 			return rc;
 		}
 
@@ -337,57 +294,29 @@ namespace SQLitePCL
             }
         }
 
-	    internal class hook_handles
-	    {
-		    // TODO note that sqlite function names can be case-insensitive.  but we're using
-		    // a dictionary with a string key to keep track of them.  this has the potential
-		    // to cause problems.  fixing it with a case-insensitive string comparer is not
-		    // correct here, since the .NET notion of case-insensitivity is different (more
-		    // complete) than SQLite's notion.
+		IDisposable extra;
 
-			public ConcurrentDictionary<string, IDisposable> collation = new ConcurrentDictionary<string, IDisposable>();
-			public ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
-			public ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
-			public IDisposable update;
-			public IDisposable rollback;
-			public IDisposable commit;
-			public IDisposable trace;
-			public IDisposable progress;
-			public IDisposable profile;
-            public IDisposable authorizer;
-
-		    public void Dispose()
-		    {
-				foreach (var h in collation.Values) h.Dispose();
-				foreach (var h in scalar.Values) h.Dispose();
-				foreach (var h in agg.Values) h.Dispose();
-				if (update!=null) update.Dispose();
-				if (rollback!=null) rollback.Dispose();
-				if (commit!=null) commit.Dispose();
-				if (trace!=null) trace.Dispose();
-				if (progress!=null) progress.Dispose();
-				if (profile!=null) profile.Dispose();
-				if (authorizer!=null) authorizer.Dispose();
-		    }
-	    }
-
-		internal hook_handles handles;
-
-		internal hook_handles GetHooks()
+		public T GetOrCreateExtra<T>()
+			where T : class, IDisposable, new()
 		{
-			if (handles == null)
+			if (extra != null)
 			{
-				handles = new hook_handles();
+				return (T) extra;
 			}
-			return handles;
+			else
+			{
+				var q = new T();
+				extra = q;
+				return q;
+			}
 		}
 
-		private void dispose_hook_handles()
+		private void dispose_extra()
 		{
-			if (handles != null)
+			if (extra != null)
 			{
-				handles.Dispose();
-				handles = null;
+				extra.Dispose();
+				extra = null;
 			}
 		}
 

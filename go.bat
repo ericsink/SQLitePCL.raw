@@ -1,10 +1,15 @@
 csc /w:4 gen_build.cs
 .\gen_build.exe
 
+call .\gen.bat
+
 cd mt
 
 cd SQLitePCLRaw.core
-call .\gen.bat
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.provider.dynamic
 dotnet build -c Release
 cd ..
 

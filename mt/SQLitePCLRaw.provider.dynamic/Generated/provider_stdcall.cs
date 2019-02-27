@@ -1,10 +1,4 @@
-<#@ template language="C#" #>
-<#@ output extension=".cs"#>
-<#@ parameter name='NAME' #>
-<#@ parameter name='CONV' #>
-<#@ parameter name='KIND' #>
-<#@ parameter name='NAME_FOR_DLLIMPORT' #>
-/*
+﻿/*
    Copyright 2014-2019 Zumero, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,18 +23,6 @@
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
-<#
-	if (
-		(KIND == "dynamic")
-		|| (KIND == "dllimport")
-		)
-	{
-	}
-	else
-	{
-		throw new NotImplementedException();
-	}
-#>
 namespace SQLitePCL
 {
     using System;
@@ -49,21 +31,14 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    sealed class SQLite3Provider_<#= NAME #> : ISQLite3Provider
+    sealed class SQLite3Provider_StdCall : ISQLite3Provider
     {
-		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
+		const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
-<#
-	if (KIND == "dynamic")
-	{
-#>
 		public static void Setup(IGetFunctionPointer gf)
 		{
 			NativeMethods.Setup(gf);
 		}
-<#
-	}
-#>
 
         int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
         {
@@ -333,9 +308,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_backup_finish(backup);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, sqlite3_stmt stmt)
+        IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
         {
-            return NativeMethods.sqlite3_next_stmt(db, (stmt != null) ? stmt.ptr : IntPtr.Zero);
+            return NativeMethods.sqlite3_next_stmt(db, stmt);
         }
 
         long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
@@ -466,7 +441,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.commit != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -510,7 +485,7 @@ namespace SQLitePCL
         {
 			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.scalar.ContainsKey(key))
             {
                 var h_old = info.scalar[key];
@@ -627,7 +602,7 @@ namespace SQLitePCL
         {
 			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.agg.ContainsKey(key))
             {
                 var h_old = info.agg[key];
@@ -690,7 +665,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation func)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.collation.ContainsKey(name))
             {
                 var h_old = info.collation[name];
@@ -738,7 +713,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.update != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -778,7 +753,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.rollback != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -818,7 +793,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.trace != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -858,7 +833,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.profile != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -898,7 +873,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.progress != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -940,7 +915,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
-			var info = db.GetHooks();
+			var info = db.GetOrCreateExtra<hook_handles>();
             if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -1295,177 +1270,6 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-<#
-	if (KIND == "dynamic")
-	{
-		write_dynamic_load_stuff();
-	}
-	else if (KIND == "dllimport")
-	{
-#>
-        private const string SQLITE_DLL = "<#= NAME_FOR_DLLIMPORT #>";
-
-<#
-		write_api_entries(KIND);
-	}
-#>
-
-<#
-	write_callback_delegates();
-#>
-	}
-
-<#
-	if (KIND == "dynamic")
-	{
-#>
-	static class MyDelegateTypes
-	{
-<#
-	write_api_entries(KIND);
-#>
-	}
-<#
-	}
-#>
-
-    }
-}
-<#+
-	void write_dynamic_load_stuff()
-	{
-	string[] funcs = new string[]
-	{
-		"sqlite3_close",
-		"sqlite3_close_v2",
-		"sqlite3_enable_shared_cache",
-		"sqlite3_interrupt",
-		"sqlite3_finalize",
-		"sqlite3_reset",
-		"sqlite3_clear_bindings",
-		"sqlite3_stmt_status",
-		"sqlite3_bind_parameter_name",
-		"sqlite3_column_database_name",
-		"sqlite3_column_decltype",
-		"sqlite3_column_name",
-		"sqlite3_column_origin_name",
-		"sqlite3_column_table_name",
-		"sqlite3_column_text",
-		"sqlite3_errmsg",
-		"sqlite3_db_readonly",
-		"sqlite3_db_filename",
-		"sqlite3_prepare",
-		"sqlite3_prepare_v2",
-		"sqlite3_db_status",
-		"sqlite3_complete",
-		"sqlite3_compileoption_used",
-		"sqlite3_compileoption_get",
-		"sqlite3_table_column_metadata",
-		"sqlite3_value_text",
-		"sqlite3_enable_load_extension",
-		"sqlite3_load_extension",
-		"sqlite3_initialize",
-		"sqlite3_shutdown",
-		"sqlite3_libversion",
-		"sqlite3_libversion_number",
-		"sqlite3_threadsafe",
-		"sqlite3_sourceid",
-		"sqlite3_malloc",
-		"sqlite3_realloc",
-		"sqlite3_free",
-		"sqlite3_open",
-		"sqlite3_open_v2",
-		"sqlite3_vfs_find",
-		"sqlite3_last_insert_rowid",
-		"sqlite3_changes",
-		"sqlite3_total_changes",
-		"sqlite3_memory_used",
-		"sqlite3_memory_highwater",
-		"sqlite3_status",
-		"sqlite3_busy_timeout",
-		"sqlite3_bind_blob",
-		"sqlite3_bind_zeroblob",
-		"sqlite3_bind_double",
-		"sqlite3_bind_int",
-		"sqlite3_bind_int64",
-		"sqlite3_bind_null",
-		"sqlite3_bind_text",
-		"sqlite3_bind_parameter_count",
-		"sqlite3_bind_parameter_index",
-		"sqlite3_column_count",
-		"sqlite3_data_count",
-		"sqlite3_step",
-		"sqlite3_sql",
-		"sqlite3_column_double",
-		"sqlite3_column_int",
-		"sqlite3_column_int64",
-		"sqlite3_column_blob",
-		"sqlite3_column_bytes",
-		"sqlite3_column_type",
-		"sqlite3_aggregate_count",
-		"sqlite3_value_blob",
-		"sqlite3_value_bytes",
-		"sqlite3_value_double",
-		"sqlite3_value_int",
-		"sqlite3_value_int64",
-		"sqlite3_value_type",
-		"sqlite3_user_data",
-		"sqlite3_result_blob",
-		"sqlite3_result_double",
-		"sqlite3_result_error",
-		"sqlite3_result_int",
-		"sqlite3_result_int64",
-		"sqlite3_result_null",
-		"sqlite3_result_text",
-		"sqlite3_result_zeroblob",
-		// TODO sqlite3_result_value 
-		"sqlite3_result_error_toobig",
-		"sqlite3_result_error_nomem",
-		"sqlite3_result_error_code",
-		"sqlite3_aggregate_context",
-		"sqlite3_key",
-		"sqlite3_rekey",
-		"sqlite3_config_none",
-		"sqlite3_config_int",
-		"sqlite3_config_log",
-		"sqlite3_create_function_v2",
-		"sqlite3_create_collation",
-		"sqlite3_update_hook",
-		"sqlite3_commit_hook",
-		"sqlite3_profile",
-		"sqlite3_progress_handler",
-		"sqlite3_trace",
-		"sqlite3_rollback_hook",
-		"sqlite3_db_handle",
-		"sqlite3_next_stmt",
-		"sqlite3_stmt_busy",
-		"sqlite3_stmt_readonly",
-		"sqlite3_exec",
-		"sqlite3_get_autocommit",
-		"sqlite3_extended_result_codes",
-		"sqlite3_errcode",
-		"sqlite3_extended_errcode",
-		"sqlite3_errstr",
-		"sqlite3_log",
-		"sqlite3_file_control",
-		"sqlite3_backup_init",
-		"sqlite3_backup_step",
-		"sqlite3_backup_remaining",
-		"sqlite3_backup_pagecount",
-		"sqlite3_backup_finish",
-		"sqlite3_blob_open",
-		"sqlite3_blob_write",
-		"sqlite3_blob_read",
-		"sqlite3_blob_bytes",
-		"sqlite3_blob_reopen",
-		"sqlite3_blob_close",
-		"sqlite3_wal_autocheckpoint",
-		"sqlite3_wal_checkpoint",
-		"sqlite3_wal_checkpoint_v2",
-		"sqlite3_set_authorizer",
-		"sqlite3_win32_set_directory",
-	};
-#>
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
 		{
 			// TODO check here to make sure the type is a delegate of some kind?
@@ -1495,27 +1299,263 @@ namespace SQLitePCL
 
 		static public void Setup(IGetFunctionPointer gf)
 		{
-<#+
-	foreach (var s in funcs)
-	{
-#>
-			<#= s #> = (MyDelegateTypes.<#= s #>) Load(gf, typeof(MyDelegateTypes.<#= s #>));
-<#+
-	}
-#>
+			sqlite3_close = (MyDelegateTypes.sqlite3_close) Load(gf, typeof(MyDelegateTypes.sqlite3_close));
+			sqlite3_close_v2 = (MyDelegateTypes.sqlite3_close_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_close_v2));
+			sqlite3_enable_shared_cache = (MyDelegateTypes.sqlite3_enable_shared_cache) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_shared_cache));
+			sqlite3_interrupt = (MyDelegateTypes.sqlite3_interrupt) Load(gf, typeof(MyDelegateTypes.sqlite3_interrupt));
+			sqlite3_finalize = (MyDelegateTypes.sqlite3_finalize) Load(gf, typeof(MyDelegateTypes.sqlite3_finalize));
+			sqlite3_reset = (MyDelegateTypes.sqlite3_reset) Load(gf, typeof(MyDelegateTypes.sqlite3_reset));
+			sqlite3_clear_bindings = (MyDelegateTypes.sqlite3_clear_bindings) Load(gf, typeof(MyDelegateTypes.sqlite3_clear_bindings));
+			sqlite3_stmt_status = (MyDelegateTypes.sqlite3_stmt_status) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_status));
+			sqlite3_bind_parameter_name = (MyDelegateTypes.sqlite3_bind_parameter_name) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_name));
+			sqlite3_column_database_name = (MyDelegateTypes.sqlite3_column_database_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_database_name));
+			sqlite3_column_decltype = (MyDelegateTypes.sqlite3_column_decltype) Load(gf, typeof(MyDelegateTypes.sqlite3_column_decltype));
+			sqlite3_column_name = (MyDelegateTypes.sqlite3_column_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_name));
+			sqlite3_column_origin_name = (MyDelegateTypes.sqlite3_column_origin_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_origin_name));
+			sqlite3_column_table_name = (MyDelegateTypes.sqlite3_column_table_name) Load(gf, typeof(MyDelegateTypes.sqlite3_column_table_name));
+			sqlite3_column_text = (MyDelegateTypes.sqlite3_column_text) Load(gf, typeof(MyDelegateTypes.sqlite3_column_text));
+			sqlite3_errmsg = (MyDelegateTypes.sqlite3_errmsg) Load(gf, typeof(MyDelegateTypes.sqlite3_errmsg));
+			sqlite3_db_readonly = (MyDelegateTypes.sqlite3_db_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_db_readonly));
+			sqlite3_db_filename = (MyDelegateTypes.sqlite3_db_filename) Load(gf, typeof(MyDelegateTypes.sqlite3_db_filename));
+			sqlite3_prepare = (MyDelegateTypes.sqlite3_prepare) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare));
+			sqlite3_prepare_v2 = (MyDelegateTypes.sqlite3_prepare_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v2));
+			sqlite3_db_status = (MyDelegateTypes.sqlite3_db_status) Load(gf, typeof(MyDelegateTypes.sqlite3_db_status));
+			sqlite3_complete = (MyDelegateTypes.sqlite3_complete) Load(gf, typeof(MyDelegateTypes.sqlite3_complete));
+			sqlite3_compileoption_used = (MyDelegateTypes.sqlite3_compileoption_used) Load(gf, typeof(MyDelegateTypes.sqlite3_compileoption_used));
+			sqlite3_compileoption_get = (MyDelegateTypes.sqlite3_compileoption_get) Load(gf, typeof(MyDelegateTypes.sqlite3_compileoption_get));
+			sqlite3_table_column_metadata = (MyDelegateTypes.sqlite3_table_column_metadata) Load(gf, typeof(MyDelegateTypes.sqlite3_table_column_metadata));
+			sqlite3_value_text = (MyDelegateTypes.sqlite3_value_text) Load(gf, typeof(MyDelegateTypes.sqlite3_value_text));
+			sqlite3_enable_load_extension = (MyDelegateTypes.sqlite3_enable_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_load_extension));
+			sqlite3_load_extension = (MyDelegateTypes.sqlite3_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_load_extension));
+			sqlite3_initialize = (MyDelegateTypes.sqlite3_initialize) Load(gf, typeof(MyDelegateTypes.sqlite3_initialize));
+			sqlite3_shutdown = (MyDelegateTypes.sqlite3_shutdown) Load(gf, typeof(MyDelegateTypes.sqlite3_shutdown));
+			sqlite3_libversion = (MyDelegateTypes.sqlite3_libversion) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion));
+			sqlite3_libversion_number = (MyDelegateTypes.sqlite3_libversion_number) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion_number));
+			sqlite3_threadsafe = (MyDelegateTypes.sqlite3_threadsafe) Load(gf, typeof(MyDelegateTypes.sqlite3_threadsafe));
+			sqlite3_sourceid = (MyDelegateTypes.sqlite3_sourceid) Load(gf, typeof(MyDelegateTypes.sqlite3_sourceid));
+			sqlite3_malloc = (MyDelegateTypes.sqlite3_malloc) Load(gf, typeof(MyDelegateTypes.sqlite3_malloc));
+			sqlite3_realloc = (MyDelegateTypes.sqlite3_realloc) Load(gf, typeof(MyDelegateTypes.sqlite3_realloc));
+			sqlite3_free = (MyDelegateTypes.sqlite3_free) Load(gf, typeof(MyDelegateTypes.sqlite3_free));
+			sqlite3_open = (MyDelegateTypes.sqlite3_open) Load(gf, typeof(MyDelegateTypes.sqlite3_open));
+			sqlite3_open_v2 = (MyDelegateTypes.sqlite3_open_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_open_v2));
+			sqlite3_vfs_find = (MyDelegateTypes.sqlite3_vfs_find) Load(gf, typeof(MyDelegateTypes.sqlite3_vfs_find));
+			sqlite3_last_insert_rowid = (MyDelegateTypes.sqlite3_last_insert_rowid) Load(gf, typeof(MyDelegateTypes.sqlite3_last_insert_rowid));
+			sqlite3_changes = (MyDelegateTypes.sqlite3_changes) Load(gf, typeof(MyDelegateTypes.sqlite3_changes));
+			sqlite3_total_changes = (MyDelegateTypes.sqlite3_total_changes) Load(gf, typeof(MyDelegateTypes.sqlite3_total_changes));
+			sqlite3_memory_used = (MyDelegateTypes.sqlite3_memory_used) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_used));
+			sqlite3_memory_highwater = (MyDelegateTypes.sqlite3_memory_highwater) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_highwater));
+			sqlite3_status = (MyDelegateTypes.sqlite3_status) Load(gf, typeof(MyDelegateTypes.sqlite3_status));
+			sqlite3_busy_timeout = (MyDelegateTypes.sqlite3_busy_timeout) Load(gf, typeof(MyDelegateTypes.sqlite3_busy_timeout));
+			sqlite3_bind_blob = (MyDelegateTypes.sqlite3_bind_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_blob));
+			sqlite3_bind_zeroblob = (MyDelegateTypes.sqlite3_bind_zeroblob) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_zeroblob));
+			sqlite3_bind_double = (MyDelegateTypes.sqlite3_bind_double) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_double));
+			sqlite3_bind_int = (MyDelegateTypes.sqlite3_bind_int) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_int));
+			sqlite3_bind_int64 = (MyDelegateTypes.sqlite3_bind_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_int64));
+			sqlite3_bind_null = (MyDelegateTypes.sqlite3_bind_null) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_null));
+			sqlite3_bind_text = (MyDelegateTypes.sqlite3_bind_text) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_text));
+			sqlite3_bind_parameter_count = (MyDelegateTypes.sqlite3_bind_parameter_count) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_count));
+			sqlite3_bind_parameter_index = (MyDelegateTypes.sqlite3_bind_parameter_index) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_index));
+			sqlite3_column_count = (MyDelegateTypes.sqlite3_column_count) Load(gf, typeof(MyDelegateTypes.sqlite3_column_count));
+			sqlite3_data_count = (MyDelegateTypes.sqlite3_data_count) Load(gf, typeof(MyDelegateTypes.sqlite3_data_count));
+			sqlite3_step = (MyDelegateTypes.sqlite3_step) Load(gf, typeof(MyDelegateTypes.sqlite3_step));
+			sqlite3_sql = (MyDelegateTypes.sqlite3_sql) Load(gf, typeof(MyDelegateTypes.sqlite3_sql));
+			sqlite3_column_double = (MyDelegateTypes.sqlite3_column_double) Load(gf, typeof(MyDelegateTypes.sqlite3_column_double));
+			sqlite3_column_int = (MyDelegateTypes.sqlite3_column_int) Load(gf, typeof(MyDelegateTypes.sqlite3_column_int));
+			sqlite3_column_int64 = (MyDelegateTypes.sqlite3_column_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_column_int64));
+			sqlite3_column_blob = (MyDelegateTypes.sqlite3_column_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_column_blob));
+			sqlite3_column_bytes = (MyDelegateTypes.sqlite3_column_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_column_bytes));
+			sqlite3_column_type = (MyDelegateTypes.sqlite3_column_type) Load(gf, typeof(MyDelegateTypes.sqlite3_column_type));
+			sqlite3_aggregate_count = (MyDelegateTypes.sqlite3_aggregate_count) Load(gf, typeof(MyDelegateTypes.sqlite3_aggregate_count));
+			sqlite3_value_blob = (MyDelegateTypes.sqlite3_value_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_value_blob));
+			sqlite3_value_bytes = (MyDelegateTypes.sqlite3_value_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_value_bytes));
+			sqlite3_value_double = (MyDelegateTypes.sqlite3_value_double) Load(gf, typeof(MyDelegateTypes.sqlite3_value_double));
+			sqlite3_value_int = (MyDelegateTypes.sqlite3_value_int) Load(gf, typeof(MyDelegateTypes.sqlite3_value_int));
+			sqlite3_value_int64 = (MyDelegateTypes.sqlite3_value_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_value_int64));
+			sqlite3_value_type = (MyDelegateTypes.sqlite3_value_type) Load(gf, typeof(MyDelegateTypes.sqlite3_value_type));
+			sqlite3_user_data = (MyDelegateTypes.sqlite3_user_data) Load(gf, typeof(MyDelegateTypes.sqlite3_user_data));
+			sqlite3_result_blob = (MyDelegateTypes.sqlite3_result_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_result_blob));
+			sqlite3_result_double = (MyDelegateTypes.sqlite3_result_double) Load(gf, typeof(MyDelegateTypes.sqlite3_result_double));
+			sqlite3_result_error = (MyDelegateTypes.sqlite3_result_error) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error));
+			sqlite3_result_int = (MyDelegateTypes.sqlite3_result_int) Load(gf, typeof(MyDelegateTypes.sqlite3_result_int));
+			sqlite3_result_int64 = (MyDelegateTypes.sqlite3_result_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_result_int64));
+			sqlite3_result_null = (MyDelegateTypes.sqlite3_result_null) Load(gf, typeof(MyDelegateTypes.sqlite3_result_null));
+			sqlite3_result_text = (MyDelegateTypes.sqlite3_result_text) Load(gf, typeof(MyDelegateTypes.sqlite3_result_text));
+			sqlite3_result_zeroblob = (MyDelegateTypes.sqlite3_result_zeroblob) Load(gf, typeof(MyDelegateTypes.sqlite3_result_zeroblob));
+			sqlite3_result_error_toobig = (MyDelegateTypes.sqlite3_result_error_toobig) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_toobig));
+			sqlite3_result_error_nomem = (MyDelegateTypes.sqlite3_result_error_nomem) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_nomem));
+			sqlite3_result_error_code = (MyDelegateTypes.sqlite3_result_error_code) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_code));
+			sqlite3_aggregate_context = (MyDelegateTypes.sqlite3_aggregate_context) Load(gf, typeof(MyDelegateTypes.sqlite3_aggregate_context));
+			sqlite3_key = (MyDelegateTypes.sqlite3_key) Load(gf, typeof(MyDelegateTypes.sqlite3_key));
+			sqlite3_rekey = (MyDelegateTypes.sqlite3_rekey) Load(gf, typeof(MyDelegateTypes.sqlite3_rekey));
+			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
+			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
+			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
+			sqlite3_create_function_v2 = (MyDelegateTypes.sqlite3_create_function_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_create_function_v2));
+			sqlite3_create_collation = (MyDelegateTypes.sqlite3_create_collation) Load(gf, typeof(MyDelegateTypes.sqlite3_create_collation));
+			sqlite3_update_hook = (MyDelegateTypes.sqlite3_update_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_update_hook));
+			sqlite3_commit_hook = (MyDelegateTypes.sqlite3_commit_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_commit_hook));
+			sqlite3_profile = (MyDelegateTypes.sqlite3_profile) Load(gf, typeof(MyDelegateTypes.sqlite3_profile));
+			sqlite3_progress_handler = (MyDelegateTypes.sqlite3_progress_handler) Load(gf, typeof(MyDelegateTypes.sqlite3_progress_handler));
+			sqlite3_trace = (MyDelegateTypes.sqlite3_trace) Load(gf, typeof(MyDelegateTypes.sqlite3_trace));
+			sqlite3_rollback_hook = (MyDelegateTypes.sqlite3_rollback_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_rollback_hook));
+			sqlite3_db_handle = (MyDelegateTypes.sqlite3_db_handle) Load(gf, typeof(MyDelegateTypes.sqlite3_db_handle));
+			sqlite3_next_stmt = (MyDelegateTypes.sqlite3_next_stmt) Load(gf, typeof(MyDelegateTypes.sqlite3_next_stmt));
+			sqlite3_stmt_busy = (MyDelegateTypes.sqlite3_stmt_busy) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_busy));
+			sqlite3_stmt_readonly = (MyDelegateTypes.sqlite3_stmt_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_readonly));
+			sqlite3_exec = (MyDelegateTypes.sqlite3_exec) Load(gf, typeof(MyDelegateTypes.sqlite3_exec));
+			sqlite3_get_autocommit = (MyDelegateTypes.sqlite3_get_autocommit) Load(gf, typeof(MyDelegateTypes.sqlite3_get_autocommit));
+			sqlite3_extended_result_codes = (MyDelegateTypes.sqlite3_extended_result_codes) Load(gf, typeof(MyDelegateTypes.sqlite3_extended_result_codes));
+			sqlite3_errcode = (MyDelegateTypes.sqlite3_errcode) Load(gf, typeof(MyDelegateTypes.sqlite3_errcode));
+			sqlite3_extended_errcode = (MyDelegateTypes.sqlite3_extended_errcode) Load(gf, typeof(MyDelegateTypes.sqlite3_extended_errcode));
+			sqlite3_errstr = (MyDelegateTypes.sqlite3_errstr) Load(gf, typeof(MyDelegateTypes.sqlite3_errstr));
+			sqlite3_log = (MyDelegateTypes.sqlite3_log) Load(gf, typeof(MyDelegateTypes.sqlite3_log));
+			sqlite3_file_control = (MyDelegateTypes.sqlite3_file_control) Load(gf, typeof(MyDelegateTypes.sqlite3_file_control));
+			sqlite3_backup_init = (MyDelegateTypes.sqlite3_backup_init) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_init));
+			sqlite3_backup_step = (MyDelegateTypes.sqlite3_backup_step) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_step));
+			sqlite3_backup_remaining = (MyDelegateTypes.sqlite3_backup_remaining) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_remaining));
+			sqlite3_backup_pagecount = (MyDelegateTypes.sqlite3_backup_pagecount) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_pagecount));
+			sqlite3_backup_finish = (MyDelegateTypes.sqlite3_backup_finish) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_finish));
+			sqlite3_blob_open = (MyDelegateTypes.sqlite3_blob_open) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_open));
+			sqlite3_blob_write = (MyDelegateTypes.sqlite3_blob_write) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_write));
+			sqlite3_blob_read = (MyDelegateTypes.sqlite3_blob_read) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_read));
+			sqlite3_blob_bytes = (MyDelegateTypes.sqlite3_blob_bytes) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_bytes));
+			sqlite3_blob_reopen = (MyDelegateTypes.sqlite3_blob_reopen) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_reopen));
+			sqlite3_blob_close = (MyDelegateTypes.sqlite3_blob_close) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_close));
+			sqlite3_wal_autocheckpoint = (MyDelegateTypes.sqlite3_wal_autocheckpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_autocheckpoint));
+			sqlite3_wal_checkpoint = (MyDelegateTypes.sqlite3_wal_checkpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint));
+			sqlite3_wal_checkpoint_v2 = (MyDelegateTypes.sqlite3_wal_checkpoint_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint_v2));
+			sqlite3_set_authorizer = (MyDelegateTypes.sqlite3_set_authorizer) Load(gf, typeof(MyDelegateTypes.sqlite3_set_authorizer));
+			sqlite3_win32_set_directory = (MyDelegateTypes.sqlite3_win32_set_directory) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory));
 		}
 
-<#+
-	foreach (var s in funcs)
-	{
-#>
-		public static MyDelegateTypes.<#= s #> <#= s #>;
-<#+
-	}
-	}
-	void write_callback_delegates()
-	{
-#>
+		public static MyDelegateTypes.sqlite3_close sqlite3_close;
+		public static MyDelegateTypes.sqlite3_close_v2 sqlite3_close_v2;
+		public static MyDelegateTypes.sqlite3_enable_shared_cache sqlite3_enable_shared_cache;
+		public static MyDelegateTypes.sqlite3_interrupt sqlite3_interrupt;
+		public static MyDelegateTypes.sqlite3_finalize sqlite3_finalize;
+		public static MyDelegateTypes.sqlite3_reset sqlite3_reset;
+		public static MyDelegateTypes.sqlite3_clear_bindings sqlite3_clear_bindings;
+		public static MyDelegateTypes.sqlite3_stmt_status sqlite3_stmt_status;
+		public static MyDelegateTypes.sqlite3_bind_parameter_name sqlite3_bind_parameter_name;
+		public static MyDelegateTypes.sqlite3_column_database_name sqlite3_column_database_name;
+		public static MyDelegateTypes.sqlite3_column_decltype sqlite3_column_decltype;
+		public static MyDelegateTypes.sqlite3_column_name sqlite3_column_name;
+		public static MyDelegateTypes.sqlite3_column_origin_name sqlite3_column_origin_name;
+		public static MyDelegateTypes.sqlite3_column_table_name sqlite3_column_table_name;
+		public static MyDelegateTypes.sqlite3_column_text sqlite3_column_text;
+		public static MyDelegateTypes.sqlite3_errmsg sqlite3_errmsg;
+		public static MyDelegateTypes.sqlite3_db_readonly sqlite3_db_readonly;
+		public static MyDelegateTypes.sqlite3_db_filename sqlite3_db_filename;
+		public static MyDelegateTypes.sqlite3_prepare sqlite3_prepare;
+		public static MyDelegateTypes.sqlite3_prepare_v2 sqlite3_prepare_v2;
+		public static MyDelegateTypes.sqlite3_db_status sqlite3_db_status;
+		public static MyDelegateTypes.sqlite3_complete sqlite3_complete;
+		public static MyDelegateTypes.sqlite3_compileoption_used sqlite3_compileoption_used;
+		public static MyDelegateTypes.sqlite3_compileoption_get sqlite3_compileoption_get;
+		public static MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata;
+		public static MyDelegateTypes.sqlite3_value_text sqlite3_value_text;
+		public static MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension;
+		public static MyDelegateTypes.sqlite3_load_extension sqlite3_load_extension;
+		public static MyDelegateTypes.sqlite3_initialize sqlite3_initialize;
+		public static MyDelegateTypes.sqlite3_shutdown sqlite3_shutdown;
+		public static MyDelegateTypes.sqlite3_libversion sqlite3_libversion;
+		public static MyDelegateTypes.sqlite3_libversion_number sqlite3_libversion_number;
+		public static MyDelegateTypes.sqlite3_threadsafe sqlite3_threadsafe;
+		public static MyDelegateTypes.sqlite3_sourceid sqlite3_sourceid;
+		public static MyDelegateTypes.sqlite3_malloc sqlite3_malloc;
+		public static MyDelegateTypes.sqlite3_realloc sqlite3_realloc;
+		public static MyDelegateTypes.sqlite3_free sqlite3_free;
+		public static MyDelegateTypes.sqlite3_open sqlite3_open;
+		public static MyDelegateTypes.sqlite3_open_v2 sqlite3_open_v2;
+		public static MyDelegateTypes.sqlite3_vfs_find sqlite3_vfs_find;
+		public static MyDelegateTypes.sqlite3_last_insert_rowid sqlite3_last_insert_rowid;
+		public static MyDelegateTypes.sqlite3_changes sqlite3_changes;
+		public static MyDelegateTypes.sqlite3_total_changes sqlite3_total_changes;
+		public static MyDelegateTypes.sqlite3_memory_used sqlite3_memory_used;
+		public static MyDelegateTypes.sqlite3_memory_highwater sqlite3_memory_highwater;
+		public static MyDelegateTypes.sqlite3_status sqlite3_status;
+		public static MyDelegateTypes.sqlite3_busy_timeout sqlite3_busy_timeout;
+		public static MyDelegateTypes.sqlite3_bind_blob sqlite3_bind_blob;
+		public static MyDelegateTypes.sqlite3_bind_zeroblob sqlite3_bind_zeroblob;
+		public static MyDelegateTypes.sqlite3_bind_double sqlite3_bind_double;
+		public static MyDelegateTypes.sqlite3_bind_int sqlite3_bind_int;
+		public static MyDelegateTypes.sqlite3_bind_int64 sqlite3_bind_int64;
+		public static MyDelegateTypes.sqlite3_bind_null sqlite3_bind_null;
+		public static MyDelegateTypes.sqlite3_bind_text sqlite3_bind_text;
+		public static MyDelegateTypes.sqlite3_bind_parameter_count sqlite3_bind_parameter_count;
+		public static MyDelegateTypes.sqlite3_bind_parameter_index sqlite3_bind_parameter_index;
+		public static MyDelegateTypes.sqlite3_column_count sqlite3_column_count;
+		public static MyDelegateTypes.sqlite3_data_count sqlite3_data_count;
+		public static MyDelegateTypes.sqlite3_step sqlite3_step;
+		public static MyDelegateTypes.sqlite3_sql sqlite3_sql;
+		public static MyDelegateTypes.sqlite3_column_double sqlite3_column_double;
+		public static MyDelegateTypes.sqlite3_column_int sqlite3_column_int;
+		public static MyDelegateTypes.sqlite3_column_int64 sqlite3_column_int64;
+		public static MyDelegateTypes.sqlite3_column_blob sqlite3_column_blob;
+		public static MyDelegateTypes.sqlite3_column_bytes sqlite3_column_bytes;
+		public static MyDelegateTypes.sqlite3_column_type sqlite3_column_type;
+		public static MyDelegateTypes.sqlite3_aggregate_count sqlite3_aggregate_count;
+		public static MyDelegateTypes.sqlite3_value_blob sqlite3_value_blob;
+		public static MyDelegateTypes.sqlite3_value_bytes sqlite3_value_bytes;
+		public static MyDelegateTypes.sqlite3_value_double sqlite3_value_double;
+		public static MyDelegateTypes.sqlite3_value_int sqlite3_value_int;
+		public static MyDelegateTypes.sqlite3_value_int64 sqlite3_value_int64;
+		public static MyDelegateTypes.sqlite3_value_type sqlite3_value_type;
+		public static MyDelegateTypes.sqlite3_user_data sqlite3_user_data;
+		public static MyDelegateTypes.sqlite3_result_blob sqlite3_result_blob;
+		public static MyDelegateTypes.sqlite3_result_double sqlite3_result_double;
+		public static MyDelegateTypes.sqlite3_result_error sqlite3_result_error;
+		public static MyDelegateTypes.sqlite3_result_int sqlite3_result_int;
+		public static MyDelegateTypes.sqlite3_result_int64 sqlite3_result_int64;
+		public static MyDelegateTypes.sqlite3_result_null sqlite3_result_null;
+		public static MyDelegateTypes.sqlite3_result_text sqlite3_result_text;
+		public static MyDelegateTypes.sqlite3_result_zeroblob sqlite3_result_zeroblob;
+		public static MyDelegateTypes.sqlite3_result_error_toobig sqlite3_result_error_toobig;
+		public static MyDelegateTypes.sqlite3_result_error_nomem sqlite3_result_error_nomem;
+		public static MyDelegateTypes.sqlite3_result_error_code sqlite3_result_error_code;
+		public static MyDelegateTypes.sqlite3_aggregate_context sqlite3_aggregate_context;
+		public static MyDelegateTypes.sqlite3_key sqlite3_key;
+		public static MyDelegateTypes.sqlite3_rekey sqlite3_rekey;
+		public static MyDelegateTypes.sqlite3_config_none sqlite3_config_none;
+		public static MyDelegateTypes.sqlite3_config_int sqlite3_config_int;
+		public static MyDelegateTypes.sqlite3_config_log sqlite3_config_log;
+		public static MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2;
+		public static MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation;
+		public static MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook;
+		public static MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook;
+		public static MyDelegateTypes.sqlite3_profile sqlite3_profile;
+		public static MyDelegateTypes.sqlite3_progress_handler sqlite3_progress_handler;
+		public static MyDelegateTypes.sqlite3_trace sqlite3_trace;
+		public static MyDelegateTypes.sqlite3_rollback_hook sqlite3_rollback_hook;
+		public static MyDelegateTypes.sqlite3_db_handle sqlite3_db_handle;
+		public static MyDelegateTypes.sqlite3_next_stmt sqlite3_next_stmt;
+		public static MyDelegateTypes.sqlite3_stmt_busy sqlite3_stmt_busy;
+		public static MyDelegateTypes.sqlite3_stmt_readonly sqlite3_stmt_readonly;
+		public static MyDelegateTypes.sqlite3_exec sqlite3_exec;
+		public static MyDelegateTypes.sqlite3_get_autocommit sqlite3_get_autocommit;
+		public static MyDelegateTypes.sqlite3_extended_result_codes sqlite3_extended_result_codes;
+		public static MyDelegateTypes.sqlite3_errcode sqlite3_errcode;
+		public static MyDelegateTypes.sqlite3_extended_errcode sqlite3_extended_errcode;
+		public static MyDelegateTypes.sqlite3_errstr sqlite3_errstr;
+		public static MyDelegateTypes.sqlite3_log sqlite3_log;
+		public static MyDelegateTypes.sqlite3_file_control sqlite3_file_control;
+		public static MyDelegateTypes.sqlite3_backup_init sqlite3_backup_init;
+		public static MyDelegateTypes.sqlite3_backup_step sqlite3_backup_step;
+		public static MyDelegateTypes.sqlite3_backup_remaining sqlite3_backup_remaining;
+		public static MyDelegateTypes.sqlite3_backup_pagecount sqlite3_backup_pagecount;
+		public static MyDelegateTypes.sqlite3_backup_finish sqlite3_backup_finish;
+		public static MyDelegateTypes.sqlite3_blob_open sqlite3_blob_open;
+		public static MyDelegateTypes.sqlite3_blob_write sqlite3_blob_write;
+		public static MyDelegateTypes.sqlite3_blob_read sqlite3_blob_read;
+		public static MyDelegateTypes.sqlite3_blob_bytes sqlite3_blob_bytes;
+		public static MyDelegateTypes.sqlite3_blob_reopen sqlite3_blob_reopen;
+		public static MyDelegateTypes.sqlite3_blob_close sqlite3_blob_close;
+		public static MyDelegateTypes.sqlite3_wal_autocheckpoint sqlite3_wal_autocheckpoint;
+		public static MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint;
+		public static MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2;
+		public static MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer;
+		public static MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory;
+
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
 
@@ -1557,424 +1597,404 @@ namespace SQLitePCL
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
-<#+
 	}
 
-	void write_api_entries(string k)
+	static class MyDelegateTypes
 	{
-		string attr;
-		string attr_unicode;
-		string front;
-		string attr_sqlite3_config;
-		if (k == "dynamic")
-		{
-			attr_unicode = "[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
-			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
-			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-			front = "public delegate";
-		}
-		else if (k == "dllimport")
-		{
-			attr_unicode = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
-			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
-			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
-			front = "public static extern";
-		}
-		else
-		{
-			throw new NotImplementedException();
-		}
-#>
-		<#= attr #>
-		<#= front #> int sqlite3_close(IntPtr db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_close(IntPtr db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_close_v2(IntPtr db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_close_v2(IntPtr db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_enable_shared_cache(int enable);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_enable_shared_cache(int enable);
 
-		<#= attr #>
-		<#= front #> void sqlite3_interrupt(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_interrupt(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_finalize(IntPtr stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_finalize(IntPtr stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_reset(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_reset(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_clear_bindings(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_clear_bindings(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_errmsg(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_errmsg(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
 
-		<#= attr #>
-		<#= front #> int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
-		<#= attr #>
-		<#= front #> int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
-		<#= attr #>
-		<#= front #> int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
-		<#= attr #>
-		<#= front #> int sqlite3_complete(byte[] pSql);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_complete(byte[] pSql);
 
-		<#= attr #>
-		<#= front #> int sqlite3_compileoption_used(byte[] pSql);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_compileoption_used(byte[] pSql);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_compileoption_get(int n);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_compileoption_get(int n);
 
-		<#= attr #>
-		<#= front #> int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_value_text(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_value_text(IntPtr p);
 
-		<#= attr #>
-		<#= front #> int sqlite3_enable_load_extension(
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_enable_load_extension(
 		sqlite3 db, int enable);
 
-		<#= attr #>
-		<#= front #> int sqlite3_load_extension(
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_load_extension(
 		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
-		<#= attr #>
-		<#= front #> int sqlite3_initialize();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_initialize();
 
-		<#= attr #>
-		<#= front #> int sqlite3_shutdown();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_shutdown();
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_libversion();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_libversion();
 
-		<#= attr #>
-		<#= front #> int sqlite3_libversion_number();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_libversion_number();
 
-		<#= attr #>
-		<#= front #> int sqlite3_threadsafe();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_threadsafe();
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_sourceid();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_sourceid();
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_malloc(int n);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_malloc(int n);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_realloc(IntPtr p, int n);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_realloc(IntPtr p, int n);
 
-		<#= attr #>
-		<#= front #> void sqlite3_free(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_free(IntPtr p);
 
-		<#= attr #>
-		<#= front #> int sqlite3_open(byte[] filename, out IntPtr db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_open(byte[] filename, out IntPtr db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_vfs_find(byte[] vfs);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
 
-		<#= attr #>
-		<#= front #> long sqlite3_last_insert_rowid(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate long sqlite3_last_insert_rowid(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_changes(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_changes(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_total_changes(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_total_changes(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> long sqlite3_memory_used();
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate long sqlite3_memory_used();
 
-		<#= attr #>
-		<#= front #> long sqlite3_memory_highwater(int resetFlag);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate long sqlite3_memory_highwater(int resetFlag);
 		
-		<#= attr #>
-		<#= front #> int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-		<#= attr #>
-		<#= front #> int sqlite3_busy_timeout(sqlite3 db, int ms);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_busy_timeout(sqlite3 db, int ms);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_null(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_null(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
 
-		<#= attr #>
-		<#= front #> int sqlite3_column_count(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_column_count(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_data_count(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_data_count(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_step(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_step(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_sql(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_sql(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> double sqlite3_column_double(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate double sqlite3_column_double(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> int sqlite3_column_int(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_column_int(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> long sqlite3_column_int64(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate long sqlite3_column_int64(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> int sqlite3_column_type(sqlite3_stmt stmt, int index);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_column_type(sqlite3_stmt stmt, int index);
 
-		<#= attr #>
-		<#= front #> int sqlite3_aggregate_count(IntPtr context);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_aggregate_count(IntPtr context);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_value_blob(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_value_blob(IntPtr p);
 
-		<#= attr #>
-		<#= front #> int sqlite3_value_bytes(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_value_bytes(IntPtr p);
 
-		<#= attr #>
-		<#= front #> double sqlite3_value_double(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate double sqlite3_value_double(IntPtr p);
 
-		<#= attr #>
-		<#= front #> int sqlite3_value_int(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_value_int(IntPtr p);
 
-		<#= attr #>
-		<#= front #> long sqlite3_value_int64(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate long sqlite3_value_int64(IntPtr p);
 
-		<#= attr #>
-		<#= front #> int sqlite3_value_type(IntPtr p);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_value_type(IntPtr p);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_user_data(IntPtr context);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_user_data(IntPtr context);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_double(IntPtr context, double val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_double(IntPtr context, double val);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_int(IntPtr context, int val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_int(IntPtr context, int val);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_int64(IntPtr context, long val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_int64(IntPtr context, long val);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_null(IntPtr context);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_null(IntPtr context);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_zeroblob(IntPtr context, int n);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_zeroblob(IntPtr context, int n);
 
 		// TODO sqlite3_result_value 
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_toobig(IntPtr context);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_error_toobig(IntPtr context);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_nomem(IntPtr context);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_error_nomem(IntPtr context);
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_code(IntPtr context, int code);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_result_error_code(IntPtr context, int code);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
 
-		<#= attr #>
-		<#= front #> int sqlite3_key(sqlite3 db, byte[] key, int keylen);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_key(sqlite3 db, byte[] key, int keylen);
 
-		<#= attr #>
-		<#= front #> int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
 		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
 		// for all possible calls that we want to use.
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_none(int op);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_config")]
+		public delegate int sqlite3_config_none(int op);
 
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_int(int op, int val);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_config")]
+		public delegate int sqlite3_config_int(int op, int val);
 
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_config")]
+		public delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_db_handle(IntPtr stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_db_handle(IntPtr stmt);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_busy(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_stmt_busy(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_readonly(sqlite3_stmt stmt);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
-		<#= attr #>
-		<#= front #> int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
 
-		<#= attr #>
-		<#= front #> int sqlite3_get_autocommit(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_get_autocommit(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_extended_result_codes(sqlite3 db, int onoff);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_extended_result_codes(sqlite3 db, int onoff);
 
-		<#= attr #>
-		<#= front #> int sqlite3_errcode(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_errcode(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> int sqlite3_extended_errcode(sqlite3 db);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_extended_errcode(sqlite3 db);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 
 		// depend on the caller to format the string.
-		<#= attr #>
-		<#= front #> void sqlite3_log(int iErrCode, byte[] zFormat);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate void sqlite3_log(int iErrCode, byte[] zFormat);
 
-		<#= attr #>
-		<#= front #> int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
 
-		<#= attr #>
-		<#= front #> sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte[] zDestName, sqlite3 sourceDb, byte[] zSourceName);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte[] zDestName, sqlite3 sourceDb, byte[] zSourceName);
 
-		<#= attr #>
-		<#= front #> int sqlite3_backup_step(sqlite3_backup backup, int nPage);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_step(sqlite3_backup backup, int nPage);
 
-		<#= attr #>
-		<#= front #> int sqlite3_backup_remaining(sqlite3_backup backup);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_remaining(sqlite3_backup backup);
 
-		<#= attr #>
-		<#= front #> int sqlite3_backup_pagecount(sqlite3_backup backup);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_pagecount(sqlite3_backup backup);
 
-		<#= attr #>
-		<#= front #> int sqlite3_backup_finish(IntPtr backup);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_backup_finish(IntPtr backup);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_read(sqlite3_blob blob, IntPtr b, int n, int offset);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_read(sqlite3_blob blob, IntPtr b, int n, int offset);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_bytes(sqlite3_blob blob);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_bytes(sqlite3_blob blob);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_close(IntPtr blob);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_blob_close(IntPtr blob);
 
-		<#= attr #>
-		<#= front #> int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
 
-		<#= attr #>
-		<#= front #> int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
 
-		<#= attr #>
-		<#= front #> int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-		<#= attr #>
-		<#= front #> int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
-		<#= attr_unicode #>
-		<#= front #> int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
+		public delegate int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
-		<#= attr #>
-		<#= front #> int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
-<#+
 	}
-#>
+
+    }
+}

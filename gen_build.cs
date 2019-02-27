@@ -1111,6 +1111,7 @@ public static class gen
 			;
 
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.core");
+		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.provider.dynamic");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.ugly");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.android");
 		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.ios");

@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Resources;
 
-[assembly: AssemblyTitle("SQLitePCLRaw.lib.e_sqlite3.android")]
+[assembly: AssemblyTitle("SQLitePCLRaw.provider.dynamic")]
 [assembly: AssemblyDescription("SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Zumero, LLC")]

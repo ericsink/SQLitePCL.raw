@@ -22,12 +22,21 @@
 -->
 
 <ItemGroup>
-    <Compile Include="Generated\AssemblyInfo.cs" />
-    <Compile Include="raw.cs" />
-    <Compile Include="intptrs.cs" />
-    <Compile Include="isqlite3.cs" />
-    <Compile Include="util.cs" />
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+</ItemGroup>
 
+<ItemGroup>
+    <Compile Include="Generated\AssemblyInfo.cs" />
+    <Compile Include="IGetFunctionPointer.cs" />
+    <Compile Include="GetFunctionPointer.cs" />
+    <Compile Include="NativeLib.cs" />
+    <Compile Include="setup.cs" />
+    <Compile Include="attributes.cs" />
+    <Compile Include="hook_handles.cs" />
+    <Compile Include="hook_info.cs" />
+
+    <Compile Include="Generated\provider_cdecl.cs" />
+    <Compile Include="Generated\provider_stdcall.cs" />
 </ItemGroup>
 
 </Project>

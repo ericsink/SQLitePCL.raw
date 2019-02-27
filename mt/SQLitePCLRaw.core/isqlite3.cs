@@ -126,7 +126,7 @@ namespace SQLitePCL
         int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg);
         string sqlite3_sql(sqlite3_stmt stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
-        IntPtr sqlite3_next_stmt(sqlite3 db, sqlite3_stmt stmt);
+        IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
         int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
         string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
