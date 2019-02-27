@@ -13,6 +13,10 @@ cd SQLitePCLRaw.provider.dynamic
 dotnet build -c Release
 cd ..
 
+cd SQLitePCLRaw.provider.e_sqlite3
+dotnet build -c Release
+cd ..
+
 cd SQLitePCLRaw.ugly
 dotnet build -c Release
 cd ..
