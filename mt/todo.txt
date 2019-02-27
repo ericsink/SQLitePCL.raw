@@ -1,5 +1,11 @@
 
-new sn key for lib.e_sqlcipher
+new sn key for lib.e_sqlcipher.  hmmm.
+should we just use the same one as before?
+and why do we have the same key for 
+the android and ios versions of this?
+same goes for e_sqlite3.
+
+--
 
 core had:
 	raw
