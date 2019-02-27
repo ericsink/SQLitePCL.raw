@@ -1,4 +1,6 @@
 
+nuspecs should contain relative paths
+
 should the impl.callbacks assembly get included
 in each provider nuspec, or should it be its own
 nuspec?
