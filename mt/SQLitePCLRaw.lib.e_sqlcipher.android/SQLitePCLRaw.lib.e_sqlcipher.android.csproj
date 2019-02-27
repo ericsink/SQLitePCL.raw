@@ -9,7 +9,7 @@
 
 <ItemGroup>
     <Compile Include="Generated\AssemblyInfo.cs" />
-    <Compile Include="..\..\src\cs\embedded_init.cs" />
+    <Compile Include="..\..\src\common\embedded_init.cs" />
 </ItemGroup>
 
   <ItemGroup>

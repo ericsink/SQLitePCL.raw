@@ -62,3 +62,5 @@ cd ..
 cd pkg
 call .\pack.bat
 
+cd ..
+
