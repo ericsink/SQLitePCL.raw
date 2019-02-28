@@ -2,8 +2,15 @@
 	<PropertyGroup>
 		<Copyright>Copyright 2014-2019 Zumero, LLC.</Copyright>
 		<Company>Zumero</Company>
-		<Version>2.0.0</Version>
+		<Authors>Eric Sink</Authors>
+		<Version>2.0.0-pre</Version>
 		<Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
 		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>sqlite;xamarin</PackageTags>
+		<RepositoryUrl>https://github.com/ericsink/SQLitePCL.raw</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)nupkgs</PackageOutputPath>
 	</PropertyGroup>
 </Project>
