@@ -879,32 +879,27 @@ public static class gen
 
 	public static void Main(string[] args)
 	{
-		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
-		var dir_nupkgs = Path.Combine(root, "nupkgs");
-		string top = Path.Combine(root, "pkg");
-		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
-		string dir_mt = Path.Combine(root, "src");
+		string dir_root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
+		var dir_nupkgs = Path.Combine(dir_root, "nupkgs");
+		string dir_pkg = Path.Combine(dir_root, "pkg");
+		var cb_bin = Path.GetFullPath(Path.Combine(dir_root, "..", "cb", "bld", "bin"));
+		string dir_mt = Path.Combine(dir_root, "src");
 
 		Directory.CreateDirectory(dir_nupkgs);
+		Directory.CreateDirectory(dir_pkg);
 
-		// --------------------------------
-		// create the pkg directory
-		Directory.CreateDirectory(top);
+		gen_directory_build_props(dir_root);
 
-		// --------------------------------
+		gen_nuspec_lib_e_sqlite3(dir_pkg, cb_bin, dir_mt);
+		gen_nuspec_lib_e_sqlcipher(dir_pkg, cb_bin, dir_mt);
 
-		gen_directory_build_props(root);
+        gen_nuspec_bundle_green(dir_pkg, dir_mt);
+        gen_nuspec_bundle_e_sqlite3(dir_pkg, dir_mt);
+        gen_nuspec_bundle_winsqlite3(dir_pkg, dir_mt);
+        gen_nuspec_bundle_e_sqlcipher(dir_pkg, dir_mt);
+        gen_nuspec_bundle_zetetic(dir_pkg, dir_mt);
 
-		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt);
-		gen_nuspec_lib_e_sqlcipher(top, cb_bin, dir_mt);
-
-        gen_nuspec_bundle_green(top, dir_mt);
-        gen_nuspec_bundle_e_sqlite3(top, dir_mt);
-        gen_nuspec_bundle_winsqlite3(top, dir_mt);
-        gen_nuspec_bundle_e_sqlcipher(top, dir_mt);
-        gen_nuspec_bundle_zetetic(top, dir_mt);
-
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.bat")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_pkg, "pack.bat")))
 		{
             tw.WriteLine("mkdir empty");
             //tw.WriteLine("mkdir nupkg");
@@ -921,8 +916,8 @@ public static class gen
             tw.WriteLine("dir {0}", dir_nupkgs);
 		}
 
-	#if not
-		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.bat")))
+#if not
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_pkg, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 
