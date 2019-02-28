@@ -35,7 +35,7 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 
-		public static void Setup(IGetFunctionPointer gf)
+		internal static void Setup(IGetFunctionPointer gf)
 		{
 			NativeMethods.Setup(gf);
 		}

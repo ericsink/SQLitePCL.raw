@@ -57,7 +57,7 @@ namespace SQLitePCL
 	if (KIND == "dynamic")
 	{
 #>
-		public static void Setup(IGetFunctionPointer gf)
+		internal static void Setup(IGetFunctionPointer gf)
 		{
 			NativeMethods.Setup(gf);
 		}

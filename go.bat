@@ -85,8 +85,23 @@ cd SQLitePCLRaw.lib.e_sqlcipher.ios
 msbuild /p:Configuration=Release
 cd ..
 
+cd SQLitePCLRaw.lib.sqlcipher.ios.placeholder
+..\..\nuget restore SQLitePCLRaw.lib.sqlcipher.csproj
+msbuild /p:Configuration=Release
+cd ..
+
 cd SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
-..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
+..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios.csproj
+msbuild /p:Configuration=Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios
+..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios.csproj
+msbuild /p:Configuration=Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios
+..\..\nuget restore SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios.csproj
 msbuild /p:Configuration=Release
 cd ..
 
