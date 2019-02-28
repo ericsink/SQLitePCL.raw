@@ -454,6 +454,7 @@ public static class gen
 				f
 				);
 
+			// TODO need a comment here to explain these
 			write_empty(f, top, TFM.NET35);
 			write_empty(f, top, TFM.NETSTANDARD11);
 			write_empty(f, top, TFM.NETSTANDARD20);
@@ -512,6 +513,11 @@ public static class gen
 				string.Format("build\\net45"), // TODO
 				f
 				);
+
+			// TODO need a comment here to explain these
+			write_empty(f, top, TFM.NET35);
+			write_empty(f, top, TFM.NETSTANDARD11);
+			write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
 
