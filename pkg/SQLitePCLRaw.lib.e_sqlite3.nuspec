@@ -21,9 +21,9 @@
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x86\e_sqlite3.dll" target="runtimes\win-x86\native\e_sqlite3.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x64\e_sqlite3.dll" target="runtimes\win-x64\native\e_sqlite3.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\arm\e_sqlite3.dll" target="runtimes\win8-arm\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\native\e_sqlite3.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlite3.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlite3.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlite3.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\mac\libe_sqlite3.dylib" target="runtimes\osx-x64\native\libe_sqlite3.dylib" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\x64\libe_sqlite3.so" target="runtimes\linux-x64\native\libe_sqlite3.so" />
     <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\x86\libe_sqlite3.so" target="runtimes\linux-x86\native\libe_sqlite3.so" />

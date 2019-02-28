@@ -415,6 +415,26 @@ public static class gen
 			);
 	}
 
+	static void write_nuspec_file_entry_native_uwp(
+		WhichLib lib,
+		string cb_bin,
+		string toolset,
+		string flavor,
+		string cpu,
+		string rid,
+		XmlWriter f
+		)
+	{
+		var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
+		write_nuspec_file_entry_nativeassets(
+			make_cb_path_win(cb_bin, lib, toolset, flavor, cpu),
+			rid,
+			TFM.UWP,
+			filename,
+			f
+			);
+	}
+
 	static void write_nuspec_file_entries_from_cb(
 		WhichLib lib,
 		string cb_bin,
@@ -424,9 +444,9 @@ public static class gen
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x86", "win-x86", f);
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x64", "win-x64", f);
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "arm", "win8-arm", f);
-		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "arm", "win10-arm", f);
-		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x64", "win10-x64", f);
-		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "appcontainer", "x86", "win10-x86", f);
+		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "arm", "win10-arm", f);
+		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "x64", "win10-x64", f);
+		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "x86", "win10-x86", f);
 
 		write_nuspec_file_entry_native_mac(lib, cb_bin, f);
 

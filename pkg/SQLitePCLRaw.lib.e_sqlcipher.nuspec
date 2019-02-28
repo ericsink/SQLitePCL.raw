@@ -21,9 +21,9 @@
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\plain\arm\sqlcipher.dll" target="runtimes\win8-arm\native\e_sqlcipher.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\arm\sqlcipher.dll" target="runtimes\win10-arm\native\e_sqlcipher.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\x64\sqlcipher.dll" target="runtimes\win10-x64\native\e_sqlcipher.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\x86\sqlcipher.dll" target="runtimes\win10-x86\native\e_sqlcipher.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\arm\sqlcipher.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\x64\sqlcipher.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\win\v140\appcontainer\x86\sqlcipher.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlcipher.dll" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\mac\libsqlcipher.dylib" target="runtimes\osx-x64\native\libe_sqlcipher.dylib" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\linux\x64\libsqlcipher.so" target="runtimes\linux-x64\native\libe_sqlcipher.so" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\linux\x86\libsqlcipher.so" target="runtimes\linux-x86\native\libe_sqlcipher.so" />
