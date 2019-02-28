@@ -64,3 +64,5 @@ call .\pack.bat
 
 cd ..
 
+dir nupkgs
+

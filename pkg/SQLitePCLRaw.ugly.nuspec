@@ -4,7 +4,7 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.ugly</id>
     <title>SQLitePCLRaw.ugly</title>
-    <version>2.0.0-pre20190227235953</version>
+    <version>2.0.0-pre</version>
     <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 Zumero, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,7 +16,7 @@
     <description>These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.</description>
     <dependencies>
       <group>
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre20190227235953" />
+        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
       </group>
     </dependencies>
   </metadata>

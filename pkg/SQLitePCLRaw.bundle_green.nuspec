@@ -4,7 +4,7 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.bundle_green</id>
     <title>SQLitePCLRaw.bundle_green</title>
-    <version>2.0.0-pre20190227235953</version>
+    <version>2.0.0-pre</version>
     <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 Zumero, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,8 +16,8 @@
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included</description>
     <dependencies>
       <group>
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre20190227235953" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre20190227235953" />
+        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre" />
       </group>
     </dependencies>
   </metadata>

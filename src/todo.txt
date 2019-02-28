@@ -1,4 +1,6 @@
 
+probably get rid of ns 1.1
+
 handwritten pack is fine.  but push is ugly 
 because all the nupkgs have the pre version timestamp
 in the name.  wildcard?

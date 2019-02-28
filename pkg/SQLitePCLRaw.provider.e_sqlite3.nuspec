@@ -4,7 +4,7 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.provider.e_sqlite3</id>
     <title>SQLitePCLRaw.provider.e_sqlite3</title>
-    <version>2.0.0-pre20190227235953</version>
+    <version>2.0.0-pre</version>
     <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 Zumero, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,7 +16,7 @@
     <description>TODO</description>
     <dependencies>
       <group>
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre20190227235953" />
+        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
       </group>
     </dependencies>
   </metadata>
