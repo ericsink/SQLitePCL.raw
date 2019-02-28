@@ -7,7 +7,7 @@ namespace smoke
     {
         static void Main(string[] args)
         {
-			SQLitePCL.Setup.Load("e_sqlite3");
+			SQLitePCL.Batteries_V2.Init();
 			using (var db = ugly.open(":memory:"))
 			{
 				var s = db.query_scalar<string>("SELECT sqlite_version()");	

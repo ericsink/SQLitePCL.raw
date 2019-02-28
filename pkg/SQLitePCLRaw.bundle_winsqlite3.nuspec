@@ -15,7 +15,7 @@
     <releaseNotes>TODO url</releaseNotes>
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll</description>
     <dependencies>
-      <group>
+      <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.provider.winsqlite3" version="2.0.0-pre" />
       </group>

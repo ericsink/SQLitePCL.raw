@@ -613,7 +613,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NONE);
+            write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // dependencies
 
@@ -718,7 +718,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NONE);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
 
@@ -777,7 +777,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NONE);
+            write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
 
@@ -836,7 +836,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NONE);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
 
@@ -895,7 +895,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NONE);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // dependencies
 

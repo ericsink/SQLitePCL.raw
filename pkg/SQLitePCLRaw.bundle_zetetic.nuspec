@@ -19,7 +19,7 @@
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.provider.internal" version="2.0.0-pre" />
       </group>
-      <group>
+      <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.provider.sqlcipher" version="2.0.0-pre" />
       </group>
