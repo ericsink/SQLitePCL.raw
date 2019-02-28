@@ -1,6 +1,4 @@
 
-probably get rid of ns 1.1
-
 handwritten pack.bat is fine.  but push.bat is ugly 
 because all the nupkgs have the pre version timestamp
 in the name.  wildcard?

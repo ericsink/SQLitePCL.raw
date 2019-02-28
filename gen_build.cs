@@ -30,7 +30,6 @@ public static class gen
 		IOS,
 		ANDROID,
 		UWP,
-		NETSTANDARD11,
 		NETSTANDARD20,
 		NET35,
 		NET40,
@@ -107,7 +106,6 @@ public static class gen
 			case TFM.IOS: return "Xamarin.iOS10";
 			case TFM.ANDROID: return "MonoAndroid80";
 			case TFM.UWP: return "uap10.0";
-			case TFM.NETSTANDARD11: return "netstandard1.1";
 			case TFM.NETSTANDARD20: return "netstandard2.0";
 			case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
 			case TFM.NET35: return "net35";
@@ -116,18 +114,6 @@ public static class gen
 			case TFM.NETCOREAPP: return "netcoreapp";
 			default:
 				throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
-		}
-	}
-
-	static TFM str_to_tfm(string s)
-	{
-		switch (s.ToLower().Trim())
-		{
-			case "netstandard1.1": return TFM.NETSTANDARD11;
-			case "netstandard2.0": return TFM.NETSTANDARD20;
-			case "xamarin.ios10": return TFM.IOS;
-			default:
-				throw new NotImplementedException(string.Format("str_to_tfm not found: {0}", s));
 		}
 	}
 
@@ -508,7 +494,6 @@ public static class gen
 
 			// TODO need a comment here to explain these
 			write_empty(f, top, TFM.NET35);
-			write_empty(f, top, TFM.NETSTANDARD11);
 			write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
@@ -568,7 +553,6 @@ public static class gen
 
 			// TODO need a comment here to explain these
 			write_empty(f, top, TFM.NET35);
-			write_empty(f, top, TFM.NETSTANDARD11);
 			write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
@@ -640,13 +624,6 @@ public static class gen
 			f.WriteEndElement(); // metadata
 
 			f.WriteStartElement("files");
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					"SQLitePCLRaw.batteries_v2.winsqlite3",
-					TFM.NETSTANDARD11,
-					f
-					);
 
 			write_nuspec_file_entry_lib_mt(
 					dir_mt,
@@ -756,13 +733,6 @@ public static class gen
 			write_nuspec_file_entry_lib_mt(
 					dir_mt,
 					"SQLitePCLRaw.batteries_v2.e_sqlcipher",
-					TFM.NETSTANDARD11,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlcipher",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -809,13 +779,6 @@ public static class gen
 					dir_mt,
 					"SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios",
 					TFM.IOS,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					"SQLitePCLRaw.batteries_v2.sqlcipher",
-					TFM.NETSTANDARD11,
 					f
 					);
 
@@ -874,13 +837,6 @@ public static class gen
 			write_nuspec_file_entry_lib_mt(
 					dir_mt,
 					"SQLitePCLRaw.batteries_v2.e_sqlite3",
-					TFM.NETSTANDARD11,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -929,13 +885,6 @@ public static class gen
 					"SQLitePCLRaw.batteries_v2.sqlite3",
 					TFM.NETSTANDARD20,
 					TFM.IOS,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3",
-					TFM.NETSTANDARD11,
 					f
 					);
 
