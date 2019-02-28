@@ -15,11 +15,21 @@
     <releaseNotes>TODO url</releaseNotes>
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.</description>
     <dependencies>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.provider.internal" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlcipher" version="2.0.0-pre" />
+      </group>
       <group>
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlcipher" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.lib.e_sqlcipher" version="2.0.0-pre" />
       </group>
     </dependencies>
   </metadata>
-  <files />
+  <files>
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios.dll" target="lib\Xamarin.iOS10\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.batteries_v2.e_sqlcipher\bin\Release\netstandard1.1\SQLitePCLRaw.batteries_v2.e_sqlcipher.dll" target="lib\netstandard1.1\" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.batteries_v2.e_sqlcipher\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.e_sqlcipher.dll" target="lib\netstandard2.0\" />
+  </files>
 </package>

@@ -167,17 +167,15 @@ public static class gen
 					string.Format("{0}.dll", name)
 					);
 
-			case TFM.IOS:
+			default:
 				return Path.Combine(
 					mt_dir,
 					name,
 					"bin",
 					"Release",
-					"xamarin.ios10",
+					tfm.AsString(),
 					string.Format("{0}.dll", name)
 					);
-			default:
-				throw new NotImplementedException();
 		}
 	}
 
@@ -186,6 +184,15 @@ public static class gen
 		write_nuspec_file_entry(
 			make_mt_path(mt_dir, name, tfm),
 			string.Format("lib\\{0}\\", tfm.AsString()),
+			f
+			);
+	}
+
+	private static void write_nuspec_file_entry_lib_mt_dest(string mt_dir, string name, TFM tfm_build, TFM tfm_dest, XmlWriter f)
+	{
+		write_nuspec_file_entry(
+			make_mt_path(mt_dir, name, tfm_build),
+			string.Format("lib\\{0}\\", tfm_dest.AsString()),
 			f
 			);
 	}
@@ -560,6 +567,31 @@ public static class gen
 		f.WriteEndElement();
 	}
 
+	enum WhichProvider
+	{
+		E_SQLITE3,
+		E_SQLCIPHER,
+		SQLITE3,
+		SQLCIPHER,
+		INTERNAL,
+		WINSQLITE3,
+	}
+
+	static string AsString(this WhichProvider e)
+	{
+		switch (e)
+		{
+			case WhichProvider.E_SQLITE3: return "e_sqlite3";
+			case WhichProvider.E_SQLCIPHER: return "e_sqlcipher";
+			case WhichProvider.SQLITE3: return "sqlite3";
+			case WhichProvider.SQLCIPHER: return "sqlcipher";
+			case WhichProvider.INTERNAL: return "internal";
+			case WhichProvider.WINSQLITE3: return "winsqlite3";
+			default:
+				throw new NotImplementedException(string.Format("WhichProvider.AsString for {0}", e));
+		}
+	}
+
 	private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt)
     {
 		string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
@@ -581,16 +613,7 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			// --------
-			f.WriteStartElement("group");
-			f.WriteAttributeString("targetFramework", TFM.UWP.AsString());
-
-			f.WriteStartElement("dependency");
-			f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
-			f.WriteEndElement(); // dependency
-
-			f.WriteEndElement(); // group
+            write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NONE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -598,7 +621,20 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.winsqlite3",
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.winsqlite3",
+					TFM.NETSTANDARD20,
+					f
+					);
+
 
 			f.WriteEndElement(); // files
 
@@ -608,12 +644,6 @@ public static class gen
 		}
 	}
 
-	enum IncludeLib
-	{
-		YES,
-		NO,
-	}
-
 	enum WhichLib
 	{
 		NONE,
@@ -621,11 +651,25 @@ public static class gen
 		E_SQLCIPHER,
 	}
 
-    private static void write_bundle_dependency_group(XmlWriter f, WhichLib what)
+    private static void write_bundle_dependency_group(
+		XmlWriter f, 
+		WhichProvider prov,
+		WhichLib what,
+		TFM tfm
+		)
     {
         f.WriteStartElement("group");
+		if (tfm != TFM.NONE)
+		{
+			f.WriteAttributeString("targetFramework", tfm.AsString());
+		}
 
         add_dep_core(f);
+
+		f.WriteStartElement("dependency");
+		f.WriteAttributeString("id", string.Format("{0}.provider.{1}", gen.ROOT_NAME, prov.AsString()));
+		f.WriteAttributeString("version", NUSPEC_VERSION);
+		f.WriteEndElement(); // dependency
 
 		if (what == WhichLib.E_SQLITE3)
 		{
@@ -673,7 +717,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichLib.E_SQLCIPHER);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NONE);
             
 			f.WriteEndElement(); // dependencies
 
@@ -681,7 +726,26 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios",
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlcipher",
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlcipher",
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -712,7 +776,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichLib.NONE);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NONE);
             
 			f.WriteEndElement(); // dependencies
 
@@ -720,7 +785,26 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios",
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.sqlcipher",
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.sqlcipher",
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -751,7 +835,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NONE);
             
 			f.WriteEndElement(); // dependencies
 
@@ -759,7 +844,26 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios",
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					TFM.NETSTANDARD20,
+					f
+					);
 
 			f.WriteEndElement(); // files
 
@@ -790,9 +894,8 @@ public static class gen
 
 			f.WriteStartElement("dependencies");
 
-			// TODO how to get this to use the system sqlite for ios?
-
-            write_bundle_dependency_group(f, WhichLib.E_SQLITE3);
+            write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NONE);
 
 			f.WriteEndElement(); // dependencies
 
@@ -800,7 +903,29 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO
+			// TODO or maybe we should build this batteries assembly for ios as well?
+			write_nuspec_file_entry_lib_mt_dest(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.sqlite3",
+					TFM.NETSTANDARD20,
+					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					TFM.NETSTANDARD11,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					TFM.NETSTANDARD20,
+					f
+					);
+
 
 			f.WriteEndElement(); // files
 
