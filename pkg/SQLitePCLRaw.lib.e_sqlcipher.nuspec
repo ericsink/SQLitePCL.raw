@@ -4,15 +4,14 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.lib.e_sqlcipher</id>
     <title>SQLitePCLRaw.lib.e_sqlcipher</title>
-    <version>2.0.0</version>
-    <authors>Eric Sink, et al</authors>
-    <owners>Eric Sink</owners>
+    <version>2.0.0-pre20190227235953</version>
+    <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 Zumero, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/ericsink/SQLitePCL.raw</projectUrl>
-    <summary>A Portable Class Library (PCL) for low-level (raw) access to SQLite</summary>
-    <tags>sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp</tags>
+    <summary>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</summary>
+    <tags>sqlite;xamarin</tags>
     <releaseNotes>TODO url</releaseNotes>
     <description>This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
@@ -34,5 +33,11 @@
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\linux-musl-x64\native\libe_sqlcipher.so" />
     <file src="C:\Users\eric\dev\cb\bld\bin\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\alpine-x64\native\libe_sqlcipher.so" />
     <file src="C:\Users\eric\dev\SQLitePCL.raw\pkg\SQLitePCLRaw.lib.e_sqlcipher.targets" target="build\net45" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\net35" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\netstandard1.1" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\netstandard2.0" />
   </files>
 </package>

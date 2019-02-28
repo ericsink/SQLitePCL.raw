@@ -215,7 +215,7 @@ public static class gen
 		MINOR_VERSION,
 		PATCH_VERSION
 		);
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -233,6 +233,12 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
+	const string COPYRIGHT = "Copyright 2014-2019 Zumero, LLC";
+	const string AUTHORS = "Eric Sink";
+	const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
+	const string PACKAGE_TAGS = "sqlite;xamarin"; // TODO
+	// TODO	f.WriteElementString("tags", "sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp");
+
 	private static void write_nuspec_common_metadata(
 		string id,
 		XmlWriter f
@@ -243,15 +249,48 @@ public static class gen
 		f.WriteElementString("id", id);
 		f.WriteElementString("title", id);
 		f.WriteElementString("version", NUSPEC_VERSION);
-		f.WriteElementString("authors", "Eric Sink, et al");
-		f.WriteElementString("owners", "Eric Sink");
-		f.WriteElementString("copyright", "Copyright 2014-2019 Zumero, LLC");
+		f.WriteElementString("authors", AUTHORS);
+		f.WriteElementString("copyright", COPYRIGHT);
 		f.WriteElementString("requireLicenseAcceptance", "false");
 		write_license(f);
+		// TODO repository instead of projectUrl
 		f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
-		f.WriteElementString("summary", "A Portable Class Library (PCL) for low-level (raw) access to SQLite");
-		f.WriteElementString("tags", "sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp");
+		f.WriteElementString("summary", SUMMARY);
+		f.WriteElementString("tags", PACKAGE_TAGS);
 		f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+	}
+
+	private static void gen_directory_build_props(string root)
+	{
+		XmlWriterSettings settings = new XmlWriterSettings();
+		settings.Indent = true;
+		settings.OmitXmlDeclaration = true;
+
+		using (XmlWriter f = XmlWriter.Create(Path.Combine(root, "Directory.Build.props"), settings))
+		{
+			f.WriteStartDocument();
+
+			f.WriteStartElement("Project");
+			f.WriteStartElement("PropertyGroup");
+
+			f.WriteElementString("Copyright", COPYRIGHT);
+			f.WriteElementString("Company", "Zumero");
+			f.WriteElementString("Authors", AUTHORS);
+			f.WriteElementString("Version", NUSPEC_VERSION);
+			f.WriteElementString("Description", SUMMARY);
+			f.WriteElementString("GenerateAssemblyProductAttribute", "false");
+			f.WriteElementString("PackageLicenseExpression", "Apache-2.0");
+			f.WriteElementString("PackageRequireLicenseAcceptance", "false");
+			f.WriteElementString("PackageTags", PACKAGE_TAGS);
+			f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
+			f.WriteElementString("RepositoryType", "git");
+			f.WriteElementString("PackageOutputPath", "$(MSBuildThisFileDirectory)nupkgs");
+
+			f.WriteEndElement(); // PropertyGroup
+			f.WriteEndElement(); // project
+
+			f.WriteEndDocument();
+		}
 	}
 
 	private static void gen_nuspec_core(string top, string root, string dir_mt)
@@ -980,15 +1019,20 @@ public static class gen
 	public static void Main(string[] args)
 	{
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
+		var dir_nupkgs = Path.Combine(root, "nupkgs");
 		string top = Path.Combine(root, "pkg");
 		var cb_bin = Path.GetFullPath(Path.Combine(root, "..", "cb", "bld", "bin"));
 		string dir_mt = Path.Combine(root, "src");
+
+		Directory.CreateDirectory(dir_nupkgs);
 
 		// --------------------------------
 		// create the pkg directory
 		Directory.CreateDirectory(top);
 
 		// --------------------------------
+
+		gen_directory_build_props(root);
 
 		var providers = new string[]
 		{
@@ -1019,32 +1063,34 @@ public static class gen
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "pack.bat")))
 		{
             tw.WriteLine("mkdir empty");
-            tw.WriteLine("mkdir nupkg");
+            //tw.WriteLine("mkdir nupkg");
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.core.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.core.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
 			foreach (var s in providers)
 			{
-				tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.provider.{1}.nuspec", gen.ROOT_NAME, s);
+				tw.WriteLine("..\\nuget pack -OutputDirectory {2} {0}.provider.{1}.nuspec", gen.ROOT_NAME, s, dir_nupkgs);
 			}
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.ugly.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.ugly.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
-			tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME);
-			tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.bundle_green.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.bundle_zetetic.nuspec", gen.ROOT_NAME);
-            tw.WriteLine("..\\nuget pack -OutputDirectory nupkg {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, dir_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, dir_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
-            tw.WriteLine("dir nupkg\\*.nupkg");
+            tw.WriteLine("dir {0}", dir_nupkgs);
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
+
+			// TODO this all seems wrong now
 
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
