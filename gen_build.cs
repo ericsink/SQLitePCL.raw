@@ -306,50 +306,6 @@ public static class gen
 		}
 	}
 
-	private static void gen_nuspec_core(string top, string root, string dir_mt)
-	{
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-        string id = string.Format("{0}.core", gen.ROOT_NAME);
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.");
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD11,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD20,
-					f
-					);
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
 	static string make_cb_path_win(
 		string cb_bin,
 		WhichLib lib,
@@ -585,114 +541,6 @@ public static class gen
 		f.WriteAttributeString("type", "expression");
 		f.WriteString("Apache-2.0");
 		f.WriteEndElement();
-	}
-
-	private static void gen_nuspec_provider(string top, string dir_mt, string name)
-	{
-		string id = string.Format("{0}.provider.{1}", gen.ROOT_NAME, name);
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("description", "TODO");
-
-			f.WriteStartElement("dependencies");
-
-			f.WriteStartElement("group");
-            add_dep_core(f);
-			f.WriteEndElement(); // group
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			// TODO add impl.callbacks?
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD11,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD20,
-					f
-					);
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
-	}
-
-	private static void gen_nuspec_ugly(string top, string dir_mt)
-	{
-		string id = string.Format("{0}.ugly", gen.ROOT_NAME);
-
-		XmlWriterSettings settings = new XmlWriterSettings();
-		settings.Indent = true;
-		settings.OmitXmlDeclaration = false;
-
-		using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
-		{
-			f.WriteStartDocument();
-			f.WriteComment("Automatically generated");
-
-			f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-			f.WriteStartElement("metadata");
-			write_nuspec_common_metadata(id, f);
-			f.WriteElementString("description", "These extension methods for SQLitePCL.raw provide a more usable API while remaining stylistically similar to the sqlite3 C API, which most C# developers would consider 'ugly'.  This package exists for people who (1) really like the sqlite3 C API, and (2) really like C#.  So far, evidence suggests that 100% of the people matching both criteria are named Eric Sink, but this package is available just in case he is not the only one of his kind.");
-
-			f.WriteStartElement("dependencies");
-
-			f.WriteStartElement("group");
-            add_dep_core(f);
-			f.WriteEndElement(); // group
-
-			f.WriteEndElement(); // dependencies
-
-			f.WriteEndElement(); // metadata
-
-			f.WriteStartElement("files");
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD11,
-					f
-					);
-
-			write_nuspec_file_entry_lib_mt(
-					dir_mt,
-					id,
-					TFM.NETSTANDARD20,
-					f
-					);
-
-			f.WriteEndElement(); // files
-
-			f.WriteEndElement(); // package
-
-			f.WriteEndDocument();
-		}
 	}
 
 	private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt)
@@ -1047,23 +895,6 @@ public static class gen
 
 		gen_directory_build_props(root);
 
-		var providers = new string[]
-		{
-			"dynamic",
-			"e_sqlite3",
-			"e_sqlcipher",
-			"sqlite3",
-			"sqlcipher",
-			"winsqlite3",
-		};
-
-        gen_nuspec_core(top, root, dir_mt);
-		foreach (var s in providers)
-		{
-			gen_nuspec_provider(top, dir_mt, s);
-		}
-        gen_nuspec_ugly(top, dir_mt);
-
 		gen_nuspec_lib_e_sqlite3(top, cb_bin, dir_mt);
 		gen_nuspec_lib_e_sqlcipher(top, cb_bin, dir_mt);
 
@@ -1078,15 +909,6 @@ public static class gen
             tw.WriteLine("mkdir empty");
             //tw.WriteLine("mkdir nupkg");
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.core.nuspec", gen.ROOT_NAME, dir_nupkgs);
-
-			foreach (var s in providers)
-			{
-				tw.WriteLine("..\\nuget pack -OutputDirectory {2} {0}.provider.{1}.nuspec", gen.ROOT_NAME, s, dir_nupkgs);
-			}
-
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.ugly.nuspec", gen.ROOT_NAME, dir_nupkgs);
-
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
@@ -1099,20 +921,12 @@ public static class gen
             tw.WriteLine("dir {0}", dir_nupkgs);
 		}
 
+	#if not
 		using (TextWriter tw = new StreamWriter(Path.Combine(top, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 
 			// TODO this all seems wrong now
-
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-
-			foreach (var s in providers)
-			{
-				tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.provider.{3}.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src, s);
-			}
-
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
@@ -1123,6 +937,7 @@ public static class gen
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
+#endif
 	}
 }
 
