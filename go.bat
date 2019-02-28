@@ -61,10 +61,6 @@ cd SQLitePCLRaw.batteries_v2.winsqlite3
 dotnet build -c Release
 cd ..
 
-cd SQLitePCLRaw.batteries_v2.internal
-dotnet build -c Release
-cd ..
-
 cd SQLitePCLRaw.ugly
 dotnet pack -c Release
 cd ..
@@ -86,6 +82,11 @@ cd ..
 
 cd SQLitePCLRaw.lib.e_sqlcipher.ios
 ..\..\nuget restore SQLitePCLRaw.lib.e_sqlcipher.ios.csproj
+msbuild /p:Configuration=Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
+..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
 msbuild /p:Configuration=Release
 cd ..
 

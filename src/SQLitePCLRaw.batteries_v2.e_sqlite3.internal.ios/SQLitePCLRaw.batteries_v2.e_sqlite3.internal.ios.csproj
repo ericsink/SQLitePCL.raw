@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+	<TargetFrameworks>xamarin.ios10</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-	<DefineConstants>$(DefineConstants);PROVIDER_internal</DefineConstants>
+	<DefineConstants>$(DefineConstants);PROVIDER_internal;EMBEDDED_INIT</DefineConstants>
   </PropertyGroup>
 
 <ItemGroup>
@@ -13,6 +12,7 @@
 </ItemGroup>
 
 <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.lib.e_sqlite3.ios\SQLitePCLRaw.lib.e_sqlite3.ios.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.provider.internal\SQLitePCLRaw.provider.internal.csproj" />
 </ItemGroup>
 
