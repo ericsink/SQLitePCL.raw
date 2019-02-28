@@ -154,14 +154,31 @@ public static class gen
 		TFM tfm
 		)
 	{
-		return Path.Combine(
-			mt_dir,
-			name,
-			"bin",
-			"Release",
-			tfm.AsString(),
-			string.Format("{0}.dll", name)
-			);
+		switch (tfm)
+		{
+			case TFM.ANDROID:
+				return Path.Combine(
+					mt_dir,
+					name,
+					"bin",
+					"Release",
+					"monoandroid80",
+					"80", // TODO why does the android build end up with this extra subdir?
+					string.Format("{0}.dll", name)
+					);
+
+			case TFM.IOS:
+				return Path.Combine(
+					mt_dir,
+					name,
+					"bin",
+					"Release",
+					"xamarin.ios10",
+					string.Format("{0}.dll", name)
+					);
+			default:
+				throw new NotImplementedException();
+		}
 	}
 
 	private static void write_nuspec_file_entry_lib_mt(string mt_dir, string name, TFM tfm, XmlWriter f)
