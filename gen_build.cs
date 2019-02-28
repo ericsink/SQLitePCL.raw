@@ -971,21 +971,6 @@ public static class gen
 		}
 	}
 
-	private static void gen_assemblyinfo(string root, string dir_mt, string assemblyname)
-	{
-		string cs = File.ReadAllText(Path.Combine(root, "src/common/AssemblyInfo.cs.template"));
-		var dir_gen = Path.Combine(dir_mt, assemblyname, "Generated");
-		Directory.CreateDirectory(dir_gen);
-		using (TextWriter tw = new StreamWriter(Path.Combine(dir_gen, "AssemblyInfo.cs")))
-		{
-			string cs1 = cs
-				.Replace("REPLACE_WITH_ASSEMBLY_NAME", '"' + assemblyname + '"')
-				.Replace("REPLACE_WITH_ASSEMBLY_VERSION", '"' + ASSEMBLY_VERSION + '"')
-				;
-			tw.Write(cs1);
-		}
-	}
-
 	public static void Main(string[] args)
 	{
 		string root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
@@ -1008,19 +993,6 @@ public static class gen
 			"sqlcipher",
 			"winsqlite3",
 		};
-
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.core");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.impl.callbacks");
-		foreach (var s in providers)
-		{
-			gen_assemblyinfo(root, dir_mt, string.Format("SQLitePCLRaw.provider.{0}", s));
-		}
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.ugly");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.android");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlite3.ios");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.android");
-		gen_assemblyinfo(root, dir_mt, "SQLitePCLRaw.lib.e_sqlcipher.ios");
-
 
         gen_nuspec_core(top, root, dir_mt);
 		foreach (var s in providers)

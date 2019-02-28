@@ -5,7 +5,6 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.impl.callbacks.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
 <ItemGroup>
@@ -13,7 +12,6 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\AssemblyInfo.cs" />
     <Compile Include="attributes.cs" />
     <Compile Include="hook_handles.cs" />
     <Compile Include="hook_info.cs" />

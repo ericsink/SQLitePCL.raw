@@ -5,11 +5,9 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.core.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\AssemblyInfo.cs" />
     <Compile Include="raw.cs" />
     <Compile Include="intptrs.cs" />
     <Compile Include="isqlite3.cs" />
