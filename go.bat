@@ -3,6 +3,8 @@ csc /w:4 gen_build.cs
 
 call .\gen.bat
 
+del .\nupkgs\*.nupkg
+
 cd src
 
 cd SQLitePCLRaw.core
@@ -109,8 +111,16 @@ cd ..
 
 cd pkg
 call .\pack.bat
-
 cd ..
 
 dir nupkgs
+
+cd smoke
+dotnet run
+cd ..
+
+cd newtest
+dotnet test
+cd ..
+
 

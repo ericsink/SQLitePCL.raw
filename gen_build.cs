@@ -1024,7 +1024,7 @@ public static class gen
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, dir_nupkgs);
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
 
-            tw.WriteLine("dir {0}", dir_nupkgs);
+            //tw.WriteLine("dir {0}", dir_nupkgs);
 		}
 
 #if not
