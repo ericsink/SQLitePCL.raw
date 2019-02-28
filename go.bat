@@ -9,6 +9,10 @@ cd SQLitePCLRaw.core
 dotnet pack -c Release
 cd ..
 
+cd SQLitePCLRaw.impl.callbacks
+dotnet pack -c Release
+cd ..
+
 cd SQLitePCLRaw.provider.dynamic
 dotnet pack -c Release
 cd ..
