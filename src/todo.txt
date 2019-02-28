@@ -1,23 +1,14 @@
 
 probably get rid of ns 1.1
 
-handwritten pack is fine.  but push is ugly 
+handwritten pack.bat is fine.  but push.bat is ugly 
 because all the nupkgs have the pre version timestamp
 in the name.  wildcard?
-
-if Directory.Build.props is to become the single
-official place to change the package version (etc),
-then we need gen_build.cs to read it.  or we
-could have gen_build.cs modify/write it.
 
 nuspec isn't finding the lib.e_sqlite3/e_sqlcipher
 assemblies in android.  monoandroid80.  80.  etc.
 
 nuspecs should contain relative paths
-
-should the impl.callbacks assembly get included
-in each provider nuspec, or should it be its own
-nuspec?
 
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
