@@ -1,4 +1,13 @@
 
+handwritten pack is fine.  but push is ugly 
+because all the nupkgs have the pre version timestamp
+in the name.  wildcard?
+
+if Directory.Build.props is to become the single
+official place to change the package version (etc),
+then we need gen_build.cs to read it.  or we
+could have gen_build.cs modify/write it.
+
 nuspec isn't finding the lib.e_sqlite3/e_sqlcipher
 assemblies in android.  monoandroid80.  80.  etc.
 
