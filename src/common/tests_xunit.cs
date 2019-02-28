@@ -37,7 +37,8 @@ namespace SQLitePCL.Tests
 		public Init()
 		{
 			//SQLitePCL.Setup.Load("c:/Windows/system32/winsqlite3.dll");
-			SQLitePCL.Setup.Load("e_sqlite3.dll");
+			//SQLitePCL.Setup.Load("e_sqlite3.dll");
+			SQLitePCL.Batteries_V2.Init();
 		}
 	}
 
