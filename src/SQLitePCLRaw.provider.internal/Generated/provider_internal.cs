@@ -31,7 +31,7 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    public sealed class SQLite3Provider_sqlcipher : ISQLite3Provider
+    public sealed class SQLite3Provider_internal : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 
@@ -1266,7 +1266,7 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-        private const string SQLITE_DLL = "sqlcipher";
+        private const string SQLITE_DLL = "__Internal";
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_close(IntPtr db);

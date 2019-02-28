@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+	<DefineConstants>$(DefineConstants);PROVIDER_sqlcipher</DefineConstants>
+  </PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\common\batteries_v2.cs" />
+</ItemGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.sqlcipher\SQLitePCLRaw.provider.sqlcipher.csproj" />
+</ItemGroup>
+
+</Project>

@@ -17,6 +17,10 @@ cd SQLitePCLRaw.provider.dynamic
 dotnet pack -c Release
 cd ..
 
+cd SQLitePCLRaw.provider.internal
+dotnet pack -c Release
+cd ..
+
 cd SQLitePCLRaw.provider.e_sqlite3
 dotnet pack -c Release
 cd ..
@@ -35,6 +39,30 @@ cd ..
 
 cd SQLitePCLRaw.provider.winsqlite3
 dotnet pack -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.e_sqlite3
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.e_sqlcipher
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.sqlite3
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.sqlcipher
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.winsqlite3
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.internal
+dotnet build -c Release
 cd ..
 
 cd SQLitePCLRaw.ugly
