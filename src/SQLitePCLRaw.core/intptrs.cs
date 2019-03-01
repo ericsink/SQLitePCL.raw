@@ -244,7 +244,9 @@ namespace SQLitePCL
         {
 			var h = new sqlite3();
 			h.SetHandle(p);
+#if true // TODO consider changing this to default OFF for v2
             h.enable_sqlite3_next_stmt(true);
+#endif
 			return h;
         }
 
