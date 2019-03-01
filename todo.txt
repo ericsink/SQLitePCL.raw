@@ -9,6 +9,11 @@ ns 20 is which version of net45/6/7 ?
 
 net45 should use dynamic?
 
+msbuild props to omit native builds in targets
+
+concern about dictionary<intptr, T> because it's
+a value type?  ios AOT.
+
 --
 
 still wish the other nuspecs could reference
