@@ -109,7 +109,7 @@ cd ..
 
 cd ..
 
-cd pkg
+cd nuspecs
 call .\pack.bat
 cd ..
 

@@ -32,7 +32,7 @@
     <file src="..\..\cb\bld\bin\sqlcipher\linux\arm64\libsqlcipher.so" target="runtimes\linux-arm64\native\libe_sqlcipher.so" />
     <file src="..\..\cb\bld\bin\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\linux-musl-x64\native\libe_sqlcipher.so" />
     <file src="..\..\cb\bld\bin\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\alpine-x64\native\libe_sqlcipher.so" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\pkg\SQLitePCLRaw.lib.e_sqlcipher.targets" target="build\net45" />
+    <file src="C:\Users\eric\dev\SQLitePCL.raw\nuspecs\SQLitePCLRaw.lib.e_sqlcipher.targets" target="build\net45" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="empty\" target="lib\net35" />
     <!--empty directory in lib to avoid nuget adding a reference-->

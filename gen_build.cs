@@ -992,7 +992,7 @@ public static class gen
 	{
 		string dir_root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		var dir_nupkgs = Path.Combine(dir_root, "nupkgs");
-		string dir_nuspecs = Path.Combine(dir_root, "pkg");
+		string dir_nuspecs = Path.Combine(dir_root, "nuspecs");
 
 		var cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
 		var dir_src = Path.Combine("..", "src"); // relative to nuspec directory
