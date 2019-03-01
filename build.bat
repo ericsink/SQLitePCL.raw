@@ -1,5 +1,5 @@
-csc /w:4 gen_build.cs
-.\gen_build.exe
+csc /w:4 gen_nuspecs.cs
+.\gen_nuspecs.exe
 
 call .\gen_providers.bat
 

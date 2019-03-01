@@ -12,5 +12,5 @@ project.lock.json
 *.nuget.targets
 /Tests/packages
 /nupkgs
-/gen_build.exe
+/gen_nuspecs.exe
 
