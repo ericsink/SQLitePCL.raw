@@ -992,28 +992,28 @@ public static class gen
 	{
 		string dir_root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
 		var dir_nupkgs = Path.Combine(dir_root, "nupkgs");
-		string dir_pkg = Path.Combine(dir_root, "pkg");
-		var cb_bin = Path.GetFullPath(Path.Combine(dir_root, "..", "cb", "bld", "bin"));
-		string dir_mt = Path.Combine(dir_root, "src");
+		string dir_nuspecs = Path.Combine(dir_root, "pkg");
+
+		var cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
+		var dir_src = Path.Combine("..", "src"); // relative to nuspec directory
 
 		Directory.CreateDirectory(dir_nupkgs);
-		Directory.CreateDirectory(dir_pkg);
+		Directory.CreateDirectory(dir_nuspecs);
 
 		gen_directory_build_props(dir_root);
 
-		gen_nuspec_lib_e_sqlite3(dir_pkg, cb_bin, dir_mt);
-		gen_nuspec_lib_e_sqlcipher(dir_pkg, cb_bin, dir_mt);
+		gen_nuspec_lib_e_sqlite3(dir_nuspecs, cb_bin, dir_src);
+		gen_nuspec_lib_e_sqlcipher(dir_nuspecs, cb_bin, dir_src);
 
-        gen_nuspec_bundle_green(dir_pkg, dir_mt);
-        gen_nuspec_bundle_e_sqlite3(dir_pkg, dir_mt);
-        gen_nuspec_bundle_winsqlite3(dir_pkg, dir_mt);
-        gen_nuspec_bundle_e_sqlcipher(dir_pkg, dir_mt);
-        gen_nuspec_bundle_zetetic(dir_pkg, dir_mt);
+        gen_nuspec_bundle_green(dir_nuspecs, dir_src);
+        gen_nuspec_bundle_e_sqlite3(dir_nuspecs, dir_src);
+        gen_nuspec_bundle_winsqlite3(dir_nuspecs, dir_src);
+        gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, dir_src);
+        gen_nuspec_bundle_zetetic(dir_nuspecs, dir_src);
 
-		using (TextWriter tw = new StreamWriter(Path.Combine(dir_pkg, "pack.bat")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "pack.bat")))
 		{
             tw.WriteLine("mkdir empty");
-            //tw.WriteLine("mkdir nupkg");
 
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
@@ -1028,7 +1028,7 @@ public static class gen
 		}
 
 #if not
-		using (TextWriter tw = new StreamWriter(Path.Combine(dir_pkg, "push.bat")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 

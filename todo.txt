@@ -3,8 +3,6 @@ handwritten pack.bat is fine.  but push.bat is ugly
 because all the nupkgs have the pre version timestamp
 in the name.  wildcard?
 
-generated nuspecs should contain relative paths
-
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
 underlying sqlcipher version?

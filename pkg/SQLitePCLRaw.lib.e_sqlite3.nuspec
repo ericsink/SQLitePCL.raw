@@ -16,22 +16,22 @@
     <description>This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlite3.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlite3.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="C:\Users\eric\dev\SQLitePCL.raw\src\SQLitePCLRaw.lib.e_sqlite3.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlite3.android.dll" target="lib\MonoAndroid80\" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x86\e_sqlite3.dll" target="runtimes\win-x86\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\x64\e_sqlite3.dll" target="runtimes\win-x64\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\plain\arm\e_sqlite3.dll" target="runtimes\win8-arm\native\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlite3.dll" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\mac\libe_sqlite3.dylib" target="runtimes\osx-x64\native\libe_sqlite3.dylib" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\x64\libe_sqlite3.so" target="runtimes\linux-x64\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\x86\libe_sqlite3.so" target="runtimes\linux-x86\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\armhf\libe_sqlite3.so" target="runtimes\linux-arm\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\armsf\libe_sqlite3.so" target="runtimes\linux-armel\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\arm64\libe_sqlite3.so" target="runtimes\linux-arm64\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\linux-musl-x64\native\libe_sqlite3.so" />
-    <file src="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\alpine-x64\native\libe_sqlite3.so" />
+    <file src="..\src\SQLitePCLRaw.lib.e_sqlite3.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlite3.ios.dll" target="lib\Xamarin.iOS10\" />
+    <file src="..\src\SQLitePCLRaw.lib.e_sqlite3.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlite3.android.dll" target="lib\MonoAndroid80\" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\plain\x86\e_sqlite3.dll" target="runtimes\win-x86\native\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\plain\x64\e_sqlite3.dll" target="runtimes\win-x64\native\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\plain\arm\e_sqlite3.dll" target="runtimes\win8-arm\native\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\win\v140\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlite3.dll" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\mac\libe_sqlite3.dylib" target="runtimes\osx-x64\native\libe_sqlite3.dylib" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\x64\libe_sqlite3.so" target="runtimes\linux-x64\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\x86\libe_sqlite3.so" target="runtimes\linux-x86\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\armhf\libe_sqlite3.so" target="runtimes\linux-arm\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\armsf\libe_sqlite3.so" target="runtimes\linux-armel\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\arm64\libe_sqlite3.so" target="runtimes\linux-arm64\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\linux-musl-x64\native\libe_sqlite3.so" />
+    <file src="..\..\cb\bld\bin\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\alpine-x64\native\libe_sqlite3.so" />
     <file src="C:\Users\eric\dev\SQLitePCL.raw\pkg\SQLitePCLRaw.lib.e_sqlite3.targets" target="build\net45" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="empty\" target="lib\net35" />
