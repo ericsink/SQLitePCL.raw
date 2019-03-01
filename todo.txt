@@ -1,4 +1,16 @@
 
+consider default enable_next_stmt() to false
+
+chg release notes in nuspec to reference a URL
+
+restore those win32 set directory calls somewhere
+
+ns 20 is which version of net45/6/7 ?
+
+net45 should use dynamic?
+
+--
+
 still wish the other nuspecs could reference
 Directory.Build.props instead of being
 generated with the version string in it.
@@ -109,8 +121,6 @@ basename more easily.  gen_permutations_for().
 
 run gen_build.cs under dotnet core
 
-consider default enable_next_stmt() to false
-
 review the weird stuff agg functions do
 with the context pointer
 
@@ -124,38 +134,12 @@ in many or most cases
 maybe the Setup calls should return the sqlite
 version et al?
 
-chg release notes in nuspec to reference a URL
-
-maybe don't do bundle_winsqlite3?  it's kind of
-silly.  it doesn't actually bundle anything.  it
-just calls (something like) Setup.Load_winsqlite3().
-
-what is batteries_v2.sqlite3 for?
-
-maybe batteries now are per-bundle.  one
-function that figures out at runtime what
-to load.  for green, it would need to check
-to see if it's on iOS.
-
-will bundle_green have a problem because
-lib.e_sqlite3 is all one package?  so now
-the e_sqlite3 build for iOS is included,
-and we just have to have to require it not
-to be used?
-
-not sure we need bundle_green at all.
-
 chg cb build scripts to use VS 2017, partly
 so we can get arm64 on uwp
 
 later: rename sqlcipher in cb to e_sqlcipher
 
 test on uwp
-
-restore those win32 set directory calls somewhere
-
-preload from arch directory stuff.  subdirectory
-by cpu arch.
 
 --
 
