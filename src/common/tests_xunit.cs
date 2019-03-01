@@ -814,16 +814,71 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_next_stmt()
         {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                Assert.Equal(db.next_stmt(null), null);
-                using (sqlite3_stmt stmt = db.prepare("SELECT 5;"))
-                {
-                    Assert.Equal(db.next_stmt(null), stmt);
-                    Assert.Equal(db.next_stmt(stmt), null);
-                }
-                Assert.Equal(db.next_stmt(null), null);
-            }
+			const int ENABLE_DEFAULT = 1;
+			const int ENABLE_OFF = 2;
+			const int ENABLE_ON = 3;
+			void tryit(int enable)
+			{
+				using (sqlite3 db = ugly.open(":memory:"))
+				{
+					switch (enable)
+					{
+						case ENABLE_DEFAULT:
+							// do nothing
+							break;
+						case ENABLE_OFF:
+							db.enable_sqlite3_next_stmt(false);
+							break;
+						case ENABLE_ON:
+							db.enable_sqlite3_next_stmt(true);
+							break;
+						default:
+							throw new NotImplementedException();
+					}
+
+					Assert.Equal(db.next_stmt(null), null);
+					using (sqlite3_stmt stmt = db.prepare("SELECT 5;"))
+					{
+						Assert.Equal(db.next_stmt(null), stmt);
+						Assert.Equal(db.next_stmt(stmt), null);
+					}
+					Assert.Equal(db.next_stmt(null), null);
+				}
+			}
+
+			void should_throw(Action f, string err_should_contain)
+			{
+				bool threw;
+				try
+				{
+					f();
+					threw = false;
+				}
+				catch (Exception e)
+				{
+					if (e.ToString().Contains(err_should_contain))
+					{
+						threw = true;
+					}
+					else
+					{
+						// yeah, it threw, but not the error we were looking for
+						threw = false;
+					}
+				}
+				Assert.True(threw);
+			}
+
+			var msg_should_contain = "is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true)";
+			should_throw(
+				() => tryit(ENABLE_DEFAULT),
+				msg_should_contain
+				);
+			should_throw(
+				() => tryit(ENABLE_OFF),
+				msg_should_contain
+				);
+			tryit(ENABLE_ON);
         }
 
         [Fact]

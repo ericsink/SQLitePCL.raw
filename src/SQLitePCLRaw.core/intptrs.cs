@@ -244,7 +244,7 @@ namespace SQLitePCL
         {
 			var h = new sqlite3();
 			h.SetHandle(p);
-#if true // TODO consider changing this to default OFF for v2
+#if not // changing this to default OFF for v2
             h.enable_sqlite3_next_stmt(true);
 #endif
 			return h;
@@ -284,6 +284,7 @@ namespace SQLitePCL
             }
             else
             {
+				// any change to the wording of this error message might break a test case
                 throw new Exception("The sqlite3_next_stmt() function is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true) immediately after opening the sqlite3 connection.");
             }
         }
