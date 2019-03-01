@@ -1013,20 +1013,20 @@ public static class gen
         gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, dir_src);
         gen_nuspec_bundle_zetetic(dir_nuspecs, dir_src);
 
+		var rel_nupkgs = Path.Combine("..", "nupkgs");
+
 		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "pack.bat")))
 		{
             tw.WriteLine("mkdir empty");
 
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, rel_nupkgs);
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, dir_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, dir_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, dir_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, dir_nupkgs);
-
-            //tw.WriteLine("dir {0}", dir_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, rel_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, rel_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, rel_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
 		}
 
 #if not
