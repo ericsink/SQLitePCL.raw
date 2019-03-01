@@ -6,6 +6,9 @@ chg release notes in nuspec to reference a URL
 restore those win32 set directory calls somewhere
 
 ns 20 is which version of net45/6/7 ?
+	net461 -- problematic
+	net472 -- better
+	mono claims .net 4.7
 
 net45 should use dynamic?
 
