@@ -1,7 +1,7 @@
 csc /w:4 gen_build.cs
 .\gen_build.exe
 
-call .\gen.bat
+call .\gen_providers.bat
 
 del .\nupkgs\*.nupkg
 
