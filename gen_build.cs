@@ -485,9 +485,10 @@ public static class gen
 
 			var tname = string.Format("{0}.targets", id);
 			var path_targets = Path.Combine(top, tname);
+			var relpath_targets = Path.Combine(".", tname);
 			gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
 			write_nuspec_file_entry(
-				path_targets,
+				relpath_targets,
 				string.Format("build\\net45"), // TODO
 				f
 				);
@@ -544,9 +545,10 @@ public static class gen
 
 			var tname = string.Format("{0}.targets", id);
 			var path_targets = Path.Combine(top, tname);
+			var relpath_targets = Path.Combine(".", tname);
 			gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
 			write_nuspec_file_entry(
-				path_targets,
+				relpath_targets,
 				string.Format("build\\net45"), // TODO
 				f
 				);
