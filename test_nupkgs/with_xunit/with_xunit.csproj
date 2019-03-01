@@ -11,6 +11,6 @@
     <PackageReference Include="sqlitepclraw.ugly" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\common\tests_xunit.cs" />
+    <Compile Include="..\..\src\common\tests_xunit.cs" />
   </ItemGroup>
 </Project>

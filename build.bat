@@ -115,12 +115,16 @@ cd ..
 
 dir nupkgs
 
+cd test_nupkgs
+
 cd smoke
 dotnet run
 cd ..
 
-cd newtest
+cd with_xunit
 dotnet test
 cd ..
+
+cd..
 
 
