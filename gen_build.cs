@@ -283,7 +283,7 @@ public static class gen
 		f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
 	}
 
-	private static void gen_directory_build_props(string root)
+	private static void gen_directory_build_props(string root, string nupkgs_dir_name)
 	{
 		XmlWriterSettings settings = new XmlWriterSettings();
 		settings.Indent = true;
@@ -307,7 +307,7 @@ public static class gen
 			f.WriteElementString("PackageTags", PACKAGE_TAGS);
 			f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("RepositoryType", "git");
-			f.WriteElementString("PackageOutputPath", "$(MSBuildThisFileDirectory)nupkgs");
+			f.WriteElementString("PackageOutputPath", string.Format("$(MSBuildThisFileDirectory){0}", nupkgs_dir_name));
 
 			f.WriteEndElement(); // PropertyGroup
 			f.WriteEndElement(); // project
@@ -995,40 +995,47 @@ public static class gen
 	public static void Main(string[] args)
 	{
 		string dir_root = Directory.GetCurrentDirectory(); // assumes that gen_build.exe is being run from the root directory of the project
-		var dir_nupkgs = Path.Combine(dir_root, "nupkgs");
-		string dir_nuspecs = Path.Combine(dir_root, "nuspecs");
+		var nupkgs_dir_name = "nupkgs";
+		var dir_nupkgs = Path.Combine(dir_root, nupkgs_dir_name);
+		var dir_nuspecs = Path.Combine(dir_root, "nuspecs");
 
-		var cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
-		var dir_src = Path.Combine("..", "src"); // relative to nuspec directory
 
 		Directory.CreateDirectory(dir_nupkgs);
 		Directory.CreateDirectory(dir_nuspecs);
 
-		gen_directory_build_props(dir_root);
+		gen_directory_build_props(dir_root, nupkgs_dir_name);
 
-		gen_nuspec_lib_e_sqlite3(dir_nuspecs, cb_bin, dir_src);
-		gen_nuspec_lib_e_sqlcipher(dir_nuspecs, cb_bin, dir_src);
+		{
+			var rel_path_src = Path.Combine("..", "src"); // relative to nuspec directory
 
-        gen_nuspec_bundle_green(dir_nuspecs, dir_src);
-        gen_nuspec_bundle_e_sqlite3(dir_nuspecs, dir_src);
-        gen_nuspec_bundle_winsqlite3(dir_nuspecs, dir_src);
-        gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, dir_src);
-        gen_nuspec_bundle_zetetic(dir_nuspecs, dir_src);
+			{
+				var rel_path_cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
+				gen_nuspec_lib_e_sqlite3(dir_nuspecs, rel_path_cb_bin, rel_path_src);
+				gen_nuspec_lib_e_sqlcipher(dir_nuspecs, rel_path_cb_bin, rel_path_src);
+			}
 
-		var rel_nupkgs = Path.Combine("..", "nupkgs");
+			gen_nuspec_bundle_green(dir_nuspecs, rel_path_src);
+			gen_nuspec_bundle_e_sqlite3(dir_nuspecs, rel_path_src);
+			gen_nuspec_bundle_winsqlite3(dir_nuspecs, rel_path_src);
+			gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, rel_path_src);
+			gen_nuspec_bundle_zetetic(dir_nuspecs, rel_path_src);
+		}
+
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "pack.bat")))
 		{
+			var rel_path_nupkgs = Path.Combine("..", nupkgs_dir_name);
+
             tw.WriteLine("mkdir empty");
 
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, rel_nupkgs);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, rel_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, rel_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, rel_nupkgs);
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nupkgs, "push.bat")))
