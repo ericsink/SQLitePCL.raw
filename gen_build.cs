@@ -581,6 +581,7 @@ public static class gen
 		SQLCIPHER,
 		INTERNAL,
 		WINSQLITE3,
+		DYNAMIC,
 	}
 
 	static string AsString(this WhichProvider e)
@@ -593,6 +594,7 @@ public static class gen
 			case WhichProvider.SQLCIPHER: return "sqlcipher";
 			case WhichProvider.INTERNAL: return "internal";
 			case WhichProvider.WINSQLITE3: return "winsqlite3";
+			case WhichProvider.DYNAMIC: return "dynamic";
 			default:
 				throw new NotImplementedException(string.Format("WhichProvider.AsString for {0}", e));
 		}
@@ -1029,23 +1031,28 @@ public static class gen
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_nupkgs);
 		}
 
-#if not
-		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "push.bat")))
+		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nupkgs, "push.bat")))
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 
-			// TODO this all seems wrong now
+			tw.WriteLine("..\\nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.impl.callbacks.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} .\\nupkg\\{0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			foreach (WhichProvider p in Enum.GetValues(typeof(WhichProvider)))
+			{
+				tw.WriteLine("..\\nuget push -Source {2} {0}.provider.{3}.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src, p.AsString());
+			}
+
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
 		}
-#endif
 	}
 }
 

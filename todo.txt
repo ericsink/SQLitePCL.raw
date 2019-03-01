@@ -1,7 +1,9 @@
 
-handwritten pack.bat is fine.  but push.bat is ugly 
-because all the nupkgs have the pre version timestamp
-in the name.  wildcard?
+still wish the other nuspecs could reference
+Directory.Build.props instead of being
+generated with the version string in it.
+
+C# string interpolation?
 
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
