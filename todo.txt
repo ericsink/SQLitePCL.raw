@@ -5,10 +5,20 @@ add SourceGear name?
 
 instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?  one problem is backwards
-compat with things that specifically referened the
+compat with things that specifically reference the
 previous delegate type.  lambda expressions convert
 automatically.  Func and delegate types cannot be
 casted without wrapping in another delegate.
+
+we could chg to Func, but people who use delegate_commit
+would have to change their code.  we could add
+overloads for backward compat, but a plain lambda
+ends up as an ambiguous call, because it will 
+auto-cast to either the delegate or the Func.
+
+and since a plain lambda apparently already
+works, there doesn't seem to be much win in
+changing to Func.
 
 nuspec should show SQLitePCLRaw org account as
 owner
@@ -49,7 +59,8 @@ test on uwp, ios, android, net461
 
 nuspec pkg tags
 
-DI for the utf8 stuff?  #202
+utf8 stuff?  #202
+appears to require netcore or net472.  not netstandard.
 
 --
 
