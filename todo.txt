@@ -1,4 +1,11 @@
 
+wiki page on github for v2 changes
+
+chg to SourceGear name?
+
+instead of delegate-ish types in raw.cs should the functions
+take something like Func<whatever> ?
+
 nuspec should show SQLitePCLRaw org account as
 owner
 
@@ -14,7 +21,7 @@ restore those win32 set directory calls somewhere.
 don't want ifdef down in raw or provider.
 maybe in batteries?
 
-why is the device xunit runner for UWP crashing
+why is the device xunit runner for UWP crashing?
 
 ns 20 is which version of net45/6/7 ?
 	net461 -- problematic
@@ -24,7 +31,8 @@ ns 20 is which version of net45/6/7 ?
 nuspec for net461 (or net472) should have a separate
 target so it can use provider_dynamic, which is
 the way to get the previous preload from arch
-directory feature.
+directory feature.  which still needs to be coded
+and tested.
 
 msbuild props to omit native builds in targets?
 
@@ -32,6 +40,8 @@ concern about dictionary<intptr, T> because it's
 a value type?  ios AOT.
 
 DONE: maybe v2 should use the v141 builds and include arm64
+
+test on uwp, ios, android, net461
 
 --
 
@@ -141,7 +151,7 @@ basename more easily.  gen_permutations_for().
 
 --
 
-run gen_build.cs under dotnet core
+run gen_providers.cs under dotnet core
 
 review the weird stuff agg functions do
 with the context pointer
@@ -158,8 +168,6 @@ version et al?
 
 later: rename sqlcipher in cb to e_sqlcipher
 
-test on uwp
-
 --
 
 deal with stdcall/winsqlite3 in Setup
@@ -174,11 +182,6 @@ DI for the utf8 stuff?  #202
 more xunit test cases
 
 goal is to have no ifdefs in core
-
-chg to SourceGear name?
-
-instead of delegate-ish types in raw.cs should the functions
-take something like Func<whatever> ?
 
 
 --
