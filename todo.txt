@@ -31,8 +31,6 @@ still wish the other nuspecs could reference
 Directory.Build.props instead of being
 generated with the version string in it.
 
-C# string interpolation?
-
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
 underlying sqlcipher version?
