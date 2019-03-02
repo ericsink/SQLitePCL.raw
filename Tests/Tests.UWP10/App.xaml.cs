@@ -6,7 +6,7 @@ namespace Tests.UWP10
     {
         protected override void OnInitializeRunner()
         {
-            SQLitePCL.Batteries.Init();
+            SQLitePCL.Batteries_V2.Init();
             // tests can be inside the main assembly
             AddTestAssembly(GetType().GetTypeInfo().Assembly);
             // otherwise you need to ensure that the test assemblies will 
