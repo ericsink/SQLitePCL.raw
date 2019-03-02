@@ -20,7 +20,7 @@
     <file src="..\src\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid80\" />
     <file src="..\..\cb\bld\bin\sqlcipher\win\v140\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
     <file src="..\..\cb\bld\bin\sqlcipher\win\v140\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
-    <file src="..\..\cb\bld\bin\sqlcipher\win\v140\plain\arm\sqlcipher.dll" target="runtimes\win8-arm\native\e_sqlcipher.dll" />
+    <file src="..\..\cb\bld\bin\sqlcipher\win\v140\plain\arm\sqlcipher.dll" target="runtimes\win-arm\native\e_sqlcipher.dll" />
     <file src="..\..\cb\bld\bin\sqlcipher\win\v140\appcontainer\arm\sqlcipher.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlcipher.dll" />
     <file src="..\..\cb\bld\bin\sqlcipher\win\v140\appcontainer\x64\sqlcipher.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlcipher.dll" />
     <file src="..\..\cb\bld\bin\sqlcipher\win\v140\appcontainer\x86\sqlcipher.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlcipher.dll" />

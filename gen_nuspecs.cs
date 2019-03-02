@@ -429,7 +429,7 @@ public static class gen
 	{
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x86", "win-x86", f);
 		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "x64", "win-x64", f);
-		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "arm", "win8-arm", f);
+		write_nuspec_file_entry_native_win(lib, cb_bin, "v140", "plain", "arm", "win-arm", f);
 		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "arm", "win10-arm", f);
 		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "x64", "win10-x64", f);
 		write_nuspec_file_entry_native_uwp(lib, cb_bin, "v140", "appcontainer", "x86", "win10-x86", f);
@@ -968,7 +968,7 @@ public static class gen
 			f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
 			write_nuget_target_item("win-x86", lib, f);
 			write_nuget_target_item("win-x64", lib, f);
-			write_nuget_target_item("win8-arm", lib, f);
+			write_nuget_target_item("win-arm", lib, f);
 			f.WriteEndElement(); // ItemGroup
 
 			f.WriteStartElement("ItemGroup");
