@@ -1,4 +1,7 @@
 
+investigate console UWP apps with C# for testing.
+build 17134.
+
 wiki page on github for v2 changes
 
 add SourceGear name?
