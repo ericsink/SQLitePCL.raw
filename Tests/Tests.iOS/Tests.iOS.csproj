@@ -9,6 +9,7 @@
     <RootNamespace>Tests.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>TestsiOS</AssemblyName>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,10 +89,19 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
-    <None Include="project.json" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <None Include="AppDelegate.cs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit">
+      <Version>2.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="xunit.runner.devices">
+      <Version>2.5.25</Version>
+    </PackageReference>
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" />
+    <PackageReference Include="sqlitepclraw.ugly" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
