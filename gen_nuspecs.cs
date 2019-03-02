@@ -76,11 +76,11 @@ public static class gen
 		switch (suffix)
 		{
 			case LibSuffix.DLL:
-				return string.Format("{0}.dll", basename);
+				return $"{basename}.dll";
 			case LibSuffix.DYLIB:
-				return string.Format("lib{0}.dylib", basename);
+				return $"lib{basename}.dylib";
 			case LibSuffix.SO:
-				return string.Format("lib{0}.so", basename);
+				return $"lib{basename}.so";
 			default:
 				throw new NotImplementedException();
 		}
