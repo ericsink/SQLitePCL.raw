@@ -1,7 +1,7 @@
 
 wiki page on github for v2 changes
 
-chg to SourceGear name?
+add SourceGear name?
 
 instead of delegate-ish types in raw.cs should the functions
 take something like Func<whatever> ?
@@ -42,6 +42,10 @@ a value type?  ios AOT.
 DONE: maybe v2 should use the v141 builds and include arm64
 
 test on uwp, ios, android, net461
+
+nuspec pkg tags
+
+DI for the utf8 stuff?  #202
 
 --
 
@@ -170,14 +174,10 @@ later: rename sqlcipher in cb to e_sqlcipher
 
 --
 
-deal with stdcall/winsqlite3 in Setup
-
 need to setup some x86 stdcall builds for testing?
 or just use winsqlite3 itself.  irritating that 
 the test suite passes using winsqlite3 and either 
 calling convention.  why?
-
-DI for the utf8 stuff?  #202
 
 more xunit test cases
 
