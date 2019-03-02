@@ -276,8 +276,10 @@ public static class gen
 		f.WriteElementString("copyright", COPYRIGHT);
 		f.WriteElementString("requireLicenseAcceptance", "false");
 		write_license(f);
-		// TODO repository instead of projectUrl
-		f.WriteElementString("projectUrl", "https://github.com/ericsink/SQLitePCL.raw");
+		f.WriteStartElement("repository");
+		f.WriteAttributeString("type", "git");
+		f.WriteAttributeString("url", "https://github.com/ericsink/SQLitePCL.raw");
+		f.WriteEndElement(); // repository
 		f.WriteElementString("summary", SUMMARY);
 		f.WriteElementString("tags", PACKAGE_TAGS);
 		f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
