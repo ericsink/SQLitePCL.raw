@@ -4,7 +4,11 @@ wiki page on github for v2 changes
 add SourceGear name?
 
 instead of delegate-ish types in raw.cs should the functions
-take something like Func<whatever> ?
+take something like Func<whatever> ?  one problem is backwards
+compat with things that specifically referened the
+previous delegate type.  lambda expressions convert
+automatically.  Func and delegate types cannot be
+casted without wrapping in another delegate.
 
 nuspec should show SQLitePCLRaw org account as
 owner
