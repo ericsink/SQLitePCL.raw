@@ -1,4 +1,6 @@
 
+clean.bat
+
 tests could use batteries.e_sqlite3.dynamic instead
 of a private impl of something almost identical
 
@@ -162,8 +164,6 @@ to only gen the ones that make sense.  allows a custom
 basename more easily.  gen_permutations_for().
 
 --
-
-run gen_providers.cs under dotnet core
 
 review the weird stuff agg functions do
 with the context pointer

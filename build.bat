@@ -1,6 +1,8 @@
-csc /w:4 -langversion:7.3 gen_nuspecs.cs
+
+cd gen_nuspecs
+dotnet run ..
 if %errorlevel% neq 0 exit /b %errorlevel%
-.\gen_nuspecs.exe
+cd ..
 
 call .\gen_providers.bat
 
