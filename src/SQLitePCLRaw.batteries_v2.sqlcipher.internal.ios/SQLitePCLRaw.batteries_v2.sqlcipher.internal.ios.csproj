@@ -2,6 +2,7 @@
   <PropertyGroup>
 	<TargetFrameworks>xamarin.ios10</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
+	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 	<DefineConstants>$(DefineConstants);PROVIDER_internal;EMBEDDED_INIT</DefineConstants>

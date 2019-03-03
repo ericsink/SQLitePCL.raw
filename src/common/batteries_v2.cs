@@ -36,6 +36,8 @@ namespace SQLitePCL
 		    SQLitePCL.Setup.Load("e_sqlite3");
 #elif PROVIDER_e_sqlcipher_dynamic
 		    SQLitePCL.Setup.Load("e_sqlcipher");
+#elif PROVIDER_sqlcipher_dynamic
+		    SQLitePCL.Setup.Load("sqlcipher"); // TODO coordinate with zetetic
 #elif PROVIDER_e_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
 #elif PROVIDER_winsqlite3

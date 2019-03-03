@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
+	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-	<DefineConstants>$(DefineConstants);PROVIDER_sqlcipher</DefineConstants>
+	<DefineConstants>$(DefineConstants);PROVIDER_e_sqlcipher</DefineConstants>
   </PropertyGroup>
 
 <ItemGroup>
@@ -13,7 +14,7 @@
 </ItemGroup>
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.provider.sqlcipher\SQLitePCLRaw.provider.sqlcipher.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlcipher\SQLitePCLRaw.provider.e_sqlcipher.csproj" />
 </ItemGroup>
 
 </Project>

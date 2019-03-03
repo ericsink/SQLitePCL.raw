@@ -132,7 +132,8 @@ public static class gen
 
 	static string make_mt_path(
 		string mt_dir,
-		string name,
+		string dir_name,
+		string assembly_name,
 		TFM tfm
 		)
 	{
@@ -141,24 +142,47 @@ public static class gen
 			case TFM.ANDROID:
 				return Path.Combine(
 					mt_dir,
-					name,
+					dir_name,
 					"bin",
 					"Release",
 					"monoandroid80",
 					"80", // TODO why does the android build end up with this extra subdir?
-					string.Format("{0}.dll", name)
+					string.Format("{0}.dll", assembly_name)
 					);
 
 			default:
 				return Path.Combine(
 					mt_dir,
-					name,
+					dir_name,
 					"bin",
 					"Release",
 					tfm.AsString(),
-					string.Format("{0}.dll", name)
+					string.Format("{0}.dll", assembly_name)
 					);
 		}
+	}
+
+	static string make_mt_path_batteries(
+		string mt_dir,
+		string basename,
+		TFM tfm
+		)
+	{
+		return make_mt_path(
+			mt_dir,
+			$"SQLitePCLRaw.batteries_v2.{basename}",
+			"SQLitePCLRaw.batteries_v2",
+			tfm
+			);
+	}
+
+	static string make_mt_path(
+		string mt_dir,
+		string name,
+		TFM tfm
+		)
+	{
+		return make_mt_path(mt_dir, name, name, tfm);
 	}
 
 	private static void write_nuspec_file_entry_lib_mt(string mt_dir, string name, TFM tfm, XmlWriter f)
@@ -170,11 +194,22 @@ public static class gen
 			);
 	}
 
-	private static void write_nuspec_file_entry_lib_mt_dest(string mt_dir, string name, TFM tfm_build, TFM tfm_dest, XmlWriter f)
+	private static void write_nuspec_file_entry_lib_batteries(string mt_dir, string basename, TFM tfm_build, TFM tfm_dest, XmlWriter f)
 	{
 		write_nuspec_file_entry(
-			make_mt_path(mt_dir, name, tfm_build),
+			make_mt_path_batteries(mt_dir, basename, tfm_build),
 			string.Format("lib\\{0}\\", tfm_dest.AsString()),
+			f
+			);
+	}
+
+	private static void write_nuspec_file_entry_lib_batteries(string mt_dir, string basename, TFM tfm_both, XmlWriter f)
+	{
+		write_nuspec_file_entry_lib_batteries(
+			mt_dir,
+			basename,
+			tfm_build: tfm_both,
+			tfm_dest: tfm_both,
 			f
 			);
 	}
@@ -629,9 +664,9 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.winsqlite3",
+					"winsqlite3",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -728,24 +763,24 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios",
+					"e_sqlcipher.internal.ios",
 					TFM.IOS,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt_dest(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic",
-					TFM.NETSTANDARD20,
-					TFM.NET461,
+					"e_sqlcipher.dynamic",
+					tfm_build: TFM.NETSTANDARD20,
+					tfm_dest: TFM.NET461,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlcipher",
+					"e_sqlcipher.dllimport",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -780,6 +815,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
@@ -788,16 +824,24 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios",
+					"sqlcipher.internal.ios",
 					TFM.IOS,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.sqlcipher",
+					"sqlcipher.dynamic",
+					tfm_build: TFM.NETSTANDARD20,
+					tfm_dest: TFM.NET461,
+					f
+					);
+
+			write_nuspec_file_entry_lib_batteries(
+					dir_mt,
+					"sqlcipher.dllimport",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -841,24 +885,24 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios",
+					"e_sqlite3.internal.ios",
 					TFM.IOS,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt_dest(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic",
-					TFM.NETSTANDARD20,
-					TFM.NET461,
+					"e_sqlite3.dynamic",
+					tfm_build: TFM.NETSTANDARD20,
+					tfm_dest: TFM.NET461,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					"e_sqlite3.dllimport",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -902,26 +946,25 @@ public static class gen
 
 			f.WriteStartElement("files");
 
-			// TODO or maybe we should build this batteries assembly for ios as well?
-			write_nuspec_file_entry_lib_mt_dest(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.sqlite3",
-					TFM.NETSTANDARD20,
-					TFM.IOS,
+					"sqlite3",
+					tfm_build: TFM.NETSTANDARD20,
+					tfm_dest: TFM.IOS,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt_dest(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic",
-					TFM.NETSTANDARD20,
-					TFM.NET461,
+					"e_sqlite3.dynamic",
+					tfm_build: TFM.NETSTANDARD20,
+					tfm_dest: TFM.NET461,
 					f
 					);
 
-			write_nuspec_file_entry_lib_mt(
+			write_nuspec_file_entry_lib_batteries(
 					dir_mt,
-					"SQLitePCLRaw.batteries_v2.e_sqlite3",
+					"e_sqlite3.dllimport",
 					TFM.NETSTANDARD20,
 					f
 					);
@@ -1056,13 +1099,20 @@ public static class gen
             tw.WriteLine("mkdir empty");
 
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
 			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
 
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
             tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
 		}
 
 		using (TextWriter tw = new StreamWriter(Path.Combine(dir_nupkgs, "push.bat")))
