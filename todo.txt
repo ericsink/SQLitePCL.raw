@@ -52,6 +52,9 @@ gen_nuspecs?
 utf8 stuff?  #202
 appears to require netcore or net472.  not netstandard.
 
+arguably the device runner tests should move into
+test_pkgs
+
 --
 
 still wish the other nuspecs could reference
