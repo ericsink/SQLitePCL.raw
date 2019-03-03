@@ -10,143 +10,58 @@ del .\nupkgs\*.nupkg
 
 cd src
 
-cd SQLitePCLRaw.core
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
+setlocal enabledelayedexpansion
 
-cd SQLitePCLRaw.impl.callbacks
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
+for %%f in (
+	SQLitePCLRaw.core 
+	SQLitePCLRaw.impl.callbacks 
+	SQLitePCLRaw.provider.dynamic
+	SQLitePCLRaw.provider.internal
+	SQLitePCLRaw.provider.e_sqlite3
+	SQLitePCLRaw.provider.e_sqlcipher
+	SQLitePCLRaw.provider.sqlite3
+	SQLitePCLRaw.provider.sqlcipher
+	SQLitePCLRaw.provider.winsqlite3
+	SQLitePCLRaw.ugly
+	) do (
+		cd %%f
+		dotnet pack -c Release
+		if !errorlevel! neq 0 exit /b !errorlevel!
+		cd ..
+)
 
-cd SQLitePCLRaw.provider.dynamic
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
+for %%f in (
+	SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport
+	SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic
+	SQLitePCLRaw.batteries_v2.e_sqlcipher.dllimport
+	SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic
+	SQLitePCLRaw.batteries_v2.sqlcipher.dllimport
+	SQLitePCLRaw.batteries_v2.sqlcipher.dynamic
+	SQLitePCLRaw.batteries_v2.sqlite3
+	SQLitePCLRaw.batteries_v2.winsqlite3
+	) do (
+		cd %%f
+		dotnet build -c Release
+		if !errorlevel! neq 0 exit /b !errorlevel!
+		cd ..
+)
 
-cd SQLitePCLRaw.provider.internal
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.provider.e_sqlite3
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.provider.e_sqlcipher
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.provider.sqlite3
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.provider.sqlcipher
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.provider.winsqlite3
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlcipher.dllimport
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.sqlite3
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.sqlcipher.dllimport
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.sqlcipher.dynamic
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.winsqlite3
-dotnet build -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.ugly
-dotnet pack -c Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.lib.e_sqlite3.android
-..\..\nuget restore SQLitePCLRaw.lib.e_sqlite3.android.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.lib.e_sqlcipher.android
-..\..\nuget restore SQLitePCLRaw.lib.e_sqlcipher.android.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.lib.e_sqlite3.ios
-..\..\nuget restore SQLitePCLRaw.lib.e_sqlite3.ios.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.lib.e_sqlcipher.ios
-..\..\nuget restore SQLitePCLRaw.lib.e_sqlcipher.ios.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.lib.sqlcipher.ios.placeholder
-..\..\nuget restore SQLitePCLRaw.lib.sqlcipher.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
-..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios
-..\..\nuget restore SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
-
-cd SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios
-..\..\nuget restore SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios.csproj
-msbuild /p:Configuration=Release
-if %errorlevel% neq 0 exit /b %errorlevel%
-cd ..
+for %%f in (
+	SQLitePCLRaw.lib.e_sqlite3.android
+	SQLitePCLRaw.lib.e_sqlcipher.android
+	SQLitePCLRaw.lib.e_sqlite3.ios
+	SQLitePCLRaw.lib.e_sqlcipher.ios
+	SQLitePCLRaw.lib.sqlcipher.ios.placeholder
+	SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios
+	SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios
+	SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios
+	) do (
+		cd %%f
+		..\..\nuget restore %%f.csproj
+		msbuild /p:Configuration=Release
+		if !errorlevel! neq 0 exit /b !errorlevel!
+		cd ..
+)
 
 cd ..
 
