@@ -12,5 +12,6 @@
     <RepositoryUrl>https://github.com/ericsink/SQLitePCL.raw</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>$(MSBuildThisFileDirectory)nupkgs</PackageOutputPath>
+    <PackageVersionForTesting>$(Version)</PackageVersionForTesting>
   </PropertyGroup>
 </Project>

@@ -341,6 +341,7 @@ public static class gen
 			f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
 			f.WriteElementString("RepositoryType", "git");
 			f.WriteElementString("PackageOutputPath", string.Format("$(MSBuildThisFileDirectory){0}", nupkgs_dir_name));
+			f.WriteElementString("PackageVersionForTesting", "$(Version)");
 
 			f.WriteEndElement(); // PropertyGroup
 			f.WriteEndElement(); // project

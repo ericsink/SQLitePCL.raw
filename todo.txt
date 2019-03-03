@@ -1,7 +1,4 @@
 
-separate msbuild prop for the Directory.Build.targets
-thing that allows tests to reference the pkgs just built
-
 tests could use batteries.e_sqlite3.dynamic instead
 of a private impl of something almost identical
 

@@ -1,0 +1,7 @@
+<Project>
+	<ItemGroup>
+		<PackageReference Update="sqlitepclraw.ugly" Version="$(PackageVersionForTesting)" />
+		<PackageReference Update="sqlitepclraw.bundle_e_sqlite3" Version="$(PackageVersionForTesting)" />
+	</ItemGroup>
+</Project>
+
