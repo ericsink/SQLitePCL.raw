@@ -47,7 +47,15 @@ cd SQLitePCLRaw.batteries_v2.e_sqlite3
 dotnet build -c Release
 cd ..
 
+cd SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic
+dotnet build -c Release
+cd ..
+
 cd SQLitePCLRaw.batteries_v2.e_sqlcipher
+dotnet build -c Release
+cd ..
+
+cd SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic
 dotnet build -c Release
 cd ..
 

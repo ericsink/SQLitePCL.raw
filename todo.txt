@@ -1,4 +1,16 @@
 
+tests could use batteries.e_sqlite3.dynamic instead
+of a private impl of something almost identical
+
+finish impl of batteries for the net461 case,
+like the previous preload from arch dir.
+
+net461 or net472 ?
+
+zetetic dynamic might need a special case batteries.
+they're probably not storing things in rid dirs like
+the new targets file here.
+
 investigate console UWP apps with C# for testing.
 build 17134.
 
@@ -22,17 +34,6 @@ don't want ifdef down in raw or provider.
 maybe in batteries?
 
 why is the device xunit runner for UWP crashing?
-
-ns 20 is which version of net45/6/7 ?
-	net461 -- problematic
-	net472 -- better
-	mono claims .net 4.7
-
-nuspec for net461 (or net472) should have a separate
-target so it can use provider_dynamic, which is
-the way to get the previous preload from arch
-directory feature.  which still needs to be coded
-and tested.
 
 msbuild props to omit native builds in targets?
 

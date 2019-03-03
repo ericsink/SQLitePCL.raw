@@ -32,6 +32,10 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 #elif PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+#elif PROVIDER_e_sqlite3_dynamic
+		    SQLitePCL.Setup.Load("e_sqlite3");
+#elif PROVIDER_e_sqlcipher_dynamic
+		    SQLitePCL.Setup.Load("e_sqlcipher");
 #elif PROVIDER_e_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
 #elif PROVIDER_winsqlite3

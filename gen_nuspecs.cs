@@ -34,6 +34,7 @@ public static class gen
 		NET35,
 		NET40,
 		NET45,
+		NET461,
 		XAMARIN_MAC,
 		NETCOREAPP,
 	}
@@ -111,6 +112,7 @@ public static class gen
 			case TFM.NET35: return "net35";
 			case TFM.NET40: return "net40";
 			case TFM.NET45: return "net45";
+			case TFM.NET461: return "net461";
 			case TFM.NETCOREAPP: return "netcoreapp";
 			default:
 				throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
@@ -723,6 +725,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
@@ -735,6 +738,14 @@ public static class gen
 					dir_mt,
 					"SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios",
 					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt_dest(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic",
+					TFM.NETSTANDARD20,
+					TFM.NET461,
 					f
 					);
 
@@ -827,6 +838,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
             
 			f.WriteEndElement(); // dependencies
@@ -839,6 +851,14 @@ public static class gen
 					dir_mt,
 					"SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios",
 					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt_dest(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic",
+					TFM.NETSTANDARD20,
+					TFM.NET461,
 					f
 					);
 
