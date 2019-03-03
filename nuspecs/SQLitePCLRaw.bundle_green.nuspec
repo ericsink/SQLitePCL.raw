@@ -19,6 +19,11 @@
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.provider.sqlite3" version="2.0.0-pre" />
       </group>
+      <group targetFramework="net461">
+        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.provider.dynamic" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre" />
+      </group>
       <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
         <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="2.0.0-pre" />
@@ -28,6 +33,7 @@
   </metadata>
   <files>
     <file src="..\src\SQLitePCLRaw.batteries_v2.sqlite3\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.sqlite3.dll" target="lib\Xamarin.iOS10\" />
+    <file src="..\src\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.dll" target="lib\net461\" />
     <file src="..\src\SQLitePCLRaw.batteries_v2.e_sqlite3\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.e_sqlite3.dll" target="lib\netstandard2.0\" />
   </files>
 </package>

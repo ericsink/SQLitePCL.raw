@@ -899,6 +899,7 @@ public static class gen
 			f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // dependencies
@@ -913,6 +914,14 @@ public static class gen
 					"SQLitePCLRaw.batteries_v2.sqlite3",
 					TFM.NETSTANDARD20,
 					TFM.IOS,
+					f
+					);
+
+			write_nuspec_file_entry_lib_mt_dest(
+					dir_mt,
+					"SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic",
+					TFM.NETSTANDARD20,
+					TFM.NET461,
 					f
 					);
 
