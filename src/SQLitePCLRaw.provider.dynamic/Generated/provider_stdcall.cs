@@ -31,7 +31,7 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    public sealed class SQLite3Provider_StdCall : ISQLite3Provider
+    sealed class SQLite3Provider_StdCall : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 

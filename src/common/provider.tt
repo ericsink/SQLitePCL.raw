@@ -49,7 +49,7 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    public sealed class SQLite3Provider_<#= NAME #> : ISQLite3Provider
+    <#= (KIND == "dllimport") ? "public " : "" #>sealed class SQLite3Provider_<#= NAME #> : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
 
