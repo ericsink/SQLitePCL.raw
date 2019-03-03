@@ -31,9 +31,6 @@ public static class gen
 		ANDROID,
 		UWP,
 		NETSTANDARD20,
-		NET35,
-		NET40,
-		NET45,
 		NET461,
 		XAMARIN_MAC,
 		NETCOREAPP,
@@ -109,9 +106,6 @@ public static class gen
 			case TFM.UWP: return "uap10.0";
 			case TFM.NETSTANDARD20: return "netstandard2.0";
 			case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
-			case TFM.NET35: return "net35";
-			case TFM.NET40: return "net40";
-			case TFM.NET45: return "net45";
 			case TFM.NET461: return "net461";
 			case TFM.NETCOREAPP: return "netcoreapp";
 			default:
@@ -495,12 +489,12 @@ public static class gen
 			gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
 			write_nuspec_file_entry(
 				relpath_targets,
-				string.Format("build\\net45"), // TODO
+				string.Format("build\\{0}", TFM.NET461.AsString()),
 				f
 				);
 
 			// TODO need a comment here to explain these
-			write_empty(f, top, TFM.NET35);
+			write_empty(f, top, TFM.NET461);
 			write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
@@ -555,12 +549,12 @@ public static class gen
 			gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
 			write_nuspec_file_entry(
 				relpath_targets,
-				string.Format("build\\net45"), // TODO
+				string.Format("build\\{0}", TFM.NET461.AsString()),
 				f
 				);
 
 			// TODO need a comment here to explain these
-			write_empty(f, top, TFM.NET35);
+			write_empty(f, top, TFM.NET461);
 			write_empty(f, top, TFM.NETSTANDARD20);
 
 			f.WriteEndElement(); // files
