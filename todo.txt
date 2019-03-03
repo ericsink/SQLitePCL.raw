@@ -1,4 +1,7 @@
 
+separate msbuild prop for the Directory.Build.targets
+thing that allows tests to reference the pkgs just built
+
 tests could use batteries.e_sqlite3.dynamic instead
 of a private impl of something almost identical
 
@@ -9,7 +12,9 @@ net461 or net472 ?
 
 zetetic dynamic might need a special case batteries.
 they're probably not storing things in rid dirs like
-the new targets file here.
+the new targets file here.  I wonder if there are
+any other ways that v2 breaks the existing zetetic
+package.
 
 investigate console UWP apps with C# for testing.
 build 17134.
@@ -44,7 +49,8 @@ DONE: maybe v2 should use the v141 builds and include arm64
 
 test on uwp, ios, android, net461
 
-nuspec tags
+nuspec tags.  write them into Directory.Build.props from
+gen_nuspecs?
 
 utf8 stuff?  #202
 appears to require netcore or net472.  not netstandard.
