@@ -72,10 +72,10 @@ namespace SQLitePCL
 				if (plat == Loader.win)
 				{
 					log($"win TryLoad: {name}");
-					var ptr = NativeLib_Win.LoadLibraryEx(name, IntPtr.Zero, NativeLib_Win.LOAD_WITH_ALTERED_SEARCH_PATH);
+					var ptr = NativeLib_Win.LoadLibrary(name);
 					if (ptr != IntPtr.Zero)
 					{
-						log($"LoadLibraryEx gave: {ptr}");
+						log($"LoadLibrary gave: {ptr}");
 						gf = new GetFunctionPointer_Win(ptr);
 						return true;
 					}
@@ -223,6 +223,13 @@ namespace SQLitePCL
 			var gf = new GetFunctionPointer_dlopen(dll);
 			SQLite3Provider_Cdecl.Setup(gf);
 			raw.SetProvider(new SQLite3Provider_Cdecl());
+		}
+
+		public static string Load(
+			string basename
+			)
+		{
+			return Load(basename, s => {});
 		}
 
 		public static string Load(

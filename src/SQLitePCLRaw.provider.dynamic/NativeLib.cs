@@ -48,7 +48,7 @@ namespace SQLitePCL
 	static class NativeLib_Win
 	{
         [DllImport("kernel32", SetLastError = true)]
-        public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+        public static extern IntPtr LoadLibrary(string lpFileName);
 
 	    public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
 

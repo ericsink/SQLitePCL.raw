@@ -1,4 +1,8 @@
 
+provider.dynamic should probably check File.Exists
+(on things that are an absolute path) before trying
+LoadLibrary.
+
 scripts in src/tests to copy an e_sqlite3 build
 into the right place as if it were using a pkg
 
