@@ -60,32 +60,37 @@ namespace SQLitePCL
 			}
 		}
 
-		static bool TryLoad(string name, Loader plat, out IGetFunctionPointer gf)
+		static bool TryLoad(
+			string name, 
+			Loader plat, 
+			Action<string> log,
+			out IGetFunctionPointer gf
+			)
 		{
 			try
 			{
 				if (plat == Loader.win)
 				{
-					log("win TryLoad: {0}", name);
+					log($"win TryLoad: {name}");
 					var ptr = NativeLib_Win.LoadLibraryEx(name, IntPtr.Zero, NativeLib_Win.LOAD_WITH_ALTERED_SEARCH_PATH);
-					log("LoadLibraryEx gave: {0}", ptr);
 					if (ptr != IntPtr.Zero)
 					{
+						log($"LoadLibraryEx gave: {ptr}");
 						gf = new GetFunctionPointer_Win(ptr);
 						return true;
 					}
 					else
 					{
 						var err = Marshal.GetLastWin32Error();
-						log("error code: {0}", err);
+						// NOT HERE: log($"error code: {err}");
 						throw new System.ComponentModel.Win32Exception();
 					}
 				}
 				else if (plat == Loader.dlopen)
 				{
-					log("dlopen TryLoad: {0}", name);
+					log($"dlopen TryLoad: {name}");
 					var ptr = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
-					log("dlopen gave: {0}", ptr);
+					log($"dlopen gave: {ptr}");
 					if (ptr != IntPtr.Zero)
 					{
 						gf = new GetFunctionPointer_dlopen(ptr);
@@ -109,7 +114,7 @@ namespace SQLitePCL
 			}
 			catch (Exception e)
 			{
-				log("thrown: {0}", e);
+				log($"thrown: {e}");
 				gf = null;
 				return false;
 			}
@@ -158,13 +163,14 @@ namespace SQLitePCL
 		static bool Search(
 			IList<string> a, 
 			Loader plat, 
+			Action<string> log,
 			out string name,
 			out IGetFunctionPointer gf
 			)
 		{
 			foreach (var s in a)
 			{
-				if (TryLoad(s, plat, out var api))
+				if (TryLoad(s, plat, log, out var api))
 				{
 					name = s;
 					gf = api;
@@ -219,29 +225,26 @@ namespace SQLitePCL
 			raw.SetProvider(new SQLite3Provider_Cdecl());
 		}
 
-		static void log(string s, params object[] a)
-		{
-			var z = string.Format(s, a);
-			System.IO.File.AppendAllLines("log.txt", new string[] { z });
-		}
-
-		public static string Load(string basename)
+		public static string Load(
+			string basename,
+			Action<string> log
+			)
 		{
 			// TODO make this code accept a string that already has the suffix?
 
 			var plat = WhichLoader();
-			log("plat: {0}", plat);
+			log($"plat: {plat}");
 			var suffix = WhichLibSuffix();
-			log("suffix: {0}", suffix);
+			log($"suffix: {suffix}");
 			var a = MakePossibilitiesFor(basename, suffix);
 			log("possibilities:");
 			foreach (var s in a)
 			{
-				log("    {0}", s);
+				log($"    {s}");
 			}
-			if (Search(a, plat, out var lib, out var gf))
+			if (Search(a, plat, log, out var lib, out var gf))
 			{
-				log("found: {0}", lib);
+				log($"found: {lib}");
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 				return lib;
