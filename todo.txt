@@ -1,9 +1,12 @@
 
-src/t1 can probably go away
+why does provider.dynamic work for net461 in
+a regular console app but not with xunit?
 
-chg Setup.Load() to use arch instead of hard-code
-x64.  and just go ahead and check the x86 and
-x64 dirs.
+investigate using NativeLibrary class on
+.NET Core 3.  and maybe implement a limited
+feature lookalike for use on .NET framework.
+
+src/t1 can probably go away
 
 want a way to force the tests at the end of
 build.bat to use the nupkgs just built, not the
@@ -30,6 +33,8 @@ they're probably not storing things in rid dirs like
 the new targets file here.  I wonder if there are
 any other ways that v2 breaks the existing zetetic
 package.
+
+chg Setup.Load() to check the x86 and x64 dirs?
 
 investigate console UWP apps with C# for testing.
 build 17134.

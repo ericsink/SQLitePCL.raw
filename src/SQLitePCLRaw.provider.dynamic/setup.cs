@@ -160,6 +160,50 @@ namespace SQLitePCL
 			}
 		}
 
+		static string get_rid_front()
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				return "win";
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				return "linux";
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+				return "osx";
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		static string get_rid_back()
+		{
+			switch (RuntimeInformation.OSArchitecture)
+			{
+				case Architecture.Arm:
+					return "arm";
+				case Architecture.Arm64:
+					return "arm64";
+				case Architecture.X64:
+					return "x64";
+				case Architecture.X86:
+					return "x86";
+				default:
+					throw new NotImplementedException();
+			}
+		}
+
+		static string get_rid()
+		{
+			var front = get_rid_front();
+			var back = get_rid_back();
+			return $"{front}-{back}";
+		}
+
 		static bool Search(
 			IList<string> a, 
 			Loader plat, 
@@ -196,19 +240,21 @@ namespace SQLitePCL
 			var libname = basename_to_libname(basename, suffix);
 			a.Add(libname);
 
+			var rid = get_rid();
+
 			{
 				var dir = System.AppContext.BaseDirectory;
-				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
 			{
 				var dir = System.IO.Directory.GetCurrentDirectory();
-				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
 			{
 				var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
 			// TODO add other names and paths, depending on platform
