@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2019 Zumero, LLC
+   Copyright 2014-2019 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -287,7 +287,7 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-	const string COPYRIGHT = "Copyright 2014-2019 Zumero, LLC";
+	const string COPYRIGHT = "Copyright 2014-2019 SourceGear, LLC";
 	const string AUTHORS = "Eric Sink";
 	const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
 	const string PACKAGE_TAGS = "sqlite;xamarin"; // TODO
@@ -330,7 +330,7 @@ public static class gen
 			f.WriteStartElement("PropertyGroup");
 
 			f.WriteElementString("Copyright", COPYRIGHT);
-			f.WriteElementString("Company", "Zumero");
+			f.WriteElementString("Company", "SourceGear");
 			f.WriteElementString("Authors", AUTHORS);
 			f.WriteElementString("Version", NUSPEC_VERSION);
 			f.WriteElementString("Description", SUMMARY);

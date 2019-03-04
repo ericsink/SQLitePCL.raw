@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
-    <Copyright>Copyright 2014-2019 Zumero, LLC</Copyright>
-    <Company>Zumero</Company>
+    <Copyright>Copyright 2014-2019 SourceGear, LLC</Copyright>
+    <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
     <Version>2.0.0-pre</Version>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>

@@ -5,7 +5,7 @@
 <#@ parameter name='KIND' #>
 <#@ parameter name='NAME_FOR_DLLIMPORT' #>
 /*
-   Copyright 2014-2019 Zumero, LLC
+   Copyright 2014-2019 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

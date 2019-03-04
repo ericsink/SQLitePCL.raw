@@ -1,7 +1,15 @@
 
+src/t1 can probably go away
+
+chg Setup.Load() to use arch instead of hard-code
+x64.  and just go ahead and check the x86 and
+x64 dirs.
+
 want a way to force the tests at the end of
 build.bat to use the nupkgs just built, not the
-ones in the nuget cache
+ones in the nuget cache.  previous workaround
+was to force a timestamp into the pkg name, but
+that's sad.
 
 provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
@@ -27,8 +35,6 @@ investigate console UWP apps with C# for testing.
 build 17134.
 
 wiki page on github for v2 changes
-
-add SourceGear name?
 
 nuspec should show SQLitePCLRaw org account as
 owner
