@@ -6,8 +6,6 @@ investigate using NativeLibrary class on
 .NET Core 3.  and maybe implement a limited
 feature lookalike for use on .NET framework.
 
-src/t1 can probably go away
-
 want a way to force the tests at the end of
 build.bat to use the nupkgs just built, not the
 ones in the nuget cache.  previous workaround
