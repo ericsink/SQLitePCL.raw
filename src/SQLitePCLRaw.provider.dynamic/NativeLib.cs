@@ -43,75 +43,21 @@ namespace SQLitePCL
         [DllImport(SO)]
         public static extern int dlclose(IntPtr hModule);
 
-		public static bool try_dlopen(string name, out IntPtr dll)
-		{
-			try
-			{
-				dll = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
-				//System.Console.WriteLine("dlopen: {0}: {1}", name, dll);
-				return dll != IntPtr.Zero;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
-		}
-
-		public static bool try_Load(string name, out IGetFunctionPointer gf)
-		{
-			if (try_dlopen(name, out var ptr))
-			{
-				gf = new GetFunctionPointer_dlopen(ptr);
-				return true;
-			}
-			else
-			{
-				gf = null;
-				return false;
-			}
-		}
 	}
 
 	static class NativeLib_Win
 	{
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
+        [DllImport("kernel32", SetLastError = true)]
+        public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
 
-        [DllImport("kernel32.dll")]
+	    public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool FreeLibrary(IntPtr hModule);
 
-		public static bool try_LoadLibrary(string name, out IntPtr dll)
-		{
-			try
-			{
-				dll = LoadLibrary(name);
-				//System.Console.WriteLine("LoadLibrary: {0}: {1}", name, dll);
-				return dll != IntPtr.Zero;
-			}
-			catch
-			{
-				dll = IntPtr.Zero;
-				return false;
-			}
-		}
-
-		public static bool try_Load(string name, out IGetFunctionPointer gf)
-		{
-			if (try_LoadLibrary(name, out var ptr))
-			{
-				gf = new GetFunctionPointer_Win(ptr);
-				return true;
-			}
-			else
-			{
-				gf = null;
-				return false;
-			}
-		}
 	}
 
 }

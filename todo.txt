@@ -1,8 +1,8 @@
 
-clean.bat
+scripts in src/tests to copy an e_sqlite3 build
+into the right place as if it were using a pkg
 
-tests could use batteries.e_sqlite3.dynamic instead
-of a private impl of something almost identical
+clean.bat
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.

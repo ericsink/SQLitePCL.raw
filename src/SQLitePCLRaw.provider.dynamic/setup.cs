@@ -62,35 +62,56 @@ namespace SQLitePCL
 
 		static bool TryLoad(string name, Loader plat, out IGetFunctionPointer gf)
 		{
-			if (plat == Loader.win)
+			try
 			{
-				if (NativeLib_Win.try_Load(name, out var api))
+				if (plat == Loader.win)
 				{
-					gf = api;
-					return true;
+					log("win TryLoad: {0}", name);
+					var ptr = NativeLib_Win.LoadLibraryEx(name, IntPtr.Zero, NativeLib_Win.LOAD_WITH_ALTERED_SEARCH_PATH);
+					log("LoadLibraryEx gave: {0}", ptr);
+					if (ptr != IntPtr.Zero)
+					{
+						gf = new GetFunctionPointer_Win(ptr);
+						return true;
+					}
+					else
+					{
+						var err = Marshal.GetLastWin32Error();
+						log("error code: {0}", err);
+						throw new System.ComponentModel.Win32Exception();
+					}
+				}
+				else if (plat == Loader.dlopen)
+				{
+					log("dlopen TryLoad: {0}", name);
+					var ptr = NativeLib_dlopen.dlopen(name, NativeLib_dlopen.RTLD_NOW);
+					log("dlopen gave: {0}", ptr);
+					if (ptr != IntPtr.Zero)
+					{
+						gf = new GetFunctionPointer_dlopen(ptr);
+						return true;
+					}
+					else
+					{
+						// TODO log errno?
+						gf = null;
+						return false;
+					}
 				}
 				else
 				{
-					gf = null;
-					return false;
+					throw new NotImplementedException();
 				}
 			}
-			else if (plat == Loader.dlopen)
+			catch (NotImplementedException)
 			{
-				if (NativeLib_dlopen.try_Load(name, out var api))
-				{
-					gf = api;
-					return true;
-				}
-				else
-				{
-					gf = null;
-					return false;
-				}
+				throw;
 			}
-			else
+			catch (Exception e)
 			{
-				throw new NotImplementedException();
+				log("thrown: {0}", e);
+				gf = null;
+				return false;
 			}
 		}
 
@@ -169,20 +190,20 @@ namespace SQLitePCL
 			var libname = basename_to_libname(basename, suffix);
 			a.Add(libname);
 
-			// TODO a hack for testing.  works relative to cwd.
-			a.Add(Path.Combine("runtimes", "win-x64", "native", libname));
+			{
+				var dir = System.AppContext.BaseDirectory;
+				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+			}
 
-#if not // TODO ns 1.3
-			var dir = System.AppContext.BaseDirectory;
-#endif
+			{
+				var dir = System.IO.Directory.GetCurrentDirectory();
+				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+			}
 
-#if not // TODO GetCurrentDirectory is in netstandard 1.3
-			var cwd = System.IO.Directory.GetCurrentDirectory();
-#endif
-
-#if not // TODO GetExecutingAssembly is only in netstandard 2.0
-			var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-#endif
+			{
+				var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				a.Add(Path.Combine(dir, "runtimes", "win-x64", "native", libname));
+			}
 
 			// TODO add other names and paths, depending on platform
 
@@ -198,27 +219,36 @@ namespace SQLitePCL
 			raw.SetProvider(new SQLite3Provider_Cdecl());
 		}
 
+		static void log(string s, params object[] a)
+		{
+			var z = string.Format(s, a);
+			System.IO.File.AppendAllLines("log.txt", new string[] { z });
+		}
+
 		public static string Load(string basename)
 		{
+			// TODO make this code accept a string that already has the suffix?
+
 			var plat = WhichLoader();
-			//System.Console.WriteLine("plat: {0}", plat);
+			log("plat: {0}", plat);
 			var suffix = WhichLibSuffix();
-			//System.Console.WriteLine("suffix: {0}", suffix);
+			log("suffix: {0}", suffix);
 			var a = MakePossibilitiesFor(basename, suffix);
-			//System.Console.WriteLine("possibilities:");
+			log("possibilities:");
 			foreach (var s in a)
 			{
-				//System.Console.WriteLine("    {0}", s);
+				log("    {0}", s);
 			}
 			if (Search(a, plat, out var lib, out var gf))
 			{
-				//System.Console.WriteLine("found: {0}", lib);
+				log("found: {0}", lib);
 				SQLite3Provider_Cdecl.Setup(gf);
 				raw.SetProvider(new SQLite3Provider_Cdecl());
 				return lib;
 			}
 			else
 			{
+				log("NOT FOUND");
 				return null;
 			}
 		}
