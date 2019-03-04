@@ -1,4 +1,8 @@
 
+want a way to force the tests at the end of
+build.bat to use the nupkgs just built, not the
+ones in the nuget cache
+
 provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
 LoadLibrary.

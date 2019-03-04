@@ -110,6 +110,10 @@ namespace SQLitePCL
         public const int SQLITE_OPEN_PRIVATECACHE = 0x00040000;  /* Ok for sqlite3_open_v2() */
         public const int SQLITE_OPEN_WAL = 0x00080000;  /* VFS only */
 
+        public const int SQLITE_PREPARE_PERSISTENT = 0x01;
+        public const int SQLITE_PREPARE_NORMALIZE = 0x02;
+        public const int SQLITE_PREPARE_NO_VTAB = 0x04;
+
         public const int SQLITE_INTEGER = 1;
         public const int SQLITE_FLOAT = 2;
         public const int SQLITE_TEXT = 3;
@@ -524,6 +528,20 @@ namespace SQLitePCL
         {
             IntPtr p;
             int rc = _imp.sqlite3_prepare_v2(db, sql, out p, out tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
+        static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
+        {
+            string tail;
+            return sqlite3_prepare_v3(db, sql, flags, out stmt, out tail);
+        }
+
+        static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
+        {
+            IntPtr p;
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }

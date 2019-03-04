@@ -230,6 +230,29 @@ namespace SQLitePCL
             return rc;
         }
 
+        int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out IntPtr stm, out string remain)
+        {
+            var ba_sql = util.to_utf8(sql);
+            GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
+            IntPtr ptr_sql = pinned_sql.AddrOfPinnedObject();
+            IntPtr tail;
+            int rc = NativeMethods.sqlite3_prepare_v3(db, ptr_sql, -1, flags, out stm, out tail);
+            if (tail == IntPtr.Zero)
+            {
+                remain = null;
+            }
+            else
+            {
+                remain = util.from_utf8(tail);
+                if (remain.Length == 0)
+                {
+                    remain = null;
+                }
+            }
+            pinned_sql.Free();
+            return rc;
+        }
+
         int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
@@ -1319,6 +1342,7 @@ namespace SQLitePCL
 			sqlite3_db_filename = (MyDelegateTypes.sqlite3_db_filename) Load(gf, typeof(MyDelegateTypes.sqlite3_db_filename));
 			sqlite3_prepare = (MyDelegateTypes.sqlite3_prepare) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare));
 			sqlite3_prepare_v2 = (MyDelegateTypes.sqlite3_prepare_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v2));
+			sqlite3_prepare_v3 = (MyDelegateTypes.sqlite3_prepare_v3) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v3));
 			sqlite3_db_status = (MyDelegateTypes.sqlite3_db_status) Load(gf, typeof(MyDelegateTypes.sqlite3_db_status));
 			sqlite3_complete = (MyDelegateTypes.sqlite3_complete) Load(gf, typeof(MyDelegateTypes.sqlite3_complete));
 			sqlite3_compileoption_used = (MyDelegateTypes.sqlite3_compileoption_used) Load(gf, typeof(MyDelegateTypes.sqlite3_compileoption_used));
@@ -1448,6 +1472,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_db_filename sqlite3_db_filename;
 		public static MyDelegateTypes.sqlite3_prepare sqlite3_prepare;
 		public static MyDelegateTypes.sqlite3_prepare_v2 sqlite3_prepare_v2;
+		public static MyDelegateTypes.sqlite3_prepare_v3 sqlite3_prepare_v3;
 		public static MyDelegateTypes.sqlite3_db_status sqlite3_db_status;
 		public static MyDelegateTypes.sqlite3_complete sqlite3_complete;
 		public static MyDelegateTypes.sqlite3_compileoption_used sqlite3_compileoption_used;
@@ -1660,6 +1685,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_prepare_v3(sqlite3 db, IntPtr pSql, int nBytes, uint flags, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);

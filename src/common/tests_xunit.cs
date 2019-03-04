@@ -412,6 +412,21 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_prepare_v3()
+        {
+            var libversion = raw.sqlite3_libversion();
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                using (sqlite3_stmt stmt = db.prepare_v3("SELECT sqlite_version()", 0))
+				{
+					stmt.step_row();
+					var s = stmt.column_text(0);
+					Assert.Equal(libversion, s);
+				}
+            }
+        }
+
+        [Fact]
         public void test_libversion()
         {
             string sourceid = raw.sqlite3_sourceid();

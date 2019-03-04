@@ -272,6 +272,18 @@ namespace SQLitePCL.Ugly
             return stmt;
         }
 
+        public static sqlite3_stmt prepare_v3(this sqlite3 db, string sql, uint flags)
+        {
+            sqlite3_stmt stmt;
+            string tail;
+            int rc = raw.sqlite3_prepare_v3(db, sql, flags, out stmt, out tail);
+            // TODO maybe throw if there is a tail?  this function is called
+            // in ways that assume the sql string contains only one statement.
+            check_ok(db, rc);
+
+            return stmt;
+        }
+
         public static void db_status(this sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {    
             int rc = raw.sqlite3_db_status(db, op, out current, out highest, resetFlg);
