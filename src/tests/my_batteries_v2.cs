@@ -23,10 +23,10 @@ namespace SQLitePCL
 {
     public static class Batteries_V2
     {
-	    public static void Init()
-	    {
-		    SQLitePCL.Setup.Load("e_sqlite3", s => File.AppendAllLines("log.txt", new string[] {s}));
-	    }
+        public static void Init()
+        {
+            SQLitePCL.Setup.Load("e_sqlite3", s => File.AppendAllLines("log.txt", new string[] { s }));
+        }
     }
 }
 
