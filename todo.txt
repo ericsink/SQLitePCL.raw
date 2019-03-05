@@ -19,7 +19,7 @@ in the version on the nuget pack command?
 
 provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
-LoadLibrary.
+LoadLibrary/dlpen.
 
 clean.bat
 
@@ -31,10 +31,10 @@ net461 or net472 ?
 zetetic dynamic needs to look in dirs named x86/x64, 
 not rids.  for compat with their existing package.
 chg Setup.Load() to check the x86 and x64 dirs?
+or create a special Load call for that case?
 
-I wonder if there are
-any other ways that v2 breaks the existing zetetic
-package.
+I wonder if there are any other ways that v2 breaks 
+the existing zetetic package.
 
 investigate console UWP apps with C# for testing.
 build 17134.
@@ -218,6 +218,9 @@ the fact that it returns void, since we can't check errors on it.  but
 the underlying C function doesn't really return any useful info for error
 checking either.
 
+should maybe use the value from commit_hook (and rollback_hook) internally
+to verify/dispose the hook_handle?
+
 unprotected sqlite3_value:  sqlite3_column_value, sqlite3_bind_value, sqlite3_result_value
 
 sqlite3_create_module
@@ -230,8 +233,6 @@ sqlite3_get_auxdata
 sqlite3_set_auxdata
 
 sqlite3_limit
-
-sqlite3_progress_handler
 
 sqlite3_randomness
 
