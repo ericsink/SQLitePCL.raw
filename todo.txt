@@ -13,12 +13,6 @@ restore those win32 set directory calls somewhere.
 but we don't want ifdef down in raw or provider.
 maybe in batteries?
 
-version stuff could now be separated out of
-gen_nuspecs into its own gen thing
-
-with an SDK-style net461 project, how to control
-the cpu target of the build?  msbuild prop Platform?
-
 investigate using NativeLibrary class on
 .NET Core 3.  and maybe implement the native
 lib stuff for other runtimes as a compatible
@@ -34,17 +28,23 @@ provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
 LoadLibrary/dlopen.
 
+zetetic dynamic needs to look in dirs named x86/x64, 
+not rids.  for compat with their existing package.
+chg Setup.Load() to check the x86 and x64 dirs?
+or create a special Load call for that case?
+
 clean.bat
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.
 
-net461 or net472 ?
+version stuff could now be separated out of
+gen_nuspecs into its own gen thing
 
-zetetic dynamic needs to look in dirs named x86/x64, 
-not rids.  for compat with their existing package.
-chg Setup.Load() to check the x86 and x64 dirs?
-or create a special Load call for that case?
+with an SDK-style net461 project, how to control
+the cpu target of the build?  msbuild prop Platform?
+
+net461 or net472 ?
 
 I wonder if there are any other ways that v2 breaks 
 the existing zetetic package.
