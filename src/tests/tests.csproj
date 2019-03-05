@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
-	<ProjectReference Include="..\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.csproj" />
+	<!-- <ProjectReference Include="..\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.csproj" /> -->
 	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Compile Include="..\common\tests_xunit.cs" />
+    <Compile Include="my_batteries_v2.cs" />
   </ItemGroup>
 
 </Project>

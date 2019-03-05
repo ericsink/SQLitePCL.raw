@@ -189,7 +189,7 @@ namespace SQLitePCL
 				case Architecture.Arm64:
 					return "arm64";
 				case Architecture.X64:
-					return "x64";
+					return (IntPtr.Size == 8) ? "x64" : "x86";
 				case Architecture.X86:
 					return "x86";
 				default:
