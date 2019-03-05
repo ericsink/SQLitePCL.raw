@@ -333,6 +333,8 @@ public static class gen
 			f.WriteElementString("Company", "SourceGear");
 			f.WriteElementString("Authors", AUTHORS);
 			f.WriteElementString("Version", NUSPEC_VERSION);
+			f.WriteElementString("AssemblyVersion", ASSEMBLY_VERSION);
+			f.WriteElementString("FileVersion", ASSEMBLY_VERSION);
 			f.WriteElementString("Description", SUMMARY);
 			f.WriteElementString("GenerateAssemblyProductAttribute", "false");
 			f.WriteElementString("PackageLicenseExpression", "Apache-2.0");
