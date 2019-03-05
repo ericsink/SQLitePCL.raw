@@ -1,10 +1,11 @@
 
 with an SDK-style net461 project, how to control
-the cpu target of the build?
+the cpu target of the build?  msbuild prop Platform?
 
 investigate using NativeLibrary class on
-.NET Core 3.  and maybe implement a limited
-feature lookalike for use on .NET framework.
+.NET Core 3.  and maybe implement the native
+lib stuff for other runtimes as a compatible
+subset of the same api?
 
 want a way to force the tests at the end of
 build.bat to use the nupkgs just built, not the
@@ -12,12 +13,13 @@ ones in the nuget cache.  previous workaround
 was to force a timestamp into the pkg name, but
 that's sad.
 
+a way to do the timestamp thing without having
+to write it into all the nuspec files?  maybe pass
+in the version on the nuget pack command?
+
 provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
 LoadLibrary.
-
-scripts in src/tests to copy an e_sqlite3 build
-into the right place as if it were using a pkg
 
 clean.bat
 
@@ -26,13 +28,13 @@ like the previous preload from arch dir.
 
 net461 or net472 ?
 
-zetetic dynamic might need a special case batteries.
-they're probably not storing things in rid dirs like
-the new targets file here.  I wonder if there are
+zetetic dynamic needs to look in dirs named x86/x64, 
+not rids.  for compat with their existing package.
+chg Setup.Load() to check the x86 and x64 dirs?
+
+I wonder if there are
 any other ways that v2 breaks the existing zetetic
 package.
-
-chg Setup.Load() to check the x86 and x64 dirs?
 
 investigate console UWP apps with C# for testing.
 build 17134.
@@ -48,7 +50,8 @@ but this was apparently a bug that has been fixed.
 
 DONE: consider default enable_next_stmt() to false
 
-chg release notes in nuspec to reference a URL ?
+chg release notes in nuspec to reference a URL?
+on github?  on my blog?
 
 restore those win32 set directory calls somewhere.
 don't want ifdef down in raw or provider.
@@ -59,11 +62,11 @@ why is the device xunit runner for UWP crashing?
 msbuild props to omit native builds in targets?
 
 concern about dictionary<intptr, T> because it's
-a value type?  ios AOT.
+a value type?  ios AOT.  ToString() instead?
 
 DONE: maybe v2 should use the v141 builds and include arm64
 
-test on uwp, ios, android, net461
+test on uwp, ios, android, net461, mono
 
 nuspec tags.  write them into Directory.Build.props from
 gen_nuspecs?
@@ -73,6 +76,9 @@ appears to require netcore or net472.  not netstandard.
 
 arguably the device runner tests should move into
 test_pkgs
+
+consider build the tests as an assembly instead of always
+compiling the file
 
 --
 
@@ -89,43 +95,18 @@ same for dynamic vs dllimport.  use a partial
 class and share it?
 
 new sn key for lib.e_sqlcipher.  hmmm.
-should we just use the same one as before?
+or should we just use the same one as before?
 and why do we have the same key for 
 the android and ios versions of this?
 same goes for e_sqlite3.
 
 --
 
-runtimeconfig.dev.json
-	AdditionalProbingingPath
-
-LoadLibrary vs LoadLibraryEx
-
-bundles:
-	green
-	e_sqlite3
-	e_sqlcipher
-	zetetic
-	winsqlite3
-
-figure out plats
-	ios
-	macos
-	win
-	android
-	linux
-	other?
-
 in general, only one of the following is true:
 	win, LoadLibrary, dll suffix
 	everything else, dlopen
 		macos, dylib suffix
 		everything else, so suffix
-
-Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) -- netstandard 2.0
-appdomain.currentdomain.basedirectory -- not in netcore
-assembly.codebase -- netstandard 1.5
-current working directory -- netstandard 1.3
 
 ios: either system or internal
 
@@ -150,18 +131,13 @@ also need to pass more info (a path) to Setup
 
 add sqlite3_key et al to the pinvoke list?
 
-have setup return the one that was used
-
-string passed to LoadLibrary/dlopen
-dlopen vs loadlib
-
 constructing the string:
 	basename
 		e_sqlite3
 		e_sqlcipher
 		sqlite3
 		sqlcipher
-	add dll/dylib/so
+	add dll/dylib/so suffix
 	path
 		starting
 			cwd
@@ -171,29 +147,10 @@ constructing the string:
 			nothing?
 			native/rid (targets)
 
-perhaps just autogen a big list of permutations to try.
-and then a loop that tries them.
-
-use runtime platform info to reduce the size of the list.
-
-or gen the list at runtime, using runtime platform info
-to only gen the ones that make sense.  allows a custom
-basename more easily.  gen_permutations_for().
-
 --
 
 review the weird stuff agg functions do
 with the context pointer
-
-in setup, check the current OS somehow so
-that some checks (like LoadLibrary on non-Windows)
-can be skipped.
-
-default load, so the setup call can be optional
-in many or most cases
-
-maybe the Setup calls should return the sqlite
-version et al?
 
 later: rename sqlcipher in cb to e_sqlcipher
 
@@ -208,15 +165,9 @@ more xunit test cases
 
 goal is to have no ifdefs in core
 
-
 --
 
 cb/bld
-
-worry about Batteries_V2 bait and switch across
-bundle types with project.json or new csproj, where
-the "better" support for transitive dependencies
-might break things.
 
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
@@ -231,89 +182,16 @@ for bundle_e_sqlite3, we want to build two things for netstandard11:
 
 enable_shared_cache.  is this present?  does akavache need it?
 
-it's kinda wrong to always build batteries.cs with provider_none
-for portable and netstandard.
-
-is the v140 e_sqlite build compiled for app container only?
-
-the batteries assemblies for wp80 don't need to
-go in build, do they?
-
-config_esqlite3 should get reworked, because it only
-generates a nuspec, not a csproj.  in fact, it's just
-a string toolset.
-
-maybe the subdirs x86/x64 for loading with anycpu
-should be the rid.  but this would break things,
-so probably not.
-
-several of the targets files are using the name
-InjectReference when really they're just copying
-the native DLL into the bin dir
-
-change all the lib packages to put the binaries
-in runtimes/rid/native, and change the .targets files
-to use that path, and also change the targets files
-to not do the copy when packages.config is present.
-
-oren says kill the (equiv) platform builds and just use
-netstandard.  and yes, keep NetStandard.Library in
-the deps, even though it drags in tons of transitives.
+change the targets files
+to not do the copy when packages.config is present?
 
 understand runtime.json and rid-specific deps, even
 if they are not officially supported
 
-cppinterop is now the only assembly which has the
-old name.  grumble.
-
-problem with uwp test apps pfx file
-
-problem with uwp test app, deploy, id ?
-
-test runner for net45
-
-rm cruft for old sqlcipher builds
-
-in order to get back to netstandard for the tests,
-we would need to switch xunit to the pre
-
 --------
-
-I wish the json generation code was using structures
-instead of text writelines
-
-how many cases are there where we could ditch a
-platform-specific build and just let it use
-netstandard?  but then NetStandard.Library gets
-dragged in, which is a lot of weird stuff.
-
-problem with current testapps sln is that the
-framework used to resolve is predetermined.
-it would be better to gen the projects from
-scratch and somehow add the nuget packages.
-problem is specific to packages.config?
-
-consider creating a new build directory on
-every build
-
-why does the error msg say ios project.json needs runtimes : win ?
 
 is CopyNuGetImplementations causing trouble?
 with project.json : runtimes?
-
-ios build machine needs sdk 9.3
-
-should MonoAndroid version be 2.3 or 6.0 ?
-
-general-purpose gen_nuspec function
-
-combine net45 libs into one pkg?
-
-do we need a copy of the main raw assembly compiled specifically
-for every tfm?  like android?  or is it sufficient to have
-it compiled for each set of compile options, and each platform
-use the one that is compatible with it.  problem with netstandard
-is that it brings in lots of little deps.
 
 need to go to nuget.org and mark some of the older 
 packages deprecated
@@ -321,67 +199,11 @@ packages deprecated
 maybe the "first pinvoke set that works" code should
 go somewhere else, higher up?
 
-currently wp8-SL support is limited to e_sqlite3.  no
-sqlcipher.  no extension SDK.  although we could in
-theory build multiple versions of this, each linked
-against a different library name.
-
 --------
 
 can we do a dylib ios version?
 
-version numbers on SQLitePCL.custom stuff should
-not need to match SQLitePCL.raw, and might want to
-match the underlying SQLite version number.
-
-does the native code stuff in nuget 3.x get this
-specific?  can we provide a package which just looks
-at the environment and then has a dependency on
-The Right One?
-
-xamarin.mac shouldn't even need to be built on the Mac.
-just use a compatible build of SQLitePCL.raw.dll
-
 ----
-
-clean out the rest of this file
-
-----
-
-Do the collation hook fix thing for config_log
-
-consider whether maybe the sqlite3 intptr dispose should check
-the version number and call sqlite3_close_v2 when it's supposedly
-available.
-
-add visual studio 2013 c++ runtime sdkreference.  but injecting an
-SDKReference in the .targets file sort of doesn't work, and using
-a powershell tool is so inelegant.  MESSAGE.
-
-annoying that an injected reference doesn't show up in the
-References list in visual studio
-
-error if configuration is not release or debug
-but configuration in xamarin.ios is actually stuff like iPhone, etc
-
-why does the sqlitepcl ios platform assembly show
-no assembly info when viewed in xamarin studio?
-
-Win32 in the sln file
-
-auto-generate the test projects as well?
-
-docs: need a complete list, in tabular form, of the platform
-assemblies and an explanation of the use cases for each one.
-auto-generate this.
-
-need at least one test project for each platform assembly.  
-
-add an NUnit project on Windows/Net45, so that build breakage
-with NUnit can be detected when making changes on windows.
-should reference NUnit as a nuget package
-
-sqlite3.Mac?  or use platform-installed sqlite on MacOS?
 
 docs on all the methods in raw, especially where the params
 differ from the C API
