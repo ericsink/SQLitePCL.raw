@@ -10,7 +10,7 @@
 
 <ItemGroup>
     <Compile Include="raw.cs" />
-    <Compile Include="intptrs.cs" />
+    <Compile Include="handles.cs" />
     <Compile Include="isqlite3.cs" />
     <Compile Include="util.cs" />
 
