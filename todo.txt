@@ -1,6 +1,4 @@
 
-review all those warnings coming from xunit
-
 why use .targets to update the packagereferences
 for tests?  maybe just put $(PackageVersionForTesting)
 in the packagereference tag?
@@ -11,7 +9,7 @@ review EntryPoint attribute
 
 dotnet-format
 
-should the other batteries build on a placeholder
+should the other batteries also build on a placeholder
 instead of the actual ios lib assembly?  allows
 dotnet cli instead of desktop msbuild.
 
@@ -19,9 +17,7 @@ restore those win32 set directory calls somewhere.
 but we don't want ifdef down in raw or provider.
 maybe in batteries?
 
-update xunit
-
-version stuff could now be separarated out of
+version stuff could now be separated out of
 gen_nuspecs into its own gen thing
 
 with an SDK-style net461 project, how to control

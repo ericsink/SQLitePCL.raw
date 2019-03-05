@@ -851,13 +851,13 @@ namespace SQLitePCL.Tests
                             throw new NotImplementedException();
                     }
 
-                    Assert.Equal(null, db.next_stmt(null));
+                    Assert.Null(db.next_stmt(null));
                     using (sqlite3_stmt stmt = db.prepare("SELECT 5;"))
                     {
                         Assert.Equal(stmt, db.next_stmt(null));
-                        Assert.Equal(null, db.next_stmt(stmt));
+                        Assert.Null(db.next_stmt(stmt));
                     }
-                    Assert.Equal(null, db.next_stmt(null));
+                    Assert.Null(db.next_stmt(null));
                 }
             }
 
@@ -1202,7 +1202,7 @@ namespace SQLitePCL.Tests
                     {
                         Assert.Equal(r.b[i], blob[i]);
                     }
-                    Assert.Equal(null, r.q);
+                    Assert.Null(r.q);
                 }
                 using (sqlite3_stmt stmt = db.prepare("SELECT x,v,t,d,b,q FROM foo;"))
                 {
@@ -1324,10 +1324,10 @@ namespace SQLitePCL.Tests
 
         private static int my_cb(object v, string[] values, string[] names)
         {
-            Assert.Equal(1, values.Length);
-            Assert.Equal(1, names.Length);
+            Assert.Single(values);
+            Assert.Single(names);
             Assert.Equal("x", names[0]);
-            Assert.Equal(1, values[0].Length);
+            Assert.Single(values[0]);
 
             work w = v as work;
             w.count++;
@@ -1518,7 +1518,7 @@ namespace SQLitePCL.Tests
 
         private static void cube(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
-            Assert.Equal(1, args.Length);
+            Assert.Single(args);
             long x = args[0].value_int64();
             Assert.Equal(x, val);
             ctx.result_int64(x * x * x);
@@ -1747,7 +1747,7 @@ namespace SQLitePCL.Tests
 
         private static void sum_plus_count_step(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
-            Assert.Equal(1, args.Length);
+            Assert.Single(args);
 
             if (ctx.state == null)
             {
