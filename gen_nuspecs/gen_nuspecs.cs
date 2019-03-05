@@ -269,7 +269,7 @@ public static class gen
 		);
 
 	// chg this to be the version string we want, one of the above
-	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
+	public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
 	public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}", 
 		MAJOR_VERSION,
 		MINOR_VERSION,
@@ -283,7 +283,7 @@ public static class gen
     {
         f.WriteStartElement("dependency");
         f.WriteAttributeString("id", string.Format("{0}.core", gen.ROOT_NAME));
-        f.WriteAttributeString("version", NUSPEC_VERSION);
+        f.WriteAttributeString("version", "$version$");
         f.WriteEndElement(); // dependency
     }
 
@@ -302,7 +302,7 @@ public static class gen
 
 		f.WriteElementString("id", id);
 		f.WriteElementString("title", id);
-		f.WriteElementString("version", NUSPEC_VERSION);
+		f.WriteElementString("version", "$version$");
 		f.WriteElementString("authors", AUTHORS);
 		f.WriteElementString("copyright", COPYRIGHT);
 		f.WriteElementString("requireLicenseAcceptance", "false");
@@ -705,21 +705,21 @@ public static class gen
 
 		f.WriteStartElement("dependency");
 		f.WriteAttributeString("id", string.Format("{0}.provider.{1}", gen.ROOT_NAME, prov.AsString()));
-		f.WriteAttributeString("version", NUSPEC_VERSION);
+		f.WriteAttributeString("version", "$version$");
 		f.WriteEndElement(); // dependency
 
 		if (what == WhichLib.E_SQLITE3)
 		{
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteAttributeString("version", "$version$");
 			f.WriteEndElement(); // dependency
 		}
 		else if (what == WhichLib.E_SQLCIPHER)
 		{
 			f.WriteStartElement("dependency");
 			f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
-			f.WriteAttributeString("version", NUSPEC_VERSION);
+			f.WriteAttributeString("version", "$version$");
 			f.WriteEndElement(); // dependency
 		}
 		else if (what == WhichLib.NONE)
@@ -1099,20 +1099,20 @@ public static class gen
 
             tw.WriteLine("mkdir empty");
 
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+			tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.lib.e_sqlite3.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-			tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.lib.e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
-			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
+			tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.lib.e_sqlcipher.nuspec");
+			tw.WriteLine($"if %errorlevel% neq 0 exit /b %errorlevel%");
 
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_green.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_green.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_e_sqlite3.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_e_sqlcipher.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_e_sqlcipher.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_zetetic.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_zetetic.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine("..\\nuget pack -OutputDirectory {1} {0}.bundle_winsqlite3.nuspec", gen.ROOT_NAME, rel_path_nupkgs);
+            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_winsqlite3.nuspec");
 			tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
 		}
 
@@ -1120,23 +1120,23 @@ public static class gen
 		{
             const string src = "https://www.nuget.org/api/v2/package";
 
-			tw.WriteLine("..\\nuget push -Source {2} {0}.core.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.ugly.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.impl.callbacks.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.core.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.ugly.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.impl.callbacks.{NUSPEC_VERSION}.nupkg");
 
-			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.lib.e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.lib.e_sqlite3.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.lib.e_sqlcipher.{NUSPEC_VERSION}.nupkg");
 
 			foreach (WhichProvider p in Enum.GetValues(typeof(WhichProvider)))
 			{
-				tw.WriteLine("..\\nuget push -Source {2} {0}.provider.{3}.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src, p.AsString());
+				tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.provider.{p.AsString()}.{NUSPEC_VERSION}.nupkg");
 			}
 
-			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_green.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_e_sqlcipher.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_zetetic.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
-			tw.WriteLine("..\\nuget push -Source {2} {0}.bundle_winsqlite3.{1}.nupkg", gen.ROOT_NAME, NUSPEC_VERSION, src);
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_green.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_e_sqlite3.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_e_sqlcipher.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_zetetic.{NUSPEC_VERSION}.nupkg");
+			tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_winsqlite3.{NUSPEC_VERSION}.nupkg");
 		}
 	}
 }

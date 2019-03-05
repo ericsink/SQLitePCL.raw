@@ -4,7 +4,7 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.lib.e_sqlcipher</id>
     <title>SQLitePCLRaw.lib.e_sqlcipher</title>
-    <version>2.0.0-pre</version>
+    <version>$version$</version>
     <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 SourceGear, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

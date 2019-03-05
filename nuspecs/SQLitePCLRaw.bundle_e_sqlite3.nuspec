@@ -4,7 +4,7 @@
   <metadata minClientVersion="2.8.1">
     <id>SQLitePCLRaw.bundle_e_sqlite3</id>
     <title>SQLitePCLRaw.bundle_e_sqlite3</title>
-    <version>2.0.0-pre</version>
+    <version>$version$</version>
     <authors>Eric Sink</authors>
     <copyright>Copyright 2014-2019 SourceGear, LLC</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,19 +16,19 @@
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included</description>
     <dependencies>
       <group targetFramework="Xamarin.iOS10">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.provider.internal" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.internal" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
       <group targetFramework="net461">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.provider.dynamic" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
       <group targetFramework="netstandard2.0">
-        <dependency id="SQLitePCLRaw.core" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="2.0.0-pre" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="2.0.0-pre" />
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
     </dependencies>
   </metadata>
