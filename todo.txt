@@ -7,6 +7,9 @@ investigate using NativeLibrary class on
 lib stuff for other runtimes as a compatible
 subset of the same api?
 
+the total days part of the assembly version
+number got lost
+
 want a way to force the tests at the end of
 build.bat to use the nupkgs just built, not the
 ones in the nuget cache.  previous workaround
@@ -15,7 +18,10 @@ that's sad.
 
 a way to do the timestamp thing without having
 to write it into all the nuspec files?  maybe pass
-in the version on the nuget pack command?
+in the version on the nuget pack command?  in
+general, the right answer is to not put the
+generated nuspec files in git.  the ones generated
+by dotnet pack are not.
 
 provider.dynamic should probably check File.Exists
 (on things that are an absolute path) before trying
