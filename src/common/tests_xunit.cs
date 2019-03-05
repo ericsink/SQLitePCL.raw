@@ -55,23 +55,23 @@ namespace SQLitePCL.Tests
                 {
 					Assert.True(stmt.stmt_readonly() == 0);
 
-					Assert.Equal(stmt.bind_parameter_count(), 6);
+					Assert.Equal(6, stmt.bind_parameter_count());
 
-                    Assert.Equal(stmt.bind_parameter_index(":m"), 0);
+                    Assert.Equal(0, stmt.bind_parameter_index(":m"));
 
-                    Assert.Equal(stmt.bind_parameter_index(":x"), 1);
-                    Assert.Equal(stmt.bind_parameter_index(":v"), 2);
-                    Assert.Equal(stmt.bind_parameter_index(":t"), 3);
-                    Assert.Equal(stmt.bind_parameter_index(":d"), 4);
-                    Assert.Equal(stmt.bind_parameter_index(":b"), 5);
-                    Assert.Equal(stmt.bind_parameter_index(":q"), 6);
+                    Assert.Equal(1, stmt.bind_parameter_index(":x"));
+                    Assert.Equal(2, stmt.bind_parameter_index(":v"));
+                    Assert.Equal(3, stmt.bind_parameter_index(":t"));
+                    Assert.Equal(4, stmt.bind_parameter_index(":d"));
+                    Assert.Equal(5, stmt.bind_parameter_index(":b"));
+                    Assert.Equal(6, stmt.bind_parameter_index(":q"));
 
-                    Assert.Equal(stmt.bind_parameter_name(1), ":x");
-                    Assert.Equal(stmt.bind_parameter_name(2), ":v");
-                    Assert.Equal(stmt.bind_parameter_name(3), ":t");
-                    Assert.Equal(stmt.bind_parameter_name(4), ":d");
-                    Assert.Equal(stmt.bind_parameter_name(5), ":b");
-                    Assert.Equal(stmt.bind_parameter_name(6), ":q");
+                    Assert.Equal(":x", stmt.bind_parameter_name(1));
+                    Assert.Equal(":v", stmt.bind_parameter_name(2));
+                    Assert.Equal(":t", stmt.bind_parameter_name(3));
+                    Assert.Equal(":d", stmt.bind_parameter_name(4));
+                    Assert.Equal(":b", stmt.bind_parameter_name(5));
+                    Assert.Equal(":q", stmt.bind_parameter_name(6));
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace SQLitePCL.Tests
 
                     var ba2 = new byte[len + offset];
                     int rc = stmt.column_blob(0, ba2, offset);
-                    Assert.Equal(rc, 0);
+                    Assert.Equal(0, rc);
                     for (int i=0; i<ba1.Length; i++)
                     {
                         Assert.Equal(ba1[i], ba2[i + offset]);
@@ -212,7 +212,7 @@ namespace SQLitePCL.Tests
 
                     int passes = 10;
 
-                    Assert.Equal(len % passes, 0);
+                    Assert.Equal(0, len % passes);
 
                     int sublen = len / passes;
                     byte[] buf = new byte[sublen];
@@ -260,17 +260,17 @@ namespace SQLitePCL.Tests
 
 		    for (int i=0; i<40; i++)
 		    {
-		        Assert.Equal(blob2[i], 73);
+		        Assert.Equal(73, blob2[i]);
 		    }
 
 		    for (int i=40; i<60; i++)
 		    {
-		        Assert.Equal(blob2[i], 0);
+		        Assert.Equal(0, blob2[i]);
 		    }
 
 		    for (int i=60; i<100; i++)
 		    {
-		        Assert.Equal(blob2[i], 73);
+		        Assert.Equal(73, blob2[i]);
 		    }
                 }
             }
@@ -293,7 +293,7 @@ namespace SQLitePCL.Tests
 
 	        for (int i=0; i<100; i++)
 	        {
-		    Assert.Equal(blob[i], 0);
+		    Assert.Equal(0, blob[i]);
 	        }
 
                 using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 1))
@@ -316,17 +316,17 @@ namespace SQLitePCL.Tests
 
 	        for (int i=0; i<50; i++)
 	        {
-		    Assert.Equal(blob3[i], 0);
+		    Assert.Equal(0, blob3[i]);
 	        }
 
 	        for (int i=50; i<70; i++)
 	        {
-		    Assert.Equal(blob3[i], 73);
+		    Assert.Equal(73, blob3[i]);
 	        }
 
 	        for (int i=70; i<100; i++)
 	        {
-		    Assert.Equal(blob3[i], 0);
+		    Assert.Equal(0, blob3[i]);
 	        }
 
             }
@@ -356,7 +356,7 @@ namespace SQLitePCL.Tests
 
                     int passes = 10;
 
-                    Assert.Equal(len % passes, 0);
+                    Assert.Equal(0, len % passes);
 
                     int sublen = len / passes;
                     byte[] buf = new byte[sublen];
@@ -385,7 +385,7 @@ namespace SQLitePCL.Tests
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 int result = raw.sqlite3_db_readonly(db, "main");
-                Assert.Equal(result, 0);
+                Assert.Equal(0, result);
             }
         }
 
@@ -394,7 +394,7 @@ namespace SQLitePCL.Tests
         {
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                Assert.Equal(db.get_autocommit(), 1);
+                Assert.Equal(1, db.get_autocommit());
                 db.exec("BEGIN TRANSACTION;");
                 Assert.True(db.get_autocommit() == 0);
             }
@@ -407,7 +407,7 @@ namespace SQLitePCL.Tests
             {
                 db.exec("CREATE TABLE foo (x text);");
                 db.exec("INSERT INTO foo (x) VALUES ('b')");
-                Assert.Equal(db.last_insert_rowid(), 1);
+                Assert.Equal(1, db.last_insert_rowid());
             }
         }
 
@@ -436,10 +436,10 @@ namespace SQLitePCL.Tests
             string libversion = raw.sqlite3_libversion();
             Assert.True(libversion != null);
             Assert.True(libversion.Length > 0);
-            Assert.Equal(libversion[0], '3');
+            Assert.Equal('3', libversion[0]);
 
             int libversion_number = raw.sqlite3_libversion_number();
-            Assert.Equal(libversion_number / 1000000, 3);
+            Assert.Equal(3, libversion_number / 1000000);
         }
 
         [Fact]
@@ -453,10 +453,10 @@ namespace SQLitePCL.Tests
         public void test_enable_shared_cache()
         {
             int result = raw.sqlite3_enable_shared_cache(1);
-            Assert.Equal(result, raw.SQLITE_OK);
+            Assert.Equal(raw.SQLITE_OK, result);
 
             result = raw.sqlite3_enable_shared_cache(0);
-            Assert.Equal(result, raw.SQLITE_OK);
+            Assert.Equal(raw.SQLITE_OK, result);
         }
 
         [Fact]
@@ -531,7 +531,7 @@ namespace SQLitePCL.Tests
                     using (sqlite3_backup bak = db.backup_init("main", db2, "main"))
                     {
                         bak.step(-1);
-                        Assert.Equal(bak.remaining(), 0);
+                        Assert.Equal(0, bak.remaining());
                         Assert.True(bak.pagecount() > 0);
                     }
                 }
@@ -678,10 +678,10 @@ namespace SQLitePCL.Tests
                 
                 var rowid = db.last_insert_rowid();
                 byte[] blob = db.query_scalar<byte[]>("SELECT x FROM foo WHERE rowid=" + rowid);
-                Assert.Equal(blob.Length, 10);
+                Assert.Equal(10, blob.Length);
                 foreach (var b in blob)
                 {
-                    Assert.Equal(b, 0);
+                    Assert.Equal(0, b);
                 }
             }
         }
@@ -765,7 +765,7 @@ namespace SQLitePCL.Tests
               
                 db.db_status(raw.SQLITE_DBSTATUS_CACHE_USED, out current, out highwater, 0);
                 Assert.True(current > 0);
-                Assert.Equal(highwater, 0);
+                Assert.Equal(0, highwater);
             }
         }
 
@@ -804,7 +804,7 @@ namespace SQLitePCL.Tests
                 db.exec("INSERT INTO foo (x) VALUES (2);");
                 db.exec("INSERT INTO foo (x) VALUES (3);");
                 int c = db.query_scalar<int>("SELECT COUNT(*) FROM foo");
-                Assert.Equal(c, 3);
+                Assert.Equal(3, c);
             }
         }
 
@@ -851,13 +851,13 @@ namespace SQLitePCL.Tests
 							throw new NotImplementedException();
 					}
 
-					Assert.Equal(db.next_stmt(null), null);
+					Assert.Equal(null, db.next_stmt(null));
 					using (sqlite3_stmt stmt = db.prepare("SELECT 5;"))
 					{
-						Assert.Equal(db.next_stmt(null), stmt);
-						Assert.Equal(db.next_stmt(stmt), null);
+						Assert.Equal(stmt, db.next_stmt(null));
+						Assert.Equal(null, db.next_stmt(stmt));
 					}
-					Assert.Equal(db.next_stmt(null), null);
+					Assert.Equal(null, db.next_stmt(null));
 				}
 			}
 
@@ -910,7 +910,7 @@ namespace SQLitePCL.Tests
                 {
                     Assert.Equal(sql, stmt.sql());
 
-                    Assert.Equal(stmt.stmt_busy(), 0);
+                    Assert.Equal(0, stmt.stmt_busy());
                     stmt.step();
                     Assert.True(stmt.stmt_busy() != 0);
                     stmt.step();
@@ -951,25 +951,25 @@ namespace SQLitePCL.Tests
         {
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                Assert.Equal(db.total_changes(), 0);
-                Assert.Equal(db.changes(), 0);
+                Assert.Equal(0, db.total_changes());
+                Assert.Equal(0, db.changes());
 
                 db.exec("CREATE TABLE foo (x int);");
-                Assert.Equal(db.total_changes(), 0);
-                Assert.Equal(db.changes(), 0);
+                Assert.Equal(0, db.total_changes());
+                Assert.Equal(0, db.changes());
 
                 db.exec("INSERT INTO foo (x) VALUES (1);");
-                Assert.Equal(db.total_changes(), 1);
-                Assert.Equal(db.changes(), 1);
+                Assert.Equal(1, db.total_changes());
+                Assert.Equal(1, db.changes());
                 
                 db.exec("INSERT INTO foo (x) VALUES (2);");
                 db.exec("INSERT INTO foo (x) VALUES (3);");
-                Assert.Equal(db.total_changes(), 3);
-                Assert.Equal(db.changes(), 1);
+                Assert.Equal(3, db.total_changes());
+                Assert.Equal(1, db.changes());
 
                 db.exec("UPDATE foo SET x=5;");
-                Assert.Equal(db.total_changes(), 6);
-                Assert.Equal(db.changes(), 3);
+                Assert.Equal(6, db.total_changes());
+                Assert.Equal(3, db.changes());
             }
         }
 
@@ -1003,7 +1003,7 @@ namespace SQLitePCL.Tests
                 string errmsg;
                 db.exec("CREATE TABLE foo (x int);INSERT INTO foo (x) VALUES (1);", null, null, out errmsg);
                 int c = db.query_scalar<int>("SELECT COUNT(*) FROM foo");
-                Assert.Equal(c, 1);
+                Assert.Equal(1, c);
             }
         }
 
@@ -1028,11 +1028,11 @@ namespace SQLitePCL.Tests
     
                         Assert.True(stmt.stmt_readonly() != 0);
     
-                        Assert.Equal(stmt.column_database_name(0), "main");
-                        Assert.Equal(stmt.column_table_name(0), "foo");
-                        Assert.Equal(stmt.column_origin_name(0), "x");
-                        Assert.Equal(stmt.column_name(0), "mario");
-                        Assert.Equal(stmt.column_decltype(0), "int");
+                        Assert.Equal("main", stmt.column_database_name(0));
+                        Assert.Equal("foo", stmt.column_table_name(0));
+                        Assert.Equal("x", stmt.column_origin_name(0));
+                        Assert.Equal("mario", stmt.column_name(0));
+                        Assert.Equal("int", stmt.column_decltype(0));
                     }
                 }
             }
@@ -1098,21 +1098,21 @@ namespace SQLitePCL.Tests
                             {
                                 // When creating a table an insert is first done.
                                 case raw.SQLITE_INSERT:
-                                    Assert.Equal(param0, "sqlite_master");
+                                    Assert.Equal("sqlite_master", param0);
                                     Assert.Null(param1);
-                                    Assert.Equal(dbName, "main");
+                                    Assert.Equal("main", dbName);
                                     Assert.Null(inner_most_trigger_or_view);
                                     break;
                                 case raw.SQLITE_CREATE_TABLE:
-                                    Assert.Equal(param0, "foo");
+                                    Assert.Equal("foo", param0);
                                     Assert.Null(param1);
-                                    Assert.Equal(dbName, "main");
+                                    Assert.Equal("main", dbName);
                                     Assert.Null(inner_most_trigger_or_view);
                                     break;  
                                 case raw.SQLITE_READ:
                                     Assert.NotNull(param0);
                                     Assert.NotNull(param1);
-                                    Assert.Equal(dbName, "main");
+                                    Assert.Equal("main", dbName);
                                     Assert.Null(inner_most_trigger_or_view);
                                     break;  
                             }
@@ -1136,7 +1136,7 @@ namespace SQLitePCL.Tests
                                 case raw.SQLITE_READ:
                                     Assert.NotNull(param0);
                                     Assert.NotNull(param1);
-                                    Assert.Equal(dbName, "main");
+                                    Assert.Equal("main", dbName);
 
                                     // A Hack. Goal is to prove that inner_most_trigger_or_view is not null when it is returned in the callback
                                     if (param0 == "foo") { Assert.NotNull(inner_most_trigger_or_view); }
@@ -1193,16 +1193,16 @@ namespace SQLitePCL.Tests
                 db.exec("INSERT INTO foo (x,v,t,d,b,q) VALUES (?,?,?,?,?,?)", 32, 44, "hello", 3.14, blob, null);
                 foreach (row r in db.query<row>("SELECT x,v,t,d,b,q FROM foo;"))
                 {
-                    Assert.Equal(r.x, 32);
-                    Assert.Equal(r.v, 44);
-                    Assert.Equal(r.t, "hello");
-                    Assert.Equal(r.d, 3.14);
-                    Assert.Equal(r.b.Length, blob.Length);
+                    Assert.Equal(32, r.x);
+                    Assert.Equal(44, r.v);
+                    Assert.Equal("hello", r.t);
+                    Assert.Equal(3.14, r.d);
+                    Assert.Equal(blob.Length, r.b.Length);
                     for (int i=0; i<blob.Length; i++)
                     {
                         Assert.Equal(r.b[i], blob[i]);
                     }
-                    Assert.Equal(r.q, null);
+                    Assert.Equal(null, r.q);
                 }
                 using (sqlite3_stmt stmt = db.prepare("SELECT x,v,t,d,b,q FROM foo;"))
                 {
@@ -1210,11 +1210,11 @@ namespace SQLitePCL.Tests
 
                     Assert.Equal(stmt.db_handle(), db);
 
-                    Assert.Equal(stmt.column_int(0), 32);
-                    Assert.Equal(stmt.column_int64(1), 44);
-                    Assert.Equal(stmt.column_text(2), "hello");
-                    Assert.Equal(stmt.column_double(3), 3.14);
-                    Assert.Equal(stmt.column_bytes(4), blob.Length);
+                    Assert.Equal(32, stmt.column_int(0));
+                    Assert.Equal(44, stmt.column_int64(1));
+                    Assert.Equal("hello", stmt.column_text(2));
+                    Assert.Equal(3.14, stmt.column_double(3));
+                    Assert.Equal(blob.Length, stmt.column_bytes(4));
                     byte[] b2 = stmt.column_blob(4);
                     Assert.Equal(b2.Length, blob.Length);
                     for (int i=0; i<blob.Length; i++)
@@ -1224,12 +1224,12 @@ namespace SQLitePCL.Tests
 
                     Assert.Equal(stmt.column_type(5), raw.SQLITE_NULL);
 
-                    Assert.Equal(stmt.column_name(0), "x");
-                    Assert.Equal(stmt.column_name(1), "v");
-                    Assert.Equal(stmt.column_name(2), "t");
-                    Assert.Equal(stmt.column_name(3), "d");
-                    Assert.Equal(stmt.column_name(4), "b");
-                    Assert.Equal(stmt.column_name(5), "q");
+                    Assert.Equal("x", stmt.column_name(0));
+                    Assert.Equal("v", stmt.column_name(1));
+                    Assert.Equal("t", stmt.column_name(2));
+                    Assert.Equal("d", stmt.column_name(3));
+                    Assert.Equal("b", stmt.column_name(4));
+                    Assert.Equal("q", stmt.column_name(5));
                 }
             }
         }
@@ -1249,16 +1249,16 @@ namespace SQLitePCL.Tests
                 int autoInc;
 
                 raw.sqlite3_table_column_metadata(db, "main", "foo", "x", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
-                Assert.Equal(dataType, "int");
-                Assert.Equal(collSeq, "BINARY");
+                Assert.Equal("int", dataType);
+                Assert.Equal("BINARY", collSeq);
                 Assert.True(notNull > 0);
-                Assert.Equal(primaryKey, 0);
-                Assert.Equal(autoInc, 0);
+                Assert.Equal(0, primaryKey);
+                Assert.Equal(0, autoInc);
 
                 raw.sqlite3_table_column_metadata(db, "main", "foo", "rowid", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
-                Assert.Equal(dataType, "integer");
-                Assert.Equal(collSeq, "BINARY");
-                Assert.Equal(notNull, 0);
+                Assert.Equal("integer", dataType);
+                Assert.Equal("BINARY", collSeq);
+                Assert.Equal(0, notNull);
                 Assert.True(primaryKey > 0);
                 Assert.True(primaryKey > 0);
             }
@@ -1273,7 +1273,7 @@ namespace SQLitePCL.Tests
 
                 delegate_progress handler = obj => 
                     {
-                        Assert.Equal(obj, "user_data");
+                        Assert.Equal("user_data", obj);
                         count++;
                         return 0; 
                     };
@@ -1299,7 +1299,7 @@ namespace SQLitePCL.Tests
                     }
                     catch (ugly.sqlite3_exception e)
                     {
-                        Assert.Equal(e.errcode, raw.SQLITE_INTERRUPT);
+                        Assert.Equal(raw.SQLITE_INTERRUPT, e.errcode);
                     }
                 }
 
@@ -1324,10 +1324,10 @@ namespace SQLitePCL.Tests
 
         private static int my_cb(object v, string[] values, string[] names)
         {
-            Assert.Equal(values.Length, 1);
-            Assert.Equal(names.Length, 1);
-            Assert.Equal(names[0], "x");
-            Assert.Equal(values[0].Length, 1);
+            Assert.Equal(1, values.Length);
+            Assert.Equal(1, names.Length);
+            Assert.Equal("x", names[0]);
+            Assert.Equal(1, values[0].Length);
 
             work w = v as work;
             w.count++;
@@ -1349,7 +1349,7 @@ namespace SQLitePCL.Tests
                 string errmsg;
                 work w = new work();
                 db.exec("SELECT x FROM foo", my_cb, w, out errmsg);
-                Assert.Equal(w.count, 5);
+                Assert.Equal(5, w.count);
             }
         }
     }
@@ -1379,10 +1379,10 @@ namespace SQLitePCL.Tests
                 db.exec("INSERT INTO foo (x) VALUES ('e')");
                 db.exec("INSERT INTO foo (x) VALUES ('f')");
                 string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
-                Assert.Equal(top, "e");
+                Assert.Equal("e", top);
 		GC.Collect();
                 string top2 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
-                Assert.Equal(top2, "e");
+                Assert.Equal("e", top2);
             }
         }
 
@@ -1518,7 +1518,7 @@ namespace SQLitePCL.Tests
 
         private static void cube(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
-            Assert.Equal(args.Length, 1);
+            Assert.Equal(1, args.Length);
             long x = args[0].value_int64();
             Assert.Equal(x, val);
             ctx.result_int64(x * x * x);
@@ -1747,7 +1747,7 @@ namespace SQLitePCL.Tests
 
         private static void sum_plus_count_step(sqlite3_context ctx, object user_data, sqlite3_value[] args)
         {
-            Assert.Equal(args.Length, 1);
+            Assert.Equal(1, args.Length);
 
             if (ctx.state == null)
             {
@@ -1782,10 +1782,10 @@ namespace SQLitePCL.Tests
                     db.exec("INSERT INTO foo (x) VALUES (?);", i);
                 }
                 long c = db.query_scalar<long>("SELECT sum_plus_count(x) FROM foo;");
-                Assert.Equal(c, (0 + 1 + 2 + 3 + 4) + 5);
+                Assert.Equal((0 + 1 + 2 + 3 + 4) + 5, c);
 		GC.Collect();
                 long c2 = db.query_scalar<long>("SELECT sum_plus_count(x) FROM foo;");
-                Assert.Equal(c2, (0 + 1 + 2 + 3 + 4) + 5);
+                Assert.Equal((0 + 1 + 2 + 3 + 4) + 5, c2);
             }
         }
     }
@@ -1855,11 +1855,11 @@ namespace SQLitePCL.Tests
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 work w = new work();
-                Assert.Equal(w.count_commits, 0);
-                Assert.Equal(w.count_rollbacks, 0);
-                Assert.Equal(w.count_updates, 0);
-                Assert.Equal(w.count_traces, 0);
-                Assert.Equal(w.count_profiles, 0);
+                Assert.Equal(0, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(0, w.count_updates);
+                Assert.Equal(0, w.count_traces);
+                Assert.Equal(0, w.count_profiles);
 
                 db.commit_hook(new delegate_commit(my_commit_hook), w);
                 db.rollback_hook(new delegate_rollback(my_rollback_hook), w);
@@ -1871,43 +1871,43 @@ namespace SQLitePCL.Tests
 
                 db.exec("CREATE TABLE foo (x int);");
 
-                Assert.Equal(w.count_commits, 1);
-                Assert.Equal(w.count_rollbacks, 0);
-                Assert.Equal(w.count_updates, 0);
-                Assert.Equal(w.count_traces, 1);
-                Assert.Equal(w.count_profiles, 1);
+                Assert.Equal(1, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(0, w.count_updates);
+                Assert.Equal(1, w.count_traces);
+                Assert.Equal(1, w.count_profiles);
 
                 db.exec("INSERT INTO foo (x) VALUES (1);");
 
-                Assert.Equal(w.count_commits, 2);
-                Assert.Equal(w.count_rollbacks, 0);
-                Assert.Equal(w.count_updates, 1);
-                Assert.Equal(w.count_traces, 2);
-                Assert.Equal(w.count_profiles, 2);
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(1, w.count_updates);
+                Assert.Equal(2, w.count_traces);
+                Assert.Equal(2, w.count_profiles);
 
                 db.exec("BEGIN TRANSACTION;");
 
-                Assert.Equal(w.count_commits, 2);
-                Assert.Equal(w.count_rollbacks, 0);
-                Assert.Equal(w.count_updates, 1);
-                Assert.Equal(w.count_traces, 3);
-                Assert.Equal(w.count_profiles, 3);
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(1, w.count_updates);
+                Assert.Equal(3, w.count_traces);
+                Assert.Equal(3, w.count_profiles);
 
                 db.exec("INSERT INTO foo (x) VALUES (2);");
 
-                Assert.Equal(w.count_commits, 2);
-                Assert.Equal(w.count_rollbacks, 0);
-                Assert.Equal(w.count_updates, 2);
-                Assert.Equal(w.count_traces, 4);
-                Assert.Equal(w.count_profiles, 4);
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(2, w.count_updates);
+                Assert.Equal(4, w.count_traces);
+                Assert.Equal(4, w.count_profiles);
 
                 db.exec("ROLLBACK TRANSACTION;");
 
-                Assert.Equal(w.count_commits, 2);
-                Assert.Equal(w.count_rollbacks, 1);
-                Assert.Equal(w.count_updates, 2);
-                Assert.Equal(w.count_traces, 5);
-                Assert.Equal(w.count_profiles, 5);
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(1, w.count_rollbacks);
+                Assert.Equal(2, w.count_updates);
+                Assert.Equal(5, w.count_traces);
+                Assert.Equal(5, w.count_profiles);
 
             }
         }
@@ -1933,27 +1933,27 @@ namespace SQLitePCL.Tests
 
 				GC.Collect();
 
-                Assert.Equal(count_commits, 1);
+                Assert.Equal(1, count_commits);
 
 				GC.Collect();
 
                 db.exec("INSERT INTO foo (x) VALUES (1);");
 
-                Assert.Equal(count_commits, 2);
+                Assert.Equal(2, count_commits);
 
                 db.exec("BEGIN TRANSACTION;");
 
 				GC.Collect();
 
-                Assert.Equal(count_commits, 2);
+                Assert.Equal(2, count_commits);
 
                 db.exec("INSERT INTO foo (x) VALUES (2);");
 
-                Assert.Equal(count_commits, 2);
+                Assert.Equal(2, count_commits);
 
                 db.exec("ROLLBACK TRANSACTION;");
 
-                Assert.Equal(count_commits, 2);
+                Assert.Equal(2, count_commits);
 
 			}
 		}
