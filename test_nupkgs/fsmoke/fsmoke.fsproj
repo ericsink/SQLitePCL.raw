@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" />
-    <PackageReference Include="sqlitepclraw.ugly" />
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(PackageVersionForTesting)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(PackageVersionForTesting)" />
   </ItemGroup>
 
 </Project>

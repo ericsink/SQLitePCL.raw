@@ -1,13 +1,9 @@
 
-why use .targets to update the packagereferences
-for tests?  maybe just put $(PackageVersionForTesting)
-in the packagereference tag?
-
 .editorconfig
 
 review EntryPoint attribute
 
-dotnet-format
+dotnet-format.  but won't work for provider.tt.
 
 should the other batteries also build on a placeholder
 instead of the actual ios lib assembly?  allows
