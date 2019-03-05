@@ -15,5 +15,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>$(MSBuildThisFileDirectory)nupkgs</PackageOutputPath>
     <PackageVersionForTesting>$(Version)</PackageVersionForTesting>
+    <depversion_xunit>2.4.1</depversion_xunit>
+    <depversion_xunit_runner_visualstudio>2.4.1</depversion_xunit_runner_visualstudio>
+    <depversion_microsoft_net_test_sdk>15.0.0</depversion_microsoft_net_test_sdk>
   </PropertyGroup>
 </Project>

@@ -10,9 +10,9 @@
 	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="microsoft.net.test.sdk" Version="15.0.0" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
+    <PackageReference Include="xunit" Version="$(depversion_xunit)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />
   </ItemGroup>
 
   <ItemGroup>

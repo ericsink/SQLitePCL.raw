@@ -1,4 +1,10 @@
 
+review all those warnings coming from xunit
+
+why use .targets to update the packagereferences
+for tests?  maybe just put $(PackageVersionForTesting)
+in the packagereference tag?
+
 .editorconfig
 
 review EntryPoint attribute

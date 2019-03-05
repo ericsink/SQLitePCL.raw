@@ -345,6 +345,10 @@ public static class gen
             f.WriteElementString("PackageOutputPath", string.Format("$(MSBuildThisFileDirectory){0}", nupkgs_dir_name));
             f.WriteElementString("PackageVersionForTesting", "$(Version)");
 
+            f.WriteElementString("depversion_xunit", "2.4.1");
+            f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
+            f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
+
             f.WriteEndElement(); // PropertyGroup
             f.WriteEndElement(); // project
 
