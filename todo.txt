@@ -1,4 +1,9 @@
 
+get rid of bat and chg to something cross-platform
+
+gen_nuspec should write the same EOL convention
+on all platforms
+
 .editorconfig
 
 review EntryPoint attribute
