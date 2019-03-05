@@ -1,4 +1,6 @@
 
+.editorconfig
+
 review EntryPoint attribute
 
 dotnet-format
