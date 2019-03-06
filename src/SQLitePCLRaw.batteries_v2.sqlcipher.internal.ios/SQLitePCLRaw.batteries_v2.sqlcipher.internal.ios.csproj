@@ -13,7 +13,7 @@
 </ItemGroup>
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.lib.sqlcipher.ios.placeholder\SQLitePCLRaw.lib.sqlcipher.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.lib.sqlcipher.ios.placeholder\SQLitePCLRaw.lib.sqlcipher.ios.placeholder.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.provider.internal\SQLitePCLRaw.provider.internal.csproj" />
 </ItemGroup>
 

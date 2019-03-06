@@ -3,6 +3,7 @@
 		<TargetFrameworks>xamarin.ios10</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
+		<AssemblyName>SQLitePCLRaw.lib.sqlcipher</AssemblyName>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.sqlcipher.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 

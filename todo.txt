@@ -1,4 +1,11 @@
 
+version stuff could now be separated out of
+gen_nuspecs into its own gen thing
+
+pack.bat and push.bat should go away with build.bat
+
+default vim mode for F# sucks
+
 get rid of bat and chg to something cross-platform
 
 gen_nuspec should write the same EOL convention
@@ -42,9 +49,6 @@ clean.bat
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.
-
-version stuff could now be separated out of
-gen_nuspecs into its own gen thing
 
 with an SDK-style net461 project, how to control
 the cpu target of the build?  msbuild prop Platform?
