@@ -1098,30 +1098,6 @@ public static class gen
             gen_nuspec_bundle_zetetic(dir_nuspecs, rel_path_src);
         }
 
-
-        using (TextWriter tw = new StreamWriter(Path.Combine(dir_nuspecs, "pack.bat")))
-        {
-            var rel_path_nupkgs = Path.Combine("..", nupkgs_dir_name);
-
-            tw.WriteLine("mkdir empty");
-
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.lib.e_sqlite3.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.lib.e_sqlcipher.nuspec");
-            tw.WriteLine($"if %errorlevel% neq 0 exit /b %errorlevel%");
-
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_green.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_e_sqlite3.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_e_sqlcipher.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_zetetic.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-            tw.WriteLine($"..\\nuget pack -properties version={NUSPEC_VERSION} -OutputDirectory {rel_path_nupkgs} {gen.ROOT_NAME}.bundle_winsqlite3.nuspec");
-            tw.WriteLine("if %errorlevel% neq 0 exit /b %errorlevel%");
-        }
-
         using (TextWriter tw = new StreamWriter(Path.Combine(dir_nupkgs, "push.bat")))
         {
             const string src = "https://www.nuget.org/api/v2/package";

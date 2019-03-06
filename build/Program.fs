@@ -104,6 +104,7 @@ let main argv =
         ver.Value
     printfn "%s" version
 
+    Directory.CreateDirectory(Path.Combine(dir_nupkgs, "empty"))
     let nuspecs = [
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
