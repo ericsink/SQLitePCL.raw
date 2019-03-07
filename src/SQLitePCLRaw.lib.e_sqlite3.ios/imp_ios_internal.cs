@@ -16,7 +16,6 @@
 
 [assembly: ObjCRuntime.LinkWith(
         "e_sqlite3.a",
-        LinkTarget = ObjCRuntime.LinkTarget.Simulator | ObjCRuntime.LinkTarget.Simulator64 | ObjCRuntime.LinkTarget.ArmV7 | ObjCRuntime.LinkTarget.ArmV7s | ObjCRuntime.LinkTarget.Arm64,
         ForceLoad=true,
         LinkerFlags="",
         Frameworks=""
