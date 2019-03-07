@@ -19,6 +19,7 @@ let main argv =
     exec "dotnet" "run .." (Path.Combine(top, "gen_nuspecs"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
+    Directory.CreateDirectory(dir_nupkgs)
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
@@ -104,7 +105,8 @@ let main argv =
 
     printfn "%s" version
 
-    Directory.CreateDirectory(Path.Combine(dir_nupkgs, "empty"))
+    let dir_nuspecs = (Path.Combine(top, "nuspecs"))
+    Directory.CreateDirectory(Path.Combine(dir_nuspecs, "empty"))
     let nuspecs = [
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
@@ -116,7 +118,6 @@ let main argv =
         ]
     for s in nuspecs do
         let nuget_exe = Path.Combine(top, "nuget.exe")
-        let dir_nuspecs = (Path.Combine(top, "nuspecs"))
         let nuspec_name = sprintf "SQLitePCLRaw.%s.nuspec" s
         let rel_src_path = Path.Combine("..", "src")
         let rel_cb_bin_path = Path.Combine("..", "..", "cb", "bld", "bin")

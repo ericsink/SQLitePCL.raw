@@ -967,12 +967,8 @@ public static class gen
     public static void Main(string[] args)
     {
         string dir_root = Path.GetFullPath(args[0]);
-        var nupkgs_dir_name = "nupkgs";
-        var dir_nupkgs = Path.Combine(dir_root, nupkgs_dir_name);
+
         var dir_nuspecs = Path.Combine(dir_root, "nuspecs");
-
-
-        Directory.CreateDirectory(dir_nupkgs);
         Directory.CreateDirectory(dir_nuspecs);
 
         {
