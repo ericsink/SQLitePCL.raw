@@ -1,4 +1,8 @@
 
+why is empty in nupkgs?
+
+for ios, LinkWith.LinkTarget is no longer needed
+
 explore bundle native code in embedded resource,
 extract to known location and use provider dynamic.
 would allow builds to be done entirely without

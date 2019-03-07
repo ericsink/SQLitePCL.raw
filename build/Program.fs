@@ -91,13 +91,17 @@ let main argv =
         exec "dotnet" "restore" dir
         exec "msbuild" "/p:Configuration=Release" dir
 
-    // read the Version from Directory.Build.props
-    let version =
+    let get_build_prop p =
         let path_xml = Path.Combine(top, "Directory.Build.props")
         let xml = XElement.Load(path_xml);
         let props = xml.Elements(XName.Get "PropertyGroup").First()
-        let ver = props.Elements(XName.Get "Version").First()
+        let ver = props.Elements(XName.Get p).First()
         ver.Value
+
+    let version = get_build_prop "Version"
+    //let cb_bin_path = get_build_prop "cb_bin_path"
+    //let src_path = get_build_prop "src_path"
+
     printfn "%s" version
 
     Directory.CreateDirectory(Path.Combine(dir_nupkgs, "empty"))
@@ -114,7 +118,9 @@ let main argv =
         let nuget_exe = Path.Combine(top, "nuget.exe")
         let dir_nuspecs = (Path.Combine(top, "nuspecs"))
         let nuspec_name = sprintf "SQLitePCLRaw.%s.nuspec" s
-        let nuget_args = sprintf "pack -properties version=%s -OutputDirectory %s %s" version dir_nupkgs nuspec_name
+        let rel_src_path = Path.Combine("..", "src")
+        let rel_cb_bin_path = Path.Combine("..", "..", "cb", "bld", "bin")
+        let nuget_args = sprintf "pack -properties version=%s;src_path=%s;cb_bin_path=%s -OutputDirectory %s %s" version rel_src_path rel_cb_bin_path dir_nupkgs nuspec_name
         exec nuget_exe nuget_args dir_nuspecs
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))

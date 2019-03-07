@@ -141,7 +141,7 @@ public static class gen
         {
             case TFM.ANDROID:
                 return Path.Combine(
-                    mt_dir,
+                    "$src_path$",
                     dir_name,
                     "bin",
                     "Release",
@@ -152,7 +152,7 @@ public static class gen
 
             default:
                 return Path.Combine(
-                    mt_dir,
+                    "$src_path$",
                     dir_name,
                     "bin",
                     "Release",
@@ -291,7 +291,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DLL);
-        return Path.Combine(cb_bin, dir_name, "win", toolset, flavor, arch, lib_name);
+        return Path.Combine("$cb_bin_path$", dir_name, "win", toolset, flavor, arch, lib_name);
     }
 
     static string make_cb_path_linux(
@@ -302,7 +302,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.SO);
-        return Path.Combine(cb_bin, dir_name, "linux", cpu, lib_name);
+        return Path.Combine("$cb_bin_path$", dir_name, "linux", cpu, lib_name);
     }
 
     static string make_cb_path_mac(
@@ -312,7 +312,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
-        return Path.Combine(cb_bin, dir_name, "mac", lib_name);
+        return Path.Combine("$cb_bin_path$", dir_name, "mac", lib_name);
     }
 
     static void write_nuspec_file_entry_native_linux(

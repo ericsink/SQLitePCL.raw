@@ -33,8 +33,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
-    <file src="..\src\SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
-    <file src="..\src\SQLitePCLRaw.batteries_v2.e_sqlcipher.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlcipher.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlcipher.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlcipher.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
   </files>
 </package>
