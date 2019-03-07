@@ -88,11 +88,7 @@ let main argv =
     for s in msbuild_dirs do
         let dir_name = sprintf "SQLitePCLRaw.%s" s
         let dir = (Path.Combine(top, "src", dir_name))
-        // TODO would dotnet restore work instead of nuget.exe here?
-        let nuget_exe = Path.Combine(top, "nuget.exe")
-        let csproj = sprintf "SQLitePCLRaw.%s.csproj" s
-        let nuget_args = sprintf "restore %s" csproj
-        exec nuget_exe nuget_args dir
+        exec "dotnet" "restore" dir
         exec "msbuild" "/p:Configuration=Release" dir
 
     // read the Version from Directory.Build.props
