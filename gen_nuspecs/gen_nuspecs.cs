@@ -277,7 +277,6 @@ public static class gen
     }
 
     static string make_cb_path_win(
-        string cb_bin,
         WhichLib lib,
         string toolset,
         string flavor,
@@ -290,7 +289,6 @@ public static class gen
     }
 
     static string make_cb_path_linux(
-        string cb_bin,
         WhichLib lib,
         string cpu
         )
@@ -301,7 +299,6 @@ public static class gen
     }
 
     static string make_cb_path_mac(
-        string cb_bin,
         WhichLib lib
         )
     {
@@ -312,7 +309,6 @@ public static class gen
 
     static void write_nuspec_file_entry_native_linux(
         WhichLib lib,
-        string cb_bin,
         string cpu_in_cb,
         string rid,
         XmlWriter f
@@ -320,7 +316,7 @@ public static class gen
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.SO);
         write_nuspec_file_entry_native(
-            make_cb_path_linux(cb_bin, lib, cpu_in_cb),
+            make_cb_path_linux(lib, cpu_in_cb),
             rid,
             filename,
             f
@@ -329,13 +325,12 @@ public static class gen
 
     static void write_nuspec_file_entry_native_mac(
         WhichLib lib,
-        string cb_bin,
         XmlWriter f
         )
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
         write_nuspec_file_entry_native(
-            make_cb_path_mac(cb_bin, lib),
+            make_cb_path_mac(lib),
             "osx-x64",
             filename,
             f
@@ -344,7 +339,6 @@ public static class gen
 
     static void write_nuspec_file_entry_native_win(
         WhichLib lib,
-        string cb_bin,
         string toolset,
         string flavor,
         string cpu,
@@ -354,7 +348,7 @@ public static class gen
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
         write_nuspec_file_entry_native(
-            make_cb_path_win(cb_bin, lib, toolset, flavor, cpu),
+            make_cb_path_win(lib, toolset, flavor, cpu),
             rid,
             filename,
             f
@@ -363,7 +357,6 @@ public static class gen
 
     static void write_nuspec_file_entry_native_uwp(
         WhichLib lib,
-        string cb_bin,
         string toolset,
         string flavor,
         string cpu,
@@ -373,7 +366,7 @@ public static class gen
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
         write_nuspec_file_entry_nativeassets(
-            make_cb_path_win(cb_bin, lib, toolset, flavor, cpu),
+            make_cb_path_win(lib, toolset, flavor, cpu),
             rid,
             TFM.UWP,
             filename,
@@ -383,31 +376,30 @@ public static class gen
 
     static void write_nuspec_file_entries_from_cb(
         WhichLib lib,
-        string cb_bin,
         XmlWriter f
         )
     {
-        write_nuspec_file_entry_native_win(lib, cb_bin, "v141", "plain", "x86", "win-x86", f);
-        write_nuspec_file_entry_native_win(lib, cb_bin, "v141", "plain", "x64", "win-x64", f);
-        write_nuspec_file_entry_native_win(lib, cb_bin, "v141", "plain", "arm", "win-arm", f);
-        write_nuspec_file_entry_native_win(lib, cb_bin, "v141", "plain", "arm64", "win-arm64", f);
-        write_nuspec_file_entry_native_uwp(lib, cb_bin, "v141", "appcontainer", "arm64", "win10-arm64", f);
-        write_nuspec_file_entry_native_uwp(lib, cb_bin, "v141", "appcontainer", "arm", "win10-arm", f);
-        write_nuspec_file_entry_native_uwp(lib, cb_bin, "v141", "appcontainer", "x64", "win10-x64", f);
-        write_nuspec_file_entry_native_uwp(lib, cb_bin, "v141", "appcontainer", "x86", "win10-x86", f);
+        write_nuspec_file_entry_native_win(lib, "v141", "plain", "x86", "win-x86", f);
+        write_nuspec_file_entry_native_win(lib, "v141", "plain", "x64", "win-x64", f);
+        write_nuspec_file_entry_native_win(lib, "v141", "plain", "arm", "win-arm", f);
+        write_nuspec_file_entry_native_win(lib, "v141", "plain", "arm64", "win-arm64", f);
+        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "arm64", "win10-arm64", f);
+        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "arm", "win10-arm", f);
+        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "x64", "win10-x64", f);
+        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "x86", "win10-x86", f);
 
-        write_nuspec_file_entry_native_mac(lib, cb_bin, f);
+        write_nuspec_file_entry_native_mac(lib, f);
 
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "x64", "linux-x64", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "x86", "linux-x86", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "armhf", "linux-arm", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "armsf", "linux-armel", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "arm64", "linux-arm64", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "linux-musl-x64", f);
-        write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "alpine-x64", f);
+        write_nuspec_file_entry_native_linux(lib, "x64", "linux-x64", f);
+        write_nuspec_file_entry_native_linux(lib, "x86", "linux-x86", f);
+        write_nuspec_file_entry_native_linux(lib, "armhf", "linux-arm", f);
+        write_nuspec_file_entry_native_linux(lib, "armsf", "linux-armel", f);
+        write_nuspec_file_entry_native_linux(lib, "arm64", "linux-arm64", f);
+        write_nuspec_file_entry_native_linux(lib, "musl-x64", "linux-musl-x64", f);
+        write_nuspec_file_entry_native_linux(lib, "musl-x64", "alpine-x64", f);
     }
 
-    private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin)
+    private static void gen_nuspec_lib_e_sqlite3(string top)
     {
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
@@ -441,7 +433,7 @@ public static class gen
                     f
                     );
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, cb_bin, f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, f);
 
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(top, tname);
@@ -465,7 +457,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin)
+    private static void gen_nuspec_lib_e_sqlcipher(string top)
     {
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
@@ -499,7 +491,7 @@ public static class gen
                     f
                     );
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, cb_bin, f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, f);
 
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(top, tname);
@@ -984,12 +976,8 @@ public static class gen
         Directory.CreateDirectory(dir_nuspecs);
 
         {
-            {
-                var rel_path_cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
-                gen_nuspec_lib_e_sqlite3(dir_nuspecs, rel_path_cb_bin);
-                gen_nuspec_lib_e_sqlcipher(dir_nuspecs, rel_path_cb_bin);
-            }
-
+            gen_nuspec_lib_e_sqlite3(dir_nuspecs);
+            gen_nuspec_lib_e_sqlcipher(dir_nuspecs);
             gen_nuspec_bundle_green(dir_nuspecs);
             gen_nuspec_bundle_e_sqlite3(dir_nuspecs);
             gen_nuspec_bundle_winsqlite3(dir_nuspecs);
