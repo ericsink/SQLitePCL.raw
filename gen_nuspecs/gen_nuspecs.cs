@@ -131,7 +131,6 @@ public static class gen
     }
 
     static string make_mt_path(
-        string mt_dir,
         string dir_name,
         string assembly_name,
         TFM tfm
@@ -163,13 +162,11 @@ public static class gen
     }
 
     static string make_mt_path_batteries(
-        string mt_dir,
         string basename,
         TFM tfm
         )
     {
         return make_mt_path(
-            mt_dir,
             $"SQLitePCLRaw.batteries_v2.{basename}",
             "SQLitePCLRaw.batteries_v2",
             tfm
@@ -177,36 +174,34 @@ public static class gen
     }
 
     static string make_mt_path(
-        string mt_dir,
         string name,
         TFM tfm
         )
     {
-        return make_mt_path(mt_dir, name, name, tfm);
+        return make_mt_path(name, name, tfm);
     }
 
-    private static void write_nuspec_file_entry_lib_mt(string mt_dir, string name, TFM tfm, XmlWriter f)
+    private static void write_nuspec_file_entry_lib_mt(string name, TFM tfm, XmlWriter f)
     {
         write_nuspec_file_entry(
-            make_mt_path(mt_dir, name, tfm),
+            make_mt_path(name, tfm),
             string.Format("lib\\{0}\\", tfm.AsString()),
             f
             );
     }
 
-    private static void write_nuspec_file_entry_lib_batteries(string mt_dir, string basename, TFM tfm_build, TFM tfm_dest, XmlWriter f)
+    private static void write_nuspec_file_entry_lib_batteries(string basename, TFM tfm_build, TFM tfm_dest, XmlWriter f)
     {
         write_nuspec_file_entry(
-            make_mt_path_batteries(mt_dir, basename, tfm_build),
+            make_mt_path_batteries(basename, tfm_build),
             string.Format("lib\\{0}\\", tfm_dest.AsString()),
             f
             );
     }
 
-    private static void write_nuspec_file_entry_lib_batteries(string mt_dir, string basename, TFM tfm_both, XmlWriter f)
+    private static void write_nuspec_file_entry_lib_batteries(string basename, TFM tfm_both, XmlWriter f)
     {
         write_nuspec_file_entry_lib_batteries(
-            mt_dir,
             basename,
             tfm_build: tfm_both,
             tfm_dest: tfm_both,
@@ -412,7 +407,7 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, cb_bin, "musl-x64", "alpine-x64", f);
     }
 
-    private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin, string dir_mt)
+    private static void gen_nuspec_lib_e_sqlite3(string top, string cb_bin)
     {
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
@@ -435,14 +430,12 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_mt(
-                    dir_mt,
                     "SQLitePCLRaw.lib.e_sqlite3.ios",
                     TFM.IOS,
                     f
                     );
 
             write_nuspec_file_entry_lib_mt(
-                    dir_mt,
                     "SQLitePCLRaw.lib.e_sqlite3.android",
                     TFM.ANDROID,
                     f
@@ -472,7 +465,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin, string dir_mt)
+    private static void gen_nuspec_lib_e_sqlcipher(string top, string cb_bin)
     {
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
@@ -495,14 +488,12 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_mt(
-                    dir_mt,
                     "SQLitePCLRaw.lib.e_sqlcipher.ios",
                     TFM.IOS,
                     f
                     );
 
             write_nuspec_file_entry_lib_mt(
-                    dir_mt,
                     "SQLitePCLRaw.lib.e_sqlcipher.android",
                     TFM.ANDROID,
                     f
@@ -567,7 +558,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_winsqlite3(string top, string dir_mt)
+    private static void gen_nuspec_bundle_winsqlite3(string top)
     {
         string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
 
@@ -597,7 +588,6 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "winsqlite3",
                     TFM.NETSTANDARD20,
                     f
@@ -664,7 +654,7 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-    private static void gen_nuspec_bundle_e_sqlcipher(string top, string dir_mt)
+    private static void gen_nuspec_bundle_e_sqlcipher(string top)
     {
         var id = string.Format("{0}.bundle_e_sqlcipher", gen.ROOT_NAME);
 
@@ -696,14 +686,12 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlcipher.internal.ios",
                     TFM.IOS,
                     f
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlcipher.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
@@ -711,7 +699,6 @@ public static class gen
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlcipher.dllimport",
                     TFM.NETSTANDARD20,
                     f
@@ -725,7 +712,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_zetetic(string top, string dir_mt)
+    private static void gen_nuspec_bundle_zetetic(string top)
     {
         var id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
 
@@ -757,14 +744,12 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "sqlcipher.internal.ios",
                     TFM.IOS,
                     f
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "sqlcipher.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
@@ -772,7 +757,6 @@ public static class gen
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "sqlcipher.dllimport",
                     TFM.NETSTANDARD20,
                     f
@@ -786,7 +770,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_e_sqlite3(string top, string dir_mt)
+    private static void gen_nuspec_bundle_e_sqlite3(string top)
     {
         string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
 
@@ -818,14 +802,12 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlite3.internal.ios",
                     TFM.IOS,
                     f
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlite3.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
@@ -833,7 +815,6 @@ public static class gen
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlite3.dllimport",
                     TFM.NETSTANDARD20,
                     f
@@ -847,7 +828,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_green(string top, string dir_mt)
+    private static void gen_nuspec_bundle_green(string top)
     {
         string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
 
@@ -879,7 +860,6 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "sqlite3",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.IOS,
@@ -887,7 +867,6 @@ public static class gen
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlite3.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
@@ -895,7 +874,6 @@ public static class gen
                     );
 
             write_nuspec_file_entry_lib_batteries(
-                    dir_mt,
                     "e_sqlite3.dllimport",
                     TFM.NETSTANDARD20,
                     f
@@ -1006,19 +984,17 @@ public static class gen
         Directory.CreateDirectory(dir_nuspecs);
 
         {
-            var rel_path_src = Path.Combine("..", "src"); // relative to nuspec directory
-
             {
                 var rel_path_cb_bin = Path.Combine("..", "..", "cb", "bld", "bin"); // relative to nuspec directory
-                gen_nuspec_lib_e_sqlite3(dir_nuspecs, rel_path_cb_bin, rel_path_src);
-                gen_nuspec_lib_e_sqlcipher(dir_nuspecs, rel_path_cb_bin, rel_path_src);
+                gen_nuspec_lib_e_sqlite3(dir_nuspecs, rel_path_cb_bin);
+                gen_nuspec_lib_e_sqlcipher(dir_nuspecs, rel_path_cb_bin);
             }
 
-            gen_nuspec_bundle_green(dir_nuspecs, rel_path_src);
-            gen_nuspec_bundle_e_sqlite3(dir_nuspecs, rel_path_src);
-            gen_nuspec_bundle_winsqlite3(dir_nuspecs, rel_path_src);
-            gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, rel_path_src);
-            gen_nuspec_bundle_zetetic(dir_nuspecs, rel_path_src);
+            gen_nuspec_bundle_green(dir_nuspecs);
+            gen_nuspec_bundle_e_sqlite3(dir_nuspecs);
+            gen_nuspec_bundle_winsqlite3(dir_nuspecs);
+            gen_nuspec_bundle_e_sqlcipher(dir_nuspecs);
+            gen_nuspec_bundle_zetetic(dir_nuspecs);
         }
     }
 }
