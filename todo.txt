@@ -1,7 +1,4 @@
 
-SQLitePCLRaw.lib csprojs have absolute paths
-to Users/eric
-
 explore bundle native code in embedded resource,
 extract to known location and use provider dynamic.
 would allow builds to be done entirely without

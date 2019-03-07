@@ -12,7 +12,7 @@
 </ItemGroup>
 
   <ItemGroup>
-    <ManifestResourceWithNoCulture Include="C:\Users\eric\dev\cb\bld\bin\e_sqlite3\ios\e_sqlite3.a">
+    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlite3\ios\e_sqlite3.a">
       <Link>e_sqlite3.a</Link>
     </ManifestResourceWithNoCulture>
   </ItemGroup>
