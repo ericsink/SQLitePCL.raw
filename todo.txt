@@ -1,4 +1,7 @@
 
+maybe try using the dummy csproj approach to
+pack the nuspecs?
+
 version stuff could now be separated out of
 gen_nuspecs into its own gen thing
 

@@ -242,41 +242,6 @@ public static class gen
         f.WriteEndElement(); // file
     }
 
-    public const int MAJOR_VERSION = 2;
-    public const int MINOR_VERSION = 0;
-    public const int PATCH_VERSION = 0;
-
-    // a version string with a -pre-timestamp in it
-    public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
-        MAJOR_VERSION,
-        MINOR_VERSION,
-        PATCH_VERSION,
-        DateTime.Now.ToString("yyyyMMddHHmmss")
-        );
-
-    // a version string with -pre
-    public static string NUSPEC_VERSION_PRE = string.Format("{0}.{1}.{2}-pre",
-        MAJOR_VERSION,
-        MINOR_VERSION,
-        PATCH_VERSION
-        );
-
-    // a version string for release, with no -pre
-    public static string NUSPEC_VERSION_RELEASE = string.Format("{0}.{1}.{2}",
-        MAJOR_VERSION,
-        MINOR_VERSION,
-        PATCH_VERSION
-        );
-
-    // chg this to be the version string we want, one of the above
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
-    public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}",
-        MAJOR_VERSION,
-        MINOR_VERSION,
-        PATCH_VERSION,
-        (int)((DateTime.Now - new DateTime(2018, 1, 1)).TotalDays)
-        );
-
     private const string NUSPEC_RELEASE_NOTES = "TODO url";
 
     private static void add_dep_core(XmlWriter f)
@@ -314,46 +279,6 @@ public static class gen
         f.WriteElementString("summary", SUMMARY);
         f.WriteElementString("tags", PACKAGE_TAGS);
         f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
-    }
-
-    private static void gen_directory_build_props(string root, string nupkgs_dir_name)
-    {
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
-        settings.OmitXmlDeclaration = true;
-
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(root, "Directory.Build.props"), settings))
-        {
-            f.WriteStartDocument();
-
-            f.WriteStartElement("Project");
-            f.WriteStartElement("PropertyGroup");
-
-            f.WriteElementString("Copyright", COPYRIGHT);
-            f.WriteElementString("Company", "SourceGear");
-            f.WriteElementString("Authors", AUTHORS);
-            f.WriteElementString("Version", NUSPEC_VERSION);
-            f.WriteElementString("AssemblyVersion", ASSEMBLY_VERSION);
-            f.WriteElementString("FileVersion", ASSEMBLY_VERSION);
-            f.WriteElementString("Description", SUMMARY);
-            f.WriteElementString("GenerateAssemblyProductAttribute", "false");
-            f.WriteElementString("PackageLicenseExpression", "Apache-2.0");
-            f.WriteElementString("PackageRequireLicenseAcceptance", "false");
-            f.WriteElementString("PackageTags", PACKAGE_TAGS);
-            f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
-            f.WriteElementString("RepositoryType", "git");
-            f.WriteElementString("PackageOutputPath", string.Format("$(MSBuildThisFileDirectory){0}", nupkgs_dir_name));
-            f.WriteElementString("PackageVersionForTesting", "$(Version)");
-
-            f.WriteElementString("depversion_xunit", "2.4.1");
-            f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
-            f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
-
-            f.WriteEndElement(); // PropertyGroup
-            f.WriteEndElement(); // project
-
-            f.WriteEndDocument();
-        }
     }
 
     static string make_cb_path_win(
@@ -1080,8 +1005,6 @@ public static class gen
         Directory.CreateDirectory(dir_nupkgs);
         Directory.CreateDirectory(dir_nuspecs);
 
-        gen_directory_build_props(dir_root, nupkgs_dir_name);
-
         {
             var rel_path_src = Path.Combine("..", "src"); // relative to nuspec directory
 
@@ -1096,29 +1019,6 @@ public static class gen
             gen_nuspec_bundle_winsqlite3(dir_nuspecs, rel_path_src);
             gen_nuspec_bundle_e_sqlcipher(dir_nuspecs, rel_path_src);
             gen_nuspec_bundle_zetetic(dir_nuspecs, rel_path_src);
-        }
-
-        using (TextWriter tw = new StreamWriter(Path.Combine(dir_nupkgs, "push.bat")))
-        {
-            const string src = "https://www.nuget.org/api/v2/package";
-
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.core.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.ugly.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.impl.callbacks.{NUSPEC_VERSION}.nupkg");
-
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.lib.e_sqlite3.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.lib.e_sqlcipher.{NUSPEC_VERSION}.nupkg");
-
-            foreach (WhichProvider p in Enum.GetValues(typeof(WhichProvider)))
-            {
-                tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.provider.{p.AsString()}.{NUSPEC_VERSION}.nupkg");
-            }
-
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_green.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_e_sqlite3.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_e_sqlcipher.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_zetetic.{NUSPEC_VERSION}.nupkg");
-            tw.WriteLine($"..\\nuget push -Source {src} {gen.ROOT_NAME}.bundle_winsqlite3.{NUSPEC_VERSION}.nupkg");
         }
     }
 }
