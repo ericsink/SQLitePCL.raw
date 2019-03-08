@@ -5,6 +5,6 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>SQLitePCLRaw.lib.e_sqlite3.nuspec</NuspecFile>
-    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path)</NuspecProperties>
+    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description);releaseNotes=$(PackageReleaseNotes)</NuspecProperties>
   </PropertyGroup>
 </Project>

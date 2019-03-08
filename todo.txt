@@ -1,11 +1,17 @@
 
-when dotnet pack with a nuspec file, figure out how
-to get the authors, copyright, etc to be tokens
+when dotnet pack with a nuspec file, is there an
+easier way to get the tokens from Directory.Build.props
+than to use NuspecProperties?
+
+NuspecProperties doesn't work for PackageTags
+because of the semicolon inside it.  how to escape
+that?
 
 need to fix up name of sqlcipher lib for android.
 needs e_ prefix.
 
 use new t4 local cli tool package
+    PlatformNotSupportedException
 
 explore bundle native code in embedded resource,
 extract to known location and use provider dynamic.

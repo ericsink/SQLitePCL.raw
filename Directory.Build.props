@@ -12,6 +12,7 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>sqlite;xamarin</PackageTags>
+    <PackageReleaseNotes>TODO</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/ericsink/SQLitePCL.raw</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'nupkgs'))</PackageOutputPath>

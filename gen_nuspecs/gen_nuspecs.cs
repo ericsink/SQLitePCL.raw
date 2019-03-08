@@ -237,8 +237,6 @@ public static class gen
         f.WriteEndElement(); // file
     }
 
-    private const string NUSPEC_RELEASE_NOTES = "TODO url";
-
     private static void add_dep_core(XmlWriter f)
     {
         f.WriteStartElement("dependency");
@@ -247,11 +245,7 @@ public static class gen
         f.WriteEndElement(); // dependency
     }
 
-    const string COPYRIGHT = "Copyright 2014-2019 SourceGear, LLC";
-    const string AUTHORS = "Eric Sink";
-    const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
-    const string PACKAGE_TAGS = "sqlite;xamarin"; // TODO
-                                                  // TODO	f.WriteElementString("tags", "sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp");
+    const string PACKAGE_TAGS = "sqlite;xamarin";
 
     private static void write_nuspec_common_metadata(
         string id,
@@ -263,17 +257,17 @@ public static class gen
         f.WriteElementString("id", id);
         f.WriteElementString("title", id);
         f.WriteElementString("version", "$version$");
-        f.WriteElementString("authors", AUTHORS);
-        f.WriteElementString("copyright", COPYRIGHT);
+        f.WriteElementString("authors", "$authors$");
+        f.WriteElementString("copyright", "$copyright$");
         f.WriteElementString("requireLicenseAcceptance", "false");
         write_license(f);
         f.WriteStartElement("repository");
         f.WriteAttributeString("type", "git");
         f.WriteAttributeString("url", "https://github.com/ericsink/SQLitePCL.raw");
         f.WriteEndElement(); // repository
-        f.WriteElementString("summary", SUMMARY);
+        f.WriteElementString("summary", "$summary$");
         f.WriteElementString("tags", PACKAGE_TAGS);
-        f.WriteElementString("releaseNotes", NUSPEC_RELEASE_NOTES);
+        f.WriteElementString("releaseNotes", "$releaseNotes$");
     }
 
     static string make_cb_path_win(
@@ -419,7 +413,7 @@ public static class gen
             f.WriteElementString("NoBuild", "true");
             f.WriteElementString("IncludeBuildOutput", "false");
             f.WriteElementString("NuspecFile", $"{id}.nuspec");
-            f.WriteElementString("NuspecProperties", "version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path)");
+            f.WriteElementString("NuspecProperties", "version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description);releaseNotes=$(PackageReleaseNotes)");
 
             f.WriteEndElement(); // PropertyGroup
 
