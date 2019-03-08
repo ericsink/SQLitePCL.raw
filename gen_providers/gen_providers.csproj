@@ -1,0 +1,11 @@
+﻿<!--Automatically generated-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-t4-project-tool" Version="2.0.3" />
+  </ItemGroup>
+</Project>
