@@ -94,9 +94,9 @@ public static class gen
             f.WriteElementString("PackageTags", PACKAGE_TAGS);
             f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
             f.WriteElementString("RepositoryType", "git");
-            f.WriteElementString("PackageOutputPath", string.Format("$(MSBuildThisFileDirectory){0}", nupkgs_dir_name));
-            f.WriteElementString("cb_bin_path", string.Format("$(MSBuildThisFileDirectory){0}", Path.Combine("..", "cb", "bld", "bin")));
-            f.WriteElementString("src_path", string.Format("$(MSBuildThisFileDirectory){0}", "src"));
+            f.WriteElementString("PackageOutputPath", string.Format("$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), '{0}'))", nupkgs_dir_name));
+            f.WriteElementString("cb_bin_path", "$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))");
+            f.WriteElementString("src_path", "$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), 'src'))");
             f.WriteElementString("PackageVersionForTesting", "$(Version)");
 
             f.WriteElementString("depversion_xunit", "2.4.1");
