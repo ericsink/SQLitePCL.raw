@@ -95,10 +95,10 @@ public static class gen
             f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
             f.WriteElementString("RepositoryType", "git");
             f.WriteElementString("PackageOutputPath", string.Format("$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '{0}'))", nupkgs_dir_name));
+
             f.WriteElementString("cb_bin_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))");
             f.WriteElementString("src_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))");
-            f.WriteElementString("PackageVersionForTesting", "$(Version)");
-
+            f.WriteElementString("pkg_version_for_testing", "$(Version)");
             f.WriteElementString("depversion_xunit", "2.4.1");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
@@ -115,11 +115,8 @@ public static class gen
         string dir_root = Path.GetFullPath(args[0]);
         var nupkgs_dir_name = "nupkgs";
         var dir_nupkgs = Path.Combine(dir_root, nupkgs_dir_name);
-        var dir_nuspecs = Path.Combine(dir_root, "nuspecs");
-
 
         Directory.CreateDirectory(dir_nupkgs);
-        Directory.CreateDirectory(dir_nuspecs);
 
         gen_directory_build_props(dir_root, nupkgs_dir_name);
     }

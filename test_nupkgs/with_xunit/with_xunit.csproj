@@ -7,8 +7,8 @@
     <PackageReference Include="xunit" Version="$(depversion_xunit)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />
 
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(PackageVersionForTesting)" />
-    <PackageReference Include="sqlitepclraw.ugly" Version="$(PackageVersionForTesting)" />
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\src\common\tests_xunit.cs" />

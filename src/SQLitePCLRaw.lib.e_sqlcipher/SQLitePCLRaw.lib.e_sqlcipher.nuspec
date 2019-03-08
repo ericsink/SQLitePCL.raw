@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.8.1">
+    <id>SQLitePCLRaw.lib.e_sqlcipher</id>
+    <title>SQLitePCLRaw.lib.e_sqlcipher</title>
+    <version>$version$</version>
+    <authors>Eric Sink</authors>
+    <copyright>Copyright 2014-2019 SourceGear, LLC</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
+    <summary>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</summary>
+    <tags>sqlite;xamarin</tags>
+    <releaseNotes>TODO url</releaseNotes>
+    <description>This package contains a platform-specific native code build of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCL.raw.  The build of SQLCipher packaged here is built and maintained by Couchbase (see couchbaselabs/couchbase-lite-libsqlcipher on GitHub).  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.sqlcipher.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
+  </metadata>
+  <files>
+    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlcipher.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlcipher.ios.dll" target="lib\Xamarin.iOS10\" />
+    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid80\" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\plain\arm\sqlcipher.dll" target="runtimes\win-arm\native\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\plain\arm64\sqlcipher.dll" target="runtimes\win-arm64\native\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\appcontainer\arm64\sqlcipher.dll" target="runtimes\win10-arm64\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\appcontainer\arm\sqlcipher.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\appcontainer\x64\sqlcipher.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\win\v141\appcontainer\x86\sqlcipher.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlcipher.dll" />
+    <file src="$cb_bin_path$\sqlcipher\mac\libsqlcipher.dylib" target="runtimes\osx-x64\native\libe_sqlcipher.dylib" />
+    <file src="$cb_bin_path$\sqlcipher\linux\x64\libsqlcipher.so" target="runtimes\linux-x64\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\x86\libsqlcipher.so" target="runtimes\linux-x86\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\armhf\libsqlcipher.so" target="runtimes\linux-arm\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\armsf\libsqlcipher.so" target="runtimes\linux-armel\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\arm64\libsqlcipher.so" target="runtimes\linux-arm64\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\linux-musl-x64\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\sqlcipher\linux\musl-x64\libsqlcipher.so" target="runtimes\alpine-x64\native\libe_sqlcipher.so" />
+    <file src=".\SQLitePCLRaw.lib.e_sqlcipher.targets" target="build\net461" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\net461" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\netstandard2.0" />
+  </files>
+</package>

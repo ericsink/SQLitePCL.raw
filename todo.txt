@@ -1,4 +1,7 @@
 
+when dotnet pack with a nuspec file, figure out how
+to get the authors, copyright, etc to be tokens
+
 need to fix up name of sqlcipher lib for android.
 needs e_ prefix.
 
@@ -12,10 +15,8 @@ xamarin sdks.
 need push script.  reads the xml file to get
 the version
 
-maybe try using the dummy csproj approach to
-pack the nuspecs?
-
-default vim mode for F# sucks
+default vim mode for F# sucks -- which is because
+it's not F#, it's forth.
 
 gen_nuspec should write the same EOL convention
 on all platforms

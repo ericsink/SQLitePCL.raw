@@ -227,7 +227,7 @@ public static class gen
             );
     }
 
-    private static void write_empty(XmlWriter f, string top, TFM tfm)
+    private static void write_empty(XmlWriter f, TFM tfm)
     {
         f.WriteComment("empty directory in lib to avoid nuget adding a reference");
 
@@ -399,14 +399,49 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "musl-x64", "alpine-x64", f);
     }
 
-    private static void gen_nuspec_lib_e_sqlite3(string top)
+    private static void gen_dummy_csproj(string dir_proj, string id)
     {
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Indent = true;
+        settings.OmitXmlDeclaration = true;
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, $"{id}.csproj"), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("Project");
+            f.WriteAttributeString("Sdk", "Microsoft.NET.Sdk");
+
+            f.WriteStartElement("PropertyGroup");
+
+            f.WriteElementString("TargetFramework", "netstandard2.0");
+            f.WriteElementString("NoBuild", "true");
+            f.WriteElementString("IncludeBuildOutput", "false");
+            f.WriteElementString("NuspecFile", $"{id}.nuspec");
+            f.WriteElementString("NuspecProperties", "version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path)");
+
+            f.WriteEndElement(); // PropertyGroup
+
+            f.WriteEndElement(); // Project
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_lib_e_sqlite3(string dir_src)
+    {
+        string id = string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME);
+
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        string id = string.Format("SQLitePCLRaw.lib.e_sqlite3");
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -436,7 +471,7 @@ public static class gen
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, f);
 
             var tname = string.Format("{0}.targets", id);
-            var path_targets = Path.Combine(top, tname);
+            var path_targets = Path.Combine(dir_proj, tname);
             var relpath_targets = Path.Combine(".", tname);
             gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
             write_nuspec_file_entry(
@@ -446,8 +481,8 @@ public static class gen
                 );
 
             // TODO need a comment here to explain these
-            write_empty(f, top, TFM.NET461);
-            write_empty(f, top, TFM.NETSTANDARD20);
+            write_empty(f, TFM.NET461);
+            write_empty(f, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // files
 
@@ -457,14 +492,19 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_lib_e_sqlcipher(string top)
+    private static void gen_nuspec_lib_e_sqlcipher(string dir_src)
     {
+        string id = string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME);
+
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        string id = string.Format("SQLitePCLRaw.lib.e_sqlcipher");
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -494,7 +534,7 @@ public static class gen
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, f);
 
             var tname = string.Format("{0}.targets", id);
-            var path_targets = Path.Combine(top, tname);
+            var path_targets = Path.Combine(dir_proj, tname);
             var relpath_targets = Path.Combine(".", tname);
             gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
             write_nuspec_file_entry(
@@ -504,8 +544,8 @@ public static class gen
                 );
 
             // TODO need a comment here to explain these
-            write_empty(f, top, TFM.NET461);
-            write_empty(f, top, TFM.NETSTANDARD20);
+            write_empty(f, TFM.NET461);
+            write_empty(f, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // files
 
@@ -550,7 +590,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_winsqlite3(string top)
+    private static void gen_nuspec_bundle_winsqlite3(string dir_src)
     {
         string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
 
@@ -558,7 +598,11 @@ public static class gen
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -646,7 +690,7 @@ public static class gen
         f.WriteEndElement(); // group
     }
 
-    private static void gen_nuspec_bundle_e_sqlcipher(string top)
+    private static void gen_nuspec_bundle_e_sqlcipher(string dir_src)
     {
         var id = string.Format("{0}.bundle_e_sqlcipher", gen.ROOT_NAME);
 
@@ -654,7 +698,11 @@ public static class gen
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -704,7 +752,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_zetetic(string top)
+    private static void gen_nuspec_bundle_zetetic(string dir_src)
     {
         var id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
 
@@ -712,7 +760,11 @@ public static class gen
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -762,7 +814,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_e_sqlite3(string top)
+    private static void gen_nuspec_bundle_e_sqlite3(string dir_src)
     {
         string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
 
@@ -770,7 +822,11 @@ public static class gen
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -820,7 +876,7 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_green(string top)
+    private static void gen_nuspec_bundle_green(string dir_src)
     {
         string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
 
@@ -828,7 +884,11 @@ public static class gen
         settings.Indent = true;
         settings.OmitXmlDeclaration = false;
 
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(top, string.Format("{0}.nuspec", id)), settings))
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
         {
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
@@ -968,18 +1028,16 @@ public static class gen
     {
         string dir_root = Path.GetFullPath(args[0]);
 
-        var dir_nuspecs = Path.Combine(dir_root, "nuspecs");
-        Directory.CreateDirectory(dir_nuspecs);
+        var dir_src = Path.Combine(dir_root, "src");
 
-        {
-            gen_nuspec_lib_e_sqlite3(dir_nuspecs);
-            gen_nuspec_lib_e_sqlcipher(dir_nuspecs);
-            gen_nuspec_bundle_green(dir_nuspecs);
-            gen_nuspec_bundle_e_sqlite3(dir_nuspecs);
-            gen_nuspec_bundle_winsqlite3(dir_nuspecs);
-            gen_nuspec_bundle_e_sqlcipher(dir_nuspecs);
-            gen_nuspec_bundle_zetetic(dir_nuspecs);
-        }
+        gen_nuspec_lib_e_sqlite3(dir_src);
+        gen_nuspec_lib_e_sqlcipher(dir_src);
+
+        gen_nuspec_bundle_green(dir_src);
+        gen_nuspec_bundle_e_sqlite3(dir_src);
+        gen_nuspec_bundle_winsqlite3(dir_src);
+        gen_nuspec_bundle_e_sqlcipher(dir_src);
+        gen_nuspec_bundle_zetetic(dir_src);
     }
 }
 

@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(PackageVersionForTesting)" />
-    <PackageReference Include="sqlitepclraw.ugly" Version="$(PackageVersionForTesting)" />
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
 
 </Project>

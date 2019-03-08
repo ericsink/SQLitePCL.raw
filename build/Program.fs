@@ -100,13 +100,9 @@ let main argv =
         ver.Value
 
     let version = get_build_prop "Version"
-    //let cb_bin_path = get_build_prop "cb_bin_path"
-    //let src_path = get_build_prop "src_path"
 
     printfn "%s" version
 
-    let dir_nuspecs = (Path.Combine(top, "nuspecs"))
-    Directory.CreateDirectory(Path.Combine(dir_nuspecs, "empty"))
     let nuspecs = [
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
@@ -117,14 +113,14 @@ let main argv =
         "bundle_winsqlite3"
         ]
     for s in nuspecs do
-        let nuget_exe = Path.Combine(top, "nuget.exe")
-        let nuspec_name = sprintf "SQLitePCLRaw.%s.nuspec" s
-        let rel_src_path = Path.Combine("..", "src")
-        let rel_cb_bin_path = Path.Combine("..", "..", "cb", "bld", "bin")
-        let nuget_args = sprintf "pack -properties version=%s;src_path=%s;cb_bin_path=%s -OutputDirectory %s %s" version rel_src_path rel_cb_bin_path dir_nupkgs nuspec_name
-        exec nuget_exe nuget_args dir_nuspecs
+        let name = sprintf "SQLitePCLRaw.%s" s
+        let dir_proj = Path.Combine(top, "src", name)
+        Directory.CreateDirectory(Path.Combine(dir_proj, "empty"))
+        exec "dotnet" "pack" dir_proj
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))
+
+    exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "fsmoke"))
 
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "with_xunit"))
 
