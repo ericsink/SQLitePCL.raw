@@ -11,25 +11,25 @@
 </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'sqlcipher', 'android', 'x86', 'libsqlcipher.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\sqlcipher\android\x86\libsqlcipher.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>x86\libe_sqlcipher.so</Link>
+      <Link>x86\libsqlcipher.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'sqlcipher', 'android', 'x86_64', 'libsqlcipher.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\sqlcipher\android\x86_64\libsqlcipher.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>x86_64\libe_sqlcipher.so</Link>
+      <Link>x86_64\libsqlcipher.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'sqlcipher', 'android', 'armeabi', 'libsqlcipher.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\sqlcipher\android\armeabi\libsqlcipher.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>armeabi\libe_sqlcipher.so</Link>
+      <Link>armeabi\libsqlcipher.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'sqlcipher', 'android', 'arm64-v8a', 'libsqlcipher.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\sqlcipher\android\arm64-v8a\libsqlcipher.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>arm64-v8a\libe_sqlcipher.so</Link>
+      <Link>arm64-v8a\libsqlcipher.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'sqlcipher', 'android', 'armeabi-v7a', 'libsqlcipher.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\sqlcipher\android\armeabi-v7a\libsqlcipher.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Link>armeabi-v7a\libe_sqlcipher.so</Link>
+      <Link>armeabi-v7a\libsqlcipher.so</Link>
     </EmbeddedNativeLibrary>
   </ItemGroup>
 

@@ -11,23 +11,23 @@
 </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'e_sqlite3', 'android', 'x86', 'libe_sqlite3.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\e_sqlite3\android\x86\libe_sqlite3.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>x86\libe_sqlite3.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'e_sqlite3', 'android', 'x86_64', 'libe_sqlite3.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\e_sqlite3\android\x86_64\libe_sqlite3.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>x86_64\libe_sqlite3.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'e_sqlite3', 'android', 'armeabi', 'libe_sqlite3.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\e_sqlite3\android\armeabi\libe_sqlite3.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>armeabi\libe_sqlite3.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'e_sqlite3', 'android', 'arm64-v8a', 'libe_sqlite3.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\e_sqlite3\android\arm64-v8a\libe_sqlite3.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>arm64-v8a\libe_sqlite3.so</Link>
     </EmbeddedNativeLibrary>
-    <EmbeddedNativeLibrary Include="$([MSBuild]::NormalizeDirectory($(cb_bin_path), 'e_sqlite3', 'android', 'armeabi-v7a', 'libe_sqlite3.so'))">
+    <EmbeddedNativeLibrary Include="$(cb_bin_path)\e_sqlite3\android\armeabi-v7a\libe_sqlite3.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>armeabi-v7a\libe_sqlite3.so</Link>
     </EmbeddedNativeLibrary>

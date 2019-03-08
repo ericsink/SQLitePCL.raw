@@ -14,9 +14,8 @@
     <PackageTags>sqlite;xamarin</PackageTags>
     <RepositoryUrl>https://github.com/ericsink/SQLitePCL.raw</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageOutputPath>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), 'nupkgs'))</PackageOutputPath>
-    <cb_bin_path>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))</cb_bin_path>
-    <src_path>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), 'src'))</src_path>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)nupkgs</PackageOutputPath>
+    <cb_bin_path>$(MSBuildThisFileDirectory)..\cb\bld\bin</cb_bin_path>
     <PackageVersionForTesting>$(Version)</PackageVersionForTesting>
     <depversion_xunit>2.4.1</depversion_xunit>
     <depversion_xunit_runner_visualstudio>2.4.1</depversion_xunit_runner_visualstudio>
