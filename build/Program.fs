@@ -23,11 +23,10 @@ let main argv =
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
-    let dir_gen_providers = Path.Combine(top, "gen_providers")
-    exec "dotnet" "restore" dir_gen_providers
+    let dir_providers = Path.Combine(top, "src", "providers")
+    exec "dotnet" "restore" dir_providers
 
     let gen_provider dir_basename (name:string) conv kind =
-        let path_tt = Path.Combine(top, "src", "common", "provider.tt")
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (name.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
@@ -39,8 +38,8 @@ let main argv =
                 then (sprintf "-p:NAME_FOR_DLLIMPORT=%s" "__Internal")
                 else (sprintf "-p:NAME_FOR_DLLIMPORT=%s" name)
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s %s %s" cs_path name conv kind dllimport_name_arg path_tt
-        exec "t4" args dir_gen_providers
+        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s %s provider.tt" cs_path name conv kind dllimport_name_arg
+        exec "t4" args dir_providers
 
     gen_provider "dynamic" "Cdecl" "Cdecl" "dynamic"
     gen_provider "dynamic" "StdCall" "StdCall" "dynamic"
