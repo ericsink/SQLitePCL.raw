@@ -105,17 +105,10 @@ gen_nuspecs?
 utf8 stuff?  #202
 appears to require netcore or net472.  not netstandard.
 
-arguably the device runner tests should move into
-test_pkgs
-
 consider build the tests as an assembly instead of always
 compiling the file
 
 --
-
-still wish the other nuspecs could reference
-Directory.Build.props instead of being
-generated with the version string in it.
 
 since we're introducing the e_sqlcipher name,
 should we add 3 or 4 to distinguish the
@@ -197,8 +190,6 @@ more xunit test cases
 goal is to have no ifdefs in core
 
 --
-
-cb/bld
 
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
