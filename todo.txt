@@ -1,7 +1,10 @@
 
-when dotnet pack with a nuspec file, is there an
-easier way to get the tokens from Directory.Build.props
-than to use NuspecProperties?
+gen_nuspec should write the same EOL convention
+on all platforms
+
+review EntryPoint attribute
+
+fix build script to do clean
 
 NuspecProperties doesn't work for PackageTags
 because of the semicolon inside it.  how to escape
@@ -12,6 +15,7 @@ needs e_ prefix.
 
 use new t4 local cli tool package
     PlatformNotSupportedException
+    logged
 
 explore bundle native code in embedded resource,
 extract to known location and use provider dynamic.
@@ -24,12 +28,7 @@ the version
 default vim mode for F# sucks -- which is because
 it's not F#, it's forth.
 
-gen_nuspec should write the same EOL convention
-on all platforms
-
 .editorconfig
-
-review EntryPoint attribute
 
 dotnet-format.  but won't work for provider.tt.
 
@@ -60,8 +59,6 @@ zetetic dynamic needs to look in dirs named x86/x64,
 not rids.  for compat with their existing package.
 chg Setup.Load() to check the x86 and x64 dirs?
 or create a special Load call for that case?
-
-clean.bat
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.
