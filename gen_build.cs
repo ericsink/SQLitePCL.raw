@@ -3726,7 +3726,7 @@ public static class gen
             write_bundle_dependency_group(f, "wpa81", "wpa81", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "win8", "win8", "sqlcipher", lib_deps);
             write_bundle_dependency_group(f, "win81", "win81", "sqlcipher", lib_deps);
-            write_bundle_dependency_group(f, "uwp10", "sqlcipher");
+            write_bundle_dependency_group(f, "uwp10", "sqlcipher", lib_deps);
             
             write_dependency_group(f, "profile111", DEP_CORE);
             write_dependency_group(f, "profile136", DEP_CORE);
