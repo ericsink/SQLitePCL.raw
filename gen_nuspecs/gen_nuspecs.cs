@@ -393,10 +393,17 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "musl-x64", "alpine-x64", f);
     }
 
+    private static XmlWriterSettings XmlWriterSettings_default()
+    {
+        var settings = new XmlWriterSettings();
+        settings.NewLineChars = "\r\n";
+        settings.Indent = true;
+        return settings;
+    }
+
     private static void gen_dummy_csproj(string dir_proj, string id)
     {
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = true;
 
         using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, $"{id}.csproj"), settings))
@@ -427,8 +434,7 @@ public static class gen
     {
         string id = string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -490,8 +496,7 @@ public static class gen
     {
         string id = string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -588,8 +593,7 @@ public static class gen
     {
         string id = string.Format("{0}.bundle_winsqlite3", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -688,8 +692,7 @@ public static class gen
     {
         var id = string.Format("{0}.bundle_e_sqlcipher", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -750,8 +753,7 @@ public static class gen
     {
         var id = string.Format("{0}.bundle_zetetic", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -812,8 +814,7 @@ public static class gen
     {
         string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -874,8 +875,7 @@ public static class gen
     {
         string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
 
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         var dir_proj = Path.Combine(dir_src, id);
@@ -978,8 +978,7 @@ public static class gen
 
     private static void gen_nuget_targets(string dest, WhichLib lib)
     {
-        XmlWriterSettings settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
 
         using (XmlWriter f = XmlWriter.Create(dest, settings))
