@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 
 namespace SQLitePCL
 {
-	interface IGetFunctionPointer
+	public interface IGetFunctionPointer
 	{
 		IntPtr GetFunctionPointer(string name);
 	}

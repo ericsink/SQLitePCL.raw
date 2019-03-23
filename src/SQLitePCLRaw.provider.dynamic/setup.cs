@@ -278,6 +278,17 @@ namespace SQLitePCL
 			return Load(basename, s => {});
 		}
 
+        // the lowest-level API, for cases where the
+        // the code to find the dll and load it and
+        // get sumbols from it is entirely above.
+		public static void Load(
+            IGetFunctionPointer gf
+			)
+        {
+            SQLite3Provider_Cdecl.Setup(gf);
+            raw.SetProvider(new SQLite3Provider_Cdecl());
+        }
+
 		public static string Load(
 			string basename,
 			Action<string> log

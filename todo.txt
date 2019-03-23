@@ -1,7 +1,9 @@
 
 gen_nuspec should write the same EOL convention
 on all platforms.  using XmlWriterSettings. NewLineChars
-doesn't seem to do what it should.
+doesn't seem to do what it should.  actually, that
+seems fine.  now the problem is the slash-vs-backslash
+issue in the nuspec paths.
 
 whether in embedded resource or just a content
 file, trying using the dylib for ios

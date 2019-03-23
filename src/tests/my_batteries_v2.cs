@@ -21,11 +21,41 @@ using System.IO;
 
 namespace SQLitePCL
 {
+#if true
+	class GetFunctionPointer_dotnetcore3 : IGetFunctionPointer
+	{
+		readonly IntPtr _dll;
+		public GetFunctionPointer_dotnetcore3(IntPtr dll)
+		{
+			_dll = dll;
+		}
+
+		public IntPtr GetFunctionPointer(string name)
+		{
+            if (System.Runtime.InteropServices.NativeLibrary.TryGetExport(_dll, name, out var f))
+            {
+                //System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+                return f;
+            }
+            else
+            {
+                return IntPtr.Zero;
+            }
+		}
+	}
+#endif
+
     public static class Batteries_V2
     {
         public static void Init()
         {
+#if true
+            var dll = System.Runtime.InteropServices.NativeLibrary.Load("e_sqlite3");
+            var gf = new GetFunctionPointer_dotnetcore3(dll);
+            SQLitePCL.Setup.Load(gf);
+#else
             SQLitePCL.Setup.Load("e_sqlite3", s => File.AppendAllLines("log.txt", new string[] { s }));
+#endif
         }
     }
 }
