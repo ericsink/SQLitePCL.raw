@@ -1,12 +1,18 @@
 
-figure out SQLitePCLRaw.resolver.whatever
+instead of just IGetFunctionPointer, should
+we have IResolveLibrary?  how should we wrap the
+Load part of NativeLibrary?  or maybe the resulting
+IGetFunctionPointer is all that matters, since that's
+all provider.dynamic needs?
+
+but who owns the dll handle, and therefore has the
+obligation to free it?
+
+figure out SQLitePCLRaw.resolver.whatever.
 it's platform-specific.  except for dotnet core 3,
 which has NativeLibrary, which we can wrap.
 
 name.  resolver?  resolver.dotnetcore3?
-
-who owns the dll handle, and therefore has the
-obligation to free it?
 
 explore bundle native code in embedded resource,
 extract to known location and use provider dynamic.
