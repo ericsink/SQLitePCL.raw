@@ -1,13 +1,7 @@
 
-in provider.dynamic, keep only the Setup method
-that accepts IGetFunctionPointer.  move all the
-other code out into a another assembly.  it's
-platform-specific.  except for dotnet core 3,
+figure out SQLitePCLRaw.resolver.whatever
+it's platform-specific.  except for dotnet core 3,
 which has NativeLibrary, which we can wrap.
-
-actually, just get rid of the setup methods
-and make the cdecl/stdcall providers public?
-just use them directly?
 
 name.  resolver?  resolver.dotnetcore3?
 
@@ -66,7 +60,7 @@ seems fine.  now the problem is the slash-vs-backslash
 issue in the nuspec paths.
 
 whether in embedded resource or just a content
-file, try using the dylib for ios
+file, test using the dylib for ios
 
 review EntryPoint attribute
 
@@ -85,9 +79,6 @@ use new t4 local cli tool package
 
 need push script.  reads the xml file to get
 the version
-
-default vim mode for F# sucks -- which is because
-it's not F#, it's forth.
 
 .editorconfig
 
