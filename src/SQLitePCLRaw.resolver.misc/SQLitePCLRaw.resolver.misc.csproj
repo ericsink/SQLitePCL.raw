@@ -15,16 +15,13 @@
 -->
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
-	<ProjectReference Include="..\SQLitePCLRaw.impl.callbacks\SQLitePCLRaw.impl.callbacks.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="IGetFunctionPointer.cs" />
-    <Compile Include="attributes.cs" />
-
-    <Compile Include="Generated\provider_cdecl.cs" />
-    <Compile Include="Generated\provider_stdcall.cs" />
+    <Compile Include="GetFunctionPointer.cs" />
+    <Compile Include="NativeLib.cs" />
+    <Compile Include="setup.cs" />
 </ItemGroup>
 
 </Project>

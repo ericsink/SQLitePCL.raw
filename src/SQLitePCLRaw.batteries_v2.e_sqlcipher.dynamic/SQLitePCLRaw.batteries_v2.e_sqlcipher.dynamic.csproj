@@ -15,6 +15,7 @@
 
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.resolver.misc\SQLitePCLRaw.resolver.misc.csproj" />
 </ItemGroup>
 
 </Project>
