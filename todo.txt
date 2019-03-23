@@ -1,4 +1,59 @@
 
+in provider.dynamic, keep only the Setup method
+that accepts IGetFunctionPointer.  move all the
+other code out into a another assembly.  it's
+platform-specific.  except for dotnet core 3,
+which has NativeLibrary, which we can wrap.
+
+who owns the dll handle, and therefore has the
+obligation to free it?
+
+explore bundle native code in embedded resource,
+extract to known location and use provider dynamic.
+would allow builds to be done entirely without
+xamarin sdks.  but the location to write the dll
+would need to be injected from platform code?
+
+to be even more ridiculous, we could bundle the
+native code in C# as a binary array.  :-)  at
+least then we would eliminate all involvement
+from msbuild.
+
+problem with embed is that it won't work for all
+platforms, still prefer runtimes folder for .net core.  
+which means we need two copies?  
+
+use embed for ios and android, like now?  but
+for ios, better than static.  and both avoid the
+need for platform-specific build sdk stuff?
+
+or maybe just emulate the runtimes folder on all
+platforms?  ios and android included?
+
+hmph.  xam android says normal content item is
+not supported.  and xam ios also.
+
+but does plain embedded resource work on both
+android and ios?
+
+might need to go back to separating the nuget
+packages for e_sqlite3 and e_sqlcipher by
+platform?  still don't need v120 and v110 and
+so on.  but maybe windows, mac, linux separate
+again.
+
+provider.dynamic should probably check File.Exists
+(on things that are an absolute path) before trying
+LoadLibrary/dlopen.  (the code that searches for
+the dll)
+
+zetetic dynamic needs to look in dirs named x86/x64, 
+not rids.  for compat with their existing package.
+chg Setup.Load() to check the x86 and x64 dirs?
+or create a special Load call for that case?
+
+--
+
 gen_nuspec should write the same EOL convention
 on all platforms.  using XmlWriterSettings. NewLineChars
 doesn't seem to do what it should.  actually, that
@@ -6,7 +61,7 @@ seems fine.  now the problem is the slash-vs-backslash
 issue in the nuspec paths.
 
 whether in embedded resource or just a content
-file, trying using the dylib for ios
+file, try using the dylib for ios
 
 review EntryPoint attribute
 
@@ -22,46 +77,6 @@ needs e_ prefix.
 use new t4 local cli tool package
     PlatformNotSupportedException
     logged, mono/t4 #42, fix pending
-
-explore bundle native code in embedded resource,
-extract to known location and use provider dynamic.
-would allow builds to be done entirely without
-xamarin sdks.  but the location to write the dll
-would need to be injected from platform code?
-
-problem with embed is that it won't work for all
-platforms, still prefer runtimes folder for .net core.  
-which means we need two copies?  
-
-use embed for ios and android, like now?  but
-for ios, better than static.  and both avoid the
-need for platform-specific build sdk stuff?
-
-or maybe just emulate the runtimes folder on all
-platforms?  ios and android included?
-
-investigate using NativeLibrary class on
-.NET Core 3.  and maybe implement the native
-lib stuff for other runtimes as a compatible
-subset of the same api?
-
-hmph.  xam android says normal content item is
-not supported.  and xam ios also.
-
-but does plain embedded resource work on both
-android and ios?
-
-might need to go back to separating the nuget
-packages for e_sqlite3 and e_sqlcipher by
-platform?  still don't need v120 and v110 and
-so on.  but maybe windows, mac, linux separate
-again.
-
-dep inject the library resolver from above?
-on .net core 3, send in NativeLibrary.  others,
-write a substitute and send that.  so don't bother
-using the ios-specific and android-specific native
-lib stuff at all?
 
 need push script.  reads the xml file to get
 the version
@@ -86,15 +101,6 @@ build.bat to use the nupkgs just built, not the
 ones in the nuget cache.  previous workaround
 was to force a timestamp into the pkg name, but
 that's sad.
-
-provider.dynamic should probably check File.Exists
-(on things that are an absolute path) before trying
-LoadLibrary/dlopen.
-
-zetetic dynamic needs to look in dirs named x86/x64, 
-not rids.  for compat with their existing package.
-chg Setup.Load() to check the x86 and x64 dirs?
-or create a special Load call for that case?
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.
