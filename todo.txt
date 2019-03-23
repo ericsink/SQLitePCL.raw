@@ -46,7 +46,8 @@ might need to go back to separating the nuget
 packages for e_sqlite3 and e_sqlcipher by
 platform?  still don't need v120 and v110 and
 so on.  but maybe windows, mac, linux separate
-again.
+again.  but ms ships libuv with all platforms
+in one package...
 
 resolver should probably check File.Exists
 (on things that are an absolute path) before trying
@@ -66,7 +67,7 @@ seems fine.  now the problem is the slash-vs-backslash
 issue in the nuspec paths.
 
 whether in embedded resource or just a content
-file, test using the dylib for ios
+file, test using the dylib for ios.  or perhaps not.
 
 review EntryPoint attribute
 
