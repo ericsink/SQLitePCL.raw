@@ -5,6 +5,12 @@ other code out into a another assembly.  it's
 platform-specific.  except for dotnet core 3,
 which has NativeLibrary, which we can wrap.
 
+actually, just get rid of the setup methods
+and make the cdecl/stdcall providers public?
+just use them directly?
+
+name.  resolver?  resolver.dotnetcore3?
+
 who owns the dll handle, and therefore has the
 obligation to free it?
 
@@ -42,10 +48,9 @@ platform?  still don't need v120 and v110 and
 so on.  but maybe windows, mac, linux separate
 again.
 
-provider.dynamic should probably check File.Exists
+resolver should probably check File.Exists
 (on things that are an absolute path) before trying
-LoadLibrary/dlopen.  (the code that searches for
-the dll)
+LoadLibrary/dlopen.
 
 zetetic dynamic needs to look in dirs named x86/x64, 
 not rids.  for compat with their existing package.
