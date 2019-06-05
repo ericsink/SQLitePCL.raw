@@ -1798,8 +1798,6 @@ namespace SQLitePCL.Tests
             public int count_commits;
             public int count_rollbacks;
             public int count_updates;
-            public int count_traces;
-            public int count_profiles;
         }
 
         private static int my_commit_hook(object v)
@@ -1819,18 +1817,6 @@ namespace SQLitePCL.Tests
         {
             work w = v as work;
             w.count_updates++;
-        }
-
-        private static void my_trace_hook(object v, string sql)
-        {
-            work w = v as work;
-            w.count_traces++;
-        }
-
-        private static void my_profile_hook(object v, string sql, long ns)
-        {
-            work w = v as work;
-            w.count_profiles++;
         }
 
         [Fact]
@@ -1858,14 +1844,10 @@ namespace SQLitePCL.Tests
                 Assert.Equal(0, w.count_commits);
                 Assert.Equal(0, w.count_rollbacks);
                 Assert.Equal(0, w.count_updates);
-                Assert.Equal(0, w.count_traces);
-                Assert.Equal(0, w.count_profiles);
 
                 db.commit_hook(new delegate_commit(my_commit_hook), w);
                 db.rollback_hook(new delegate_rollback(my_rollback_hook), w);
                 db.update_hook(my_update_hook, w);
-                db.trace(my_trace_hook, w);
-                db.profile(my_profile_hook, w);
 
                 GC.Collect();
 
@@ -1874,40 +1856,30 @@ namespace SQLitePCL.Tests
                 Assert.Equal(1, w.count_commits);
                 Assert.Equal(0, w.count_rollbacks);
                 Assert.Equal(0, w.count_updates);
-                Assert.Equal(1, w.count_traces);
-                Assert.Equal(1, w.count_profiles);
 
                 db.exec("INSERT INTO foo (x) VALUES (1);");
 
                 Assert.Equal(2, w.count_commits);
                 Assert.Equal(0, w.count_rollbacks);
                 Assert.Equal(1, w.count_updates);
-                Assert.Equal(2, w.count_traces);
-                Assert.Equal(2, w.count_profiles);
 
                 db.exec("BEGIN TRANSACTION;");
 
                 Assert.Equal(2, w.count_commits);
                 Assert.Equal(0, w.count_rollbacks);
                 Assert.Equal(1, w.count_updates);
-                Assert.Equal(3, w.count_traces);
-                Assert.Equal(3, w.count_profiles);
 
                 db.exec("INSERT INTO foo (x) VALUES (2);");
 
                 Assert.Equal(2, w.count_commits);
                 Assert.Equal(0, w.count_rollbacks);
                 Assert.Equal(2, w.count_updates);
-                Assert.Equal(4, w.count_traces);
-                Assert.Equal(4, w.count_profiles);
 
                 db.exec("ROLLBACK TRANSACTION;");
 
                 Assert.Equal(2, w.count_commits);
                 Assert.Equal(1, w.count_rollbacks);
                 Assert.Equal(2, w.count_updates);
-                Assert.Equal(5, w.count_traces);
-                Assert.Equal(5, w.count_profiles);
 
             }
         }
