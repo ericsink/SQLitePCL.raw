@@ -1637,8 +1637,6 @@ namespace SQLitePCL.Tests
             public int count_commits;
             public int count_rollbacks;
             public int count_updates;
-            public int count_traces;
-            public int count_profiles;
         }
 
         private static int my_commit_hook(object v)
@@ -1660,18 +1658,6 @@ namespace SQLitePCL.Tests
             w.count_updates++;
         }
 
-        private static void my_trace_hook(object v, string sql)
-        {
-            work w = v as work;
-            w.count_traces++;
-        }
-
-        private static void my_profile_hook(object v, string sql, long ns)
-        {
-            work w = v as work;
-            w.count_profiles++;
-        }
-
         [Fact]
         public void test_rollback_hook_on_close_db()
 	{
@@ -1688,6 +1674,10 @@ namespace SQLitePCL.Tests
             }
         }
 
+        // TODO all the Assert.Equal calls below, and perhaps
+        // elsewhere in this file as well, have the arguments
+        // reversed.  should be Assert.Equal(expected, actual)
+
         [Fact]
         public void test_hooks()
         {
@@ -1697,14 +1687,10 @@ namespace SQLitePCL.Tests
                 Assert.Equal(w.count_commits, 0);
                 Assert.Equal(w.count_rollbacks, 0);
                 Assert.Equal(w.count_updates, 0);
-                Assert.Equal(w.count_traces, 0);
-                Assert.Equal(w.count_profiles, 0);
 
                 db.commit_hook(my_commit_hook, w);
                 db.rollback_hook(my_rollback_hook, w);
                 db.update_hook(my_update_hook, w);
-                db.trace(my_trace_hook, w);
-                db.profile(my_profile_hook, w);
 
 		GC.Collect();
 
@@ -1713,40 +1699,30 @@ namespace SQLitePCL.Tests
                 Assert.Equal(w.count_commits, 1);
                 Assert.Equal(w.count_rollbacks, 0);
                 Assert.Equal(w.count_updates, 0);
-                Assert.Equal(w.count_traces, 1);
-                Assert.Equal(w.count_profiles, 1);
 
                 db.exec("INSERT INTO foo (x) VALUES (1);");
 
                 Assert.Equal(w.count_commits, 2);
                 Assert.Equal(w.count_rollbacks, 0);
                 Assert.Equal(w.count_updates, 1);
-                Assert.Equal(w.count_traces, 2);
-                Assert.Equal(w.count_profiles, 2);
 
                 db.exec("BEGIN TRANSACTION;");
 
                 Assert.Equal(w.count_commits, 2);
                 Assert.Equal(w.count_rollbacks, 0);
                 Assert.Equal(w.count_updates, 1);
-                Assert.Equal(w.count_traces, 3);
-                Assert.Equal(w.count_profiles, 3);
 
                 db.exec("INSERT INTO foo (x) VALUES (2);");
 
                 Assert.Equal(w.count_commits, 2);
                 Assert.Equal(w.count_rollbacks, 0);
                 Assert.Equal(w.count_updates, 2);
-                Assert.Equal(w.count_traces, 4);
-                Assert.Equal(w.count_profiles, 4);
 
                 db.exec("ROLLBACK TRANSACTION;");
 
                 Assert.Equal(w.count_commits, 2);
                 Assert.Equal(w.count_rollbacks, 1);
                 Assert.Equal(w.count_updates, 2);
-                Assert.Equal(w.count_traces, 5);
-                Assert.Equal(w.count_profiles, 5);
 
             }
         }
