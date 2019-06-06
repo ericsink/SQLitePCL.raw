@@ -518,12 +518,18 @@ namespace SQLitePCL
 
         static public int sqlite3_db_readonly(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_db_readonly(db, dbName);
+            var p = dbName.to_pinned_utf8();
+            var rc = _imp.sqlite3_db_readonly(db, p.ToIntPtr());
+            p.Free();
+            return rc;
         }
 
         static public string sqlite3_db_filename(sqlite3 db, string att)
         {
-            return _imp.sqlite3_db_filename(db, att);
+            var p = att.to_pinned_utf8();
+            var s = util.from_utf8(_imp.sqlite3_db_filename(db, p.ToIntPtr()));
+            p.Free();
+            return s;
         }
 
         static public long sqlite3_last_insert_rowid(sqlite3 db)

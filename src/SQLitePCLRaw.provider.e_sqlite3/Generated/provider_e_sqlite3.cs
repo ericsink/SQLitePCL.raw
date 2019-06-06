@@ -377,14 +377,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_get_autocommit(db);
         }
 
-        int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, string dbName)
+        int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, IntPtr dbName)
         {
-            return NativeMethods.sqlite3_db_readonly(db, util.to_utf8(dbName)); 
+            return NativeMethods.sqlite3_db_readonly(db, dbName); 
         }
         
-        string ISQLite3Provider.sqlite3_db_filename(sqlite3 db, string att)
+        IntPtr ISQLite3Provider.sqlite3_db_filename(sqlite3 db, IntPtr att)
 		{
-            return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
+            return NativeMethods.sqlite3_db_filename(db, att);
 		}
 
         IntPtr ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
@@ -1340,10 +1340,10 @@ namespace SQLitePCL
 		public static extern IntPtr sqlite3_errmsg(sqlite3 db);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_db_readonly(sqlite3 db, byte[] dbName);
+		public static extern int sqlite3_db_readonly(sqlite3 db, IntPtr dbName);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern IntPtr sqlite3_db_filename(sqlite3 db, byte[] att);
+		public static extern IntPtr sqlite3_db_filename(sqlite3 db, IntPtr att);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);

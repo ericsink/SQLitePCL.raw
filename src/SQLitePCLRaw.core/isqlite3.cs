@@ -104,8 +104,8 @@ namespace SQLitePCL
         long sqlite3_memory_highwater(int resetFlag);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-        int sqlite3_db_readonly(sqlite3 db, string dbName);
-        string sqlite3_db_filename(sqlite3 db, string att);
+        int sqlite3_db_readonly(sqlite3 db, IntPtr dbName);
+        IntPtr sqlite3_db_filename(sqlite3 db, IntPtr att);
         IntPtr sqlite3_errmsg(sqlite3 db);
         long sqlite3_last_insert_rowid(sqlite3 db);
         int sqlite3_changes(sqlite3 db);
