@@ -640,7 +640,16 @@ namespace SQLitePCL
         static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
         {
             var p_sql = sql.to_pinned_utf8();
-            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), callback, user_data, out errMsg);
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), callback, user_data, out var p_errMsg);
+            if (p_errMsg == IntPtr.Zero)
+            {
+                errMsg = null;
+            }
+            else
+            {
+                errMsg = util.from_utf8(p_errMsg);
+                _imp.sqlite3_free(p_errMsg);
+            }
             p_sql.Free();
             return rc;
         }
@@ -648,7 +657,16 @@ namespace SQLitePCL
         static public int sqlite3_exec(sqlite3 db, string sql, out string errMsg)
         {
             var p_sql = sql.to_pinned_utf8();
-            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out errMsg);
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out var p_errMsg);
+            if (p_errMsg == IntPtr.Zero)
+            {
+                errMsg = null;
+            }
+            else
+            {
+                errMsg = util.from_utf8(p_errMsg);
+                _imp.sqlite3_free(p_errMsg);
+            }
             p_sql.Free();
             return rc;
         }
@@ -656,7 +674,14 @@ namespace SQLitePCL
         static public int sqlite3_exec(sqlite3 db, string sql)
         {
             var p_sql = sql.to_pinned_utf8();
-            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out var errMsg);
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out var p_errMsg);
+            if (p_errMsg == IntPtr.Zero)
+            {
+            }
+            else
+            {
+                _imp.sqlite3_free(p_errMsg);
+            }
             p_sql.Free();
             return rc;
         }

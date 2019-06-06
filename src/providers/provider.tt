@@ -150,9 +150,8 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec func, object user_data, out string errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
-            IntPtr errmsg_ptr;
             int rc;
 
 			NativeMethods.callback_exec cb;
@@ -168,18 +167,8 @@ namespace SQLitePCL
                 hi = null;
             }
 			var h = new hook_handle(hi);
-			rc = NativeMethods.sqlite3_exec(db, sql, cb, h, out errmsg_ptr);
+			rc = NativeMethods.sqlite3_exec(db, sql, cb, h, out errMsg);
 			h.Dispose();
-
-            if (errmsg_ptr == IntPtr.Zero)
-            {
-                errMsg = null;
-            }
-            else
-            {
-                errMsg = util.from_utf8(errmsg_ptr);
-                NativeMethods.sqlite3_free(errmsg_ptr);
-            }
 
             return rc;
         }
