@@ -762,12 +762,16 @@ namespace SQLitePCL
 
         static public void sqlite3_result_error(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_error(context.ptr, val);
+            var p = val.to_pinned_utf8();
+            _imp.sqlite3_result_error(context.ptr, p.ToIntPtr());
+            p.Free();
         }
 
         static public void sqlite3_result_text(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_text(context.ptr, val);
+            var p = val.to_pinned_utf8();
+            _imp.sqlite3_result_text(context.ptr, p.ToIntPtr());
+            p.Free();
         }
 
         static public void sqlite3_result_double(sqlite3_context context, double val)
@@ -874,7 +878,10 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            return _imp.sqlite3_bind_text(stmt, index, val);
+            var p = val.to_pinned_utf8();
+            var rc = _imp.sqlite3_bind_text(stmt, index, p.ToIntPtr());
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
@@ -884,7 +891,10 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName)
         {
-            return _imp.sqlite3_bind_parameter_index(stmt, strName);
+            var p = strName.to_pinned_utf8();
+            var rc = _imp.sqlite3_bind_parameter_index(stmt, p.ToIntPtr());
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)

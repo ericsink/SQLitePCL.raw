@@ -137,9 +137,9 @@ namespace SQLitePCL
         int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
         int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
         int sqlite3_bind_null(sqlite3_stmt stmt, int index);
-        int sqlite3_bind_text(sqlite3_stmt stmt, int index, string text);
+        int sqlite3_bind_text(sqlite3_stmt stmt, int index, IntPtr text);
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
-        int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName);
+        int sqlite3_bind_parameter_index(sqlite3_stmt stmt, IntPtr strName);
 
         IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
@@ -187,11 +187,11 @@ namespace SQLitePCL
 
         void sqlite3_result_blob(IntPtr context, byte[] val);
         void sqlite3_result_double(IntPtr context, double val);
-        void sqlite3_result_error(IntPtr context, string strErr);
+        void sqlite3_result_error(IntPtr context, IntPtr strErr);
         void sqlite3_result_int(IntPtr context, int val);
         void sqlite3_result_int64(IntPtr context, long val);
         void sqlite3_result_null(IntPtr context);
-        void sqlite3_result_text(IntPtr context, string val);
+        void sqlite3_result_text(IntPtr context, IntPtr val);
         void sqlite3_result_zeroblob(IntPtr context, int n);
         // TODO sqlite3_result_value
         void sqlite3_result_error_toobig(IntPtr context);

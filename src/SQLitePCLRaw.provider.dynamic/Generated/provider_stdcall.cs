@@ -969,14 +969,14 @@ namespace SQLitePCL
             NativeMethods.sqlite3_result_null(stm);
         }
 
-        void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, string val)
+        void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, IntPtr val)
         {
-            NativeMethods.sqlite3_result_error(ctx, util.to_utf8(val), -1);
+            NativeMethods.sqlite3_result_error(ctx, val, -1);
         }
 
-        void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, string val)
+        void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, IntPtr val)
         {
-            NativeMethods.sqlite3_result_text(ctx, util.to_utf8(val), -1, new IntPtr(-1));
+            NativeMethods.sqlite3_result_text(ctx, val, -1, new IntPtr(-1));
         }
 
         void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, byte[] blob)
@@ -1060,9 +1060,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, string t)
+        int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, IntPtr t)
         {
-            return NativeMethods.sqlite3_bind_text(stm, paramIndex, util.to_utf8(t), -1, new IntPtr(-1));
+            return NativeMethods.sqlite3_bind_text(stm, paramIndex, t, -1, new IntPtr(-1));
         }
 
         int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
@@ -1100,9 +1100,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex);
         }
 
-        int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, string paramName)
+        int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, IntPtr paramName)
         {
-            return NativeMethods.sqlite3_bind_parameter_index(stm, util.to_utf8(paramName));
+            return NativeMethods.sqlite3_bind_parameter_index(stm, paramName);
         }
 
         int ISQLite3Provider.sqlite3_step(sqlite3_stmt stm)
@@ -1750,13 +1750,13 @@ namespace SQLitePCL
 		public delegate int sqlite3_bind_null(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte[] val, int nlen, IntPtr pvReserved);
+		public delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, IntPtr val, int nlen, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte[] strName);
+		public delegate int sqlite3_bind_parameter_index(sqlite3_stmt stmt, IntPtr strName);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_column_count(sqlite3_stmt stmt);
@@ -1819,7 +1819,7 @@ namespace SQLitePCL
 		public delegate void sqlite3_result_double(IntPtr context, double val);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_error(IntPtr context, byte[] strErr, int nLen);
+		public delegate void sqlite3_result_error(IntPtr context, IntPtr strErr, int nLen);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate void sqlite3_result_int(IntPtr context, int val);
@@ -1831,7 +1831,7 @@ namespace SQLitePCL
 		public delegate void sqlite3_result_null(IntPtr context);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_text(IntPtr context, byte[] val, int nLen, IntPtr pvReserved);
+		public delegate void sqlite3_result_text(IntPtr context, IntPtr val, int nLen, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate void sqlite3_result_zeroblob(IntPtr context, int n);
