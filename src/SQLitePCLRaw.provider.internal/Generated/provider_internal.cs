@@ -116,7 +116,7 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, string sql, delegate_exec func, object user_data, out string errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec func, object user_data, out string errMsg)
         {
             IntPtr errmsg_ptr;
             int rc;
@@ -134,7 +134,7 @@ namespace SQLitePCL
                 hi = null;
             }
 			var h = new hook_handle(hi);
-			rc = NativeMethods.sqlite3_exec(db, util.to_utf8(sql), cb, h, out errmsg_ptr);
+			rc = NativeMethods.sqlite3_exec(db, sql, cb, h, out errmsg_ptr);
 			h.Dispose();
 
             if (errmsg_ptr == IntPtr.Zero)
@@ -150,9 +150,9 @@ namespace SQLitePCL
             return rc;
         }
 
-        int ISQLite3Provider.sqlite3_complete(string sql)
+        int ISQLite3Provider.sqlite3_complete(IntPtr sql)
         {
-            return NativeMethods.sqlite3_complete(util.to_utf8(sql));
+            return NativeMethods.sqlite3_complete(sql);
         }
 
         IntPtr ISQLite3Provider.sqlite3_compileoption_get(int n)
@@ -160,9 +160,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_compileoption_get(n);
         }
 
-        int ISQLite3Provider.sqlite3_compileoption_used(string s)
+        int ISQLite3Provider.sqlite3_compileoption_used(IntPtr s)
         {
-            return NativeMethods.sqlite3_compileoption_used(util.to_utf8(s));
+            return NativeMethods.sqlite3_compileoption_used(s);
         }
 
         int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
@@ -266,9 +266,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
-        sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
+        sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, IntPtr destName, sqlite3 sourceDb, IntPtr sourceName)
         {
-            return NativeMethods.sqlite3_backup_init(destDb, util.to_utf8(destName), sourceDb, util.to_utf8(sourceName));
+            return NativeMethods.sqlite3_backup_init(destDb, destName, sourceDb, sourceName);
         }
 
         int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
@@ -1319,10 +1319,10 @@ namespace SQLitePCL
 		public static extern int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_complete(byte[] pSql);
+		public static extern int sqlite3_complete(IntPtr pSql);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_compileoption_used(byte[] pSql);
+		public static extern int sqlite3_compileoption_used(IntPtr pSql);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern IntPtr sqlite3_compileoption_get(int n);
@@ -1568,7 +1568,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_exec(sqlite3 db, byte[] strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
+		public static extern int sqlite3_exec(sqlite3 db, IntPtr strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_get_autocommit(sqlite3 db);
@@ -1595,7 +1595,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte[] zDestName, sqlite3 sourceDb, byte[] zSourceName);
+		public static extern sqlite3_backup sqlite3_backup_init(sqlite3 destDb, IntPtr zDestName, sqlite3 sourceDb, IntPtr zSourceName);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_backup_step(sqlite3_backup backup, int nPage);

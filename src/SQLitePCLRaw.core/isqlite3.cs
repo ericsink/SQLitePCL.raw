@@ -157,7 +157,7 @@ namespace SQLitePCL
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-        sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName);
+        sqlite3_backup sqlite3_backup_init(sqlite3 destDb, IntPtr destName, sqlite3 sourceDb, IntPtr sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
         int sqlite3_backup_remaining(sqlite3_backup backup);
         int sqlite3_backup_pagecount(sqlite3_backup backup);
@@ -209,11 +209,11 @@ namespace SQLitePCL
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
-        int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg);
+        int sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec callback, object user_data, out string errMsg);
 
-        int sqlite3_complete(string sql);
+        int sqlite3_complete(IntPtr sql);
 
-        int sqlite3_compileoption_used(string sql);
+        int sqlite3_compileoption_used(IntPtr sql);
         IntPtr sqlite3_compileoption_get(int n);
 
         int sqlite3_wal_autocheckpoint(sqlite3 db, int n);

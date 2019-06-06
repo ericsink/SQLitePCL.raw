@@ -639,18 +639,26 @@ namespace SQLitePCL
 
         static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
         {
-            return _imp.sqlite3_exec(db, sql, callback, user_data, out errMsg);
+            var p_sql = sql.to_pinned_utf8();
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), callback, user_data, out errMsg);
+            p_sql.Free();
+            return rc;
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql, out string errMsg)
         {
-            return _imp.sqlite3_exec(db, sql, null, null, out errMsg);
+            var p_sql = sql.to_pinned_utf8();
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out errMsg);
+            p_sql.Free();
+            return rc;
         }
 
         static public int sqlite3_exec(sqlite3 db, string sql)
         {
-            string errmsg;
-            return _imp.sqlite3_exec(db, sql, null, null, out errmsg);
+            var p_sql = sql.to_pinned_utf8();
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), null, null, out var errMsg);
+            p_sql.Free();
+            return rc;
         }
 
         static public int sqlite3_step(sqlite3_stmt stmt)
@@ -687,12 +695,18 @@ namespace SQLitePCL
 
         static public int sqlite3_complete(string sql)
         {
-            return _imp.sqlite3_complete(sql);
+            var p = sql.to_pinned_utf8();
+            var rc = _imp.sqlite3_complete(p.ToIntPtr());
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_compileoption_used(string s)
         {
-            return _imp.sqlite3_compileoption_used(s);
+            var p = s.to_pinned_utf8();
+            var rc = _imp.sqlite3_compileoption_used(p.ToIntPtr());
+            p.Free();
+            return rc;
         }
 
         static public string sqlite3_compileoption_get(int n)
@@ -984,7 +998,12 @@ namespace SQLitePCL
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
         {
-            return _imp.sqlite3_backup_init(destDb, destName, sourceDb, sourceName);
+            var p_destName = destName.to_pinned_utf8();
+            var p_sourceName = sourceName.to_pinned_utf8();
+            var ret = _imp.sqlite3_backup_init(destDb, p_destName.ToIntPtr(), sourceDb, p_sourceName.ToIntPtr());
+            p_destName.Free();
+            p_sourceName.Free();
+            return ret;
         }
 
         static public int sqlite3_backup_step(sqlite3_backup backup, int nPage)
