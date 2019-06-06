@@ -1304,7 +1304,6 @@ namespace SQLitePCL
 			sqlite3_errmsg = (MyDelegateTypes.sqlite3_errmsg) Load(gf, typeof(MyDelegateTypes.sqlite3_errmsg));
 			sqlite3_db_readonly = (MyDelegateTypes.sqlite3_db_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_db_readonly));
 			sqlite3_db_filename = (MyDelegateTypes.sqlite3_db_filename) Load(gf, typeof(MyDelegateTypes.sqlite3_db_filename));
-			sqlite3_prepare = (MyDelegateTypes.sqlite3_prepare) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare));
 			sqlite3_prepare_v2 = (MyDelegateTypes.sqlite3_prepare_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v2));
 			sqlite3_prepare_v3 = (MyDelegateTypes.sqlite3_prepare_v3) Load(gf, typeof(MyDelegateTypes.sqlite3_prepare_v3));
 			sqlite3_db_status = (MyDelegateTypes.sqlite3_db_status) Load(gf, typeof(MyDelegateTypes.sqlite3_db_status));
@@ -1434,7 +1433,6 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_errmsg sqlite3_errmsg;
 		public static MyDelegateTypes.sqlite3_db_readonly sqlite3_db_readonly;
 		public static MyDelegateTypes.sqlite3_db_filename sqlite3_db_filename;
-		public static MyDelegateTypes.sqlite3_prepare sqlite3_prepare;
 		public static MyDelegateTypes.sqlite3_prepare_v2 sqlite3_prepare_v2;
 		public static MyDelegateTypes.sqlite3_prepare_v3 sqlite3_prepare_v3;
 		public static MyDelegateTypes.sqlite3_db_status sqlite3_db_status;
@@ -1643,9 +1641,6 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_db_filename(sqlite3 db, IntPtr att);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);

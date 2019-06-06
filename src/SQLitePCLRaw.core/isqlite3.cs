@@ -231,9 +231,6 @@ namespace SQLitePCL
         int sqlite3_key(sqlite3 db, byte[] key, int keylen);
         int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
-        // because it's deprecated and harmful
-        int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
-
         // because there's no good reason for a C# app to be calling the sqlite C memory allocator
         IntPtr sqlite3_malloc(int n);
         IntPtr sqlite3_realloc(IntPtr p, int n);
@@ -263,20 +260,6 @@ namespace SQLitePCL
 
         int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
-
-#if not // utf16 versions, not needed since we're using utf8 everywhere
-        IntPtr sqlite3_column_database_name16(IntPtr stmt, int index);
-        IntPtr sqlite3_column_decltype16(IntPtr stmt, int index);
-        IntPtr sqlite3_column_name16(IntPtr stmt, int index);
-        IntPtr sqlite3_column_origin_name16(IntPtr stmt, int index);
-        IntPtr sqlite3_column_table_name16(IntPtr stmt, int index);
-        IntPtr sqlite3_column_text16(IntPtr stmt, int index);
-        IntPtr sqlite3_value_text16(IntPtr p);
-        int sqlite3_open16(string fileName, out IntPtr db);
-        int sqlite3_bind_text16(IntPtr stmt, int index, string val, int nlen, IntPtr pvReserved);
-        void sqlite3_result_error16(IntPtr context, string strName, int nLen);
-        void sqlite3_result_text16(IntPtr context, string strName, int nLen, IntPtr pvReserved);
-#endif
 
 #if not
         // Since sqlite3_log() takes a variable argument list, we have to overload declarations

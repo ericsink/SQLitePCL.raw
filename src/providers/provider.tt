@@ -1341,7 +1341,6 @@ namespace SQLitePCL
 		"sqlite3_errmsg",
 		"sqlite3_db_readonly",
 		"sqlite3_db_filename",
-		"sqlite3_prepare",
 		"sqlite3_prepare_v2",
 		"sqlite3_prepare_v3",
 		"sqlite3_db_status",
@@ -1626,9 +1625,6 @@ namespace SQLitePCL
 
 		<#= attr #>
 		<#= front #> IntPtr sqlite3_db_filename(sqlite3 db, IntPtr att);
-
-		<#= attr #>
-		<#= front #> int sqlite3_prepare(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
 
 		<#= attr #>
 		<#= front #> int sqlite3_prepare_v2(sqlite3 db, IntPtr pSql, int nBytes, out IntPtr stmt, out IntPtr ptrRemain);
