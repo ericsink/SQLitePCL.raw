@@ -27,6 +27,7 @@ namespace SQLitePCL
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.InteropServices;
 
     public static class raw
     {
@@ -277,21 +278,73 @@ namespace SQLitePCL
         public const int SQLITE_DENY = 1;   /* Abort the SQL statement with an error */
         public const int SQLITE_IGNORE = 2;   /* Don't allow access, but don't generate an error */
 
+        struct MyUtf8String
+        {
+            GCHandle h;
+            bool valid;
+
+            public MyUtf8String(string s)
+            {
+                if (s == null)
+                {
+                    h = default(GCHandle);
+                    valid = false;
+                }
+                else
+                {
+                    var ba = s.to_utf8();
+                    h = GCHandle.Alloc(ba, GCHandleType.Pinned);
+                    valid = true;
+                }
+            }
+
+            public IntPtr ToIntPtr()
+            {
+                if (valid)
+                {
+                    return h.AddrOfPinnedObject();
+                }
+                else
+                {
+                    return IntPtr.Zero;
+                }
+            }
+
+            public void Free()
+            {
+                if (valid)
+                {
+                    h.Free();
+                    valid = false;
+                }
+            }
+        }
+
+        static private MyUtf8String to_pinned_utf8(this string s)
+        {
+            return new MyUtf8String(s);
+        }
+
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_open(filename, out p);
+            var p = filename.to_pinned_utf8();
+            int rc = _imp.sqlite3_open(p.ToIntPtr(), out var p_db);
+            p.Free();
 			// TODO check rc?
-            db = sqlite3.New(p);
+            db = sqlite3.New(p_db);
             return rc;
         }
 
         static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_open_v2(filename, out p, flags, vfs);
+            var p_filename = filename.to_pinned_utf8();
+            var p_vfs = vfs.to_pinned_utf8();
+
+            int rc = _imp.sqlite3_open_v2(p_filename.ToIntPtr(), out var p_db, flags, p_vfs.ToIntPtr());
+            p_filename.Free();
+            p_vfs.Free();
 			// TODO check rc?
-            db = sqlite3.New(p);
+            db = sqlite3.New(p_db);
             return rc;
         }
         static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
@@ -400,7 +453,7 @@ namespace SQLitePCL
 
         static public string sqlite3_libversion()
         {
-            return _imp.sqlite3_libversion();
+            return util.from_utf8(_imp.sqlite3_libversion());
         }
 
         static public int sqlite3_libversion_number()

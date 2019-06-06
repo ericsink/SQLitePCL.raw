@@ -85,8 +85,8 @@ namespace SQLitePCL
     /// </summary>
     public interface ISQLite3Provider
     {
-        int sqlite3_open(string filename, out IntPtr db);
-        int sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs);
+        int sqlite3_open(IntPtr filename, out IntPtr db);
+        int sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs);
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
         int sqlite3_close(IntPtr db);
 
@@ -97,7 +97,7 @@ namespace SQLitePCL
         int sqlite3__vfs__delete(string vfs, string pathname, int syncDir);
 
         int sqlite3_threadsafe();
-        string sqlite3_libversion();
+        IntPtr sqlite3_libversion();
         int sqlite3_libversion_number();
         string sqlite3_sourceid();
         long sqlite3_memory_used();

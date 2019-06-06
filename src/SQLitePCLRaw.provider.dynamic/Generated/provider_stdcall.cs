@@ -45,14 +45,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
         }
 
-        int ISQLite3Provider.sqlite3_open(string filename, out IntPtr db)
+        int ISQLite3Provider.sqlite3_open(IntPtr filename, out IntPtr db)
         {
-            return NativeMethods.sqlite3_open(util.to_utf8(filename), out db);
+            return NativeMethods.sqlite3_open(filename, out db);
         }
 
-        int ISQLite3Provider.sqlite3_open_v2(string filename, out IntPtr db, int flags, string vfs)
+        int ISQLite3Provider.sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs)
         {
-            return NativeMethods.sqlite3_open_v2(util.to_utf8(filename), out db, flags, util.to_utf8(vfs));
+            return NativeMethods.sqlite3_open_v2(filename, out db, flags, vfs);
         }
 
 		#pragma warning disable 649
@@ -396,9 +396,9 @@ namespace SQLitePCL
             return util.from_utf8(NativeMethods.sqlite3_errmsg(db));
         }
 
-        string ISQLite3Provider.sqlite3_libversion()
+        IntPtr ISQLite3Provider.sqlite3_libversion()
         {
-            return util.from_utf8(NativeMethods.sqlite3_libversion());
+            return NativeMethods.sqlite3_libversion();
         }
 
         int ISQLite3Provider.sqlite3_libversion_number()
@@ -1743,10 +1743,10 @@ namespace SQLitePCL
 		public delegate void sqlite3_free(IntPtr p);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_open(byte[] filename, out IntPtr db);
+		public delegate int sqlite3_open(IntPtr filename, out IntPtr db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_open_v2(byte[] filename, out IntPtr db, int flags, byte[] vfs);
+		public delegate int sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
