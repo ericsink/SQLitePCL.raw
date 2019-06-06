@@ -579,28 +579,60 @@ namespace SQLitePCL
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
         {
-            string tail;
-            return sqlite3_prepare_v2(db, sql, out stmt, out tail);
+            return sqlite3_prepare_v2(db, sql, out stmt, out var tail);
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_prepare_v2(db, sql, out p, out tail);
+            var p_sql = sql.to_pinned_utf8();
+            int rc = _imp.sqlite3_prepare_v2(db, p_sql.ToIntPtr(), out var p, out var p_tail);
+            if (p_tail == IntPtr.Zero)
+            {
+                tail = null;
+            }
+            else
+            {
+                var rem = util.from_utf8(p_tail);
+                if (rem.Length == 0)
+                {
+                    tail = null;
+                }
+                else
+                {
+                    tail = rem;
+                }
+            }
+            p_sql.Free();
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
         {
-            string tail;
-            return sqlite3_prepare_v3(db, sql, flags, out stmt, out tail);
+            return sqlite3_prepare_v3(db, sql, flags, out stmt, out var tail);
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
         {
-            IntPtr p;
-            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out p, out tail);
+            var p_sql = sql.to_pinned_utf8();
+            int rc = _imp.sqlite3_prepare_v3(db, p_sql.ToIntPtr(), flags, out var p, out var p_tail);
+            if (p_tail == IntPtr.Zero)
+            {
+                tail = null;
+            }
+            else
+            {
+                var rem = util.from_utf8(p_tail);
+                if (rem.Length == 0)
+                {
+                    tail = null;
+                }
+                else
+                {
+                    tail = rem;
+                }
+            }
+            p_sql.Free();
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }

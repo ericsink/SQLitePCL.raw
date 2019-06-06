@@ -118,8 +118,8 @@ namespace SQLitePCL
         int sqlite3_extended_errcode(sqlite3 db);
         IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
 
-        int sqlite3_prepare_v2(sqlite3 db, string sql, out IntPtr stmt, out string remain);
-        int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out IntPtr stmt, out string remain);
+        int sqlite3_prepare_v2(sqlite3 db, IntPtr sql, out IntPtr stmt, out IntPtr remain);
+        int sqlite3_prepare_v3(sqlite3 db, IntPtr sql, uint flags, out IntPtr stmt, out IntPtr remain);
         int sqlite3_step(sqlite3_stmt stmt);
         int sqlite3_finalize(IntPtr stmt);
         int sqlite3_reset(sqlite3_stmt stmt);

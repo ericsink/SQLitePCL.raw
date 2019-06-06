@@ -207,50 +207,14 @@ namespace SQLitePCL
             return rc; 
         }
 
-        int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, string sql, out IntPtr stm, out string remain)
+        int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, IntPtr sql, out IntPtr stm, out IntPtr tail)
         {
-            var ba_sql = util.to_utf8(sql);
-            GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
-            IntPtr ptr_sql = pinned_sql.AddrOfPinnedObject();
-            IntPtr tail;
-            int rc = NativeMethods.sqlite3_prepare_v2(db, ptr_sql, -1, out stm, out tail);
-            if (tail == IntPtr.Zero)
-            {
-                remain = null;
-            }
-            else
-            {
-                remain = util.from_utf8(tail);
-                if (remain.Length == 0)
-                {
-                    remain = null;
-                }
-            }
-            pinned_sql.Free();
-            return rc;
+            return NativeMethods.sqlite3_prepare_v2(db, sql, -1, out stm, out tail);
         }
 
-        int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out IntPtr stm, out string remain)
+        int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, IntPtr sql, uint flags, out IntPtr stm, out IntPtr tail)
         {
-            var ba_sql = util.to_utf8(sql);
-            GCHandle pinned_sql = GCHandle.Alloc(ba_sql, GCHandleType.Pinned);
-            IntPtr ptr_sql = pinned_sql.AddrOfPinnedObject();
-            IntPtr tail;
-            int rc = NativeMethods.sqlite3_prepare_v3(db, ptr_sql, -1, flags, out stm, out tail);
-            if (tail == IntPtr.Zero)
-            {
-                remain = null;
-            }
-            else
-            {
-                remain = util.from_utf8(tail);
-                if (remain.Length == 0)
-                {
-                    remain = null;
-                }
-            }
-            pinned_sql.Free();
-            return rc;
+            return NativeMethods.sqlite3_prepare_v3(db, sql, -1, flags, out stm, out tail);
         }
 
         int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
