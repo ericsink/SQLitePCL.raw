@@ -32,6 +32,7 @@ namespace SQLitePCL
 
     public static class util
     {
+        // TODO rename to clarify that this function adds a zero terminator at the end
         public static byte[] to_utf8(this string sourceText)
         {
             if (sourceText == null)
@@ -59,26 +60,15 @@ namespace SQLitePCL
                 {
                     offset++;
                 }
-
-                offset++;
             }
 
             return offset;
         }
 
+        // TODO rename to clarify that this function looks for a zero terminator at the end
         public static string from_utf8(IntPtr nativeString)
         {
-            string result = null;
-
-            if (nativeString != IntPtr.Zero)
-            {
-                int size = GetNativeUTF8Size(nativeString);
-                var array = new byte[size - 1];
-                Marshal.Copy(nativeString, array, 0, size - 1);
-                result = Encoding.UTF8.GetString(array, 0, array.Length);
-            }
-
-            return result;
+            return from_utf8(nativeString, GetNativeUTF8Size(nativeString));
         }
 
         public static string from_utf8(IntPtr nativeString, int size)
