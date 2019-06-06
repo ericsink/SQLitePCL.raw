@@ -155,9 +155,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_complete(util.to_utf8(sql));
         }
 
-        string ISQLite3Provider.sqlite3_compileoption_get(int n)
+        IntPtr ISQLite3Provider.sqlite3_compileoption_get(int n)
         {
-            return util.from_utf8(NativeMethods.sqlite3_compileoption_get(n));
+            return NativeMethods.sqlite3_compileoption_get(n);
         }
 
         int ISQLite3Provider.sqlite3_compileoption_used(string s)
@@ -254,9 +254,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
-        string ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
+        IntPtr ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
         {
-            return util.from_utf8(NativeMethods.sqlite3_sql(stmt));
+            return NativeMethods.sqlite3_sql(stmt);
         }
 
         IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
@@ -352,9 +352,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
 
-        string ISQLite3Provider.sqlite3_errstr(int rc)
+        IntPtr ISQLite3Provider.sqlite3_errstr(int rc)
         {
-            return util.from_utf8(NativeMethods.sqlite3_errstr(rc));
+            return NativeMethods.sqlite3_errstr(rc);
         }
 
         int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
@@ -387,9 +387,9 @@ namespace SQLitePCL
             return util.from_utf8(NativeMethods.sqlite3_db_filename(db, util.to_utf8(att)));
 		}
 
-        string ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
+        IntPtr ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
         {
-            return util.from_utf8(NativeMethods.sqlite3_errmsg(db));
+            return NativeMethods.sqlite3_errmsg(db);
         }
 
         IntPtr ISQLite3Provider.sqlite3_libversion()
@@ -976,9 +976,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
-        string ISQLite3Provider.sqlite3_sourceid()
+        IntPtr ISQLite3Provider.sqlite3_sourceid()
         {
-            return util.from_utf8(NativeMethods.sqlite3_sourceid());
+            return NativeMethods.sqlite3_sourceid();
         }
 
         void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
@@ -1077,9 +1077,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_value_type(p);
         }
 
-        string ISQLite3Provider.sqlite3_value_text(IntPtr p)
+        IntPtr ISQLite3Provider.sqlite3_value_text(IntPtr p)
         {
-            return util.from_utf8(NativeMethods.sqlite3_value_text(p));
+            return NativeMethods.sqlite3_value_text(p);
         }
 
         int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
@@ -1127,9 +1127,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
 
-        string ISQLite3Provider.sqlite3_bind_parameter_name(sqlite3_stmt stm, int paramIndex)
+        IntPtr ISQLite3Provider.sqlite3_bind_parameter_name(sqlite3_stmt stm, int paramIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex));
+            return NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex);
         }
 
         int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, string paramName)
@@ -1162,14 +1162,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_text(stm, columnIndex));
+            return NativeMethods.sqlite3_column_text(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
+            return NativeMethods.sqlite3_column_decltype(stm, columnIndex);
         }
 
         double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
@@ -1232,24 +1232,24 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_data_count(stm);
         }
 
-        string ISQLite3Provider.sqlite3_column_name(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_name(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_name(stm, columnIndex));
+            return NativeMethods.sqlite3_column_name(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_origin_name(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_origin_name(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_origin_name(stm, columnIndex));
+            return NativeMethods.sqlite3_column_origin_name(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_table_name(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_table_name(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_table_name(stm, columnIndex));
+            return NativeMethods.sqlite3_column_table_name(stm, columnIndex);
         }
 
-        string ISQLite3Provider.sqlite3_column_database_name(sqlite3_stmt stm, int columnIndex)
+        IntPtr ISQLite3Provider.sqlite3_column_database_name(sqlite3_stmt stm, int columnIndex)
         {
-            return util.from_utf8(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
+            return NativeMethods.sqlite3_column_database_name(stm, columnIndex);
         }
 
         int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)

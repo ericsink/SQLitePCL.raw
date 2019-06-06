@@ -99,14 +99,14 @@ namespace SQLitePCL
         int sqlite3_threadsafe();
         IntPtr sqlite3_libversion();
         int sqlite3_libversion_number();
-        string sqlite3_sourceid();
+        IntPtr sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
         int sqlite3_db_readonly(sqlite3 db, string dbName);
         string sqlite3_db_filename(sqlite3 db, string att);
-        string sqlite3_errmsg(sqlite3 db);
+        IntPtr sqlite3_errmsg(sqlite3 db);
         long sqlite3_last_insert_rowid(sqlite3 db);
         int sqlite3_changes(sqlite3 db);
         int sqlite3_total_changes(sqlite3 db);
@@ -116,7 +116,7 @@ namespace SQLitePCL
         int sqlite3_extended_result_codes(sqlite3 db, int onoff);
         int sqlite3_errcode(sqlite3 db);
         int sqlite3_extended_errcode(sqlite3 db);
-        string sqlite3_errstr(int rc); /* 3.7.15+ */
+        IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
 
         int sqlite3_prepare_v2(sqlite3 db, string sql, out IntPtr stmt, out string remain);
         int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out IntPtr stmt, out string remain);
@@ -125,12 +125,12 @@ namespace SQLitePCL
         int sqlite3_reset(sqlite3_stmt stmt);
         int sqlite3_clear_bindings(sqlite3_stmt stmt);
         int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg);
-        string sqlite3_sql(sqlite3_stmt stmt);
+        IntPtr sqlite3_sql(sqlite3_stmt stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
         IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
         int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
-        string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
         int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob);
         int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int nSize);
         int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
@@ -141,11 +141,11 @@ namespace SQLitePCL
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
         int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName);
 
-        string sqlite3_column_database_name(sqlite3_stmt stmt, int index);
-        string sqlite3_column_name(sqlite3_stmt stmt, int index);
-        string sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
-        string sqlite3_column_table_name(sqlite3_stmt stmt, int index);
-        string sqlite3_column_text(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
         int sqlite3_data_count(sqlite3_stmt stmt);
         int sqlite3_column_count(sqlite3_stmt stmt);
         double sqlite3_column_double(sqlite3_stmt stmt, int index);
@@ -155,7 +155,7 @@ namespace SQLitePCL
         int sqlite3_column_blob(sqlite3_stmt stm, int columnIndex, byte[] result, int offset);
         int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
-        string sqlite3_column_decltype(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
         sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
@@ -204,7 +204,7 @@ namespace SQLitePCL
         int sqlite3_value_int(IntPtr p);
         long sqlite3_value_int64(IntPtr p);
         int sqlite3_value_type(IntPtr p);
-        string sqlite3_value_text(IntPtr p);
+        IntPtr sqlite3_value_text(IntPtr p);
 
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
@@ -214,7 +214,7 @@ namespace SQLitePCL
         int sqlite3_complete(string sql);
 
         int sqlite3_compileoption_used(string sql);
-        string sqlite3_compileoption_get(int n);
+        IntPtr sqlite3_compileoption_get(int n);
 
         int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
         int sqlite3_wal_checkpoint(sqlite3 db, string dbName);

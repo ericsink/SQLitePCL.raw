@@ -493,7 +493,7 @@ namespace SQLitePCL
 
         static public string sqlite3_sourceid()
         {
-            return _imp.sqlite3_sourceid();
+            return util.from_utf8(_imp.sqlite3_sourceid());
         }
 
         static public long sqlite3_memory_used()
@@ -513,7 +513,7 @@ namespace SQLitePCL
 
         static public string sqlite3_errmsg(sqlite3 db)
         {
-            return _imp.sqlite3_errmsg(db);
+            return util.from_utf8(_imp.sqlite3_errmsg(db));
         }
 
         static public int sqlite3_db_readonly(sqlite3 db, string dbName)
@@ -568,7 +568,7 @@ namespace SQLitePCL
 
         static public string sqlite3_errstr(int rc)
         {
-            return _imp.sqlite3_errstr(rc);
+            return util.from_utf8(_imp.sqlite3_errstr(rc));
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
@@ -659,7 +659,7 @@ namespace SQLitePCL
 
         static public string sqlite3_compileoption_get(int n)
         {
-            return _imp.sqlite3_compileoption_get(n);
+            return util.from_utf8(_imp.sqlite3_compileoption_get(n));
         }
 
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
@@ -669,7 +669,7 @@ namespace SQLitePCL
 
         static public string sqlite3_sql(sqlite3_stmt stmt)
         {
-            return _imp.sqlite3_sql(stmt);
+            return util.from_utf8(_imp.sqlite3_sql(stmt));
         }
 
         static public sqlite3 sqlite3_db_handle(sqlite3_stmt stmt)
@@ -702,7 +702,7 @@ namespace SQLitePCL
 
         static public string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_bind_parameter_name(stmt, index);
+            return util.from_utf8(_imp.sqlite3_bind_parameter_name(stmt, index));
         }
 
         // probably unnecessary since we pass user_data back as one of the
@@ -801,7 +801,7 @@ namespace SQLitePCL
 
         static public string sqlite3_value_text(sqlite3_value val)
         {
-            return _imp.sqlite3_value_text(val.ptr);
+            return util.from_utf8(_imp.sqlite3_value_text(val.ptr));
         }
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob)
@@ -861,27 +861,27 @@ namespace SQLitePCL
 
         static public string sqlite3_column_database_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_database_name(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_database_name(stmt, index));
         }
 
         static public string sqlite3_column_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_name(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_name(stmt, index));
         }
 
         static public string sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_origin_name(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_origin_name(stmt, index));
         }
 
         static public string sqlite3_column_table_name(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_table_name(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_table_name(stmt, index));
         }
 
         static public string sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_text(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_text(stmt, index));
         }
 
         static public int sqlite3_column_count(sqlite3_stmt stmt)
@@ -931,7 +931,7 @@ namespace SQLitePCL
 
         static public string sqlite3_column_decltype(sqlite3_stmt stmt, int index)
         {
-            return _imp.sqlite3_column_decltype(stmt, index);
+            return util.from_utf8(_imp.sqlite3_column_decltype(stmt, index));
         }
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
