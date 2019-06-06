@@ -716,7 +716,16 @@ namespace SQLitePCL
 
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            return _imp.sqlite3_table_column_metadata(db, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+            var p_dbName = dbName.to_pinned_utf8();
+            var p_tblName = tblName.to_pinned_utf8();
+            var p_colName = colName.to_pinned_utf8();
+            var rc = _imp.sqlite3_table_column_metadata(db, p_dbName.ToIntPtr(), p_tblName.ToIntPtr(), p_colName.ToIntPtr(), out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
+            dataType = util.from_utf8(p_dataType);
+            collSeq = util.from_utf8(p_collSeq);
+            p_dbName.Free();
+            p_tblName.Free();
+            p_colName.Free();
+            return rc;
         }
 
         static public string sqlite3_sql(sqlite3_stmt stmt)
@@ -1092,12 +1101,18 @@ namespace SQLitePCL
 
         static public int sqlite3_wal_checkpoint(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_wal_checkpoint(db, dbName);
+            var p_dbName = dbName.to_pinned_utf8();
+            var rc = _imp.sqlite3_wal_checkpoint(db, p_dbName.ToIntPtr());
+            p_dbName.Free();
+            return rc;
         }
 
         static public int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            return _imp.sqlite3_wal_checkpoint_v2(db, dbName, eMode, out logSize, out framesCheckPointed);
+            var p_dbName = dbName.to_pinned_utf8();
+            var rc = _imp.sqlite3_wal_checkpoint_v2(db, p_dbName.ToIntPtr(), eMode, out logSize, out framesCheckPointed);
+            p_dbName.Free();
+            return rc;
         }
 
         static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)

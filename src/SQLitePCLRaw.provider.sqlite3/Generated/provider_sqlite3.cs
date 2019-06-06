@@ -165,42 +165,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_compileoption_used(s);
         }
 
-        int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
+        int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, IntPtr dbName, IntPtr tblName, IntPtr colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            IntPtr datatype_ptr;
-            IntPtr collseq_ptr;
-
-            int rc = NativeMethods.sqlite3_table_column_metadata(
-                        db, util.to_utf8(dbName), util.to_utf8(tblName), util.to_utf8(colName), 
-                        out datatype_ptr, out collseq_ptr, out notNull, out primaryKey, out autoInc);
-
-            if (datatype_ptr == IntPtr.Zero)
-            {
-                dataType = null;
-            }
-            else
-            {
-                dataType = util.from_utf8(datatype_ptr);
-                if (dataType.Length == 0)
-                {
-                    dataType = null;
-                }
-            }
-
-            if (collseq_ptr == IntPtr.Zero)
-            {
-                collSeq = null;
-            }
-            else
-            {
-                collSeq = util.from_utf8(collseq_ptr);
-                if (collSeq.Length == 0)
-                {
-                    collSeq = null;
-                }
-            }         
-  
-            return rc; 
+            return NativeMethods.sqlite3_table_column_metadata(
+                        db, dbName, tblName, colName, 
+                        out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
         }
 
         int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, IntPtr sql, out IntPtr stm, out IntPtr tail)
@@ -1241,14 +1210,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, string dbName)
+        int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, IntPtr dbName)
         {
-            return NativeMethods.sqlite3_wal_checkpoint(db, util.to_utf8(dbName));
+            return NativeMethods.sqlite3_wal_checkpoint(db, dbName);
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed)
+        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, IntPtr dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            return NativeMethods.sqlite3_wal_checkpoint_v2(db, util.to_utf8(dbName), eMode, out logSize, out framesCheckPointed);
+            return NativeMethods.sqlite3_wal_checkpoint_v2(db, dbName, eMode, out logSize, out framesCheckPointed);
         }
 
 	static class NativeMethods
@@ -1328,7 +1297,7 @@ namespace SQLitePCL
 		public static extern IntPtr sqlite3_compileoption_get(int n);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_table_column_metadata(sqlite3 db, byte[] dbName, byte[] tblName, byte[] colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		public static extern int sqlite3_table_column_metadata(sqlite3 db, IntPtr dbName, IntPtr tblName, IntPtr colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern IntPtr sqlite3_value_text(IntPtr p);
@@ -1631,10 +1600,10 @@ namespace SQLitePCL
 		public static extern int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_wal_checkpoint(sqlite3 db, byte[] dbName);
+		public static extern int sqlite3_wal_checkpoint(sqlite3 db, IntPtr dbName);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_wal_checkpoint_v2(sqlite3 db, byte[] dbName, int eMode, out int logSize, out int framesCheckPointed);
+		public static extern int sqlite3_wal_checkpoint_v2(sqlite3 db, IntPtr dbName, int eMode, out int logSize, out int framesCheckPointed);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);

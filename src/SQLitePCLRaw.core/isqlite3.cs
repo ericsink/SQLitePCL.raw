@@ -217,10 +217,10 @@ namespace SQLitePCL
         IntPtr sqlite3_compileoption_get(int n);
 
         int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
-        int sqlite3_wal_checkpoint(sqlite3 db, string dbName);
-        int sqlite3_wal_checkpoint_v2(sqlite3 db, string dbName, int eMode, out int logSize, out int framesCheckPointed);
+        int sqlite3_wal_checkpoint(sqlite3 db, IntPtr dbName);
+        int sqlite3_wal_checkpoint_v2(sqlite3 db, IntPtr dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-        int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc);
+        int sqlite3_table_column_metadata(sqlite3 db, IntPtr dbName, IntPtr tblName, IntPtr colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc);
 
         int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
