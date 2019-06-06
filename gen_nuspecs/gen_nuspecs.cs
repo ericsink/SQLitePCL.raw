@@ -396,7 +396,7 @@ public static class gen
     private static XmlWriterSettings XmlWriterSettings_default()
     {
         var settings = new XmlWriterSettings();
-        settings.NewLineChars = "\r\n";
+        settings.NewLineChars = "\n";
         settings.Indent = true;
         return settings;
     }
