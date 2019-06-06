@@ -98,6 +98,11 @@ namespace SQLitePCL
 			return rc;
         }
 
+        void ISQLite3Provider.sqlite3_free(IntPtr p)
+        {
+            NativeMethods.sqlite3_free(p);
+        }
+
         int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);

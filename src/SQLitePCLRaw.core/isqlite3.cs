@@ -224,6 +224,8 @@ namespace SQLitePCL
 
         int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
+        void sqlite3_free(IntPtr p);
+
 #if not // maybe never
 
         // because the wp8 C++ layer wouldn't link unless built against sqlcipher
@@ -234,7 +236,6 @@ namespace SQLitePCL
         // because there's no good reason for a C# app to be calling the sqlite C memory allocator
         IntPtr sqlite3_malloc(int n);
         IntPtr sqlite3_realloc(IntPtr p, int n);
-        void sqlite3_free(IntPtr p);
 
         // because these are for internal use by SQLite
         sqlite3_mutex_*
