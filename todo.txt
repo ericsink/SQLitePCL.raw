@@ -1,4 +1,11 @@
 
+hmph.  the string name for create_collation and
+create_function_whatever is used in the provider
+layer as a dictionary key.  so passing it as an
+IntPtr isn't very helpful.
+
+--
+
 instead of just IGetFunctionPointer, should
 we have IResolveLibrary?  how should we wrap the
 Load part of NativeLibrary?  or maybe the resulting
