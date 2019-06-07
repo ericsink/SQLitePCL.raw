@@ -1,33 +1,7 @@
 
-the IntPtr from the app cannot be stored in the PtrLen.
-we don't own it.  need to make a copy.
-
-in the case where raw is calling down, it got a string,
-and then converted it.  it would be nice for the lower
-layer to just take owernship of that instead of creating
-its own.
-
---
-
 for things like the collation delegate, we'll need
 two delegates, one low-level with IntPtr/utf8, and the other
 higher-level with string.
-
---
-
-why is dotnet sdk now 2.2 instead of 3.0 ?
-because if the global.json file.
-
-need to make absolutely certain that the build
-scripting is running tests against the nupkg
-just built, not using anything in the cache.
-
---
-
-hmph.  the string name for create_collation and
-create_function_whatever is used in the provider
-layer as a dictionary key.  so passing it as an
-IntPtr isn't very helpful.
 
 --
 
