@@ -436,10 +436,16 @@ namespace SQLitePCL
             _imp.sqlite3_update_hook(db, f, v);
         }
 
-        static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
+        static public int sqlite3_create_collation(sqlite3 db, string name, object v, Func<object,string,string,int> f)
         {
+            delegate_collation_low cb = 
+            (ob, len1, p1, len2, p2) =>
+            {
+                return f(ob, util.from_utf8(p1, len1), util.from_utf8(p2, len2));
+            };
+
             var p = name.to_utf8();
-            var rc = _imp.sqlite3_create_collation(db, p, v, f);
+            var rc = _imp.sqlite3_create_collation(db, p, v, cb);
             return rc;
         }
 

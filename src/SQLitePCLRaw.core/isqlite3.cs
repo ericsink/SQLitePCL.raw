@@ -27,16 +27,19 @@ namespace SQLitePCL
 {
     using System;
 
+
     public delegate void delegate_log(object user_data, int errorCode, string msg);
     public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
+
     public delegate void delegate_trace(object user_data, string statement);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
     public delegate void delegate_profile(object user_data, string statement, long ns);
     public delegate int delegate_progress(object user_data);
+
     public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
-    public delegate int delegate_collation(object user_data, string s1, string s2);
+    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO dislike name
     public delegate int delegate_exec(object user_data, string[] values, string[] names);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -182,7 +185,7 @@ namespace SQLitePCL
 
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
         void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);
-        int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func);
+        int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation_low func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_scalar func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_scalar func);

@@ -225,10 +225,10 @@ namespace SQLitePCL
 
     public class collation_hook_info
     {
-        private delegate_collation _func;
+        private delegate_collation_low _func;
         private object _user_data;
 
-        public collation_hook_info(delegate_collation func, object v)
+        public collation_hook_info(delegate_collation_low func, object v)
         {
             _func = func;
             _user_data = v;
@@ -241,9 +241,9 @@ namespace SQLitePCL
             return hi;
         }
 
-        public int call(string s1, string s2)
+        public int call(int len1, IntPtr p1, int len2, IntPtr p2)
         {
-            return _func(_user_data, s1, s2);
+            return _func(_user_data, len1, p1, len2, p2);
         }
     }
 

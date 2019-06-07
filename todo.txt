@@ -1,4 +1,9 @@
 
+revisit passing 'object' as user data round trip
+through a callback
+
+--
+
 for things like the collation delegate, we'll need
 two delegates, one low-level with IntPtr/utf8, and the other
 higher-level with string.
