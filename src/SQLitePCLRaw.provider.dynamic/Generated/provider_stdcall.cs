@@ -78,16 +78,16 @@ namespace SQLitePCL
 			public IntPtr xGetLastError;
 
 			[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-			public delegate int SQLiteDeleteDelegate(IntPtr pVfs, byte[] zName, int syncDir);
+			public delegate int SQLiteDeleteDelegate(IntPtr pVfs, IntPtr zName, int syncDir);
 		}
 		#pragma warning restore 649
 		
-		int ISQLite3Provider.sqlite3__vfs__delete(string vfs, string filename, int syncDir)
+		int ISQLite3Provider.sqlite3__vfs__delete(IntPtr vfs, IntPtr filename, int syncDir)
 		{
-			IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(util.to_utf8(vfs));
+			IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(vfs);
 			// this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
 			sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
-			return vstruct.xDelete(ptrVfs, util.to_utf8(filename), 1);
+			return vstruct.xDelete(ptrVfs, filename, 1);
 		}
 
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
@@ -1716,7 +1716,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate IntPtr sqlite3_vfs_find(byte[] vfs);
+		public delegate IntPtr sqlite3_vfs_find(IntPtr vfs);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate long sqlite3_last_insert_rowid(sqlite3 db);

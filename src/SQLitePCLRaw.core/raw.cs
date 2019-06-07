@@ -354,7 +354,12 @@ namespace SQLitePCL
         }
         static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
         {
-            return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
+            var p_vfs = vfs.to_pinned_utf8();
+            var p_pathname = pathname.to_pinned_utf8();
+            var rc = _imp.sqlite3__vfs__delete(p_vfs.ToIntPtr(), p_pathname.ToIntPtr(), syncdir);
+            p_vfs.Free();
+            p_pathname.Free();
+            return rc;
         }
 
 		// called by the SafeHandle
