@@ -215,6 +215,11 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_rollback_hook(db, f, v);
         }
 
+        public static void trace_v2(this sqlite3 db, uint mask, delegate_trace_v2 f, object v)
+        {
+            raw.sqlite3_trace_v2(db, mask, f, v);
+        }
+
         public static void trace(this sqlite3 db, delegate_trace f, object v)
         {
             raw.sqlite3_trace(db, f, v);

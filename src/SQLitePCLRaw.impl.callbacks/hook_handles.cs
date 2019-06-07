@@ -86,9 +86,10 @@ namespace SQLitePCL
 		public IDisposable update;
 		public IDisposable rollback;
 		public IDisposable commit;
-		public IDisposable trace;
+		public IDisposable trace; // TODO rm
+		public IDisposable trace_v2;
 		public IDisposable progress;
-		public IDisposable profile;
+		public IDisposable profile; // TODO rm
 		public IDisposable authorizer;
 
 		public void Dispose()
@@ -100,6 +101,7 @@ namespace SQLitePCL
 			if (rollback!=null) rollback.Dispose();
 			if (commit!=null) commit.Dispose();
 			if (trace!=null) trace.Dispose();
+			if (trace_v2!=null) trace_v2.Dispose();
 			if (progress!=null) progress.Dispose();
 			if (profile!=null) profile.Dispose();
 			if (authorizer!=null) authorizer.Dispose();

@@ -1,4 +1,13 @@
 
+why is dotnet sdk now 2.2 instead of 3.0 ?
+because if the global.json file.
+
+need to make absolutely certain that the build
+scripting is running tests against the nupkg
+just built, not using anything in the cache.
+
+--
+
 hmph.  the string name for create_collation and
 create_function_whatever is used in the provider
 layer as a dictionary key.  so passing it as an

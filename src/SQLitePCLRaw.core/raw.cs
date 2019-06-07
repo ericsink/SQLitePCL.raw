@@ -278,6 +278,11 @@ namespace SQLitePCL
         public const int SQLITE_DENY = 1;   /* Abort the SQL statement with an error */
         public const int SQLITE_IGNORE = 2;   /* Don't allow access, but don't generate an error */
 
+        public const int SQLITE_TRACE_STMT = 0x01;
+        public const int SQLITE_TRACE_PROFILE = 0x02;
+        public const int SQLITE_TRACE_ROW = 0x04;
+        public const int SQLITE_TRACE_CLOSE = 0x08;
+
         struct MyUtf8String
         {
             GCHandle h;
@@ -399,6 +404,11 @@ namespace SQLitePCL
         static public void sqlite3_rollback_hook(sqlite3 db, delegate_rollback f, object v)
         {
             _imp.sqlite3_rollback_hook(db, f, v);
+        }
+
+        static public int sqlite3_trace_v2(sqlite3 db, uint uMask, delegate_trace_v2 f, object v)
+        {
+            return _imp.sqlite3_trace_v2(db, uMask, f, v);
         }
 
         static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
