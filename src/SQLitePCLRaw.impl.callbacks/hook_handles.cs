@@ -72,61 +72,39 @@ namespace SQLitePCL
 		}
     }
 
-    class PtrLen
-    {
-        public IntPtr p { get; private set; }
-        public int len { get; private set; }
-
-        PtrLen(IntPtr _p, int _len)
-        {
-            p = _p;
-            len = _len;
-        }
-
-        static int GetLength(IntPtr p)
-        {
-            int i = 0;
-            while (Marshal.ReadByte(p, i) > 0)
-            {
-                i++;
-            }
-            return i;
-        }
-
-        public static PtrLen NewRef(IntPtr _p)
-        {
-            return new PtrLen(_p, GetLength(_p));
-        }
-    }
-
-	class ComparePtrLen : System.Collections.Generic.EqualityComparer<PtrLen>
+	class CompareBuf : System.Collections.Generic.EqualityComparer<byte[]>
 	{
         Func<IntPtr,IntPtr,int,bool> _f;
-        public ComparePtrLen(Func<IntPtr,IntPtr,int,bool> f)
+        public CompareBuf(Func<IntPtr,IntPtr,int,bool> f)
         {
             _f = f;
         }
-		public override bool Equals(PtrLen p1, PtrLen p2)
+		public override bool Equals(byte[] p1, byte[] p2)
 		{
-            if (p1.len != p2.len)
+            if (p1.Length != p2.Length)
             {
                 return false;
             }
-            return _f(p1.p, p2.p, p1.len);
+            var h1 = GCHandle.Alloc(p1, GCHandleType.Pinned);
+            var h2 = GCHandle.Alloc(p2, GCHandleType.Pinned);
+            var result = _f(h1.AddrOfPinnedObject(), h2.AddrOfPinnedObject(), p1.Length);
+            h1.Free();
+            h2.Free();
+            return result;
 		}
 
-		public override int GetHashCode(PtrLen p)
+		public override int GetHashCode(byte[] p)
 		{
-            return p.len; // TODO do better
+            return p.Length; // TODO do better
 		}
 	}
 
     class FuncName
     {
-        public PtrLen name { get; private set; }
+        public byte[] name { get; private set; }
         public int n { get; private set; }
 
-        public FuncName(PtrLen _name, int _n)
+        public FuncName(byte[] _name, int _n)
         {
             name = _name;
             n = _n;
@@ -135,8 +113,8 @@ namespace SQLitePCL
 
 	class CompareFuncName : System.Collections.Generic.EqualityComparer<FuncName>
 	{
-        System.Collections.Generic.IEqualityComparer<PtrLen> _ptrlencmp;
-        public CompareFuncName(System.Collections.Generic.IEqualityComparer<PtrLen> ptrlencmp)
+        System.Collections.Generic.IEqualityComparer<byte[]> _ptrlencmp;
+        public CompareFuncName(System.Collections.Generic.IEqualityComparer<byte[]> ptrlencmp)
         {
             _ptrlencmp = ptrlencmp;
         }
@@ -151,7 +129,7 @@ namespace SQLitePCL
 
 		public override int GetHashCode(FuncName p)
 		{
-            return p.n + p.name.len; // TODO do better
+            return p.n + p.name.Length; // TODO do better
 		}
 	}
 
@@ -159,13 +137,13 @@ namespace SQLitePCL
 	{
         public hook_handles(Func<IntPtr,IntPtr,int,bool> f)
         {
-            var cmp = new ComparePtrLen(f);
-            collation = new ConcurrentDictionary<PtrLen, IDisposable>(cmp);
+            var cmp = new CompareBuf(f);
+            collation = new ConcurrentDictionary<byte[], IDisposable>(cmp);
             scalar = new ConcurrentDictionary<FuncName, IDisposable>(new CompareFuncName(cmp));
             agg = new ConcurrentDictionary<FuncName, IDisposable>(new CompareFuncName(cmp));
         }
 
-		readonly ConcurrentDictionary<PtrLen, IDisposable> collation;
+		readonly ConcurrentDictionary<byte[], IDisposable> collation;
 		readonly ConcurrentDictionary<FuncName, IDisposable> scalar;
 		readonly ConcurrentDictionary<FuncName, IDisposable> agg;
 		public IDisposable update;
@@ -177,9 +155,9 @@ namespace SQLitePCL
 		public IDisposable profile;
 		public IDisposable authorizer;
 
-        public bool RemoveScalarFunction(IntPtr name, int nargs)
+        public bool RemoveScalarFunction(byte[] name, int nargs)
         {
-            var k = new FuncName(PtrLen.NewRef(name), nargs);
+            var k = new FuncName(name, nargs);
             if (scalar.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
@@ -191,16 +169,15 @@ namespace SQLitePCL
             }
         }
 
-        public void AddScalarFunction(IntPtr name, int nargs, IDisposable d)
+        public void AddScalarFunction(byte[] name, int nargs, IDisposable d)
         {
-            // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = new FuncName(PtrLen.NewRef(name), nargs);
+            var k = new FuncName(name, nargs);
             scalar[k] = d;
         }
 
-        public bool RemoveAggFunction(IntPtr name, int nargs)
+        public bool RemoveAggFunction(byte[] name, int nargs)
         {
-            var k = new FuncName(PtrLen.NewRef(name), nargs);
+            var k = new FuncName(name, nargs);
             if (agg.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
@@ -212,17 +189,15 @@ namespace SQLitePCL
             }
         }
 
-        public void AddAggFunction(IntPtr name, int nargs, IDisposable d)
+        public void AddAggFunction(byte[] name, int nargs, IDisposable d)
         {
-            // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = new FuncName(PtrLen.NewRef(name), nargs);
+            var k = new FuncName(name, nargs);
             agg[k] = d;
         }
 
-        public bool RemoveCollation(IntPtr name)
+        public bool RemoveCollation(byte[] name)
         {
-            var k = PtrLen.NewRef(name);
-            if (collation.TryRemove(k, out var h_old))
+            if (collation.TryRemove(name, out var h_old))
             {
                 h_old.Dispose();
                 return true;
@@ -233,11 +208,9 @@ namespace SQLitePCL
             }
         }
 
-        public void AddCollation(IntPtr name, IDisposable d)
+        public void AddCollation(byte[] name, IDisposable d)
         {
-            // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = PtrLen.NewRef(name);
-            collation[k] = d;
+            collation[name] = d;
         }
 
 		public void Dispose()

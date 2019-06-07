@@ -438,41 +438,36 @@ namespace SQLitePCL
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
-            var p = name.to_pinned_utf8();
-            var rc = _imp.sqlite3_create_collation(db, p.ToIntPtr(), v, f);
-            p.Free();
+            var p = name.to_utf8();
+            var rc = _imp.sqlite3_create_collation(db, p, v, f);
             return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func)
         {
-            var p = name.to_pinned_utf8();
-            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, v, func);
-            p.Free();
+            var p = name.to_utf8();
+            var rc = _imp.sqlite3_create_function(db, p, nArg, v, func);
             return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            var p = name.to_pinned_utf8();
-            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, v, func_step, func_final);
-            p.Free();
+            var p = name.to_utf8();
+            var rc = _imp.sqlite3_create_function(db, p, nArg, v, func_step, func_final);
             return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
         {
-            var p = name.to_pinned_utf8();
-            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, flags, v, func);
-            p.Free();
+            var p = name.to_utf8();
+            var rc = _imp.sqlite3_create_function(db, p, nArg, flags, v, func);
             return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            var p = name.to_pinned_utf8();
-            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, flags, v, func_step, func_final);
-            p.Free();
+            var p = name.to_utf8();
+            var rc = _imp.sqlite3_create_function(db, p, nArg, flags, v, func_step, func_final);
             return rc;
         }
 

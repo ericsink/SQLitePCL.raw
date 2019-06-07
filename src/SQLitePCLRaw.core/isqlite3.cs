@@ -182,11 +182,11 @@ namespace SQLitePCL
 
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
         void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);
-        int sqlite3_create_collation(sqlite3 db, IntPtr name, object v, delegate_collation func);
-        int sqlite3_create_function(sqlite3 db, IntPtr name, int nArg, object v, delegate_function_scalar func);
-        int sqlite3_create_function(sqlite3 db, IntPtr name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
-        int sqlite3_create_function(sqlite3 db, IntPtr name, int nArg, int flags, object v, delegate_function_scalar func);
-        int sqlite3_create_function(sqlite3 db, IntPtr name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
+        int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func);
+        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_scalar func);
+        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
+        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_scalar func);
+        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 
         int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 

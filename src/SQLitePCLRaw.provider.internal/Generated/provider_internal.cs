@@ -447,7 +447,7 @@ namespace SQLitePCL
 
 		readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_scalar func)
+        int my_sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
 			var info = get_hooks(db);
             if (info.RemoveScalarFunction(name, nargs))
@@ -478,12 +478,12 @@ namespace SQLitePCL
 			return rc;
         }
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
 		}
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
 		}
@@ -557,7 +557,7 @@ namespace SQLitePCL
 		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
 		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int my_sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
 			var info = get_hooks(db);
             if (info.RemoveAggFunction(name, nargs))
@@ -592,12 +592,12 @@ namespace SQLitePCL
 			return rc;
         }
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
 		}
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
 		}
@@ -615,7 +615,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, IntPtr name, object v, delegate_collation func)
+        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
             if (info.RemoveCollation(name))
@@ -1545,7 +1545,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_create_collation(sqlite3 db, IntPtr strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
+		public static extern int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
@@ -1656,7 +1656,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_create_function_v2(sqlite3 db, IntPtr strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
+		public static extern int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
