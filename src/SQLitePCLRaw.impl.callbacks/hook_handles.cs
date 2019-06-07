@@ -72,17 +72,66 @@ namespace SQLitePCL
 		}
     }
 
+    class PtrLen
+    {
+        public IntPtr p { get; private set; }
+        public int len { get; private set; }
+
+        static int GetLength(IntPtr p)
+        {
+            int i = 0;
+            while (Marshal.ReadByte(p, i) > 0)
+            {
+                i++;
+            }
+            return i;
+        }
+
+        public PtrLen(IntPtr _p)
+        {
+            p = _p;
+            len = GetLength(p);
+        }
+    }
+
+	class ComparePtrLenWith : System.Collections.Generic.EqualityComparer<PtrLen>
+	{
+        Func<IntPtr,IntPtr,int,bool> _f;
+        public ComparePtrLenWith(Func<IntPtr,IntPtr,int,bool> f)
+        {
+            _f = f;
+        }
+		public override bool Equals(PtrLen p1, PtrLen p2)
+		{
+            if (p1.len != p2.len)
+            {
+                return false;
+            }
+            return _f(p1.p, p2.p, p1.len);
+		}
+
+		public override int GetHashCode(PtrLen p)
+		{
+            return p.len; // TODO do better
+		}
+	}
+
 	public class hook_handles : IDisposable
 	{
+        public hook_handles(Func<IntPtr,IntPtr,int,bool> f)
+        {
+            collation = new ConcurrentDictionary<PtrLen, IDisposable>(new ComparePtrLenWith(f));
+        }
+
 		// TODO note that sqlite function names can be case-insensitive.  but we're using
 		// a dictionary with a string key to keep track of them.  this has the potential
 		// to cause problems.  fixing it with a case-insensitive string comparer is not
 		// correct here, since the .NET notion of case-insensitivity is different (more
 		// complete) than SQLite's notion.
 
-		ConcurrentDictionary<string, IDisposable> collation = new ConcurrentDictionary<string, IDisposable>();
-		public ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
-		public ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
+		readonly ConcurrentDictionary<PtrLen, IDisposable> collation;
+		public readonly ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
+		public readonly ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
 		public IDisposable update;
 		public IDisposable rollback;
 		public IDisposable commit;
@@ -92,9 +141,10 @@ namespace SQLitePCL
 		public IDisposable profile; // TODO rm
 		public IDisposable authorizer;
 
-        public bool RemoveCollation(string name)
+        public bool RemoveCollation(IntPtr name)
         {
-            if (collation.TryRemove(name, out var h_old))
+            var k = new PtrLen(name);
+            if (collation.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
                 return true;
@@ -105,9 +155,10 @@ namespace SQLitePCL
             }
         }
 
-        public void AddCollation(string name, IDisposable d)
+        public void AddCollation(IntPtr name, IDisposable d)
         {
-            collation[name] = d;
+            var k = new PtrLen(name);
+            collation[k] = d;
         }
 
 		public void Dispose()

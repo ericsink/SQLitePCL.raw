@@ -438,7 +438,10 @@ namespace SQLitePCL
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
-            return _imp.sqlite3_create_collation(db, name, v, f);
+            var p = name.to_pinned_utf8();
+            var rc = _imp.sqlite3_create_collation(db, p.ToIntPtr(), v, f);
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func)

@@ -40,6 +40,16 @@ namespace SQLitePCL
 			NativeMethods.Setup(gf);
 		}
 
+        bool my_streq(IntPtr p, IntPtr q, int len)
+        {
+            return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
+        }
+
+        hook_handles get_hooks(sqlite3 db)
+        {
+			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
+        }
+
         int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
         {
             return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
@@ -401,7 +411,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.commit != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -445,7 +455,7 @@ namespace SQLitePCL
         {
 			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.scalar.ContainsKey(key))
             {
                 var h_old = info.scalar[key];
@@ -562,7 +572,7 @@ namespace SQLitePCL
         {
 			// the keys for this dictionary are nargs.name, not just the name
             string key = string.Format("{0}.{1}", nargs, name);
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.agg.ContainsKey(key))
             {
                 var h_old = info.agg[key];
@@ -623,9 +633,9 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation func)
+        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, IntPtr name, object v, delegate_collation func)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.RemoveCollation(name))
             {
                 // TODO maybe turn off the hook here, for now
@@ -645,7 +655,7 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
             // 1 is SQLITE_UTF8
-			int rc = NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, h, cb);
+			int rc = NativeMethods.sqlite3_create_collation(db, name, 1, h, cb);
 			if (rc == 0)
 			{
                 info.AddCollation(name, h.ForDispose());
@@ -668,7 +678,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.update != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -708,7 +718,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.rollback != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -748,7 +758,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_trace_v2 trace_v2_hook_bridge = new NativeMethods.callback_trace_v2(trace_v2_hook_bridge_impl); 
         int ISQLite3Provider.sqlite3_trace_v2(sqlite3 db, uint uMask, delegate_trace_v2 func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.trace_v2 != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -788,7 +798,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.trace != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -828,7 +838,7 @@ namespace SQLitePCL
 		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
         void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.profile != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -868,7 +878,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.progress != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -910,7 +920,7 @@ namespace SQLitePCL
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
-			var info = db.GetOrCreateExtra<hook_handles>();
+			var info = get_hooks(db);
             if (info.authorizer != null)
             {
                 // TODO maybe turn off the hook here, for now
@@ -1894,7 +1904,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
+		public delegate int sqlite3_create_collation(sqlite3 db, IntPtr strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);

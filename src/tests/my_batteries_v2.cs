@@ -21,7 +21,7 @@ using System.IO;
 
 namespace SQLitePCL
 {
-#if true
+#if false
 	class GetFunctionPointer_dotnetcore3 : IGetFunctionPointer
 	{
 		readonly IntPtr _dll;
@@ -49,7 +49,7 @@ namespace SQLitePCL
     {
         public static void Init()
         {
-#if true
+#if false
             var dll = System.Runtime.InteropServices.NativeLibrary.Load("e_sqlite3");
             var gf = new GetFunctionPointer_dotnetcore3(dll);
             SQLitePCL.Setup.Load(gf);

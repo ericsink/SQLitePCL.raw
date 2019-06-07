@@ -299,8 +299,8 @@ namespace SQLitePCL
 
 		IDisposable extra;
 
-		public T GetOrCreateExtra<T>()
-			where T : class, IDisposable, new()
+		public T GetOrCreateExtra<T>(Func<T> f)
+			where T : class, IDisposable
 		{
 			if (extra != null)
 			{
@@ -308,7 +308,7 @@ namespace SQLitePCL
 			}
 			else
 			{
-				var q = new T();
+				var q = f();
 				extra = q;
 				return q;
 			}

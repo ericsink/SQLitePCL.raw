@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.resolver.misc\SQLitePCLRaw.resolver.misc.csproj" />
 	<!-- <ProjectReference Include="..\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.csproj" /> -->
 	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
   </ItemGroup>
