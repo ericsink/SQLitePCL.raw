@@ -416,16 +416,6 @@ namespace SQLitePCL
             return _imp.sqlite3_trace_v2(db, uMask, f, v);
         }
 
-        static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
-        {
-            _imp.sqlite3_trace(db, f, v);
-        }
-
-        static public void sqlite3_profile(sqlite3 db, delegate_profile f, object v)
-        {
-            _imp.sqlite3_profile(db, f, v);
-        }
-
         static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
             _imp.sqlite3_progress_handler(db, instructions, func, v);

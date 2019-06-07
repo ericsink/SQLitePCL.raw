@@ -770,86 +770,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(NativeMethods.callback_trace))]
-        static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
-        {
-            trace_hook_info hi = trace_hook_info.from_ptr(p);
-            hi.call(util.from_utf8(s));
-        }
-
-		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
-        {
-			var info = get_hooks(db);
-            if (info.trace != null)
-            {
-                // TODO maybe turn off the hook here, for now
-                info.trace.Dispose();
-                info.trace = null;
-            }
-
-			NativeMethods.callback_trace cb;
-			trace_hook_info hi;
-            if (func != null)
-            {
-				cb = trace_hook_bridge;
-                hi = new trace_hook_info(func, v);
-            }
-            else
-            {
-				cb = null;
-				hi = null;
-            }
-			var h = new hook_handle(hi);
-			info.trace = h.ForDispose();
-			NativeMethods.sqlite3_trace(db, cb, h);
-        }
-
-        // ----------------------------------------------------------------
-
-        // Passing a callback into SQLite is tricky.  See comments near commit_hook
-        // implementation in pinvoke/SQLite3Provider.cs
-
-        [MonoPInvokeCallback (typeof(NativeMethods.callback_profile))]
-        static void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
-        {
-            profile_hook_info hi = profile_hook_info.from_ptr(p);
-            hi.call(util.from_utf8(s), elapsed);
-        }
-
-		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
-        {
-			var info = get_hooks(db);
-            if (info.profile != null)
-            {
-                // TODO maybe turn off the hook here, for now
-                info.profile.Dispose();
-                info.profile = null;
-            }
-
-			NativeMethods.callback_profile cb;
-			profile_hook_info hi;
-            if (func != null)
-            {
-				cb = profile_hook_bridge;
-                hi = new profile_hook_info(func, v);
-            }
-            else
-            {
-				cb = null;
-				hi = null;
-            }
-			var h = new hook_handle(hi);
-			info.profile = h.ForDispose();
-			NativeMethods.sqlite3_profile(db, cb, h);
-        }
-
-        // ----------------------------------------------------------------
-
-        // Passing a callback into SQLite is tricky.  See comments near commit_hook
-        // implementation in pinvoke/SQLite3Provider.cs
-
         [MonoPInvokeCallback (typeof(NativeMethods.callback_progress_handler))]
         static int progress_hook_bridge_impl(IntPtr p)
         {
@@ -1554,16 +1474,10 @@ namespace SQLitePCL
 		public static extern IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
-
-		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_trace_v2(sqlite3 db, uint uMask, NativeMethods.callback_trace_v2 func, hook_handle pvUser);
-
-		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
@@ -1684,16 +1598,10 @@ namespace SQLitePCL
 	public delegate int callback_commit(IntPtr puser);
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-	public delegate void callback_profile(IntPtr puser, IntPtr statement, long elapsed);
-
-	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate int callback_progress_handler(IntPtr puser);
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate int callback_authorizer(IntPtr puser, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
-
-	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-	public delegate void callback_trace(IntPtr puser, IntPtr statement);
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_trace_v2(uint t, IntPtr puser, IntPtr p, IntPtr x);

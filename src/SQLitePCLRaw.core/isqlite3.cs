@@ -35,8 +35,6 @@ namespace SQLitePCL
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
 
-    public delegate void delegate_trace(object user_data, string statement);
-    public delegate void delegate_profile(object user_data, string statement, long ns);
     public delegate int delegate_progress(object user_data);
 
     public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
@@ -179,9 +177,6 @@ namespace SQLitePCL
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
 
         int sqlite3_trace_v2(sqlite3 db, uint mask, delegate_trace_v2 func, object v);
-
-        void sqlite3_trace(sqlite3 db, delegate_trace func, object v); // TODO rm
-        void sqlite3_profile(sqlite3 db, delegate_profile func, object v); // TODO rm
 
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
         void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);

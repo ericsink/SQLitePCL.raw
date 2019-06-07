@@ -127,54 +127,6 @@ namespace SQLitePCL
         }
     }
 
-    public class trace_hook_info
-    {
-        private delegate_trace _func;
-        private object _user_data;
-
-        public trace_hook_info(delegate_trace func, object v)
-        {
-            _func = func;
-            _user_data = v;
-        }
-
-        public static trace_hook_info from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            trace_hook_info hi = h.Target as trace_hook_info;
-            return hi;
-        }
-
-        public void call(string s)
-        {
-            _func(_user_data, s);
-        }
-    }
-
-    public class profile_hook_info
-    {
-        private delegate_profile _func;
-        private object _user_data;
-
-        public profile_hook_info(delegate_profile func, object v)
-        {
-            _func = func;
-            _user_data = v;
-        }
-
-        public static profile_hook_info from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            profile_hook_info hi = h.Target as profile_hook_info;
-            return hi;
-        }
-
-        public void call(string s, long elapsed)
-        {
-            _func(_user_data, s, elapsed);
-        }
-    }
-
     public class progress_hook_info
     {
         private delegate_progress _func;

@@ -149,10 +149,8 @@ namespace SQLitePCL
 		public IDisposable update;
 		public IDisposable rollback;
 		public IDisposable commit;
-		public IDisposable trace;
 		public IDisposable trace_v2;
 		public IDisposable progress;
-		public IDisposable profile;
 		public IDisposable authorizer;
 
         public bool RemoveScalarFunction(byte[] name, int nargs)
@@ -221,10 +219,8 @@ namespace SQLitePCL
 			if (update!=null) update.Dispose();
 			if (rollback!=null) rollback.Dispose();
 			if (commit!=null) commit.Dispose();
-			if (trace!=null) trace.Dispose();
 			if (trace_v2!=null) trace_v2.Dispose();
 			if (progress!=null) progress.Dispose();
-			if (profile!=null) profile.Dispose();
 			if (authorizer!=null) authorizer.Dispose();
 		}
 	}
