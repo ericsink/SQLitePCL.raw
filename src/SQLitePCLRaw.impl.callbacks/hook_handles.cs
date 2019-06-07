@@ -94,10 +94,10 @@ namespace SQLitePCL
         }
     }
 
-	class ComparePtrLenWith : System.Collections.Generic.EqualityComparer<PtrLen>
+	class ComparePtrLen : System.Collections.Generic.EqualityComparer<PtrLen>
 	{
         Func<IntPtr,IntPtr,int,bool> _f;
-        public ComparePtrLenWith(Func<IntPtr,IntPtr,int,bool> f)
+        public ComparePtrLen(Func<IntPtr,IntPtr,int,bool> f)
         {
             _f = f;
         }
@@ -116,30 +116,103 @@ namespace SQLitePCL
 		}
 	}
 
+    class FuncName
+    {
+        public PtrLen name { get; private set; }
+        public int n { get; private set; }
+
+        public FuncName(IntPtr _p, int _n)
+        {
+            name = new PtrLen(_p);
+            n = _n;
+        }
+    }
+
+	class CompareFuncName : System.Collections.Generic.EqualityComparer<FuncName>
+	{
+        System.Collections.Generic.IEqualityComparer<PtrLen> _ptrlencmp;
+        public CompareFuncName(System.Collections.Generic.IEqualityComparer<PtrLen> ptrlencmp)
+        {
+            _ptrlencmp = ptrlencmp;
+        }
+		public override bool Equals(FuncName p1, FuncName p2)
+		{
+            if (p1.n != p2.n)
+            {
+                return false;
+            }
+            return _ptrlencmp.Equals(p1.name, p2.name);
+		}
+
+		public override int GetHashCode(FuncName p)
+		{
+            return p.n + p.name.len; // TODO do better
+		}
+	}
+
 	public class hook_handles : IDisposable
 	{
         public hook_handles(Func<IntPtr,IntPtr,int,bool> f)
         {
-            collation = new ConcurrentDictionary<PtrLen, IDisposable>(new ComparePtrLenWith(f));
+            var cmp = new ComparePtrLen(f);
+            collation = new ConcurrentDictionary<PtrLen, IDisposable>(cmp);
+            scalar = new ConcurrentDictionary<FuncName, IDisposable>(new CompareFuncName(cmp));
+            agg = new ConcurrentDictionary<FuncName, IDisposable>(new CompareFuncName(cmp));
         }
 
-		// TODO note that sqlite function names can be case-insensitive.  but we're using
-		// a dictionary with a string key to keep track of them.  this has the potential
-		// to cause problems.  fixing it with a case-insensitive string comparer is not
-		// correct here, since the .NET notion of case-insensitivity is different (more
-		// complete) than SQLite's notion.
-
 		readonly ConcurrentDictionary<PtrLen, IDisposable> collation;
-		public readonly ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
-		public readonly ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
+		readonly ConcurrentDictionary<FuncName, IDisposable> scalar;
+		readonly ConcurrentDictionary<FuncName, IDisposable> agg;
 		public IDisposable update;
 		public IDisposable rollback;
 		public IDisposable commit;
-		public IDisposable trace; // TODO rm
+		public IDisposable trace;
 		public IDisposable trace_v2;
 		public IDisposable progress;
-		public IDisposable profile; // TODO rm
+		public IDisposable profile;
 		public IDisposable authorizer;
+
+        public bool RemoveScalarFunction(IntPtr name, int nargs)
+        {
+            var k = new FuncName(name, nargs);
+            if (scalar.TryRemove(k, out var h_old))
+            {
+                h_old.Dispose();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void AddScalarFunction(IntPtr name, int nargs, IDisposable d)
+        {
+            // TODO need private copy of the utf8 string, and therefore need to free it as well
+            var k = new FuncName(name, nargs);
+            scalar[k] = d;
+        }
+
+        public bool RemoveAggFunction(IntPtr name, int nargs)
+        {
+            var k = new FuncName(name, nargs);
+            if (agg.TryRemove(k, out var h_old))
+            {
+                h_old.Dispose();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void AddAggFunction(IntPtr name, int nargs, IDisposable d)
+        {
+            // TODO need private copy of the utf8 string, and therefore need to free it as well
+            var k = new FuncName(name, nargs);
+            agg[k] = d;
+        }
 
         public bool RemoveCollation(IntPtr name)
         {
@@ -157,6 +230,7 @@ namespace SQLitePCL
 
         public void AddCollation(IntPtr name, IDisposable d)
         {
+            // TODO need private copy of the utf8 string, and therefore need to free it as well
             var k = new PtrLen(name);
             collation[k] = d;
         }

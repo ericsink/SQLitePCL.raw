@@ -1,4 +1,14 @@
 
+the IntPtr from the app cannot be stored in the PtrLen.
+we don't own it.  need to make a copy.
+
+in the case where raw is calling down, it got a string,
+and then converted it.  it would be nice for the lower
+layer to just take owernship of that instead of creating
+its own.
+
+--
+
 for things like the collation delegate, we'll need
 two delegates, one low-level with IntPtr/utf8, and the other
 higher-level with string.

@@ -446,22 +446,34 @@ namespace SQLitePCL
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db, name, nArg, v, func);
+            var p = name.to_pinned_utf8();
+            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, v, func);
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db, name, nArg, v, func_step, func_final);
+            var p = name.to_pinned_utf8();
+            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, v, func_step, func_final);
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
         {
-            return _imp.sqlite3_create_function(db, name, nArg, flags, v, func);
+            var p = name.to_pinned_utf8();
+            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, flags, v, func);
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-            return _imp.sqlite3_create_function(db, name, nArg, flags, v, func_step, func_final);
+            var p = name.to_pinned_utf8();
+            var rc = _imp.sqlite3_create_function(db, p.ToIntPtr(), nArg, flags, v, func_step, func_final);
+            p.Free();
+            return rc;
         }
 
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)

@@ -447,19 +447,12 @@ namespace SQLitePCL
 
 		readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+        int my_sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_scalar func)
         {
-			// the keys for this dictionary are nargs.name, not just the name
-            string key = string.Format("{0}.{1}", nargs, name);
 			var info = get_hooks(db);
-            if (info.scalar.ContainsKey(key))
+            if (info.RemoveScalarFunction(name, nargs))
             {
-                var h_old = info.scalar[key];
-
                 // TODO maybe turn off the hook here, for now
-                h_old.Dispose();
-
-                info.scalar.TryRemove(key, out var unused);
             }
 
             // 1 is SQLITE_UTF8
@@ -477,20 +470,20 @@ namespace SQLitePCL
 				hi = null;
             }
 			var h = new hook_handle(hi);
-			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, h, cb, null, null, null);
+			int rc = NativeMethods.sqlite3_create_function_v2(db, name, nargs, arg4, h, cb, null, null, null);
 			if (rc == 0)
 			{
-				info.scalar[key] = h.ForDispose();
+                info.AddScalarFunction(name, nargs, h.ForDispose());
 			}
 			return rc;
         }
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, string name, int nargs, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
 		}
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_scalar func)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
 		}
@@ -564,19 +557,12 @@ namespace SQLitePCL
 		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
 		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int my_sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
-			// the keys for this dictionary are nargs.name, not just the name
-            string key = string.Format("{0}.{1}", nargs, name);
 			var info = get_hooks(db);
-            if (info.agg.ContainsKey(key))
+            if (info.RemoveAggFunction(name, nargs))
             {
-                var h_old = info.agg[key];
-
                 // TODO maybe turn off the hook here, for now
-                h_old.Dispose();
-
-                info.agg.TryRemove(key, out var unused);
             }
 
             // 1 is SQLITE_UTF8
@@ -598,20 +584,20 @@ namespace SQLitePCL
 				hi = null;
             }
 			var h = new hook_handle(hi);
-			int rc = NativeMethods.sqlite3_create_function_v2(db, util.to_utf8(name), nargs, arg4, h, null, cb_step, cb_final, null);
+			int rc = NativeMethods.sqlite3_create_function_v2(db, name, nargs, arg4, h, null, cb_step, cb_final, null);
 			if (rc == 0)
 			{
-				info.agg[key] = h.ForDispose();
+                info.AddAggFunction(name, nargs, h.ForDispose());
 			}
 			return rc;
         }
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, string name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
 		}
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, string name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, IntPtr name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
 		{
 			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
 		}
@@ -1670,7 +1656,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
+		public static extern int sqlite3_create_function_v2(sqlite3 db, IntPtr strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
