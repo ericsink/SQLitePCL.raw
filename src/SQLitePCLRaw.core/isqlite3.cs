@@ -27,6 +27,8 @@ namespace SQLitePCL
 {
     using System;
 
+    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO dislike name
+    public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
     public delegate void delegate_log(object user_data, int errorCode, string msg);
     public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
@@ -34,12 +36,10 @@ namespace SQLitePCL
     public delegate void delegate_rollback(object user_data);
 
     public delegate void delegate_trace(object user_data, string statement);
-    public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
     public delegate void delegate_profile(object user_data, string statement, long ns);
     public delegate int delegate_progress(object user_data);
 
     public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
-    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO dislike name
     public delegate int delegate_exec(object user_data, string[] values, string[] names);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -250,9 +250,6 @@ namespace SQLitePCL
 
         // because these are for internal use by SQLite
         sqlite3_mutex_*
-
-        // because it's deprecated
-        int sqlite3_aggregate_count(IntPtr context); // deprecated
 
         // because these are inherently non-portable, and because the SQLite module
         // for WP8 doesn't even compile them in.
