@@ -229,6 +229,9 @@ namespace SQLitePCL
 
         int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
+        int sqlite3_stricmp(IntPtr p, IntPtr q);
+        int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
+
         void sqlite3_free(IntPtr p);
 
 #if not // maybe never

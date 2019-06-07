@@ -107,6 +107,16 @@ namespace SQLitePCL
             NativeMethods.sqlite3_free(p);
         }
 
+        int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
+        {
+            return NativeMethods.sqlite3_stricmp(p, q);
+        }
+
+        int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        {
+            return NativeMethods.sqlite3_strnicmp(p, q, n);
+        }
+
         int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
@@ -1326,6 +1336,8 @@ namespace SQLitePCL
 			sqlite3_malloc = (MyDelegateTypes.sqlite3_malloc) Load(gf, typeof(MyDelegateTypes.sqlite3_malloc));
 			sqlite3_realloc = (MyDelegateTypes.sqlite3_realloc) Load(gf, typeof(MyDelegateTypes.sqlite3_realloc));
 			sqlite3_free = (MyDelegateTypes.sqlite3_free) Load(gf, typeof(MyDelegateTypes.sqlite3_free));
+			sqlite3_stricmp = (MyDelegateTypes.sqlite3_stricmp) Load(gf, typeof(MyDelegateTypes.sqlite3_stricmp));
+			sqlite3_strnicmp = (MyDelegateTypes.sqlite3_strnicmp) Load(gf, typeof(MyDelegateTypes.sqlite3_strnicmp));
 			sqlite3_open = (MyDelegateTypes.sqlite3_open) Load(gf, typeof(MyDelegateTypes.sqlite3_open));
 			sqlite3_open_v2 = (MyDelegateTypes.sqlite3_open_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_open_v2));
 			sqlite3_vfs_find = (MyDelegateTypes.sqlite3_vfs_find) Load(gf, typeof(MyDelegateTypes.sqlite3_vfs_find));
@@ -1456,6 +1468,8 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_malloc sqlite3_malloc;
 		public static MyDelegateTypes.sqlite3_realloc sqlite3_realloc;
 		public static MyDelegateTypes.sqlite3_free sqlite3_free;
+		public static MyDelegateTypes.sqlite3_stricmp sqlite3_stricmp;
+		public static MyDelegateTypes.sqlite3_strnicmp sqlite3_strnicmp;
 		public static MyDelegateTypes.sqlite3_open sqlite3_open;
 		public static MyDelegateTypes.sqlite3_open_v2 sqlite3_open_v2;
 		public static MyDelegateTypes.sqlite3_vfs_find sqlite3_vfs_find;
@@ -1708,6 +1722,12 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate void sqlite3_free(IntPtr p);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_stricmp(IntPtr p, IntPtr q);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public delegate int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_open(IntPtr filename, out IntPtr db);

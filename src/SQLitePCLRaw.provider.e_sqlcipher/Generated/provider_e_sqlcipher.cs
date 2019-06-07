@@ -103,6 +103,16 @@ namespace SQLitePCL
             NativeMethods.sqlite3_free(p);
         }
 
+        int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
+        {
+            return NativeMethods.sqlite3_stricmp(p, q);
+        }
+
+        int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        {
+            return NativeMethods.sqlite3_strnicmp(p, q, n);
+        }
+
         int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
@@ -1370,6 +1380,12 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern void sqlite3_free(IntPtr p);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern int sqlite3_stricmp(IntPtr p, IntPtr q);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_open(IntPtr filename, out IntPtr db);

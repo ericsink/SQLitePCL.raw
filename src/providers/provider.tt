@@ -132,6 +132,16 @@ namespace SQLitePCL
             NativeMethods.sqlite3_free(p);
         }
 
+        int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
+        {
+            return NativeMethods.sqlite3_stricmp(p, q);
+        }
+
+        int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        {
+            return NativeMethods.sqlite3_strnicmp(p, q, n);
+        }
+
         int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
@@ -1363,6 +1373,8 @@ namespace SQLitePCL
 		"sqlite3_malloc",
 		"sqlite3_realloc",
 		"sqlite3_free",
+		"sqlite3_stricmp",
+		"sqlite3_strnicmp",
 		"sqlite3_open",
 		"sqlite3_open_v2",
 		"sqlite3_vfs_find",
@@ -1691,6 +1703,12 @@ namespace SQLitePCL
 
 		<#= attr #>
 		<#= front #> void sqlite3_free(IntPtr p);
+
+		<#= attr #>
+		<#= front #> int sqlite3_stricmp(IntPtr p, IntPtr q);
+
+		<#= attr #>
+		<#= front #> int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
 		<#= attr #>
 		<#= front #> int sqlite3_open(IntPtr filename, out IntPtr db);
