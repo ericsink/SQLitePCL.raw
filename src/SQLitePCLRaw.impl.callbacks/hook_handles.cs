@@ -80,7 +80,7 @@ namespace SQLitePCL
 		// correct here, since the .NET notion of case-insensitivity is different (more
 		// complete) than SQLite's notion.
 
-		public ConcurrentDictionary<string, IDisposable> collation = new ConcurrentDictionary<string, IDisposable>();
+		ConcurrentDictionary<string, IDisposable> collation = new ConcurrentDictionary<string, IDisposable>();
 		public ConcurrentDictionary<string, IDisposable> scalar = new ConcurrentDictionary<string, IDisposable>();
 		public ConcurrentDictionary<string, IDisposable> agg = new ConcurrentDictionary<string, IDisposable>();
 		public IDisposable update;
@@ -91,6 +91,24 @@ namespace SQLitePCL
 		public IDisposable progress;
 		public IDisposable profile; // TODO rm
 		public IDisposable authorizer;
+
+        public bool RemoveCollation(string name)
+        {
+            if (collation.TryRemove(name, out var h_old))
+            {
+                h_old.Dispose();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void AddCollation(string name, IDisposable d)
+        {
+            collation[name] = d;
+        }
 
 		public void Dispose()
 		{

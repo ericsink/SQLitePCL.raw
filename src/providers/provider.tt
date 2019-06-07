@@ -651,17 +651,11 @@ namespace SQLitePCL
         int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation func)
         {
 			var info = db.GetOrCreateExtra<hook_handles>();
-            if (info.collation.ContainsKey(name))
+            if (info.RemoveCollation(name))
             {
-                var h_old = info.collation[name];
-
                 // TODO maybe turn off the hook here, for now
-                h_old.Dispose();
-
-                info.collation.TryRemove(name, out var unused);
             }
 
-            // 1 is SQLITE_UTF8
 			NativeMethods.callback_collation cb;
 			collation_hook_info hi;
             if (func != null)
@@ -675,10 +669,11 @@ namespace SQLitePCL
 				hi = null;
             }
 			var h = new hook_handle(hi);
+            // 1 is SQLITE_UTF8
 			int rc = NativeMethods.sqlite3_create_collation(db, util.to_utf8(name), 1, h, cb);
 			if (rc == 0)
 			{
-				info.collation[name] = h.ForDispose();
+                info.AddCollation(name, h.ForDispose());
 			}
 			return rc;
         }

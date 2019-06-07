@@ -1,4 +1,10 @@
 
+for things like the collation delegate, we'll need
+two delegates, one low-level with IntPtr/utf8, and the other
+higher-level with string.
+
+--
+
 why is dotnet sdk now 2.2 instead of 3.0 ?
 because if the global.json file.
 
