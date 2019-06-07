@@ -77,6 +77,12 @@ namespace SQLitePCL
         public IntPtr p { get; private set; }
         public int len { get; private set; }
 
+        PtrLen(IntPtr _p, int _len)
+        {
+            p = _p;
+            len = _len;
+        }
+
         static int GetLength(IntPtr p)
         {
             int i = 0;
@@ -87,10 +93,9 @@ namespace SQLitePCL
             return i;
         }
 
-        public PtrLen(IntPtr _p)
+        public static PtrLen NewRef(IntPtr _p)
         {
-            p = _p;
-            len = GetLength(p);
+            return new PtrLen(_p, GetLength(_p));
         }
     }
 
@@ -121,9 +126,9 @@ namespace SQLitePCL
         public PtrLen name { get; private set; }
         public int n { get; private set; }
 
-        public FuncName(IntPtr _p, int _n)
+        public FuncName(PtrLen _name, int _n)
         {
-            name = new PtrLen(_p);
+            name = _name;
             n = _n;
         }
     }
@@ -174,7 +179,7 @@ namespace SQLitePCL
 
         public bool RemoveScalarFunction(IntPtr name, int nargs)
         {
-            var k = new FuncName(name, nargs);
+            var k = new FuncName(PtrLen.NewRef(name), nargs);
             if (scalar.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
@@ -189,13 +194,13 @@ namespace SQLitePCL
         public void AddScalarFunction(IntPtr name, int nargs, IDisposable d)
         {
             // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = new FuncName(name, nargs);
+            var k = new FuncName(PtrLen.NewRef(name), nargs);
             scalar[k] = d;
         }
 
         public bool RemoveAggFunction(IntPtr name, int nargs)
         {
-            var k = new FuncName(name, nargs);
+            var k = new FuncName(PtrLen.NewRef(name), nargs);
             if (agg.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
@@ -210,13 +215,13 @@ namespace SQLitePCL
         public void AddAggFunction(IntPtr name, int nargs, IDisposable d)
         {
             // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = new FuncName(name, nargs);
+            var k = new FuncName(PtrLen.NewRef(name), nargs);
             agg[k] = d;
         }
 
         public bool RemoveCollation(IntPtr name)
         {
-            var k = new PtrLen(name);
+            var k = PtrLen.NewRef(name);
             if (collation.TryRemove(k, out var h_old))
             {
                 h_old.Dispose();
@@ -231,7 +236,7 @@ namespace SQLitePCL
         public void AddCollation(IntPtr name, IDisposable d)
         {
             // TODO need private copy of the utf8 string, and therefore need to free it as well
-            var k = new PtrLen(name);
+            var k = PtrLen.NewRef(name);
             collation[k] = d;
         }
 
