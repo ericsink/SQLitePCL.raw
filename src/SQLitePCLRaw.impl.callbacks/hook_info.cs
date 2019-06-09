@@ -153,10 +153,10 @@ namespace SQLitePCL
 
     public class update_hook_info
     {
-        private delegate_update _func;
+        private delegate_update_low _func;
         private object _user_data;
 
-        public update_hook_info(delegate_update func, object v)
+        public update_hook_info(delegate_update_low func, object v)
         {
             _func = func;
             _user_data = v;
@@ -169,7 +169,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int typ, string db, string tbl, long rowid)
+        public void call(int typ, IntPtr db, IntPtr tbl, long rowid)
         {
             _func(_user_data, typ, db, tbl, rowid);
         }

@@ -30,6 +30,7 @@ namespace SQLitePCL
     using System.Runtime.InteropServices;
 
     public delegate int delegate_collation(object user_data, string s1, string s2);
+    public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
 
     public static class raw
     {
@@ -425,7 +426,12 @@ namespace SQLitePCL
 
         static public void sqlite3_update_hook(sqlite3 db, delegate_update f, object v)
         {
-            _imp.sqlite3_update_hook(db, f, v);
+            delegate_update_low cb =
+            (ob, typ, dbname, tbl, rowid) =>
+            {
+                f(ob, typ, util.from_utf8(dbname), util.from_utf8(tbl), rowid);
+            };
+            _imp.sqlite3_update_hook(db, cb, v);
         }
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)

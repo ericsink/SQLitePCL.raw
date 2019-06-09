@@ -27,7 +27,9 @@ namespace SQLitePCL
 {
     using System;
 
-    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO dislike name
+    // TODO dislike _low names
+    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2);
+    public delegate void delegate_update_low(object user_data, int type, IntPtr database, IntPtr table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
     public delegate void delegate_log(object user_data, int errorCode, string msg);
@@ -37,7 +39,6 @@ namespace SQLitePCL
 
     public delegate int delegate_progress(object user_data);
 
-    public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
     public delegate int delegate_exec(object user_data, string[] values, string[] names);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -179,7 +180,7 @@ namespace SQLitePCL
         int sqlite3_trace_v2(sqlite3 db, uint mask, delegate_trace_v2 func, object v);
 
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
-        void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);
+        void sqlite3_update_hook(sqlite3 db, delegate_update_low func, object v);
         int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation_low func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_scalar func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);

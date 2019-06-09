@@ -654,11 +654,11 @@ namespace SQLitePCL
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
-            hi.call(typ, util.from_utf8(db), util.from_utf8(tbl), rowid);
+            hi.call(typ, db, tbl, rowid);
         }
 
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
+        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update_low func, object v)
         {
 			var info = get_hooks(db);
             if (info.update != null)
