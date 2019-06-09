@@ -1,4 +1,12 @@
 
+need some tests for sqlite-ish case insensitivity of
+collation and function names
+
+need test for multiple functions with the same name
+and different number of args
+
+--
+
 revisit passing 'object' as user data round trip
 through a callback
 
