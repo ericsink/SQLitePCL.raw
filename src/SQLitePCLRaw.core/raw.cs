@@ -31,6 +31,8 @@ namespace SQLitePCL
 
     public delegate int delegate_collation(object user_data, string s1, string s2);
     public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
+    public delegate void delegate_log(object user_data, int errorCode, string msg);
+    public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
 
     public static class raw
     {
@@ -401,7 +403,12 @@ namespace SQLitePCL
 
         static public void sqlite3_config_log(delegate_log f, object v)
         {
-            _imp.sqlite3_config_log(f, v);
+            delegate_log_low cb =
+            (ob, e, msg) =>
+            {
+                f(ob, e, util.from_utf8(msg));
+            };
+            _imp.sqlite3_config_log(cb, v);
         }
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
@@ -1171,7 +1178,12 @@ namespace SQLitePCL
 
         static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
         {
-            return _imp.sqlite3_set_authorizer(db, authorizer, user_data);
+            delegate_authorizer_low cb =
+            (ob, a, p0, p1, dbname, v) =>
+            {
+                return authorizer(ob, a, util.from_utf8(p0), util.from_utf8(p1), util.from_utf8(dbname), util.from_utf8(v));
+            };
+            return _imp.sqlite3_set_authorizer(db, cb, user_data);
         }
 
         static public int sqlite3_win32_set_directory(int typ, string path)

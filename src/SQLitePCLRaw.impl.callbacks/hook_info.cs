@@ -32,10 +32,10 @@ namespace SQLitePCL
 
     public class log_hook_info
     {
-        private delegate_log _func;
+        private delegate_log_low _func;
         private object _user_data;
 
-        public log_hook_info(delegate_log func, object v)
+        public log_hook_info(delegate_log_low func, object v)
         {
             _func = func;
             _user_data = v;
@@ -48,7 +48,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int rc, string msg)
+        public void call(int rc, IntPtr msg)
         {
             _func(_user_data, rc, msg);
         }
@@ -377,10 +377,10 @@ namespace SQLitePCL
 
     public class authorizer_hook_info
     {
-        private delegate_authorizer _func;
+        private delegate_authorizer_low _func;
         private object _user_data;
 
-        public authorizer_hook_info(delegate_authorizer func, object v)
+        public authorizer_hook_info(delegate_authorizer_low func, object v)
         {
             _func = func;
             _user_data = v;
@@ -393,7 +393,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public int call(int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view)
+        public int call(int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }

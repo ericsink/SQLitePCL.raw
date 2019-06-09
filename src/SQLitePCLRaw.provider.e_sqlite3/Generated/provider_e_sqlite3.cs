@@ -496,11 +496,11 @@ namespace SQLitePCL
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
         {
             log_hook_info hi = log_hook_info.from_ptr(p);
-            hi.call(rc, util.from_utf8(s));
+            hi.call(rc, s);
         }
 
 		readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        int ISQLite3Provider.sqlite3_config_log(delegate_log_low func, object v)
         {
             if (disp_log_hook_handle != null)
             {
@@ -816,11 +816,11 @@ namespace SQLitePCL
         static int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
-            return hi.call(action_code, util.from_utf8(param0), util.from_utf8(param1), util.from_utf8(dbName), util.from_utf8(inner_most_trigger_or_view));
+            return hi.call(action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }
 
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
-        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
+        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer_low func, object v)
         {
 			var info = get_hooks(db);
             if (info.authorizer != null)

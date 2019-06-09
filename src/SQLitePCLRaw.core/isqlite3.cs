@@ -32,8 +32,8 @@ namespace SQLitePCL
     public delegate void delegate_update_low(object user_data, int type, IntPtr database, IntPtr table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
-    public delegate void delegate_log(object user_data, int errorCode, string msg);
-    public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
+    public delegate void delegate_log_low(object user_data, int errorCode, IntPtr msg);
+    public delegate int delegate_authorizer_low(object user_data, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
 
@@ -173,7 +173,7 @@ namespace SQLitePCL
         int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
         int sqlite3_blob_close(IntPtr blob);
 
-        int sqlite3_config_log(delegate_log func, object v);
+        int sqlite3_config_log(delegate_log_low func, object v);
         void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
 
@@ -226,7 +226,7 @@ namespace SQLitePCL
 
         int sqlite3_table_column_metadata(sqlite3 db, IntPtr dbName, IntPtr tblName, IntPtr colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc);
 
-        int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
+        int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer_low authorizer, object user_data);
 
         int sqlite3_stricmp(IntPtr p, IntPtr q);
         int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
