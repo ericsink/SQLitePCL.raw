@@ -1211,7 +1211,10 @@ namespace SQLitePCL
 
         static public int sqlite3_win32_set_directory(int typ, string path)
         {
-            return _imp.sqlite3_win32_set_directory(typ, path);
+            var p = path.to_pinned_utf8();
+            var rc = _imp.sqlite3_win32_set_directory(typ, p.ToIntPtr());
+            p.Free();
+            return rc;
         }
     }
 }

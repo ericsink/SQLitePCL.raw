@@ -257,7 +257,7 @@ namespace SQLitePCL
         int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 
-        int sqlite3_win32_set_directory(int typ, string path);
+        int sqlite3_win32_set_directory(int typ, IntPtr path);
     }
 }
 

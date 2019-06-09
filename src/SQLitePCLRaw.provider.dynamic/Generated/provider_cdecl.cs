@@ -50,9 +50,9 @@ namespace SQLitePCL
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
         }
 
-        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, IntPtr path)
         {
-            return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
+            return NativeMethods.sqlite3_win32_set_directory8((uint) typ, path);
         }
 
         int ISQLite3Provider.sqlite3_open(IntPtr filename, out IntPtr db)
@@ -1337,7 +1337,7 @@ namespace SQLitePCL
 			sqlite3_wal_checkpoint = (MyDelegateTypes.sqlite3_wal_checkpoint) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint));
 			sqlite3_wal_checkpoint_v2 = (MyDelegateTypes.sqlite3_wal_checkpoint_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint_v2));
 			sqlite3_set_authorizer = (MyDelegateTypes.sqlite3_set_authorizer) Load(gf, typeof(MyDelegateTypes.sqlite3_set_authorizer));
-			sqlite3_win32_set_directory = (MyDelegateTypes.sqlite3_win32_set_directory) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory));
+			sqlite3_win32_set_directory8 = (MyDelegateTypes.sqlite3_win32_set_directory8) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory8));
 		}
 
 		public static MyDelegateTypes.sqlite3_close sqlite3_close;
@@ -1467,7 +1467,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_wal_checkpoint sqlite3_wal_checkpoint;
 		public static MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2;
 		public static MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer;
-		public static MyDelegateTypes.sqlite3_win32_set_directory sqlite3_win32_set_directory;
+		public static MyDelegateTypes.sqlite3_win32_set_directory8 sqlite3_win32_set_directory8;
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
@@ -1902,7 +1902,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
-		public delegate int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
+		public delegate int sqlite3_win32_set_directory8(uint directoryType, IntPtr directoryPath);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);

@@ -75,9 +75,9 @@ namespace SQLitePCL
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
         }
 
-        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, string path)
+        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, IntPtr path)
         {
-            return NativeMethods.sqlite3_win32_set_directory((uint) typ, path);
+            return NativeMethods.sqlite3_win32_set_directory8((uint) typ, path);
         }
 
         int ISQLite3Provider.sqlite3_open(IntPtr filename, out IntPtr db)
@@ -1375,7 +1375,7 @@ namespace SQLitePCL
 		"sqlite3_wal_checkpoint",
 		"sqlite3_wal_checkpoint_v2",
 		"sqlite3_set_authorizer",
-		"sqlite3_win32_set_directory",
+		"sqlite3_win32_set_directory8",
 	};
 #>
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
@@ -1882,7 +1882,7 @@ namespace SQLitePCL
 		<#= front #> int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
 		<#= attr_unicode #>
-		<#= front #> int sqlite3_win32_set_directory (uint directoryType, string directoryPath);
+		<#= front #> int sqlite3_win32_set_directory8(uint directoryType, IntPtr directoryPath);
 
 		<#= attr #>
 		<#= front #> int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);

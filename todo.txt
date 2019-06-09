@@ -1,4 +1,7 @@
 
+provider interface should probably not deal with
+blobs in terms of byte[] -- use intptr or span/memory.
+
 need some tests for sqlite-ish case insensitivity of
 collation and function names
 
