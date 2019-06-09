@@ -12,12 +12,6 @@ through a callback
 
 --
 
-for things like the collation delegate, we'll need
-two delegates, one low-level with IntPtr/utf8, and the other
-higher-level with string.
-
---
-
 instead of just IGetFunctionPointer, should
 we have IResolveLibrary?  how should we wrap the
 Load part of NativeLibrary?  or maybe the resulting

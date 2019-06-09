@@ -34,12 +34,12 @@ namespace SQLitePCL
 
     public delegate void delegate_log_low(object user_data, int errorCode, IntPtr msg);
     public delegate int delegate_authorizer_low(object user_data, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view);
+    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names);
+
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
 
     public delegate int delegate_progress(object user_data);
-
-    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
     public delegate void delegate_function_aggregate_step(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -55,26 +55,17 @@ namespace SQLitePCL
     /// "portable".  For example, a sqlite3 connection handle appears here as an IntPtr.
     /// Same goes for the C-level sqlite3_stmt pointer, also an IntPtr.
     ///
-    /// However, this layer does deal in C# strings, not the utf8 pointers that the
-    /// SQLite C API uses.  This is because the code to marshal the utf8 pointers
-    /// to/from C# strings is not "portable".  It would require referencing assemblies
-    /// here that we do not want to reference.  We prefer to keep the PCL itself clean
-    /// and accept a little extra mess in the platform assemblies.
-    ///
     /// This whole library is designed in 4 layers:
     ///
     /// (1)  The SQLite C API itself
     ///
-    /// (2)  The declarations of the C API.  This is either pinvoke or C++ COM glue,
-    ///      depending on the platform.
+    /// (2)  The declarations of the C API.  pinvoke.
     ///
-    /// (3)  A C# layer in the platform assembly which implements this interface.  This
-    ///      includes converting strings to/from utf8.  It also needs to be a non-static
-    ///      class, which layer (2) is not.
+    /// (3)  A C# layer in the platform assembly which implements this interface.
     ///
     /// (4)  The raw API, here in the PCL, which wraps an instance of this interface in
     ///      an API which replaces all the IntPtrs with strong typed (but still opaque) 
-    ///      counterparts.
+    ///      counterparts and converts strings to/from utf8..
     ///
     /// Even the top layer is still very low-level, which is why it is called "raw".
     /// This API is not intended to be used by app developers.  Rather it is designed
