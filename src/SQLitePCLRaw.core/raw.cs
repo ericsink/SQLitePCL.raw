@@ -33,6 +33,7 @@ namespace SQLitePCL
     public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
     public delegate void delegate_log(object user_data, int errorCode, string msg);
     public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
+    public delegate int delegate_exec(object user_data, string[] values, string[] names);
 
     public static class raw
     {
@@ -675,8 +676,30 @@ namespace SQLitePCL
 
         static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
         {
+            delegate_exec_low cb;
+
+            if (callback != null)
+            {
+                cb =
+                (ob, values, names) =>
+                {
+                    var a_v = new string[values.Length];
+                    var a_n = new string[names.Length];
+                    for (int i=0; i<values.Length; i++)
+                    {
+                        a_v[i] = util.from_utf8(values[i]);
+                        a_n[i] = util.from_utf8(names[i]);
+                    }
+                    return callback(ob, a_v, a_n);
+                };
+            }
+            else
+            {
+                cb = null;
+            }
+
             var p_sql = sql.to_pinned_utf8();
-            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), callback, user_data, out var p_errMsg);
+            var rc = _imp.sqlite3_exec(db, p_sql.ToIntPtr(), cb, user_data, out var p_errMsg);
             if (p_errMsg == IntPtr.Zero)
             {
                 errMsg = null;

@@ -201,10 +201,10 @@ namespace SQLitePCL
 
     public class exec_hook_info
     {
-        private delegate_exec _func;
+        private delegate_exec_low _func;
         private object _user_data;
 
-        public exec_hook_info(delegate_exec func, object v)
+        public exec_hook_info(delegate_exec_low func, object v)
         {
             _func = func;
             _user_data = v;
@@ -219,8 +219,8 @@ namespace SQLitePCL
 
         public int call(int n, IntPtr values_ptr, IntPtr names_ptr)
         {
-            string[] values = new string[n];
-            string[] names = new string[n];
+            var values = new IntPtr[n];
+            var names = new IntPtr[n];
             // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
             for (int i=0; i<n; i++)
@@ -228,10 +228,10 @@ namespace SQLitePCL
                 IntPtr vp;
 
                 vp = Marshal.ReadIntPtr(values_ptr, i * ptr_size);
-                values[i] = util.from_utf8(vp);
+                values[i] = vp;
 
                 vp = Marshal.ReadIntPtr(names_ptr, i * ptr_size);
-                names[i] = util.from_utf8(vp);
+                names[i] = vp;
             }
 
             return _func(_user_data, values, names);

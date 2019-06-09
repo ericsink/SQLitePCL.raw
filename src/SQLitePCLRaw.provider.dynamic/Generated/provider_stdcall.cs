@@ -145,7 +145,7 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec func, object user_data, out IntPtr errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec_low func, object user_data, out IntPtr errMsg)
         {
             int rc;
 

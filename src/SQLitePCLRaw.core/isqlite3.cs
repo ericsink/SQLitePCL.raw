@@ -39,7 +39,7 @@ namespace SQLitePCL
 
     public delegate int delegate_progress(object user_data);
 
-    public delegate int delegate_exec(object user_data, string[] values, string[] names);
+    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
     public delegate void delegate_function_aggregate_step(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -213,7 +213,7 @@ namespace SQLitePCL
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
-        int sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec callback, object user_data, out IntPtr errMsg);
+        int sqlite3_exec(sqlite3 db, IntPtr sql, delegate_exec_low callback, object user_data, out IntPtr errMsg);
 
         int sqlite3_complete(IntPtr sql);
 
@@ -265,14 +265,6 @@ namespace SQLitePCL
 
         int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
-
-#if not
-        // Since sqlite3_log() takes a variable argument list, we have to overload declarations
-        // for all possible calls.  For now, we are only exposing a single string, and 
-        // depend on the caller to format the string.
-
-        void sqlite3_log(int iErrCode, byte[] zFormat);
-#endif
 
         int sqlite3_win32_set_directory(int typ, string path);
     }
