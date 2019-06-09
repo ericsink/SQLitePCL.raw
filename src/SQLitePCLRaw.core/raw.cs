@@ -29,6 +29,8 @@ namespace SQLitePCL
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
+    public delegate int delegate_collation(object user_data, string s1, string s2);
+
     public static class raw
     {
         private static ISQLite3Provider _imp;
@@ -426,7 +428,7 @@ namespace SQLitePCL
             _imp.sqlite3_update_hook(db, f, v);
         }
 
-        static public int sqlite3_create_collation(sqlite3 db, string name, object v, Func<object,string,string,int> f)
+        static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
             delegate_collation_low cb = 
             (ob, len1, p1, len2, p2) =>
