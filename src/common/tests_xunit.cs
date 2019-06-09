@@ -1554,6 +1554,78 @@ namespace SQLitePCL.Tests
     }
 
     [Collection("Init")]
+    public class class_test_func_names_case
+    {
+        private const int val = 5;
+
+        private static void cube_wrong(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+        {
+            Assert.Single(args);
+            long x = args[0].value_int64();
+            ctx.result_int64(x * 2);
+        }
+
+        private static void cube(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+        {
+            Assert.Single(args);
+            long x = args[0].value_int64();
+            ctx.result_int64(x * x * x);
+        }
+
+        [Fact]
+        public void test_func_name_override_1()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("cube", 1, null, cube_wrong);
+                long c = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(c, val * 2);
+                GC.Collect();
+                db.create_function("Cube", 1, null, cube);
+                long c2 = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(c2, val * val * val);
+            }
+        }
+    }
+
+    [Collection("Init")]
+    public class class_test_func_multi
+    {
+        private const int val = 5;
+        private const int val2 = 7;
+
+        private static void mul_2(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+        {
+            Assert.Single(args);
+            long x = args[0].value_int64();
+            ctx.result_int64(x * 2);
+        }
+
+        private static void mul(sqlite3_context ctx, object user_data, sqlite3_value[] args)
+        {
+            Assert.Equal(2, args.Length);
+            long x = args[0].value_int64();
+            long y = args[1].value_int64();
+            ctx.result_int64(x * y);
+        }
+
+        [Fact]
+        public void test_func_name_multi()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("foo", 1, null, mul_2);
+                db.create_function("foo", 2, null, mul);
+                long c = db.query_scalar<long>("SELECT foo(?);", val);
+                Assert.Equal(c, val * 2);
+                GC.Collect();
+                long c2 = db.query_scalar<long>("SELECT foo(?,?);", val, val2);
+                Assert.Equal(c2, val * val2);
+            }
+        }
+    }
+
+    [Collection("Init")]
     public class class_test_makeblob
     {
         private const int val = 5;
