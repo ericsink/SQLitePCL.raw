@@ -224,27 +224,11 @@ namespace SQLitePCL
 
         void sqlite3_free(IntPtr p);
 
-#if not // maybe never
-
-        // because the wp8 C++ layer wouldn't link unless built against sqlcipher
-        // and the functionality is available with PRAGMAs
+#if not // TODO consider these
         int sqlite3_key(sqlite3 db, byte[] key, int keylen);
         int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
-        // because there's no good reason for a C# app to be calling the sqlite C memory allocator
-        IntPtr sqlite3_malloc(int n);
-        IntPtr sqlite3_realloc(IntPtr p, int n);
-
-        // because these are for internal use by SQLite
-        sqlite3_mutex_*
-
-        // because these are inherently non-portable, and because the SQLite module
-        // for WP8 doesn't even compile them in.
-        int sqlite3_load_extension(sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
-
-        // TODO
-        void sqlite3_interrupt(sqlite3 db);
-        int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
+        int sqlite3_load_extension(sqlite3 db, IntPtr fileName, IntPtr procName, ref IntPtr pError);
 #endif
 
         int sqlite3_initialize();
