@@ -1,7 +1,12 @@
 
 lots of places in the sqlite API give a pointer to
 a zero-terminated string, which would require a
-strlen-ish thing to convert to a span.
+strlen-ish thing to convert to a span.  how many
+of these should just return ReadOnlySpan<byte> ?
+
+should we wrap/alias ReadOnlySpan<byte> to something
+like utf8string ?  is that what the new Utf8String
+type is?
 
 investigate new utf8 things in System.Memory pkg
 
