@@ -211,9 +211,15 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob)
+        int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, ReadOnlySpan<byte> db_utf8, ReadOnlySpan<byte> table_utf8, ReadOnlySpan<byte> col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
-            return NativeMethods.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
+            unsafe
+            {
+                fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
+                {
+                    return NativeMethods.sqlite3_blob_open(db, (IntPtr) p_db, (IntPtr) p_table, (IntPtr) p_col, rowid, flags, out blob);
+                }
+            }
         }
 
         int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
@@ -1546,7 +1552,7 @@ namespace SQLitePCL
 		public static extern int sqlite3_backup_finish(IntPtr backup);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern int sqlite3_blob_open(sqlite3 db, byte[] sdb, byte[] table, byte[] col, long rowid, int flags, out sqlite3_blob blob);
+		public static extern int sqlite3_blob_open(sqlite3 db, IntPtr sdb, IntPtr table, IntPtr col, long rowid, int flags, out sqlite3_blob blob);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern int sqlite3_blob_write(sqlite3_blob blob, IntPtr b, int n, int offset);

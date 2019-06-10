@@ -1,4 +1,9 @@
 
+when passing a utf8 string down to provider interface,
+benefit of using ReadOnlySpan<byte> instead of IntPtr
+is that the pin can be done inside the provider
+with a fixed statement.
+
 might want bind_blob to allow specifying something
 other than transient.  current implementation makes
 a copy of the blob every time.
