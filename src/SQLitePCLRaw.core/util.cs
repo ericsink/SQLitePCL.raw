@@ -88,6 +88,10 @@ namespace SQLitePCL
 
         public static string from_utf8(ReadOnlySpan<byte> p)
         {
+            if (p == null)
+            {
+                return null;
+            }
             unsafe
             {
                 fixed (byte* q = p)

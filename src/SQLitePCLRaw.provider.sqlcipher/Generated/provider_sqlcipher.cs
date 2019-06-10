@@ -1057,9 +1057,19 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_text(stm, columnIndex);
+            IntPtr p = NativeMethods.sqlite3_column_text(stm, columnIndex);
+            if (p == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            var length = NativeMethods.sqlite3_column_bytes(stm, columnIndex);
+            unsafe
+            {
+                return new ReadOnlySpan<byte>(p.ToPointer(), length);
+            }
         }
 
         IntPtr ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
