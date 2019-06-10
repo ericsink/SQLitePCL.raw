@@ -80,14 +80,26 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_win32_set_directory8((uint) typ, path);
         }
 
-        int ISQLite3Provider.sqlite3_open(IntPtr filename, out IntPtr db)
+        int ISQLite3Provider.sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db)
         {
-            return NativeMethods.sqlite3_open(filename, out db);
+            unsafe
+            {
+                fixed (byte* p = filename)
+                {
+                    return NativeMethods.sqlite3_open(p, out db);
+                }
+            }
         }
 
-        int ISQLite3Provider.sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs)
+        int ISQLite3Provider.sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs)
         {
-            return NativeMethods.sqlite3_open_v2(filename, out db, flags, vfs);
+            unsafe
+            {
+                fixed (byte* p_filename = filename, p_vfs = vfs)
+                {
+                    return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
+                }
+            }
         }
 
 		#pragma warning disable 649
@@ -1495,14 +1507,14 @@ namespace SQLitePCL
 			attr_unicode = "[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
 			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-			front = "public delegate";
+			front = "public unsafe delegate";
 		}
 		else if (k == "dllimport")
 		{
 			attr_unicode = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
 			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
-			front = "public static extern";
+			front = "public static extern unsafe";
 		}
 		else
 		{
@@ -1629,10 +1641,10 @@ namespace SQLitePCL
 		<#= front #> int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
 		<#= attr #>
-		<#= front #> int sqlite3_open(IntPtr filename, out IntPtr db);
+		<#= front #> int sqlite3_open(byte* filename, out IntPtr db);
 
 		<#= attr #>
-		<#= front #> int sqlite3_open_v2(IntPtr filename, out IntPtr db, int flags, IntPtr vfs);
+		<#= front #> int sqlite3_open_v2(byte* filename, out IntPtr db, int flags, byte* vfs);
 
 		<#= attr #>
 		<#= front #> IntPtr sqlite3_vfs_find(IntPtr vfs);

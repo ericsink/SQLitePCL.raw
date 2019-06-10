@@ -338,9 +338,7 @@ namespace SQLitePCL
 
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            var p = filename.to_pinned_utf8();
-            int rc = _imp.sqlite3_open(p.ToIntPtr(), out var p_db);
-            p.Free();
+            int rc = _imp.sqlite3_open(filename.to_utf8(), out var p_db);
 			// TODO check rc?
             db = sqlite3.New(p_db);
             return rc;
@@ -348,12 +346,7 @@ namespace SQLitePCL
 
         static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
         {
-            var p_filename = filename.to_pinned_utf8();
-            var p_vfs = vfs.to_pinned_utf8();
-
-            int rc = _imp.sqlite3_open_v2(p_filename.ToIntPtr(), out var p_db, flags, p_vfs.ToIntPtr());
-            p_filename.Free();
-            p_vfs.Free();
+            int rc = _imp.sqlite3_open_v2(filename.to_utf8(), out var p_db, flags, vfs.to_utf8());
 			// TODO check rc?
             db = sqlite3.New(p_db);
             return rc;

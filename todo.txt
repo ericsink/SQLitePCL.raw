@@ -1,4 +1,9 @@
 
+investigate GC.AddMemoryPressure()
+
+consider pinvoke signatures unsafe with pointer instead of
+IntPtr
+
 when passing a utf8 string down to provider interface,
 benefit of using ReadOnlySpan<byte> instead of IntPtr
 is that the pin can be done inside the provider
