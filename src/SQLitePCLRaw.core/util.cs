@@ -77,9 +77,10 @@ namespace SQLitePCL
 
             if (nativeString != IntPtr.Zero)
             {
-                var array = new byte[size];
-                Marshal.Copy(nativeString, array, 0, size);
-                result = Encoding.UTF8.GetString(array, 0, array.Length);
+                unsafe
+                {
+                    result = Encoding.UTF8.GetString((byte*) nativeString.ToPointer(), size);
+                }
             }
 
             return result;
