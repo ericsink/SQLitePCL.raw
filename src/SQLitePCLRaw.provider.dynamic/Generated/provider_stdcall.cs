@@ -914,9 +914,15 @@ namespace SQLitePCL
             NativeMethods.sqlite3_result_text(ctx, val, -1, new IntPtr(-1));
         }
 
-        void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, byte[] blob)
+        void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, ReadOnlySpan<byte> blob)
         {
-            NativeMethods.sqlite3_result_blob(ctx, blob, blob.Length, new IntPtr(-1));
+            unsafe
+            {
+                fixed (byte* p = blob)
+                {
+                    NativeMethods.sqlite3_result_blob(ctx, (IntPtr) p, blob.Length, new IntPtr(-1));
+                }
+            }
         }
 
         void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
@@ -1745,7 +1751,7 @@ namespace SQLitePCL
 		public delegate IntPtr sqlite3_user_data(IntPtr context);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate void sqlite3_result_blob(IntPtr context, byte[] val, int nSize, IntPtr pvReserved);
+		public delegate void sqlite3_result_blob(IntPtr context, IntPtr val, int nSize, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate void sqlite3_result_double(IntPtr context, double val);

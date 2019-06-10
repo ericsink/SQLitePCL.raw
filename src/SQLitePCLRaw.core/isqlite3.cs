@@ -178,7 +178,7 @@ namespace SQLitePCL
 
         int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
-        void sqlite3_result_blob(IntPtr context, byte[] val); // TODO span
+        void sqlite3_result_blob(IntPtr context, ReadOnlySpan<byte> val);
         void sqlite3_result_double(IntPtr context, double val);
         void sqlite3_result_error(IntPtr context, IntPtr strErr);
         void sqlite3_result_int(IntPtr context, int val);

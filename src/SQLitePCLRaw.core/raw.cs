@@ -862,7 +862,7 @@ namespace SQLitePCL
             _imp.sqlite3_result_null(context.ptr);
         }
 
-        static public void sqlite3_result_blob(sqlite3_context context, byte[] val)
+        static public void sqlite3_result_blob(sqlite3_context context, ReadOnlySpan<byte> val)
         {
             _imp.sqlite3_result_blob(context.ptr, val);
         }

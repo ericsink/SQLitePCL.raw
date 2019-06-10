@@ -904,7 +904,7 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_result_text(ctx, s);
         }
 
-        public static void result_blob(this sqlite3_context ctx, byte[] b)
+        public static void result_blob(this sqlite3_context ctx, ReadOnlySpan<byte> b)
         {
             raw.sqlite3_result_blob(ctx, b);
         }
