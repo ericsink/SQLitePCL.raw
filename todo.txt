@@ -1,4 +1,8 @@
 
+might want bind_blob to allow specifying something
+other than transient.  current implementation makes
+a copy of the blob every time.
+
 in the raw layer, how to distinguish things that
 return a string vs things that return a utf8
 byte span?  C# doesn't do overloads on return type.
