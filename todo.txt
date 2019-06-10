@@ -1,4 +1,8 @@
 
+in the raw layer, how to distinguish things that
+return a string vs things that return a utf8
+byte span?  C# doesn't do overloads on return type.
+
 lots of places in the sqlite API give a pointer to
 a zero-terminated string, which would require a
 strlen-ish thing to convert to a span.  how many
@@ -14,14 +18,6 @@ should probably remove the other column_blob overload now,
 since the regular one returns a span that can just be sliced.
 
 multi-target to avoid dep on System.Memory for netcore2.1+ ?
-
-column_text should return Span<byte> -- doing so will
-probably save a strlen() call to look for the zero 
-terminator.  presumably sqlite3_column_bytes() returns a
-stored value instead of doing a strlen itself.
-
-provider interface should probably not deal with
-blobs in terms of byte[] -- use intptr or span/memory.
 
 need some tests for sqlite-ish case insensitivity of
 collation names
