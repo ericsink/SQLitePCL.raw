@@ -3,11 +3,6 @@ lots of places in the sqlite API give a pointer to
 a zero-terminated string, which would require a
 strlen-ish thing to convert to a span.
 
-what is the fastest way to convert span<byte> utf8
-to string?  copy to byte[] is NOT the right answer.
-interesting, if we have an intptr and len, then
-Encoding.UTF8.GetString() has a nice overload.
-
 investigate new utf8 things in System.Memory pkg
 
 should probably remove the other column_blob overload now,
