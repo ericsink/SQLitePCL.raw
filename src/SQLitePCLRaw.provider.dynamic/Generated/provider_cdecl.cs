@@ -1006,14 +1006,15 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, byte[] blob)
+        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> blob)
         {
-            return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, blob.Length, new IntPtr(-1));
-        }
-
-        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, byte[] blob, int nSize)
-        {
-            return NativeMethods.sqlite3_bind_blob(stm, paramIndex, blob, nSize, new IntPtr(-1));
+            unsafe
+            {
+                fixed (byte* p = blob)
+                {
+                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, (IntPtr) p, blob.Length, new IntPtr(-1));
+                }
+            }
         }
 
         int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
@@ -1663,7 +1664,7 @@ namespace SQLitePCL
 		public delegate int sqlite3_busy_timeout(sqlite3 db, int ms);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] val, int nSize, IntPtr nTransient);
+		public delegate int sqlite3_bind_blob(sqlite3_stmt stmt, int index, IntPtr val, int nSize, IntPtr nTransient);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public delegate int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);

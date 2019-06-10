@@ -953,14 +953,9 @@ namespace SQLitePCL
             return util.from_utf8(_imp.sqlite3_value_text(val.ptr));
         }
 
-        static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob)
+        static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> blob)
         {
-            return sqlite3_bind_blob(stmt, index, blob, blob.Length);
-        }
-
-        static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte[] blob, int nSize)
-        {
-            return _imp.sqlite3_bind_blob(stmt, index, blob, nSize);
+            return _imp.sqlite3_bind_blob(stmt, index, blob);
         }
 
         static public int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)
