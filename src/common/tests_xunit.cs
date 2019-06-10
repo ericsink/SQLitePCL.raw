@@ -1215,7 +1215,7 @@ namespace SQLitePCL.Tests
                     Assert.Equal("hello", stmt.column_text(2));
                     Assert.Equal(3.14, stmt.column_double(3));
                     Assert.Equal(blob.Length, stmt.column_bytes(4));
-                    byte[] b2 = stmt.column_blob(4);
+                    var b2 = stmt.column_blob(4);
                     Assert.Equal(b2.Length, blob.Length);
                     for (int i = 0; i < blob.Length; i++)
                     {

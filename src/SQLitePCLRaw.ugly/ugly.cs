@@ -543,7 +543,7 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_column_double(stmt, index);
         }
 
-        public static byte[] column_blob(this sqlite3_stmt stmt, int index)
+        public static ReadOnlySpan<byte> column_blob(this sqlite3_stmt stmt, int index)
         {
             return raw.sqlite3_column_blob(stmt, index);
         }
@@ -730,7 +730,8 @@ namespace SQLitePCL.Ugly
             }
             else if (typeof(byte[]) == t) 
             {
-                return stmt.column_blob(index);
+                // TODO hmmm.  how should this function adapte to Span/Memory ?
+                return stmt.column_blob(index).ToArray();
             }
             else
             {

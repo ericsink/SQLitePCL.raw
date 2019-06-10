@@ -1,4 +1,12 @@
 
+should probably remove the other column_blob overload now.
+
+multi-target to avoid dep on System.Memory for netcore2.1+ ?
+
+column_text should return Span<byte> -- doing so will
+probably save a strlen() call to look for the zero 
+terminator.
+
 provider interface should probably not deal with
 blobs in terms of byte[] -- use intptr or span/memory.
 

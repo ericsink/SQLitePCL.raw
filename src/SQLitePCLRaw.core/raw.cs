@@ -1064,7 +1064,7 @@ namespace SQLitePCL
             return _imp.sqlite3_column_int64(stmt, index);
         }
 
-        static public byte[] sqlite3_column_blob(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_blob(sqlite3_stmt stmt, int index)
         {
             return _imp.sqlite3_column_blob(stmt, index);
         }
