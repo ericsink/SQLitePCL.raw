@@ -1141,19 +1141,14 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_reopen(blob, rowid);
         }
 
-        static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int n, int offset)
+        static public int sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset)
         {
-            return _imp.sqlite3_blob_write(blob, b, 0, n, offset);
+            return _imp.sqlite3_blob_write(blob, b, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int n, int offset)
         {
             return _imp.sqlite3_blob_read(blob, b, 0, n, offset);
-        }
-
-        static public int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
-        {
-            return _imp.sqlite3_blob_write(blob, b, bOffset, n, offset);
         }
 
         static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)

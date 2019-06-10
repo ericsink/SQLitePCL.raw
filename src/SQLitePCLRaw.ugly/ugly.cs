@@ -855,21 +855,15 @@ namespace SQLitePCL.Ugly
             stmt.bind_blob(ndx, v);
         }
 
-        public static void write(this sqlite3_blob blob, byte[] b, int offset)
+        public static void write(this sqlite3_blob blob, ReadOnlySpan<byte> b, int offset)
         {
-            int rc = raw.sqlite3_blob_write(blob, b, b.Length, offset);
+            int rc = raw.sqlite3_blob_write(blob, b, offset);
             check_ok(rc);
         }
 
         public static void read(this sqlite3_blob blob, byte[] b, int offset)
         {
             int rc = raw.sqlite3_blob_read(blob, b, b.Length, offset);
-            check_ok(rc);
-        }
-
-        public static void write(this sqlite3_blob blob, byte[] b, int bOffset, int len, int offset)
-        {
-            int rc = raw.sqlite3_blob_write(blob, b, bOffset, len, offset);
             check_ok(rc);
         }
 

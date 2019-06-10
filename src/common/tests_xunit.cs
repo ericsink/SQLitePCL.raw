@@ -77,65 +77,6 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
-        public void test_column_blob_overload()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                const int len = 100;
-
-                db.exec("CREATE TABLE foo (b blob);");
-                db.exec("INSERT INTO foo (b) VALUES (randomblob(?))", len);
-
-                using (sqlite3_stmt stmt = db.prepare("SELECT b FROM foo;"))
-                {
-                    stmt.step();
-
-                    var ba1 = stmt.column_blob(0);
-
-                    const int offset = 7;
-
-                    var ba2 = new byte[len + offset * 2];
-                    stmt.column_blob(0, ba2, offset);
-                    for (int i = 0; i < ba1.Length; i++)
-                    {
-                        Assert.Equal(ba1[i], ba2[i + offset]);
-                    }
-                }
-            }
-
-        }
-
-        [Fact]
-        public void test_column_blob_overload_167()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                const int len = 100;
-
-                db.exec("CREATE TABLE foo (b blob);");
-                db.exec("INSERT INTO foo (b) VALUES (randomblob(?))", len);
-
-                using (sqlite3_stmt stmt = db.prepare("SELECT b FROM foo;"))
-                {
-                    stmt.step();
-
-                    var ba1 = stmt.column_blob(0);
-
-                    const int offset = 7;
-
-                    var ba2 = new byte[len + offset];
-                    int rc = stmt.column_blob(0, ba2, offset);
-                    Assert.Equal(0, rc);
-                    for (int i = 0; i < ba1.Length; i++)
-                    {
-                        Assert.Equal(ba1[i], ba2[i + offset]);
-                    }
-                }
-            }
-
-        }
-
-        [Fact]
         public void test_blob_reopen()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -307,8 +248,8 @@ namespace SQLitePCL.Tests
                         blob2[i] = 73;
                     }
 
-                    bh.write(blob2, 40, 20, 50);
-
+                    var sp = new ReadOnlySpan<byte>(blob2, 40, 20);
+                    bh.write(sp, 50);
                 }
 
                 byte[] blob3 = db.query_scalar<byte[]>("SELECT b FROM foo;");
