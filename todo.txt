@@ -1,11 +1,22 @@
 
-should probably remove the other column_blob overload now.
+lots of places in the sqlite API give a pointer to
+a zero-terminated string, which would require a
+strlen-ish thing to convert to a span.
+
+what is the fastest way to convert span<byte> utf8
+to string?  copy to byte[] is NOT the right answer.
+
+investigate new utf8 things in System.Memory pkg
+
+should probably remove the other column_blob overload now,
+since the regular one returns a span that can just be sliced.
 
 multi-target to avoid dep on System.Memory for netcore2.1+ ?
 
 column_text should return Span<byte> -- doing so will
 probably save a strlen() call to look for the zero 
-terminator.
+terminator.  presumably sqlite3_column_bytes() returns a
+stored value instead of doing a strlen itself.
 
 provider interface should probably not deal with
 blobs in terms of byte[] -- use intptr or span/memory.

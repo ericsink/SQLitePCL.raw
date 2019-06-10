@@ -193,9 +193,9 @@ namespace SQLitePCL
             return hi;
         }
 
-        public int call(int len1, IntPtr p1, int len2, IntPtr p2)
+        public int call(ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2)
         {
-            return _func(_user_data, len1, p1, len2, p2);
+            return _func(_user_data, s1, s2);
         }
     }
 

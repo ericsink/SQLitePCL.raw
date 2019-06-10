@@ -28,7 +28,7 @@ namespace SQLitePCL
     using System;
 
     // TODO dislike _low names
-    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO should use ReadOnlySpan<byte>
+    public delegate int delegate_collation_low(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
     public delegate void delegate_update_low(object user_data, int type, IntPtr database, IntPtr table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 

@@ -84,6 +84,13 @@ namespace SQLitePCL
 
             return result;
         }
+
+        public static string from_utf8(ReadOnlySpan<byte> p)
+        {
+            // TODO dreadful.  it should NOT be necessary to copy to an array first.
+            var array = p.ToArray();
+            return Encoding.UTF8.GetString(array, 0, array.Length);
+        }
     }
 
 }

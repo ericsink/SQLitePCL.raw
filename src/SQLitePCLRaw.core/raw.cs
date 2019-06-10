@@ -445,9 +445,9 @@ namespace SQLitePCL
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
         {
             delegate_collation_low cb = 
-            (ob, len1, p1, len2, p2) =>
+            (ob, s1, s2) =>
             {
-                return f(ob, util.from_utf8(p1, len1), util.from_utf8(p2, len2));
+                return f(ob, util.from_utf8(s1), util.from_utf8(s2));
             };
 
             var p = name.to_utf8();
