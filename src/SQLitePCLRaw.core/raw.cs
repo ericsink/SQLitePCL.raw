@@ -1069,11 +1069,6 @@ namespace SQLitePCL
             return _imp.sqlite3_column_blob(stmt, index);
         }
 
-        static public int sqlite3_column_blob(sqlite3_stmt stmt, int index, byte[] result, int offset)
-        {
-            return _imp.sqlite3_column_blob(stmt, index, result, offset);
-        }
-
         static public int sqlite3_column_bytes(sqlite3_stmt stmt, int index)
         {
             return _imp.sqlite3_column_bytes(stmt, index);

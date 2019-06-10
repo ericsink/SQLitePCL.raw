@@ -14,9 +14,6 @@ type is?
 
 investigate new utf8 things in System.Memory pkg
 
-should probably remove the other column_blob overload now,
-since the regular one returns a span that can just be sliced.
-
 multi-target to avoid dep on System.Memory for netcore2.1+ ?
 
 need some tests for sqlite-ish case insensitivity of

@@ -548,11 +548,6 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_column_blob(stmt, index);
         }
 
-        public static int column_blob(this sqlite3_stmt stmt, int index, byte[] ba, int offset)
-        {
-            return raw.sqlite3_column_blob(stmt, index, ba, offset);
-        }
-
         // TODO maybe this doesn't need to be here.  since it cannot be
         // named finalize(), and since sqlite3_stmt implements IDisposable,
         // I'm not sure this extension method adds much value.

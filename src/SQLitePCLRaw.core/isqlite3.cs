@@ -146,7 +146,6 @@ namespace SQLitePCL
         int sqlite3_column_int(sqlite3_stmt stmt, int index);
         long sqlite3_column_int64(sqlite3_stmt stmt, int index);
         ReadOnlySpan<byte> sqlite3_column_blob(sqlite3_stmt stmt, int index);
-        int sqlite3_column_blob(sqlite3_stmt stm, int columnIndex, byte[] result, int offset); // TODO probably rm this
         int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
