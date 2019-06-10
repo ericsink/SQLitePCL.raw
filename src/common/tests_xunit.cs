@@ -197,7 +197,8 @@ namespace SQLitePCL.Tests
                         blob2[i] = 73;
                     }
 
-                    bh.read(blob2, 40, 20, 40);
+                    var sp = new Span<byte>(blob2, 40, 20);
+                    bh.read(sp, 40);
 
                     for (int i = 0; i < 40; i++)
                     {

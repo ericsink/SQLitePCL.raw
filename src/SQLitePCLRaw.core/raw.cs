@@ -1146,14 +1146,9 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_write(blob, b, offset);
         }
 
-        static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int n, int offset)
+        static public int sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset)
         {
-            return _imp.sqlite3_blob_read(blob, b, 0, n, offset);
-        }
-
-        static public int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
-        {
-            return _imp.sqlite3_blob_read(blob, b, bOffset, n, offset);
+            return _imp.sqlite3_blob_read(blob, b, offset);
         }
 
 		// called by something that wants the return code

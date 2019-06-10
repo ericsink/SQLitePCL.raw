@@ -861,15 +861,9 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
-        public static void read(this sqlite3_blob blob, byte[] b, int offset)
+        public static void read(this sqlite3_blob blob, Span<byte> b, int offset)
         {
-            int rc = raw.sqlite3_blob_read(blob, b, b.Length, offset);
-            check_ok(rc);
-        }
-
-        public static void read(this sqlite3_blob blob, byte[] b, int bOffset, int len, int offset)
-        {
-            int rc = raw.sqlite3_blob_read(blob, b, bOffset, len, offset);
+            int rc = raw.sqlite3_blob_read(blob, b, offset);
             check_ok(rc);
         }
 

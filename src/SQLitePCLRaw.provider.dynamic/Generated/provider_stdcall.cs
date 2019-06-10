@@ -230,13 +230,15 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_reopen(blob, rowid);
         }
 
-        int ISQLite3Provider.sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset)
+        int ISQLite3Provider.sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset)
         {
-            GCHandle pinned = GCHandle.Alloc(b, GCHandleType.Pinned);
-            IntPtr ptr = pinned.AddrOfPinnedObject();
-            int rc = NativeMethods.sqlite3_blob_read(blob, new IntPtr(ptr.ToInt64() + bOffset), n, offset);
-            pinned.Free();
-			return rc;
+            unsafe
+            {
+                fixed (byte* p = b)
+                {
+                    return NativeMethods.sqlite3_blob_read(blob, (IntPtr) p, b.Length, offset);
+                }
+            }
         }
 
         int ISQLite3Provider.sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset)

@@ -160,7 +160,7 @@ namespace SQLitePCL
         int sqlite3_blob_bytes(sqlite3_blob blob);
         int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
         int sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset);
-        int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset); // TODO span
+        int sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset);
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log_low func, object v);
