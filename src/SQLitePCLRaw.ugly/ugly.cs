@@ -981,7 +981,7 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_value_double(val);
         }
 
-        public static byte[] value_blob(this sqlite3_value val)
+        public static ReadOnlySpan<byte> value_blob(this sqlite3_value val)
         {
             return raw.sqlite3_value_blob(val);
         }

@@ -193,7 +193,7 @@ namespace SQLitePCL
         void sqlite3_result_error_nomem(IntPtr context);
         void sqlite3_result_error_code(IntPtr context, int code);
 
-        byte[] sqlite3_value_blob(IntPtr p); // TODO span
+        ReadOnlySpan<byte> sqlite3_value_blob(IntPtr p);
         int sqlite3_value_bytes(IntPtr p);
         double sqlite3_value_double(IntPtr p);
         int sqlite3_value_int(IntPtr p);

@@ -918,7 +918,7 @@ namespace SQLitePCL
             _imp.sqlite3_result_error_code(context.ptr, code);
         }
 
-        static public byte[] sqlite3_value_blob(sqlite3_value val)
+        static public ReadOnlySpan<byte> sqlite3_value_blob(sqlite3_value val)
         {
             return _imp.sqlite3_value_blob(val.ptr);
         }

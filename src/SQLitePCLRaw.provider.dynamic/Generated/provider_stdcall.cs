@@ -937,7 +937,7 @@ namespace SQLitePCL
             NativeMethods.sqlite3_result_error_code(ctx, code);
         }
 
-        byte[] ISQLite3Provider.sqlite3_value_blob(IntPtr p)
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_value_blob(p);
             if (blobPointer == IntPtr.Zero)
@@ -946,9 +946,10 @@ namespace SQLitePCL
             }
 
             var length = NativeMethods.sqlite3_value_bytes(p);
-            byte[] result = new byte[length];
-            Marshal.Copy(blobPointer, (byte[])result, 0, length);
-            return result;
+            unsafe
+            {
+                return new ReadOnlySpan<byte>(p.ToPointer(), length);
+            }
         }
 
         int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
