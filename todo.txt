@@ -14,6 +14,18 @@ a zero-terminated string, which would require a
 strlen-ish thing to convert to a span.  how many
 of these should just return ReadOnlySpan<byte> ?
 
+when using a span for a zero-terminated string,
+does the span length include the zero?  if we are
+converting to a string, we don't want the zero.
+actually we never want the zero to be considered
+part of the string.  but for sqlite apis that expect
+it to be there, we have to add one.  and that happens
+in to_utf8() alloc the byte array.  which means when
+that ba gets auto-cast to ReadOnlySpan<byte>, the
+length will include the zero.  so whenever we use the
+Length, we might need to check and see whether we
+need to strip the zero or not.
+
 should we wrap/alias ReadOnlySpan<byte> to something
 like utf8string ?  is that what the new Utf8String
 type is?
