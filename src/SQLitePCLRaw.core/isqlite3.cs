@@ -28,7 +28,7 @@ namespace SQLitePCL
     using System;
 
     // TODO dislike _low names
-    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2);
+    public delegate int delegate_collation_low(object user_data, int len1, IntPtr p1, int len2, IntPtr p2); // TODO should use ReadOnlySpan<byte>
     public delegate void delegate_update_low(object user_data, int type, IntPtr database, IntPtr table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
@@ -139,14 +139,14 @@ namespace SQLitePCL
         IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
-        IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
+        IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index); // TODO span
         int sqlite3_data_count(sqlite3_stmt stmt);
         int sqlite3_column_count(sqlite3_stmt stmt);
         double sqlite3_column_double(sqlite3_stmt stmt, int index);
         int sqlite3_column_int(sqlite3_stmt stmt, int index);
         long sqlite3_column_int64(sqlite3_stmt stmt, int index);
         ReadOnlySpan<byte> sqlite3_column_blob(sqlite3_stmt stmt, int index);
-        int sqlite3_column_blob(sqlite3_stmt stm, int columnIndex, byte[] result, int offset);
+        int sqlite3_column_blob(sqlite3_stmt stm, int columnIndex, byte[] result, int offset); // TODO probably rm this
         int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
         IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
@@ -160,8 +160,8 @@ namespace SQLitePCL
         int sqlite3_blob_open(sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] col_utf8, long rowid, int flags, out sqlite3_blob blob);
         int sqlite3_blob_bytes(sqlite3_blob blob);
         int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
-        int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
-        int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset);
+        int sqlite3_blob_write(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset); // TODO span
+        int sqlite3_blob_read(sqlite3_blob blob, byte[] b, int bOffset, int n, int offset); // TODO span
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log_low func, object v);
@@ -180,7 +180,7 @@ namespace SQLitePCL
 
         int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
-        void sqlite3_result_blob(IntPtr context, byte[] val);
+        void sqlite3_result_blob(IntPtr context, byte[] val); // TODO span
         void sqlite3_result_double(IntPtr context, double val);
         void sqlite3_result_error(IntPtr context, IntPtr strErr);
         void sqlite3_result_int(IntPtr context, int val);
@@ -193,7 +193,7 @@ namespace SQLitePCL
         void sqlite3_result_error_nomem(IntPtr context);
         void sqlite3_result_error_code(IntPtr context, int code);
 
-        byte[] sqlite3_value_blob(IntPtr p);
+        byte[] sqlite3_value_blob(IntPtr p); // TODO span
         int sqlite3_value_bytes(IntPtr p);
         double sqlite3_value_double(IntPtr p);
         int sqlite3_value_int(IntPtr p);
