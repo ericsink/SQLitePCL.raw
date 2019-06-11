@@ -235,13 +235,16 @@ namespace SQLitePCL
             }
         }
 
-        unsafe int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc)
+        unsafe int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
             {
-                return NativeMethods.sqlite3_table_column_metadata(
+                var rc = NativeMethods.sqlite3_table_column_metadata(
                             db, p_dbName, p_tblName, p_colName, 
-                            out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
+                            out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
+                dataType = sz_to_span(p_dataType);
+                collSeq = sz_to_span(p_collSeq);
+                return rc;
             }
         }
 
@@ -1697,7 +1700,7 @@ namespace SQLitePCL
 		public unsafe delegate byte* sqlite3_compileoption_get(int n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		public unsafe delegate int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate byte* sqlite3_value_text(IntPtr p);

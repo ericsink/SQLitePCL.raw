@@ -213,7 +213,7 @@ namespace SQLitePCL
         int sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName);
         int sqlite3_wal_checkpoint_v2(sqlite3 db, ReadOnlySpan<byte> dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-        int sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc); // TODO span
+        int sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc);
 
         int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer_low authorizer, object user_data);
 
