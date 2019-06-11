@@ -57,6 +57,11 @@ namespace SQLitePCL
 
         unsafe ReadOnlySpan<byte> sz_to_span(byte* p)
         {
+            if (p == null)
+            {
+                return null;
+            }
+
             // for this case, we use the zero terminator to determine
             // the length of the string, and we return a span that does
             // NOT include that terminator.  this is for cases like
@@ -287,9 +292,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
         {
-            return NativeMethods.sqlite3_sql(stmt);
+            return sz_to_span(NativeMethods.sqlite3_sql(stmt));
         }
 
         IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
@@ -1131,9 +1136,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_bind_parameter_name(sqlite3_stmt stm, int paramIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_bind_parameter_name(sqlite3_stmt stm, int paramIndex)
         {
-            return NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex);
+            return sz_to_span(NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex));
         }
 
         unsafe int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, ReadOnlySpan<byte> paramName)
@@ -1169,19 +1174,16 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
         {
-            IntPtr p = NativeMethods.sqlite3_column_text(stm, columnIndex);
-            if (p == IntPtr.Zero)
+            byte* p = NativeMethods.sqlite3_column_text(stm, columnIndex);
+            if (p == null)
             {
                 return null;
             }
 
             var length = NativeMethods.sqlite3_column_bytes(stm, columnIndex);
-            unsafe
-            {
-                return new ReadOnlySpan<byte>(p.ToPointer(), length);
-            }
+            return new ReadOnlySpan<byte>(p, length);
         }
 
         IntPtr ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
@@ -1229,24 +1231,24 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_data_count(stm);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_name(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_name(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_name(stm, columnIndex);
+            return sz_to_span(NativeMethods.sqlite3_column_name(stm, columnIndex));
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_origin_name(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_origin_name(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_origin_name(stm, columnIndex);
+            return sz_to_span(NativeMethods.sqlite3_column_origin_name(stm, columnIndex));
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_table_name(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_table_name(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_table_name(stm, columnIndex);
+            return sz_to_span(NativeMethods.sqlite3_column_table_name(stm, columnIndex));
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_database_name(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_database_name(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_database_name(stm, columnIndex);
+            return sz_to_span(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
         }
 
         int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)
@@ -1647,25 +1649,25 @@ namespace SQLitePCL
 		public unsafe delegate int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_column_database_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_column_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_column_table_name(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
+		public unsafe delegate byte* sqlite3_column_text(sqlite3_stmt stmt, int index);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate byte* sqlite3_errmsg(sqlite3 db);
@@ -1808,7 +1810,7 @@ namespace SQLitePCL
 		public unsafe delegate int sqlite3_step(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate IntPtr sqlite3_sql(sqlite3_stmt stmt);
+		public unsafe delegate byte* sqlite3_sql(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate double sqlite3_column_double(sqlite3_stmt stmt, int index);

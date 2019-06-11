@@ -119,12 +119,12 @@ namespace SQLitePCL
         int sqlite3_reset(sqlite3_stmt stmt);
         int sqlite3_clear_bindings(sqlite3_stmt stmt);
         int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg);
-        IntPtr sqlite3_sql(sqlite3_stmt stmt); // TODO span
+        ReadOnlySpan<byte> sqlite3_sql(sqlite3_stmt stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
         IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
         int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
-        IntPtr sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index); // TODO span
+        ReadOnlySpan<byte> sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
         int sqlite3_bind_blob(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> blob);
         int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
         int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
@@ -134,10 +134,10 @@ namespace SQLitePCL
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
         int sqlite3_bind_parameter_index(sqlite3_stmt stmt, ReadOnlySpan<byte> strName);
 
-        IntPtr sqlite3_column_database_name(sqlite3_stmt stmt, int index); // TODO span
-        IntPtr sqlite3_column_name(sqlite3_stmt stmt, int index); // TODO span
-        IntPtr sqlite3_column_origin_name(sqlite3_stmt stmt, int index); // TODO span
-        IntPtr sqlite3_column_table_name(sqlite3_stmt stmt, int index); // TODO span
+        ReadOnlySpan<byte> sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+        ReadOnlySpan<byte> sqlite3_column_name(sqlite3_stmt stmt, int index);
+        ReadOnlySpan<byte> sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+        ReadOnlySpan<byte> sqlite3_column_table_name(sqlite3_stmt stmt, int index);
         ReadOnlySpan<byte> sqlite3_column_text(sqlite3_stmt stmt, int index);
         int sqlite3_data_count(sqlite3_stmt stmt);
         int sqlite3_column_count(sqlite3_stmt stmt);
