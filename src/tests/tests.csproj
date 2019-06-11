@@ -11,6 +11,8 @@
 	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AltCover" Version="5.3.675" />
+    <DotNetCliToolReference Include="dotnet-reportgenerator-cli" Version="4.1.10" />
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
     <PackageReference Include="xunit" Version="$(depversion_xunit)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />
