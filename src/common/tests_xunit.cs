@@ -316,6 +316,33 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_blob_close()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                const int len = 100;
+
+                db.exec("CREATE TABLE foo (b blob);");
+                using (sqlite3_stmt stmt = db.prepare("INSERT INTO foo (b) VALUES (?)"))
+                {
+                    stmt.bind_zeroblob(1, len);
+                    stmt.step();
+                }
+
+                long rowid = db.last_insert_rowid();
+
+                var rc = raw.sqlite3_blob_open(db, "main", "foo", "b", rowid, 1, out var bh);
+                Assert.Equal(0, rc);
+                Assert.NotNull(bh);
+
+                rc = raw.sqlite3_blob_close(bh);
+                Assert.Equal(0, rc);
+
+                bh.Dispose();
+            }
+        }
+
+        [Fact]
         public void test_db_readonly()
         {
             using (sqlite3 db = ugly.open_v2(":memory:", raw.SQLITE_OPEN_READONLY, null))
