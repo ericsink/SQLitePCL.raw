@@ -1,14 +1,4 @@
 
-investigate GC.AddMemoryPressure()
-
-might want bind_blob to allow specifying something
-other than transient.  current implementation makes
-a copy of the blob every time.
-
-in the raw layer, how to distinguish things that
-return a string vs things that return a utf8
-byte span?  C# doesn't do overloads on return type.
-
 lots of places in the sqlite API give a pointer to
 a zero-terminated string, which would require a
 strlen-ish thing to convert to a span.  how many
@@ -25,6 +15,39 @@ that ba gets auto-cast to ReadOnlySpan<byte>, the
 length will include the zero.  so whenever we use the
 Length, we might need to check and see whether we
 need to strip the zero or not.
+
+if span has the zero byte, then we basically have two
+ways of determining the length of the string, and
+we therefore might want to verify that they agree.
+
+we might want to always include the zero byte in the
+length when passing strings back up, for consistency
+with the cases where we pass a string down, but that 
+seems silly, since it means the length is wrong.
+
+if we don't use or verify the length on a span passed
+down, then the length is just ignored.
+
+it would be wrong to pass down a string which has a
+zero terminator but not include that zero in the span
+length.  the zero is an expected part of the data
+sqlite wants.
+
+it would nice if span-with-z and span-without-z could
+be different types, so the compiler could tell us when
+we pass the wrong one.
+
+--
+
+investigate GC.AddMemoryPressure()
+
+might want bind_blob to allow specifying something
+other than transient.  current implementation makes
+a copy of the blob every time.
+
+in the raw layer, how to distinguish things that
+return a string vs things that return a utf8
+byte span?  C# doesn't do overloads on return type.
 
 should we wrap/alias ReadOnlySpan<byte> to something
 like utf8string ?  is that what the new Utf8String
