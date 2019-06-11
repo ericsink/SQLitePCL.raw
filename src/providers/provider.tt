@@ -98,36 +98,27 @@ namespace SQLitePCL
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
         }
 
-        int ISQLite3Provider.sqlite3_win32_set_directory(int typ, ReadOnlySpan<byte> path)
+        unsafe int ISQLite3Provider.sqlite3_win32_set_directory(int typ, ReadOnlySpan<byte> path)
         {
-            unsafe
+            fixed (byte* p = path)
             {
-                fixed (byte* p = path)
-                {
-                    return NativeMethods.sqlite3_win32_set_directory8((uint) typ, p);
-                }
+                return NativeMethods.sqlite3_win32_set_directory8((uint) typ, p);
             }
         }
 
-        int ISQLite3Provider.sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db)
+        unsafe int ISQLite3Provider.sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db)
         {
-            unsafe
+            fixed (byte* p = filename)
             {
-                fixed (byte* p = filename)
-                {
-                    return NativeMethods.sqlite3_open(p, out db);
-                }
+                return NativeMethods.sqlite3_open(p, out db);
             }
         }
 
-        int ISQLite3Provider.sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs)
+        unsafe int ISQLite3Provider.sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs)
         {
-            unsafe
+            fixed (byte* p_filename = filename, p_vfs = vfs)
             {
-                fixed (byte* p_filename = filename, p_vfs = vfs)
-                {
-                    return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
-                }
+                return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
             }
         }
 
@@ -158,17 +149,14 @@ namespace SQLitePCL
 		}
 		#pragma warning restore 649
 		
-		int ISQLite3Provider.sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> filename, int syncDir)
+		unsafe int ISQLite3Provider.sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> filename, int syncDir)
 		{
-            unsafe
+            fixed (byte* p_vfs = vfs, p_filename = filename)
             {
-                fixed (byte* p_vfs = vfs, p_filename = filename)
-                {
-                    IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(p_vfs);
-                    // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
-                    sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
-                    return vstruct.xDelete(ptrVfs, p_filename, 1);
-                }
+                IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(p_vfs);
+                // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
+                sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
+                return vstruct.xDelete(ptrVfs, p_filename, 1);
             }
 		}
 
@@ -246,14 +234,11 @@ namespace SQLitePCL
             return rc;
         }
 
-        int ISQLite3Provider.sqlite3_complete(ReadOnlySpan<byte> sql)
+        unsafe int ISQLite3Provider.sqlite3_complete(ReadOnlySpan<byte> sql)
         {
-            unsafe
+            fixed (byte* p = sql)
             {
-                fixed (byte* p = sql)
-                {
-                    return NativeMethods.sqlite3_complete(p);
-                }
+                return NativeMethods.sqlite3_complete(p);
             }
         }
 
@@ -262,75 +247,63 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_compileoption_get(n);
         }
 
-        int ISQLite3Provider.sqlite3_compileoption_used(ReadOnlySpan<byte> s)
+        unsafe int ISQLite3Provider.sqlite3_compileoption_used(ReadOnlySpan<byte> s)
         {
-            unsafe
+            fixed (byte* p = s)
             {
-                fixed (byte* p = s)
-                {
-                    return NativeMethods.sqlite3_compileoption_used(p);
-                }
+                return NativeMethods.sqlite3_compileoption_used(p);
             }
         }
 
-        int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc)
+        unsafe int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out IntPtr dataType, out IntPtr collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            unsafe
+            fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
             {
-                fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
-                {
-                    return NativeMethods.sqlite3_table_column_metadata(
-                                db, p_dbName, p_tblName, p_colName, 
-                                out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
-                }
+                return NativeMethods.sqlite3_table_column_metadata(
+                            db, p_dbName, p_tblName, p_colName, 
+                            out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
             }
         }
 
-        int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
+        unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
-            unsafe
+            fixed (byte* p_sql = sql)
             {
-                fixed (byte* p_sql = sql)
+                byte* p_tail;
+                // TODO consider passing sql.Length instead of -1 for the length
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out p_tail);
+                var len_consumed = (int) (p_tail - p_sql);
+                int len_remain = sql.Length - len_consumed;
+                if (len_remain > 0)
                 {
-                    byte* p_tail;
-                    // TODO consider passing sql.Length instead of -1 for the length
-                    var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out p_tail);
-                    var len_consumed = (int) (p_tail - p_sql);
-                    int len_remain = sql.Length - len_consumed;
-                    if (len_remain > 0)
-                    {
-                        tail = sql.Slice(len_consumed, len_remain);
-                    }
-                    else
-                    {
-                        tail = null;
-                    }
-                    return rc;
+                    tail = sql.Slice(len_consumed, len_remain);
                 }
+                else
+                {
+                    tail = null;
+                }
+                return rc;
             }
         }
 
-        int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stm, out ReadOnlySpan<byte> tail)
+        unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
-            unsafe
+            fixed (byte* p_sql = sql)
             {
-                fixed (byte* p_sql = sql)
+                byte* p_tail;
+                // TODO consider passing sql.Length instead of -1 for the length
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out p_tail);
+                var len_consumed = (int) (p_tail - p_sql);
+                int len_remain = sql.Length - len_consumed;
+                if (len_remain > 0)
                 {
-                    byte* p_tail;
-                    // TODO consider passing sql.Length instead of -1 for the length
-                    var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out p_tail);
-                    var len_consumed = (int) (p_tail - p_sql);
-                    int len_remain = sql.Length - len_consumed;
-                    if (len_remain > 0)
-                    {
-                        tail = sql.Slice(len_consumed, len_remain);
-                    }
-                    else
-                    {
-                        tail = null;
-                    }
-                    return rc;
+                    tail = sql.Slice(len_consumed, len_remain);
                 }
+                else
+                {
+                    tail = null;
+                }
+                return rc;
             }
         }
 
@@ -349,14 +322,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, ReadOnlySpan<byte> db_utf8, ReadOnlySpan<byte> table_utf8, ReadOnlySpan<byte> col_utf8, long rowid, int flags, out sqlite3_blob blob)
+        unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, ReadOnlySpan<byte> db_utf8, ReadOnlySpan<byte> table_utf8, ReadOnlySpan<byte> col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
-            unsafe
+            fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
             {
-                fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
-                {
-                    return NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, out blob);
-                }
+                return NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, out blob);
             }
         }
 
@@ -370,25 +340,19 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_reopen(blob, rowid);
         }
 
-        int ISQLite3Provider.sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset)
+        unsafe int ISQLite3Provider.sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset)
         {
-            unsafe
+            fixed (byte* p = b)
             {
-                fixed (byte* p = b)
-                {
-                    return NativeMethods.sqlite3_blob_read(blob, p, b.Length, offset);
-                }
+                return NativeMethods.sqlite3_blob_read(blob, p, b.Length, offset);
             }
         }
 
-        int ISQLite3Provider.sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset)
+        unsafe int ISQLite3Provider.sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset)
         {
-            unsafe
+            fixed (byte* p = b)
             {
-                fixed (byte* p = b)
-                {
-                    return NativeMethods.sqlite3_blob_write(blob, p, b.Length, offset);
-                }
+                return NativeMethods.sqlite3_blob_write(blob, p, b.Length, offset);
             }
         }
 
@@ -397,14 +361,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
-        sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, ReadOnlySpan<byte> destName, sqlite3 sourceDb, ReadOnlySpan<byte> sourceName)
+        unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, ReadOnlySpan<byte> destName, sqlite3 sourceDb, ReadOnlySpan<byte> sourceName)
         {
-            unsafe
+            fixed (byte* p_destName = destName, p_sourceName = sourceName)
             {
-                fixed (byte* p_destName = destName, p_sourceName = sourceName)
-                {
-                    return NativeMethods.sqlite3_backup_init(destDb, p_destName, sourceDb, p_sourceName);
-                }
+                return NativeMethods.sqlite3_backup_init(destDb, p_destName, sourceDb, p_sourceName);
             }
         }
 
@@ -478,25 +439,19 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_get_autocommit(db);
         }
 
-        int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName)
+        unsafe int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName)
         {
-            unsafe
+            fixed (byte* p_dbName = dbName)
             {
-                fixed (byte* p_dbName = dbName)
-                {
-                    return NativeMethods.sqlite3_db_readonly(db, p_dbName); 
-                }
+                return NativeMethods.sqlite3_db_readonly(db, p_dbName); 
             }
         }
         
-        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
 		{
-            unsafe
+            fixed (byte* p_att = att)
             {
-                fixed (byte* p_att = att)
-                {
-                    return sz_to_span(NativeMethods.sqlite3_db_filename(db, p_att));
-                }
+                return sz_to_span(NativeMethods.sqlite3_db_filename(db, p_att));
             }
 		}
 
@@ -505,13 +460,9 @@ namespace SQLitePCL
             return sz_to_span(NativeMethods.sqlite3_errmsg(db));
         }
 
-        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_libversion()
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_libversion()
         {
-            unsafe
-            {
-                var p = NativeMethods.sqlite3_libversion();
-                return sz_to_span(p);
-            }
+            return sz_to_span(NativeMethods.sqlite3_libversion());
         }
 
         int ISQLite3Provider.sqlite3_libversion_number()
@@ -1066,38 +1017,29 @@ namespace SQLitePCL
             NativeMethods.sqlite3_result_null(stm);
         }
 
-        void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, ReadOnlySpan<byte> val)
+        unsafe void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, ReadOnlySpan<byte> val)
         {
-            unsafe
+            fixed (byte* p = val)
             {
-                fixed (byte* p = val)
-                {
-                    // TODO len instead of -1 ?
-                    NativeMethods.sqlite3_result_error(ctx, p, -1);
-                }
+                // TODO len instead of -1 ?
+                NativeMethods.sqlite3_result_error(ctx, p, -1);
             }
         }
 
-        void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, ReadOnlySpan<byte> val)
+        unsafe void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, ReadOnlySpan<byte> val)
         {
-            unsafe
+            fixed (byte* p = val)
             {
-                fixed (byte* p = val)
-                {
-                    // TODO len instead of -1 ?
-                    NativeMethods.sqlite3_result_text(ctx, p, -1, new IntPtr(-1));
-                }
+                // TODO len instead of -1 ?
+                NativeMethods.sqlite3_result_text(ctx, p, -1, new IntPtr(-1));
             }
         }
 
-        void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, ReadOnlySpan<byte> blob)
+        unsafe void ISQLite3Provider.sqlite3_result_blob(IntPtr ctx, ReadOnlySpan<byte> blob)
         {
-            unsafe
+            fixed (byte* p = blob)
             {
-                fixed (byte* p = blob)
-                {
-                    NativeMethods.sqlite3_result_blob(ctx, (IntPtr) p, blob.Length, new IntPtr(-1));
-                }
+                NativeMethods.sqlite3_result_blob(ctx, (IntPtr) p, blob.Length, new IntPtr(-1));
             }
         }
 
@@ -1178,14 +1120,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> t)
+        unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> t)
         {
-            unsafe
+            fixed (byte* p_t = t)
             {
-                fixed (byte* p_t = t)
-                {
-                    return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, -1, new IntPtr(-1));
-                }
+                return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, -1, new IntPtr(-1));
             }
         }
 
@@ -1194,14 +1133,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> blob)
+        unsafe int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> blob)
         {
-            unsafe
+            fixed (byte* p = blob)
             {
-                fixed (byte* p = blob)
-                {
-                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p, blob.Length, new IntPtr(-1));
-                }
+                return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p, blob.Length, new IntPtr(-1));
             }
         }
 
@@ -1225,14 +1161,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_bind_parameter_name(stm, paramIndex);
         }
 
-        int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, ReadOnlySpan<byte> paramName)
+        unsafe int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, ReadOnlySpan<byte> paramName)
         {
-            unsafe
+            fixed (byte* p_paramName = paramName)
             {
-                fixed (byte* p_paramName = paramName)
-                {
-                    return NativeMethods.sqlite3_bind_parameter_index(stm, p_paramName);
-                }
+                return NativeMethods.sqlite3_bind_parameter_index(stm, p_paramName);
             }
         }
 
@@ -1366,25 +1299,19 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName)
+        unsafe int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName)
         {
-            unsafe
+            fixed (byte* p_dbName = dbName)
             {
-                fixed (byte* p_dbName = dbName)
-                {
-                    return NativeMethods.sqlite3_wal_checkpoint(db, p_dbName);
-                }
+                return NativeMethods.sqlite3_wal_checkpoint(db, p_dbName);
             }
         }
 
-        int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, ReadOnlySpan<byte> dbName, int eMode, out int logSize, out int framesCheckPointed)
+        unsafe int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, ReadOnlySpan<byte> dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            unsafe
+            fixed (byte* p_dbName = dbName)
             {
-                fixed (byte* p_dbName = dbName)
-                {
-                    return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);
-                }
+                return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);
             }
         }
 
