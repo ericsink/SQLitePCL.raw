@@ -1328,6 +1328,130 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_other_col_types()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (id int, n int, r real);");
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 1, 32, 3.14);
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 2, 44, null);
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 3, null, 1.414);
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 4, 0, null);
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 5, new DateTime(1968, 3, 15), null);
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=1;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(32, stmt.column_int(0));
+                    Assert.Equal(3.14, stmt.column_double(1));
+
+                    {
+                        var v = stmt.column<int?>(0);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(32, v);
+                    }
+
+                    {
+                        var v = stmt.column<long?>(0);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(32, v);
+                    }
+
+                    {
+                        var v = stmt.column<double?>(1);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(3.14, v);
+                    }
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=2;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(44, stmt.column_int(0));
+                    Assert.Equal(stmt.column_type(1), raw.SQLITE_NULL);
+
+                    {
+                        var v = stmt.column<int?>(0);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(44, v);
+                    }
+
+                    {
+                        var v = stmt.column<double?>(1);
+                        Assert.False(v.HasValue);
+                    }
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=3;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(stmt.column_type(0), raw.SQLITE_NULL);
+                    Assert.Equal(1.414, stmt.column_double(1));
+
+                    {
+                        var v = stmt.column<int?>(0);
+                        Assert.False(v.HasValue);
+                    }
+
+                    {
+                        var v = stmt.column<long?>(0);
+                        Assert.False(v.HasValue);
+                    }
+
+                    {
+                        var v = stmt.column<double?>(1);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(1.414, v);
+                    }
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=4;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(0, stmt.column_int(0));
+                    Assert.Equal(stmt.column_type(1), raw.SQLITE_NULL);
+
+                    {
+                        var v = stmt.column<int?>(0);
+                        Assert.True(v.HasValue);
+                        Assert.Equal(0, v);
+                    }
+
+                    {
+                        var v = stmt.column<DateTime>(0);
+                        Assert.Equal(1970, v.Year);
+                    }
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=5;"))
+                {
+                    stmt.step();
+
+                    {
+                        var v = stmt.column<DateTime>(0);
+                        Assert.Equal(1968, v.Year);
+                        Assert.Equal(3, v.Month);
+                        Assert.Equal(15, v.Day);
+                    }
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=5;"))
+                {
+                    stmt.step();
+
+                    var fail = false;
+                    try
+                    {
+                        var v = stmt.column<decimal>(0);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        fail = true;
+                    }
+                    Assert.True(fail);
+                }
+            }
+        }
+
+        [Fact]
         public void test_table_column_metadata()
         {
             using (sqlite3 db = ugly.open(":memory:"))
