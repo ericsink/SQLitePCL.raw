@@ -722,11 +722,26 @@ namespace SQLitePCL.Tests
                 {
                     fail = true;
 
-                    int errcode = db.errcode();
-                    Assert.Equal(errcode, e.errcode);
-                    Assert.Equal(errcode, raw.SQLITE_CONSTRAINT);
+                    db.extended_result_codes(0);
 
-                    Assert.Equal(db.extended_errcode(), raw.SQLITE_CONSTRAINT_UNIQUE);
+                    {
+                        int errcode = db.errcode();
+                        Assert.Equal(errcode, e.errcode);
+                        Assert.Equal(errcode, raw.SQLITE_CONSTRAINT);
+
+                        Assert.Equal(db.extended_errcode(), raw.SQLITE_CONSTRAINT_UNIQUE);
+                    }
+
+                    db.extended_result_codes(1);
+
+                    {
+                        int errcode = db.errcode();
+                        Assert.Equal(errcode, raw.SQLITE_CONSTRAINT_UNIQUE);
+
+                        Assert.Equal(db.extended_errcode(), raw.SQLITE_CONSTRAINT_UNIQUE);
+                    }
+
+                    db.extended_result_codes(0);
 
                     string errmsg = db.errmsg();
                     Assert.True(errmsg != null);
