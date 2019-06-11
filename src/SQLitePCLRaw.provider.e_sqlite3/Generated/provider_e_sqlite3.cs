@@ -622,6 +622,14 @@ namespace SQLitePCL
 			return rc;
         }
 
+        unsafe void ISQLite3Provider.sqlite3_log(int errcode, ReadOnlySpan<byte> s)
+        {
+            fixed (byte* p = s)
+            {
+                NativeMethods.sqlite3_log(errcode, p);
+            }
+        }
+
         // ----------------------------------------------------------------
 
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
@@ -1617,7 +1625,7 @@ namespace SQLitePCL
 		// for all possible calls.  For now, we are only exposing a single string, and 
 		// depend on the caller to format the string.
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe void sqlite3_log(int iErrCode, byte[] zFormat);
+		public static extern unsafe void sqlite3_log(int iErrCode, byte* zFormat);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);

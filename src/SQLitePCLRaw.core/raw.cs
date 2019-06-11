@@ -343,14 +343,19 @@ namespace SQLitePCL
             _imp.sqlite3_interrupt(db);
         }
 
-        static public void sqlite3_config_log(delegate_log f, object v)
+        static public int sqlite3_config_log(delegate_log f, object v)
         {
             delegate_log_low cb =
             (ob, e, msg) =>
             {
                 f(ob, e, util.from_utf8(msg));
             };
-            _imp.sqlite3_config_log(cb, v);
+            return _imp.sqlite3_config_log(cb, v);
+        }
+
+        static public void sqlite3_log(int errcode, string s)
+        {
+            _imp.sqlite3_log(errcode, s.to_utf8());
         }
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)

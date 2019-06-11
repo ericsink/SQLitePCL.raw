@@ -165,6 +165,7 @@ namespace SQLitePCL
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log_low func, object v);
+        void sqlite3_log(int errcode, ReadOnlySpan<byte> s);
         void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
 

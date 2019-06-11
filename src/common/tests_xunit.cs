@@ -1804,6 +1804,42 @@ namespace SQLitePCL.Tests
         }
     }
 
+#if not // sqlite3_config() cannot be called after sqlite initialize
+    [Collection("Init")]
+    public class class_test_log
+    {
+        private class work
+        {
+            public List<string> msgs = new List<string>();
+        }
+
+        private static void my_log_hook(object v, int errcode, string msg)
+        {
+            work w = v as work;
+            w.msgs.Add(msg);
+        }
+
+        [Fact]
+        public void test_log()
+        {
+            const string VAL = "hello!";
+            work w = new work();
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var rc = raw.sqlite3_config_log(my_log_hook, w);
+                Assert.Equal(0, rc);
+
+                GC.Collect();
+
+                raw.sqlite3_log(0, VAL);
+            }
+            Assert.Single(w.msgs);
+            Assert.Equal(VAL, w.msgs[0]);
+        }
+
+    }
+#endif
+
     [Collection("Init")]
     public class class_test_hooks
     {
