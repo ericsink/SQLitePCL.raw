@@ -45,6 +45,10 @@ cases to a span, when they have the same problem?  because
 all those cases need a pin, and we wanted the pin to
 happen inside the provider.
 
+we're gonna need functions that (1) make sure the zero
+terminator is the last byte in a span, and (2) make sure
+the last byte in a span is NOT a zero.
+
 --
 
 investigate GC.AddMemoryPressure()

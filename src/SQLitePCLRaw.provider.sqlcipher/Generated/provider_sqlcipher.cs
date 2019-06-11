@@ -453,9 +453,36 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_errmsg(db);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_libversion()
+        unsafe long my_strlen(byte* p)
         {
-            return NativeMethods.sqlite3_libversion();
+            var q = p;
+            while (*q != 0)
+            {
+                q++;
+            }
+            return q - p;
+        }
+
+        unsafe ReadOnlySpan<byte> sz_to_span(byte* p)
+        {
+            // for this case, we use the zero terminator to determine
+            // the length of the string, and we return a span that does
+            // NOT include that terminator.  this is for cases like
+            // passing a string from the C code up to .NET, where we
+            // probably want to convert to System.String, so the zero
+            // terminator is not needed.
+
+            var len = (int) my_strlen(p);
+            return new ReadOnlySpan<byte>(p, len);
+        }
+
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_libversion()
+        {
+            unsafe
+            {
+                var p = NativeMethods.sqlite3_libversion();
+                return sz_to_span(p);
+            }
         }
 
         int ISQLite3Provider.sqlite3_libversion_number()
@@ -1429,7 +1456,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_shutdown();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_libversion();
+		public static extern unsafe byte* sqlite3_libversion();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_libversion_number();
