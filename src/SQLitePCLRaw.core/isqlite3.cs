@@ -29,11 +29,11 @@ namespace SQLitePCL
 
     // TODO dislike _low names
     public delegate int delegate_collation_low(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
-    public delegate void delegate_update_low(object user_data, int type, IntPtr database, IntPtr table, long rowid); // TODO span
+    public delegate void delegate_update_low(object user_data, int type, ReadOnlySpan<byte> database, ReadOnlySpan<byte> table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
-    public delegate void delegate_log_low(object user_data, int errorCode, IntPtr msg); // TODO span
-    public delegate int delegate_authorizer_low(object user_data, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view); // TODO span
+    public delegate void delegate_log_low(object user_data, int errorCode, ReadOnlySpan<byte> msg);
+    public delegate int delegate_authorizer_low(object user_data, int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view);
     public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names); // TODO span
 
     public delegate int delegate_commit(object user_data);

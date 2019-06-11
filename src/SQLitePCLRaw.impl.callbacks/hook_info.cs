@@ -48,7 +48,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int rc, IntPtr msg)
+        public void call(int rc, ReadOnlySpan<byte> msg)
         {
             _func(_user_data, rc, msg);
         }
@@ -169,7 +169,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int typ, IntPtr db, IntPtr tbl, long rowid)
+        public void call(int typ, ReadOnlySpan<byte> db, ReadOnlySpan<byte> tbl, long rowid)
         {
             _func(_user_data, typ, db, tbl, rowid);
         }
@@ -393,7 +393,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public int call(int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
+        public int call(int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view)
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }

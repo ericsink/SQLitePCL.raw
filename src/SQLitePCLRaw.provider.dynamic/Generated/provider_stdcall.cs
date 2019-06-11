@@ -45,7 +45,7 @@ namespace SQLitePCL
             return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
         }
 
-        unsafe long my_strlen(byte* p)
+        unsafe static long my_strlen(byte* p)
         {
             var q = p;
             while (*q != 0)
@@ -55,7 +55,7 @@ namespace SQLitePCL
             return q - p;
         }
 
-        unsafe ReadOnlySpan<byte> sz_to_span(byte* p)
+        unsafe static ReadOnlySpan<byte> sz_to_span(byte* p)
         {
             if (p == null)
             {
@@ -71,6 +71,11 @@ namespace SQLitePCL
 
             var len = (int) my_strlen(p);
             return new ReadOnlySpan<byte>(p, len);
+        }
+
+        unsafe static ReadOnlySpan<byte> sz_to_span(IntPtr p)
+        {
+            return sz_to_span((byte*) (p.ToPointer()));
         }
 
         hook_handles get_hooks(sqlite3 db)
@@ -600,7 +605,7 @@ namespace SQLitePCL
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
         {
             log_hook_info hi = log_hook_info.from_ptr(p);
-            hi.call(rc, s);
+            hi.call(rc, sz_to_span(s));
         }
 
 		readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
@@ -765,7 +770,7 @@ namespace SQLitePCL
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
-            hi.call(typ, db, tbl, rowid);
+            hi.call(typ, sz_to_span(db), sz_to_span(tbl), rowid);
         }
 
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
@@ -927,7 +932,7 @@ namespace SQLitePCL
         static int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
-            return hi.call(action_code, param0, param1, dbName, inner_most_trigger_or_view);
+            return hi.call(action_code, sz_to_span(param0), sz_to_span(param1), sz_to_span(dbName), sz_to_span(inner_most_trigger_or_view));
         }
 
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
