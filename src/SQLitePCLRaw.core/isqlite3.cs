@@ -34,7 +34,9 @@ namespace SQLitePCL
 
     public delegate void delegate_log_low(object user_data, int errorCode, ReadOnlySpan<byte> msg);
     public delegate int delegate_authorizer_low(object user_data, int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view);
-    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names); // TODO span
+
+    // this delegate returns strings as IntPtrs because they are in an array,
+    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names);
 
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
@@ -202,7 +204,8 @@ namespace SQLitePCL
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
-        int sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec_low callback, object user_data, out IntPtr errMsg); // TODO span
+        // this function returns the errMsg as an IntPtr because it needs to be freed.
+        int sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec_low callback, object user_data, out IntPtr errMsg);
 
         int sqlite3_complete(ReadOnlySpan<byte> sql);
 
