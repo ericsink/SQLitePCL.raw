@@ -429,6 +429,40 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_exec_overload_plain()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                {
+                    var rc = raw.sqlite3_exec(db, "CREATE TABLE foo (x int);");
+                    Assert.Equal(0, rc);
+                }
+                {
+                    var rc = raw.sqlite3_exec(db, "CREATE CREATE ((");
+                    Assert.Equal(1, rc);
+                }
+            }
+        }
+
+        [Fact]
+        public void test_exec_overload_errmsg()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                {
+                    var rc = raw.sqlite3_exec(db, "CREATE TABLE foo (x int);", out var e);
+                    Assert.Equal(0, rc);
+                    Assert.Null(e);
+                }
+                {
+                    var rc = raw.sqlite3_exec(db, "CREATE CREATE ((", out var e);
+                    Assert.Equal(1, rc);
+                    Assert.NotNull(e);
+                }
+            }
+        }
+
+        [Fact]
         public void test_exec_callback()
         {
             using (sqlite3 db = ugly.open(":memory:"))
