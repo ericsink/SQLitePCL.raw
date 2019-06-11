@@ -354,6 +354,55 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_prepare_v2_overload()
+        {
+            var libversion = raw.sqlite3_libversion();
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                // prepare a stmt with raw, not ugly, no tail provided
+                var rc = raw.sqlite3_prepare_v2(db, "SELECT sqlite_version()", out var stmt);
+                Assert.Equal(0, rc);
+
+                // make sure the stmt works
+                stmt.step_row();
+                var s = stmt.column_text(0);
+                Assert.Equal(libversion, s);
+
+                // finalize it manually
+                rc = raw.sqlite3_finalize(stmt);
+                Assert.Equal(0, rc);
+
+                // make sure it's okay to Dispose even though finalize was called
+                stmt.Dispose();
+            }
+        }
+
+        [Fact]
+        public void test_prepare_v3_overload()
+        {
+            // identical to v2 version of this test
+            var libversion = raw.sqlite3_libversion();
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                // prepare a stmt with raw, not ugly, no tail provided
+                var rc = raw.sqlite3_prepare_v3(db, "SELECT sqlite_version()", 0, out var stmt);
+                Assert.Equal(0, rc);
+
+                // make sure the stmt works
+                stmt.step_row();
+                var s = stmt.column_text(0);
+                Assert.Equal(libversion, s);
+
+                // finalize it manually
+                rc = raw.sqlite3_finalize(stmt);
+                Assert.Equal(0, rc);
+
+                // make sure it's okay to Dispose even though finalize was called
+                stmt.Dispose();
+            }
+        }
+
+        [Fact]
         public void test_prepare_v3()
         {
             var libversion = raw.sqlite3_libversion();
