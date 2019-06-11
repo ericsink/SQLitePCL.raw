@@ -218,9 +218,9 @@ namespace SQLitePCL
             }
         }
 
-        IntPtr ISQLite3Provider.sqlite3_compileoption_get(int n)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_compileoption_get(int n)
         {
-            return NativeMethods.sqlite3_compileoption_get(n);
+            return sz_to_span(NativeMethods.sqlite3_compileoption_get(n));
         }
 
         unsafe int ISQLite3Provider.sqlite3_compileoption_used(ReadOnlySpan<byte> s)
@@ -1081,9 +1081,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_value_type(p);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_value_text(IntPtr p)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_text(IntPtr p)
         {
-            return NativeMethods.sqlite3_value_text(p);
+            return sz_to_span(NativeMethods.sqlite3_value_text(p));
         }
 
         int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
@@ -1182,9 +1182,9 @@ namespace SQLitePCL
             return new ReadOnlySpan<byte>(p, length);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)
         {
-            return NativeMethods.sqlite3_column_decltype(stm, columnIndex);
+            return sz_to_span(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
         }
 
         double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
@@ -1323,7 +1323,7 @@ namespace SQLitePCL
 		public static extern unsafe byte* sqlite3_column_database_name(sqlite3_stmt stmt, int index);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index);
+		public static extern unsafe byte* sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe byte* sqlite3_column_name(sqlite3_stmt stmt, int index);
@@ -1362,13 +1362,13 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_compileoption_used(byte* pSql);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_compileoption_get(int n);
+		public static extern unsafe byte* sqlite3_compileoption_get(int n);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out IntPtr ptrDataType, out IntPtr ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_value_text(IntPtr p);
+		public static extern unsafe byte* sqlite3_value_text(IntPtr p);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_enable_load_extension(

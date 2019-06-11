@@ -147,7 +147,7 @@ namespace SQLitePCL
         ReadOnlySpan<byte> sqlite3_column_blob(sqlite3_stmt stmt, int index);
         int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
-        IntPtr sqlite3_column_decltype(sqlite3_stmt stmt, int index); // TODO span
+        ReadOnlySpan<byte> sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
         sqlite3_backup sqlite3_backup_init(sqlite3 destDb, ReadOnlySpan<byte> destName, sqlite3 sourceDb, ReadOnlySpan<byte> sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
@@ -197,7 +197,7 @@ namespace SQLitePCL
         int sqlite3_value_int(IntPtr p);
         long sqlite3_value_int64(IntPtr p);
         int sqlite3_value_type(IntPtr p);
-        IntPtr sqlite3_value_text(IntPtr p); // TODO span
+        ReadOnlySpan<byte> sqlite3_value_text(IntPtr p);
 
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
@@ -207,7 +207,7 @@ namespace SQLitePCL
         int sqlite3_complete(ReadOnlySpan<byte> sql);
 
         int sqlite3_compileoption_used(ReadOnlySpan<byte> sql);
-        IntPtr sqlite3_compileoption_get(int n); // TODO span
+        ReadOnlySpan<byte> sqlite3_compileoption_get(int n);
 
         int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
         int sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName);
