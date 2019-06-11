@@ -41,6 +41,29 @@ namespace SQLitePCL
             return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
         }
 
+        unsafe long my_strlen(byte* p)
+        {
+            var q = p;
+            while (*q != 0)
+            {
+                q++;
+            }
+            return q - p;
+        }
+
+        unsafe ReadOnlySpan<byte> sz_to_span(byte* p)
+        {
+            // for this case, we use the zero terminator to determine
+            // the length of the string, and we return a span that does
+            // NOT include that terminator.  this is for cases like
+            // passing a string from the C code up to .NET, where we
+            // probably want to convert to System.String, so the zero
+            // terminator is not needed.
+
+            var len = (int) my_strlen(p);
+            return new ReadOnlySpan<byte>(p, len);
+        }
+
         hook_handles get_hooks(sqlite3 db)
         {
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
@@ -401,9 +424,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_errstr(int rc)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_errstr(int rc)
         {
-            return NativeMethods.sqlite3_errstr(rc);
+            return sz_to_span(NativeMethods.sqlite3_errstr(rc));
         }
 
         int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
@@ -437,43 +460,20 @@ namespace SQLitePCL
             }
         }
         
-        IntPtr ISQLite3Provider.sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
 		{
             unsafe
             {
                 fixed (byte* p_att = att)
                 {
-                    return NativeMethods.sqlite3_db_filename(db, p_att);
+                    return sz_to_span(NativeMethods.sqlite3_db_filename(db, p_att));
                 }
             }
 		}
 
-        IntPtr ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_errmsg(sqlite3 db)
         {
-            return NativeMethods.sqlite3_errmsg(db);
-        }
-
-        unsafe long my_strlen(byte* p)
-        {
-            var q = p;
-            while (*q != 0)
-            {
-                q++;
-            }
-            return q - p;
-        }
-
-        unsafe ReadOnlySpan<byte> sz_to_span(byte* p)
-        {
-            // for this case, we use the zero terminator to determine
-            // the length of the string, and we return a span that does
-            // NOT include that terminator.  this is for cases like
-            // passing a string from the C code up to .NET, where we
-            // probably want to convert to System.String, so the zero
-            // terminator is not needed.
-
-            var len = (int) my_strlen(p);
-            return new ReadOnlySpan<byte>(p, len);
+            return sz_to_span(NativeMethods.sqlite3_errmsg(db));
         }
 
         ReadOnlySpan<byte> ISQLite3Provider.sqlite3_libversion()
@@ -1012,9 +1012,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_sourceid()
+        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_sourceid()
         {
-            return NativeMethods.sqlite3_sourceid();
+            return sz_to_span(NativeMethods.sqlite3_sourceid());
         }
 
         void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
@@ -1409,13 +1409,13 @@ namespace SQLitePCL
 		public static extern unsafe IntPtr sqlite3_column_text(sqlite3_stmt stmt, int index);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_errmsg(sqlite3 db);
+		public static extern unsafe byte* sqlite3_errmsg(sqlite3 db);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_db_readonly(sqlite3 db, byte* dbName);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_db_filename(sqlite3 db, byte* att);
+		public static extern unsafe byte* sqlite3_db_filename(sqlite3 db, byte* att);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain);
@@ -1465,7 +1465,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_threadsafe();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_sourceid();
+		public static extern unsafe byte* sqlite3_sourceid();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_malloc(int n);
@@ -1694,7 +1694,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_extended_errcode(sqlite3 db);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */
+		public static extern unsafe byte* sqlite3_errstr(int rc); /* 3.7.15+ */
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 

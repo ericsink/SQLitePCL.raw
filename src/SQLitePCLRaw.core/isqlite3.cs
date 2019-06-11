@@ -93,14 +93,14 @@ namespace SQLitePCL
         int sqlite3_threadsafe();
         ReadOnlySpan<byte> sqlite3_libversion();
         int sqlite3_libversion_number();
-        IntPtr sqlite3_sourceid(); // TODO span
+        ReadOnlySpan<byte> sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
         int sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName);
-        IntPtr sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att); // TODO span
-        IntPtr sqlite3_errmsg(sqlite3 db); // TODO span
+        ReadOnlySpan<byte> sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att);
+        ReadOnlySpan<byte> sqlite3_errmsg(sqlite3 db);
         long sqlite3_last_insert_rowid(sqlite3 db);
         int sqlite3_changes(sqlite3 db);
         int sqlite3_total_changes(sqlite3 db);
@@ -110,7 +110,7 @@ namespace SQLitePCL
         int sqlite3_extended_result_codes(sqlite3 db, int onoff);
         int sqlite3_errcode(sqlite3 db);
         int sqlite3_extended_errcode(sqlite3 db);
-        IntPtr sqlite3_errstr(int rc); /* 3.7.15+ */ // TODO span
+        ReadOnlySpan<byte> sqlite3_errstr(int rc); /* 3.7.15+ */
 
         int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stmt, out ReadOnlySpan<byte> remain);
         int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stmt, out ReadOnlySpan<byte> remain);
