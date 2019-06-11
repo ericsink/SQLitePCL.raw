@@ -591,6 +591,32 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_backup_finish()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+                    using (sqlite3_backup bak = db.backup_init("main", db2, "main"))
+                    {
+                        bak.step(-1);
+                        Assert.Equal(0, bak.remaining());
+                        Assert.True(bak.pagecount() > 0);
+
+                        bak.finish();
+                    }
+                }
+            }
+        }
+
+        [Fact]
         public void test_more_stuff()
         {
             using (sqlite3 db = ugly.open(":memory:"))
