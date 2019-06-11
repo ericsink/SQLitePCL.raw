@@ -714,10 +714,6 @@ namespace SQLitePCL.Ugly
 		    return x;
 		}
             }
-            else if (typeof(decimal) == t) 
-            {
-                return (decimal)Convert.ChangeType(stmt.column_double(index), t, null);
-            }
             else if (typeof(byte[]) == t) 
             {
                 // TODO hmmm.  how should this function adapte to Span/Memory ?
@@ -801,7 +797,6 @@ namespace SQLitePCL.Ugly
                     else if (
                                (typeof(double) == t) 
                             || (typeof(float) == t) 
-                            || (typeof(decimal) == t) 
                             )
                     {
                         stmt.bind_double(ndx, (double) (Convert.ChangeType(a[i], typeof(double), null)));
