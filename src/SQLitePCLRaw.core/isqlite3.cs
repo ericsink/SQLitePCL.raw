@@ -173,8 +173,6 @@ namespace SQLitePCL
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
         void sqlite3_update_hook(sqlite3 db, delegate_update_low func, object v);
         int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation_low func);
-        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_scalar func);
-        int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_scalar func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 

@@ -552,7 +552,7 @@ namespace SQLitePCL
 
 		readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
 			var info = get_hooks(db);
             if (info.RemoveScalarFunction(name, nargs))
@@ -582,16 +582,6 @@ namespace SQLitePCL
 			}
 			return rc;
         }
-
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, object v, delegate_function_scalar func)
-		{
-			return my_sqlite3_create_function(db, name, nargs, 0, v, func);
-		}
-
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
-		{
-			return my_sqlite3_create_function(db, name, nargs, flags, v, func);
-		}
 
         // ----------------------------------------------------------------
 
@@ -662,7 +652,7 @@ namespace SQLitePCL
 		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
 		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
-        int my_sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
 			var info = get_hooks(db);
             if (info.RemoveAggFunction(name, nargs))
@@ -696,16 +686,6 @@ namespace SQLitePCL
 			}
 			return rc;
         }
-
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
-		{
-			return my_sqlite3_create_function(db, name, nargs, 0, v, func_step, func_final);
-		}
-
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
-		{
-			return my_sqlite3_create_function(db, name, nargs, flags, v, func_step, func_final);
-		}
 
         // ----------------------------------------------------------------
 
