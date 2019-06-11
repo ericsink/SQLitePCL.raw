@@ -37,6 +37,14 @@ it would nice if span-with-z and span-without-z could
 be different types, so the compiler could tell us when
 we pass the wrong one.
 
+for strings that come back from sqlite, maybe it's just 
+better to leave things as they are, returning only
+the pointer, and leaving it up to from_utf8 to do
+the strlen.  but then why did we change all the downward
+cases to a span, when they have the same problem?  because
+all those cases need a pin, and we wanted the pin to
+happen inside the provider.
+
 --
 
 investigate GC.AddMemoryPressure()
