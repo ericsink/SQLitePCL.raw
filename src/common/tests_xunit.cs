@@ -1207,6 +1207,32 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_progress_handler_left_registered()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int count = 0;
+
+                delegate_progress handler = obj =>
+                    {
+                        Assert.Equal("user_data", obj);
+                        count++;
+                        return 0;
+                    };
+
+                raw.sqlite3_progress_handler(db, 1, handler, "user_data");
+
+                GC.Collect();
+
+                using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
+                {
+                    stmt.step();
+                }
+                Assert.True(count > 0);
+            }
+        }
+
+        [Fact]
         public void test_progress_handler()
         {
             using (sqlite3 db = ugly.open(":memory:"))
