@@ -1,4 +1,9 @@
 
+ios sqlcipher build will need the stub for
+sqlite3_win32_set_directory.  ouch, except
+the zetetic build won't have that.  might
+need to just do the ifdef.
+
 android: 70 pass, 2 fail
     create_table_file
     wal
