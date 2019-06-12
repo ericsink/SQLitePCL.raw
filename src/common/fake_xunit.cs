@@ -101,6 +101,11 @@ namespace Xunit
 
     public static class Run
     {
+        static void w(string s)
+        {
+            System.Console.WriteLine("{0}", s);
+        }
+
         public static void AllTestsIn(Assembly a)
         {
             var pass = 0;
@@ -115,22 +120,22 @@ namespace Xunit
                     object inst = Activator.CreateInstance(t);
                     foreach (var m in ma)
                     {
-                        System.Diagnostics.Debug.WriteLine($"{m.Name}");
+                        w($"{m.Name}");
                         try
                         {
                             m.Invoke(inst, null);
-                            System.Diagnostics.Debug.WriteLine("    pass");
+                            w("    pass");
                             pass++;
                         }
                         catch (Exception e)
                         {
-                            System.Diagnostics.Debug.WriteLine($"    {e}");
+                            w($"    {e}");
                             fail++;
                         }
                     }
                 }
             }
-            System.Diagnostics.Debug.WriteLine($"pass: {pass}  fail: {fail}");
+            w($"pass: {pass}  fail: {fail}");
         }
         public static void AllTestsInCurrentAssembly()
         {

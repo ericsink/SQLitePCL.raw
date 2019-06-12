@@ -127,6 +127,8 @@ let main argv =
 
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "with_xunit"))
 
+    exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "with_fake_xunit"))
+
     timer.Stop()
     printfn "Total build time: %A milliseconds" timer.ElapsedMilliseconds
 

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\common\fake_xunit.cs" />
+    <Compile Include="..\..\src\common\tests_xunit.cs" />
+  </ItemGroup>
+</Project>
