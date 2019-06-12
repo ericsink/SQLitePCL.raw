@@ -35,6 +35,7 @@
   <files>
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
+    <file src="$src_path$\SQLitePCLRaw.resolver.misc\bin\Release\netstandard2.0\SQLitePCLRaw.resolver.misc.dll" target="lib\net461\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
   </files>
 </package>
