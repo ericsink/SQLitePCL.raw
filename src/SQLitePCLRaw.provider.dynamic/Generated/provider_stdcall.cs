@@ -2010,7 +2010,7 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_win32_set_directory8(uint directoryType, byte* directoryPath);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]

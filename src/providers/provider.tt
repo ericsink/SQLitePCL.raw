@@ -1581,19 +1581,16 @@ namespace SQLitePCL
 	void write_api_entries(string k)
 	{
 		string attr;
-		string attr_unicode;
 		string front;
 		string attr_sqlite3_config;
 		if (k == "dynamic")
 		{
-			attr_unicode = "[UnmanagedFunctionPointer(CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
 			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
 			front = "public unsafe delegate";
 		}
 		else if (k == "dllimport")
 		{
-			attr_unicode = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION, CharSet=CharSet.Unicode)]";
 			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
 			front = "public static extern unsafe";
@@ -1990,7 +1987,7 @@ namespace SQLitePCL
 		<#= attr #>
 		<#= front #> int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
-		<#= attr_unicode #>
+		<#= attr #>
 		<#= front #> int sqlite3_win32_set_directory8(uint directoryType, byte* directoryPath);
 
 		<#= attr #>
