@@ -1,24 +1,9 @@
 
-provider can get rid of attr_unicode
-
-netfx on mac works fine except vsfm creates a
-project that is x86 only
-
 xDelete fails on UWP
-
-on ios, native linking fails because missing
-    sqlite3_key
-    sqlite3_rekey
-    sqlite3_win32_set_directory
 
 can ios use provider dynamic with null for
 the dlopen argument?  seems like I tried this
 and it didn't work, but I don't remember for sure.
-
-maybe ios should have another .c file with stubs
-for the missing functions above, just to satisfy
-the linker.  alternative is ifdefs in the provider
-code?
 
 how to pass null to the tail for sqlite3_prepare_?
 
