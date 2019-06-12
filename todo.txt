@@ -1,4 +1,6 @@
 
+how long has the mac sqlcipher build been broken?
+
 ios sqlcipher build will need the stub for
 sqlite3_win32_set_directory.  ouch, except
 the zetetic build won't have that.  might
