@@ -26,7 +26,7 @@ let main argv =
     let dir_providers = Path.Combine(top, "src", "providers")
     exec "dotnet" "restore" dir_providers
 
-    let gen_provider dir_basename (name:string) conv kind =
+    let gen_provider dir_basename (name:string) conv kind uwp =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (name.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
@@ -38,17 +38,21 @@ let main argv =
                 then (sprintf "-p:NAME_FOR_DLLIMPORT=%s" "__Internal")
                 else (sprintf "-p:NAME_FOR_DLLIMPORT=%s" name)
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s %s provider.tt" cs_path name conv kind dllimport_name_arg
+        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s %s provider.tt" cs_path name conv kind uwp dllimport_name_arg
         exec "t4" args dir_providers
 
-    gen_provider "dynamic" "Cdecl" "Cdecl" "dynamic"
-    gen_provider "dynamic" "StdCall" "StdCall" "dynamic"
-    gen_provider "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport"
-    gen_provider "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport"
-    gen_provider "sqlite3" "sqlite3" "Cdecl" "dllimport"
-    gen_provider "sqlcipher" "sqlcipher" "Cdecl" "dllimport"
-    gen_provider "winsqlite3" "winsqlite3" "StdCall" "dllimport"
-    gen_provider "internal" "internal" "Cdecl" "dllimport"
+    gen_provider "dynamic" "Cdecl" "Cdecl" "dynamic" "false"
+    gen_provider "dynamic" "StdCall" "StdCall" "dynamic" "false"
+    gen_provider "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
+    gen_provider "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
+    gen_provider "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "winsqlite3" "winsqlite3" "StdCall" "dllimport" "false"
+    gen_provider "internal" "internal" "Cdecl" "dllimport" "false"
+
+    gen_provider "e_sqlite3.uwp" "e_sqlite3_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher_uwp" "Cdecl" "dllimport" "true"
 
     let pack_dirs = [
         "SQLitePCLRaw.core"
@@ -57,9 +61,12 @@ let main argv =
         "SQLitePCLRaw.provider.dynamic" 
         "SQLitePCLRaw.provider.internal" 
         "SQLitePCLRaw.provider.e_sqlite3" 
+        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
         "SQLitePCLRaw.provider.e_sqlcipher" 
+        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlite3" 
         "SQLitePCLRaw.provider.sqlcipher" 
+        "SQLitePCLRaw.provider.sqlcipher.uwp" 
         "SQLitePCLRaw.provider.winsqlite3" 
     ]
     for s in pack_dirs do

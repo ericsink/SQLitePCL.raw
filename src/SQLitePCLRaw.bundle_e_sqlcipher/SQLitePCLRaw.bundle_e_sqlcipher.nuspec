@@ -25,6 +25,11 @@
         <dependency id="SQLitePCLRaw.provider.dynamic" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlcipher" version="$version$" />
       </group>
+      <group targetFramework="uap10.0">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlcipher.uwp" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlcipher" version="$version$" />
+      </group>
       <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
         <dependency id="SQLitePCLRaw.provider.e_sqlcipher" version="$version$" />

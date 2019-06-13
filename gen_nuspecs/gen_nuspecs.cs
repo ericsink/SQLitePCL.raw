@@ -574,9 +574,12 @@ public static class gen
     enum WhichProvider
     {
         E_SQLITE3,
+        E_SQLITE3_UWP,
         E_SQLCIPHER,
+        E_SQLCIPHER_UWP,
         SQLITE3,
         SQLCIPHER,
+        SQLCIPHER_UWP,
         INTERNAL,
         WINSQLITE3,
         DYNAMIC,
@@ -587,9 +590,12 @@ public static class gen
         switch (e)
         {
             case WhichProvider.E_SQLITE3: return "e_sqlite3";
+            case WhichProvider.E_SQLITE3_UWP: return "e_sqlite3.uwp";
             case WhichProvider.E_SQLCIPHER: return "e_sqlcipher";
+            case WhichProvider.E_SQLCIPHER_UWP: return "e_sqlcipher.uwp";
             case WhichProvider.SQLITE3: return "sqlite3";
             case WhichProvider.SQLCIPHER: return "sqlcipher";
+            case WhichProvider.SQLCIPHER_UWP: return "sqlcipher.uwp";
             case WhichProvider.INTERNAL: return "internal";
             case WhichProvider.WINSQLITE3: return "winsqlite3";
             case WhichProvider.DYNAMIC: return "dynamic";
@@ -723,6 +729,7 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER_UWP, WhichLib.E_SQLCIPHER, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // dependencies
@@ -790,6 +797,7 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.SQLCIPHER_UWP, WhichLib.NONE, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // dependencies
@@ -857,6 +865,7 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // dependencies
@@ -924,6 +933,7 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 
             f.WriteEndElement(); // dependencies
