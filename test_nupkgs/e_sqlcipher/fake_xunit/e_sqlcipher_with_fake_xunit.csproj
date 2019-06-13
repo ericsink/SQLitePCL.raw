@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;net461</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlcipher" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\src\common\fake_xunit.cs" />
+    <Compile Include="..\..\..\src\common\tests_xunit.cs" />
+  </ItemGroup>
+</Project>

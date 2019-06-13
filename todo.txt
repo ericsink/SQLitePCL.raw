@@ -1,5 +1,17 @@
 
+chg release notes in nuspec to reference a URL?
+on github?  on my blog?
+
+add more tests in the build script.  test the 
+new sqlcipher.
+
+make build do a version stamp every time?  to
+make sure that the test runs always test the pkgs
+we just built.
+
 why is impl callbacks a separate nuget package?
+because it is shared by all the providers, but not
+needed in core.
 
 how long has the mac sqlcipher dylib build been broken?
 
@@ -36,9 +48,6 @@ net461 or net472 ?
 
 investigate console UWP apps with C# for testing.
 build 17134.
-
-chg release notes in nuspec to reference a URL?
-on github?  on my blog?
 
 test on uwp, ios, android, net461, mono
 

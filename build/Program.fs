@@ -132,9 +132,14 @@ let main argv =
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "fsmoke"))
 
-    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "with_xunit"))
+    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "real_xunit"))
+    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
 
-    exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "with_fake_xunit"))
+    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+
+    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
 
     timer.Stop()
     printfn "Total build time: %A milliseconds" timer.ElapsedMilliseconds

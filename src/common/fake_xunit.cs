@@ -106,7 +106,7 @@ namespace Xunit
             System.Console.WriteLine("{0}", s);
         }
 
-        public static void AllTestsIn(Assembly a)
+        public static int AllTestsIn(Assembly a)
         {
             var pass = 0;
             var fail = 0;
@@ -136,10 +136,11 @@ namespace Xunit
                 }
             }
             w($"pass: {pass}  fail: {fail}");
+            return fail;
         }
-        public static void AllTestsInCurrentAssembly()
+        public static int AllTestsInCurrentAssembly()
         {
-            AllTestsIn(System.Reflection.Assembly.GetExecutingAssembly());
+            return AllTestsIn(System.Reflection.Assembly.GetExecutingAssembly());
         }
     }
 }
