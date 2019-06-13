@@ -16,6 +16,8 @@ let main argv =
         Path.GetFullPath(Path.Combine(cwd, ".."))
         // TODO maybe walk upward until we find the right directory
 
+    exec "dotnet" "run .." (Path.Combine(top, "version_stamp"))
+
     exec "dotnet" "run .." (Path.Combine(top, "gen_nuspecs"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
