@@ -3,18 +3,13 @@ why is impl callbacks a separate nuget package?
 
 how long has the mac sqlcipher dylib build been broken?
 
-ios sqlcipher build will need the stub for
-sqlite3_win32_set_directory.  ouch, except
-the zetetic build won't have that.  might
-need to just do the ifdef.
-
 android: 70 pass, 2 fail
     create_table_file
     wal
 
 xDelete fails on UWP
 
-can ios use provider dynamic with null for
+can we ios use provider dynamic with null for
 the dlopen argument?  seems like I tried this
 and it didn't work, but I don't remember for sure.
 
@@ -33,6 +28,9 @@ sqlite3_config() call.
 
 finish impl of batteries for the net461 case,
 like the previous preload from arch dir.
+
+does dynamic load for the mono case work for
+zetetic?
 
 net461 or net472 ?
 
