@@ -9,12 +9,6 @@ some of the batteries projects are more like failed
 experiments that could be deleted.  like
 batteries_v2.e_sqlite3.dynamic.
 
-consider keeping both sqlcipher 3 and 4 ?
-probably not.  but verify the instructions for
-using sqlcipher 4 with a sqlcipher 3 db.
-
-need tests for sqlcipher that actually do encryption
-
 chg release notes in nuspec to reference a URL?
 on github?  on my blog?
 
@@ -26,7 +20,8 @@ android: 70 pass, 2 fail
     create_table_file
     wal
 
-xDelete fails on UWP
+xDelete fails on UWP.  but the call that fails comes
+from the result of db_filename?
 
 can we ios use provider dynamic with null for
 the dlopen argument?  seems like I tried this

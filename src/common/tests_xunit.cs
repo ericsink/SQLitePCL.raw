@@ -2298,5 +2298,70 @@ namespace SQLitePCL.Tests
 
     }
 
+    [Collection("Init")]
+    public class class_test_crypto
+    {
+        private static bool is_sqlcipher()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var s = db.query_scalar<string>("PRAGMA cipher_version");	
+                return !string.IsNullOrEmpty(s);
+            }
+        }
+
+        [Fact]
+        public void test_encrypted_file()
+        {
+            if (is_sqlcipher())
+            {
+                string name;
+                using (sqlite3 db = ugly.open(":memory:"))
+                {
+                    name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
+                }
+                const string correct_phrase = "I am Groot";
+                var nums = new int[] { 1, 6, 3, 0, 9 };
+                using (sqlite3 db = ugly.open(name))
+                {
+                    db.exec($"PRAGMA key ='{correct_phrase}'");
+                    db.exec("CREATE TABLE foo (x int);");
+                    foreach (var x in nums)
+                    {
+                        db.exec("INSERT INTO foo (x) VALUES (?)", x);
+                    }
+                }
+                var sum_expected = nums.Sum();
+                bool check_sum(string pass)
+                {
+                    using (sqlite3 db = ugly.open(name))
+                    {
+                        if (pass != null)
+                        {
+                            db.exec($"PRAGMA key ='{pass}'");
+                        }
+                        bool fail;
+                        try
+                        {
+                            var sum = db.query_scalar<int>("SELECT sum(x) FROM foo;");
+                            Assert.Equal(sum_expected, sum);
+                            fail = false;
+                        }
+                        catch (ugly.sqlite3_exception)
+                        {
+                            fail = true;
+                        }
+                        return !fail;
+                    }
+                }
+                Assert.True(true == check_sum(correct_phrase));
+                Assert.True(false == check_sum(null));
+                Assert.True(false == check_sum("wrong phrase"));
+
+                ugly.vfs__delete(null, name, 1);
+            }
+        }
+
+    }
 }
 
