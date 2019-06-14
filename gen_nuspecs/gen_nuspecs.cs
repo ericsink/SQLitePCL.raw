@@ -33,7 +33,8 @@ public static class gen
         NETSTANDARD20,
         NET461,
         XAMARIN_MAC,
-        NETCOREAPP,
+        NETCOREAPP22,
+        NETCOREAPP30,
     }
 
     enum LibSuffix
@@ -107,7 +108,8 @@ public static class gen
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
             case TFM.NET461: return "net461";
-            case TFM.NETCOREAPP: return "netcoreapp";
+            case TFM.NETCOREAPP22: return "netcoreapp2.2";
+            case TFM.NETCOREAPP30: return "netcoreapp3.0";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
         }
@@ -867,6 +869,7 @@ public static class gen
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
+            //write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
 
             f.WriteEndElement(); // dependencies
 
@@ -892,6 +895,21 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
+
+#if not
+            write_nuspec_file_entry_lib_batteries(
+                    "e_sqlite3.dynamic",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETCOREAPP30,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.nativelibrary",
+                    tfm_build: TFM.NETCOREAPP30,
+                    tfm_dest: TFM.NETCOREAPP30,
+                    f
+                    );
+#endif
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dllimport",

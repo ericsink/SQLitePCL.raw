@@ -56,6 +56,8 @@ let main argv =
     gen_provider "e_sqlcipher.uwp" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
     gen_provider "sqlcipher.uwp" "sqlcipher_uwp" "Cdecl" "dllimport" "true"
 
+    exec "dotnet" "build -c Release" (Path.Combine(top, "src", "SQLitePCLRaw.nativelibrary"))
+
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
