@@ -49,8 +49,9 @@ let main argv =
     gen_provider "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
     gen_provider "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
     gen_provider "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
-    gen_provider "winsqlite3" "winsqlite3" "StdCall" "dllimport" "false"
     gen_provider "internal" "internal" "Cdecl" "dllimport" "false"
+
+    gen_provider "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
 
     gen_provider "e_sqlite3.uwp" "e_sqlite3_uwp" "Cdecl" "dllimport" "true"
     gen_provider "e_sqlcipher.uwp" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
