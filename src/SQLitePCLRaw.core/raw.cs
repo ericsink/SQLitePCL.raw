@@ -553,7 +553,10 @@ namespace SQLitePCL
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v2(db, sql, out stmt, out var tail);
+            var ba_sql = sql.to_utf8();
+            int rc = _imp.sqlite3_prepare_v2(db, ba_sql, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
@@ -582,7 +585,10 @@ namespace SQLitePCL
 
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v3(db, sql, flags, out stmt, out var tail);
+            var ba_sql = sql.to_utf8();
+            int rc = _imp.sqlite3_prepare_v3(db, ba_sql, flags, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)

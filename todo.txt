@@ -33,6 +33,8 @@ the dlopen argument?  seems like I tried this
 and it didn't work, but I don't remember for sure.
 
 how to pass null to the tail for sqlite3_prepare_?
+chg the pinvoke signature from out byte* to byte**
+and pass null.
 
 need a test that actually uses the prepare flags
 for sqlite3_prepare_v3, like persistent
