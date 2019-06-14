@@ -20,6 +20,15 @@ using System.Reflection;
 
 namespace SQLitePCL
 {
+    // for source-level compatibility with v1
+    public static class Batteries
+    {
+	    public static void Init()
+	    {
+            Batteries_V2.Init();
+        }
+    }
+
     public static class Batteries_V2
     {
 	    public static void Init()
