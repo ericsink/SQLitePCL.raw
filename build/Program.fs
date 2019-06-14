@@ -143,6 +143,9 @@ let main argv =
     exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
     exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
 
+    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+
     timer.Stop()
     printfn "Total build time: %A milliseconds" timer.ElapsedMilliseconds
 
