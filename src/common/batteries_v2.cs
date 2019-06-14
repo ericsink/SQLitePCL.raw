@@ -31,6 +31,37 @@ namespace SQLitePCL
 
     public static class Batteries_V2
     {
+#if PROVIDER_e_sqlite3_dynamic || PROVIDER_e_sqlcipher_dynamic || PROVIDER_sqlcipher_dynamic
+        class MyGetFunctionPointer : IGetFunctionPointer
+        {
+            readonly IntPtr _dll;
+            public MyGetFunctionPointer(IntPtr dll)
+            {
+                _dll = dll;
+            }
+
+            public IntPtr GetFunctionPointer(string name)
+            {
+                if (NativeLibrary.TryGetExport(_dll, name, out var f))
+                {
+                    //System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+                    return f;
+                }
+                else
+                {
+                    return IntPtr.Zero;
+                }
+            }
+        }
+        static void DoDynamic(string name)
+        {
+		    var dll = SQLitePCL.NativeLibrary.Load(name);
+            var gf = new MyGetFunctionPointer(dll);
+            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
+            SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
+        }
+#endif
+
 	    public static void Init()
 	    {
 #if EMBEDDED_INIT
@@ -42,11 +73,11 @@ namespace SQLitePCL
 #elif PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
 #elif PROVIDER_e_sqlite3_dynamic
-		    SQLitePCL.Setup.Load("e_sqlite3");
+		    DoDynamic("e_sqlite3");
 #elif PROVIDER_e_sqlcipher_dynamic
-		    SQLitePCL.Setup.Load("e_sqlcipher");
+		    DoDynamic("e_sqlcipher");
 #elif PROVIDER_sqlcipher_dynamic
-		    SQLitePCL.Setup.Load("sqlcipher"); // TODO coordinate with zetetic
+		    DoDynamic("sqlcipher"); // TODO coordinate with zetetic
 #elif PROVIDER_e_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
 #elif PROVIDER_winsqlite3

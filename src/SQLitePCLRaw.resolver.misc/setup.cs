@@ -30,21 +30,116 @@ using System.Runtime.InteropServices;
 
 namespace SQLitePCL
 {
-	enum LibSuffix
-	{
-		DLL,
-		DYLIB,
-		SO,
-	}
+    public static class NativeLibrary
+    {
+        static class NativeLib_dlopen
+        {
+            const string SO = "dl";
 
-	enum Loader
-	{
-		win,
-		dlopen,
-	}
+            public const int RTLD_NOW = 2; // for dlopen's flags 
 
-	public static class Setup
-	{
+            [DllImport(SO)]
+            public static extern IntPtr dlopen(string dllToLoad, int flags);
+
+            [DllImport(SO)]
+            public static extern IntPtr dlsym(IntPtr hModule, string procedureName);
+
+            [DllImport(SO)]
+            public static extern int dlclose(IntPtr hModule);
+
+        }
+
+        static class NativeLib_Win
+        {
+            [DllImport("kernel32", SetLastError = true)]
+            public static extern IntPtr LoadLibrary(string lpFileName);
+
+            public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 8;
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern bool FreeLibrary(IntPtr hModule);
+
+        }
+
+        enum LibSuffix
+        {
+            DLL,
+            DYLIB,
+            SO,
+        }
+
+        enum Loader
+        {
+            win,
+            dlopen,
+        }
+
+        public static IntPtr Load(string libraryPath)
+        {
+            var h = MyLoad(libraryPath);
+            if (h == IntPtr.Zero)
+            {
+                throw new Exception("not found");
+            }
+            return h;
+        }
+        static IntPtr MyGetExport(IntPtr handle, string name)
+        {
+			var plat = WhichLoader();
+            if (plat == Loader.win)
+            {
+                return NativeLib_Win.GetProcAddress(handle, name);
+            }
+            else if (plat == Loader.dlopen)
+            {
+                return NativeLib_dlopen.dlsym(handle, name);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public static IntPtr GetExport(IntPtr handle, string name)
+        {
+            var h = MyGetExport(handle, name);
+            if (h == IntPtr.Zero)
+            {
+                throw new Exception("not found");
+            }
+            return h;
+        }
+        public static void Free(IntPtr handle)
+        {
+			var plat = WhichLoader();
+            if (plat == Loader.win)
+            {
+                NativeLib_Win.FreeLibrary(handle);
+            }
+            else if (plat == Loader.dlopen)
+            {
+                NativeLib_dlopen.dlclose(handle);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public static bool TryLoad(string libraryPath, out IntPtr handle)
+        {
+            var h = MyLoad(libraryPath);
+            handle = h;
+            return h != IntPtr.Zero;
+        }
+        public static bool TryGetExport(IntPtr handle, string name, out IntPtr address)
+        {
+            var h = MyGetExport(handle, name);
+            address = h;
+            return h != IntPtr.Zero;
+        }
+
 		static string basename_to_libname(string basename, LibSuffix suffix)
 		{
 			switch (suffix)
@@ -64,7 +159,7 @@ namespace SQLitePCL
 			string name, 
 			Loader plat, 
 			Action<string> log,
-			out IGetFunctionPointer gf
+			out IntPtr h
 			)
 		{
 			try
@@ -76,7 +171,7 @@ namespace SQLitePCL
 					if (ptr != IntPtr.Zero)
 					{
 						log($"LoadLibrary gave: {ptr}");
-						gf = new GetFunctionPointer_Win(ptr);
+                        h = ptr;
 						return true;
 					}
 					else
@@ -93,13 +188,13 @@ namespace SQLitePCL
 					log($"dlopen gave: {ptr}");
 					if (ptr != IntPtr.Zero)
 					{
-						gf = new GetFunctionPointer_dlopen(ptr);
+						h = ptr;
 						return true;
 					}
 					else
 					{
 						// TODO log errno?
-						gf = null;
+                        h = IntPtr.Zero;
 						return false;
 					}
 				}
@@ -115,7 +210,7 @@ namespace SQLitePCL
 			catch (Exception e)
 			{
 				log($"thrown: {e}");
-				gf = null;
+                h = IntPtr.Zero;
 				return false;
 			}
 		}
@@ -209,7 +304,7 @@ namespace SQLitePCL
 			Loader plat, 
 			Action<string> log,
 			out string name,
-			out IGetFunctionPointer gf
+			out IntPtr h
 			)
 		{
 			foreach (var s in a)
@@ -217,12 +312,12 @@ namespace SQLitePCL
 				if (TryLoad(s, plat, log, out var api))
 				{
 					name = s;
-					gf = api;
+					h = api;
 					return true;
 				}
 			}
 			name = null;
-			gf = null;
+			h = IntPtr.Zero;
 			return false;
 		}
 
@@ -262,34 +357,23 @@ namespace SQLitePCL
 			return a;
 		}
 
-		public static void Load_ios_internal()
+#if not
+		static IntPtr Load_ios_internal()
 		{
 			// TODO err check this
 			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
-			var gf = new GetFunctionPointer_dlopen(dll);
-			SQLite3Provider_Cdecl.Setup(gf);
-			raw.SetProvider(new SQLite3Provider_Cdecl());
+            return dll;
 		}
+#endif
 
-		public static string Load(
+		static IntPtr MyLoad(
 			string basename
 			)
 		{
-			return Load(basename, s => {});
+			return MyLoad(basename, s => {});
 		}
 
-        // the lowest-level API, for cases where the
-        // the code to find the dll and load it and
-        // get sumbols from it is entirely above.
-		public static void Load(
-            IGetFunctionPointer gf
-			)
-        {
-            SQLite3Provider_Cdecl.Setup(gf);
-            raw.SetProvider(new SQLite3Provider_Cdecl());
-        }
-
-		public static string Load(
+		static IntPtr MyLoad(
 			string basename,
 			Action<string> log
 			)
@@ -306,17 +390,15 @@ namespace SQLitePCL
 			{
 				log($"    {s}");
 			}
-			if (Search(a, plat, log, out var lib, out var gf))
+			if (Search(a, plat, log, out var lib, out var h))
 			{
 				log($"found: {lib}");
-				SQLite3Provider_Cdecl.Setup(gf);
-				raw.SetProvider(new SQLite3Provider_Cdecl());
-				return lib;
+                return h;
 			}
 			else
 			{
 				log("NOT FOUND");
-				return null;
+				return IntPtr.Zero;
 			}
 		}
 	}

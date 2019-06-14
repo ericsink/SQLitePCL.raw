@@ -15,12 +15,6 @@
 -->
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
-</ItemGroup>
-
-<ItemGroup>
-    <Compile Include="GetFunctionPointer.cs" />
-    <Compile Include="NativeLib.cs" />
     <Compile Include="setup.cs" />
 </ItemGroup>
 
