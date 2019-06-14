@@ -1,8 +1,6 @@
 
-fix win32_set_directory for provider winsqlite3
-
-sn for resolver.misc is wrong.  name of the
-assembly should change too.
+hmmm.  does winsqlite3 have win32_set_directory8,
+the utf8 version?
 
 verify versions of libtomcrypt
 
