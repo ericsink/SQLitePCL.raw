@@ -751,7 +751,7 @@ public static class gen
                     f
                     );
             write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.resolver.misc",
+                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f
@@ -819,7 +819,7 @@ public static class gen
                     f
                     );
             write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.resolver.misc",
+                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f
@@ -887,7 +887,7 @@ public static class gen
                     f
                     );
             write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.resolver.misc",
+                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f
@@ -956,7 +956,7 @@ public static class gen
                     f
                     );
             write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.resolver.misc",
+                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f
