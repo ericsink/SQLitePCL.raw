@@ -1,4 +1,9 @@
 
+chg SQLitePCL.NativeLibrary API to further match?
+Load() should maybe take the assembly+options arguments,
+so its argument would more specifically be a name
+instead of a path.
+
 hmmm.  does winsqlite3 have win32_set_directory8,
 the utf8 version?
 
