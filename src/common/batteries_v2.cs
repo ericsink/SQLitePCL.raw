@@ -55,7 +55,9 @@ namespace SQLitePCL
         }
         static void DoDynamic(string name)
         {
-		    var dll = SQLitePCL.NativeLibrary.Load(name);
+            // TODO should this be GetExecutingAssembly()?
+            var assy = typeof(SQLitePCL.raw).Assembly;
+            var dll = SQLitePCL.NativeLibrary.Load(name, assy);
             var gf = new MyGetFunctionPointer(dll);
             SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
             SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());

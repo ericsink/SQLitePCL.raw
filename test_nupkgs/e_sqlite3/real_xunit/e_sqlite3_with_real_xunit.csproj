@@ -13,4 +13,7 @@
   <ItemGroup>
     <Compile Include="..\..\..\src\common\tests_xunit.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

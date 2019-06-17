@@ -20,14 +20,12 @@ namespace SQLitePCL
 {
     public static class NativeLibrary
     {
-        public static IntPtr Load(string libraryName)
+        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy)
         {
-            var assy = System.Reflection.Assembly.GetExecutingAssembly();
             return System.Runtime.InteropServices.NativeLibrary.Load(libraryName, assy, null);
         }
-        public static bool TryLoad(string libraryName, out IntPtr handle)
+        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, out IntPtr handle)
         {
-            var assy = System.Reflection.Assembly.GetExecutingAssembly();
             return System.Runtime.InteropServices.NativeLibrary.TryLoad(libraryName, assy, null, out handle);
         }
         public static IntPtr GetExport(IntPtr handle, string name)

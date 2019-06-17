@@ -77,9 +77,9 @@ namespace SQLitePCL
             dlopen,
         }
 
-        public static IntPtr Load(string libraryPath)
+        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy)
         {
-            var h = MyLoad(libraryPath);
+            var h = MyLoad(libraryName, assy);
             if (h == IntPtr.Zero)
             {
                 throw new Exception("not found");
@@ -127,9 +127,9 @@ namespace SQLitePCL
                 throw new NotImplementedException();
             }
         }
-        public static bool TryLoad(string libraryPath, out IntPtr handle)
+        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, out IntPtr handle)
         {
-            var h = MyLoad(libraryPath);
+            var h = MyLoad(libraryName, assy);
             handle = h;
             return h != IntPtr.Zero;
         }
@@ -323,6 +323,7 @@ namespace SQLitePCL
 
 		static List<string> MakePossibilitiesFor(
 			string basename,
+            System.Reflection.Assembly assy,
 			LibSuffix suffix
 			)
 		{
@@ -346,7 +347,7 @@ namespace SQLitePCL
 			}
 #endif
 
-#if true // TODO for some reason, need this one under real xunit for net461
+#if not // TODO for some reason, need this one under real xunit for net461
 			{
 				var dir = System.IO.Directory.GetCurrentDirectory();
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
@@ -354,7 +355,7 @@ namespace SQLitePCL
 #endif
 
 			{
-				var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				var dir = System.IO.Path.GetDirectoryName(assy.Location);
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
@@ -373,14 +374,16 @@ namespace SQLitePCL
 #endif
 
 		static IntPtr MyLoad(
-			string basename
+			string basename,
+            System.Reflection.Assembly assy
 			)
 		{
-			return MyLoad(basename, s => {});
+			return MyLoad(basename, assy, s => {});
 		}
 
 		static IntPtr MyLoad(
 			string basename,
+            System.Reflection.Assembly assy,
 			Action<string> log
 			)
 		{
@@ -390,7 +393,7 @@ namespace SQLitePCL
 			log($"plat: {plat}");
 			var suffix = WhichLibSuffix();
 			log($"suffix: {suffix}");
-			var a = MakePossibilitiesFor(basename, suffix);
+			var a = MakePossibilitiesFor(basename, assy, suffix);
 			log("possibilities:");
 			foreach (var s in a)
 			{

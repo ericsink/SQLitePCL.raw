@@ -1,4 +1,10 @@
 
+instead of GetExecutingAssembly, should use
+typeof(TODO).Assembly ?
+
+interesting:  what happens when a function that
+calls GetExecutingAssembly() gets inlined?
+
 it's like GetExecutingAssembly during xunit is
 weird.  like maybe it's resulting the xunit
 assembly in the nuget package?  maybe we need
