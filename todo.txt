@@ -4,25 +4,29 @@ because it is shared by all the providers, but not
 needed in core.
 
 xDelete fails on UWP.  but the call that fails comes
-from the result of db_filename?
+from the result of db_filename?  probably not related.
+wrong directory?  needs a path?
 
 instead of GetExecutingAssembly, should use
 typeof(TODO).Assembly ?
 
-later: rename sqlcipher in cb to e_sqlcipher
+rename sqlcipher in cb to e_sqlcipher
 
 add sqlite3_key et al to the raw layer?
 
-so does Utf8String include a zero terminator?
+so does Utf8String include a zero terminator?  if not,
+passing a utf8string to sqlite functions that expect
+one will not be possible without a copy.  which is sad.
 
 nuspec tags.  write them into Directory.Build.props from
 gen_nuspecs?
 
 need to fix up name of sqlcipher lib for android.
-needs e_ prefix.
+needs e_ prefix.  (what does this mean?  already done?)
 
 hmmm.  does winsqlite3 have win32_set_directory8,
-the utf8 version?
+the utf8 version?  not sure what version of sqlite it
+is based on.
 
 verify versions of libtomcrypt.  submodule?
 
