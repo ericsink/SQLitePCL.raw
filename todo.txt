@@ -1,4 +1,19 @@
 
+it's like GetExecutingAssembly during xunit is
+weird.  like maybe it's resulting the xunit
+assembly in the nuget package?  maybe we need
+to pass in an actual assembly for sqlitepclraw
+which should result in the right path.
+
+want to dump out the dir to see why this fails
+with GetExecutingAssembly, but xunit can't capture
+stdout.
+
+for whatever reason, GetCurrentDirectory works with
+xunit real.  which is disturbing.
+
+--
+
 we don't exavtly how the assembly provided to
 NativeLibrary.Load is used.  does it call
 .Location on this and then look for the runtimes
