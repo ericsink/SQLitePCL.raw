@@ -1,4 +1,11 @@
 
+we don't exavtly how the assembly provided to
+NativeLibrary.Load is used.  does it call
+.Location on this and then look for the runtimes
+directory next to it?
+
+--
+
 later: rename sqlcipher in cb to e_sqlcipher
 
 add sqlite3_key et al to the raw layer?

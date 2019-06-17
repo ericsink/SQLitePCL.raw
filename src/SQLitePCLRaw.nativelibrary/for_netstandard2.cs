@@ -333,26 +333,32 @@ namespace SQLitePCL
 #endif
 
 			var libname = basename_to_libname(basename, suffix);
+#if false // TODO should we really do this?
 			a.Add(libname);
+#endif
 
 			var rid = get_rid();
 
+#if not
 			{
 				var dir = System.AppContext.BaseDirectory;
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
+#endif
 
+#if true // TODO for some reason, need this one under real xunit for net461
 			{
 				var dir = System.IO.Directory.GetCurrentDirectory();
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
+#endif
 
 			{
 				var dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
-			// TODO add other names and paths, depending on platform
+			// TODO add other names and paths? depending on platform?
 
 			return a;
 		}
