@@ -756,6 +756,12 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
+            write_nuspec_file_entry_lib_batteries(
+                    "e_sqlcipher.dllimport.uwp",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
@@ -840,6 +846,12 @@ public static class gen
                     "sqlcipher.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
+                    f
+                    );
+            write_nuspec_file_entry_lib_batteries(
+                    "sqlcipher.dllimport.uwp",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
                     f
                     );
             write_nuspec_file_entry_lib_mt(
@@ -927,6 +939,12 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
+            write_nuspec_file_entry_lib_batteries(
+                    "e_sqlite3.dllimport.uwp",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
@@ -1012,6 +1030,12 @@ public static class gen
                     "e_sqlite3.dynamic",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
+                    f
+                    );
+            write_nuspec_file_entry_lib_batteries(
+                    "e_sqlite3.dllimport.uwp",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
                     f
                     );
             write_nuspec_file_entry_lib_mt(

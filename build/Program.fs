@@ -28,34 +28,31 @@ let main argv =
     let dir_providers = Path.Combine(top, "src", "providers")
     exec "dotnet" "restore" dir_providers
 
-    let gen_provider dir_basename (name:string) conv kind uwp =
+    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind uwp =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
-        let cs_name = sprintf "provider_%s.cs" (name.ToLower())
+        let cs_name = sprintf "provider_%s.cs" (provider_basename.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
         let dllimport_name_arg = 
             if kind = "dynamic" 
             then "" 
-            else 
-                if name = "internal"
-                then (sprintf "-p:NAME_FOR_DLLIMPORT=%s" "__Internal")
-                else (sprintf "-p:NAME_FOR_DLLIMPORT=%s" name)
+            else sprintf "-p:NAME_FOR_DLLIMPORT=%s" dllimport_name
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s %s provider.tt" cs_path name conv kind uwp dllimport_name_arg
+        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s %s provider.tt" cs_path provider_basename conv kind uwp dllimport_name_arg
         exec "t4" args dir_providers
 
-    gen_provider "dynamic" "Cdecl" "Cdecl" "dynamic" "false"
-    gen_provider "dynamic" "StdCall" "StdCall" "dynamic" "false"
-    gen_provider "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
-    gen_provider "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
-    gen_provider "internal" "internal" "Cdecl" "dllimport" "false"
+    gen_provider "dynamic" null "Cdecl" "Cdecl" "dynamic" "false"
+    gen_provider "dynamic" null "StdCall" "StdCall" "dynamic" "false"
+    gen_provider "e_sqlite3" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
+    gen_provider "e_sqlcipher" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
+    gen_provider "sqlcipher" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false"
 
-    gen_provider "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
+    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
 
-    gen_provider "e_sqlite3.uwp" "e_sqlite3_uwp" "Cdecl" "dllimport" "true"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher_uwp" "Cdecl" "dllimport" "true"
 
     exec "dotnet" "build -c Release" (Path.Combine(top, "src", "SQLitePCLRaw.nativelibrary"))
 
@@ -79,12 +76,15 @@ let main argv =
 
     let batteries_dirs = [
         "e_sqlite3.dllimport"
+        "e_sqlite3.dllimport.uwp"
         "e_sqlite3.dynamic"
         "e_sqlcipher.dllimport"
+        "e_sqlcipher.dllimport.uwp"
         "e_sqlcipher.dynamic"
         "sqlite3"
         "sqlcipher.dynamic"
         "sqlcipher.dllimport"
+        "sqlcipher.dllimport.uwp"
         "winsqlite3"
         ]
     for s in batteries_dirs do

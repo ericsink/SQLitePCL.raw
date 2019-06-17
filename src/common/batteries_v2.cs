@@ -74,6 +74,12 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 #elif PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
+#elif PROVIDER_e_sqlite3_uwp
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3_uwp());
+#elif PROVIDER_e_sqlcipher_uwp
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher_uwp());
+#elif PROVIDER_sqlcipher_uwp
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher_uwp());
 #elif PROVIDER_e_sqlite3_dynamic
 		    DoDynamic("e_sqlite3");
 #elif PROVIDER_e_sqlcipher_dynamic

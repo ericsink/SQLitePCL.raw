@@ -1286,7 +1286,7 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-        private const string SQLITE_DLL = "e_sqlite3_uwp";
+        private const string SQLITE_DLL = "e_sqlite3";
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_close(IntPtr db);
