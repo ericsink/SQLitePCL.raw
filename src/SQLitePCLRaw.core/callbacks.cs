@@ -23,6 +23,11 @@
 // 
 // See the Apache 2 License for the specific language governing permissions and limitations under the License.
 
+// This code is just a set of things that are used in the implementation
+// of providers.  It doesn't really need to be in core, since nothing
+// in core actually depends on it.  But having it be separate isn't
+// worth the trouble.
+
 namespace SQLitePCL
 {
     using System;

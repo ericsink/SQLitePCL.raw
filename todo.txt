@@ -9,15 +9,6 @@ finish writing v2 changes page
 
 test with Csf20
 
-why is impl callbacks a separate nuget package?
-because it is shared by all the providers, but not
-needed in core.  and because having it be a separate
-assembly complicates putting it into the core pkg
-because of dotnet pack.  HOWEVER, we could move this 
-stuff into the core assembly.  every provider does use it.
-or we could include those cs files in every provider
-assembly.
-
 more ROS<byte> vs string overloads.  but beware of z.
 
 xDelete fails on UWP.  but the call that fails comes
