@@ -1,4 +1,8 @@
 
+a few places in the provider still have unresolved
+TODOs about whether to pass -1 and let sqlite do
+strlen or use the length given in the span
+
 rename sqlcipher in cb to e_sqlcipher
 
 add sqlite3_key et al to the raw layer?
