@@ -79,6 +79,25 @@ namespace SQLitePCL
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
         }
 
+        static void verify_z_terminator(ReadOnlySpan<byte> s)
+        {
+            // many sqlite3 functions accept a zero-terminated string.
+            // in cases where we accept a ReadOnlySpan<byte> for this,
+            // the zero terminator byte is expected to be part of the span.
+
+            if (s.Length == 0)
+            {
+                // Span<T>.GetPinnableReference returns null if the span is empty,
+                // so a null will get passed down to sqlite in this case.
+                return;
+            }
+
+            if (s[s.Length - 1] != 0)
+            {
+                throw new ArgumentException("zero terminated string required");
+            }
+        }
+
         unsafe int ISQLite3Provider.sqlite3_win32_set_directory(int typ, ReadOnlySpan<byte> path)
         {
             return raw.SQLITE_ERROR;
@@ -86,6 +105,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db)
         {
+            verify_z_terminator(filename);
             fixed (byte* p = filename)
             {
                 return NativeMethods.sqlite3_open(p, out db);
@@ -94,6 +114,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs)
         {
+            verify_z_terminator(filename);
             fixed (byte* p_filename = filename, p_vfs = vfs)
             {
                 return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
@@ -129,6 +150,8 @@ namespace SQLitePCL
 		
 		unsafe int ISQLite3Provider.sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> filename, int syncDir)
 		{
+            verify_z_terminator(vfs);
+            verify_z_terminator(filename);
             fixed (byte* p_vfs = vfs, p_filename = filename)
             {
                 IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(p_vfs);
@@ -185,6 +208,8 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec_low func, object user_data, out IntPtr errMsg)
         {
+            verify_z_terminator(sql);
+
             int rc;
 
 			NativeMethods.callback_exec cb;
@@ -214,6 +239,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_complete(ReadOnlySpan<byte> sql)
         {
+            verify_z_terminator(sql);
             fixed (byte* p = sql)
             {
                 return NativeMethods.sqlite3_complete(p);
@@ -227,6 +253,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_compileoption_used(ReadOnlySpan<byte> s)
         {
+            verify_z_terminator(s);
             fixed (byte* p = s)
             {
                 return NativeMethods.sqlite3_compileoption_used(p);
@@ -235,6 +262,9 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
+            verify_z_terminator(dbName);
+            verify_z_terminator(tblName);
+            verify_z_terminator(colName);
             fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
             {
                 var rc = NativeMethods.sqlite3_table_column_metadata(
@@ -248,11 +278,12 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
+            verify_z_terminator(sql); // TODO or len
             fixed (byte* p_sql = sql)
             {
-                byte* p_tail;
                 // TODO consider passing sql.Length instead of -1 for the length
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out p_tail);
+                // TODO but if so, check for z terminator and adjust length if needed
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -269,11 +300,12 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
+            verify_z_terminator(sql); // TODO or len
             fixed (byte* p_sql = sql)
             {
-                byte* p_tail;
                 // TODO consider passing sql.Length instead of -1 for the length
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out p_tail);
+                // TODO but if so, check for z terminator and adjust length if needed
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -305,6 +337,9 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, ReadOnlySpan<byte> db_utf8, ReadOnlySpan<byte> table_utf8, ReadOnlySpan<byte> col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
+            verify_z_terminator(db_utf8);
+            verify_z_terminator(table_utf8);
+            verify_z_terminator(col_utf8);
             fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
             {
                 return NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, out blob);
@@ -344,6 +379,8 @@ namespace SQLitePCL
 
         unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, ReadOnlySpan<byte> destName, sqlite3 sourceDb, ReadOnlySpan<byte> sourceName)
         {
+            verify_z_terminator(destName);
+            verify_z_terminator(sourceName);
             fixed (byte* p_destName = destName, p_sourceName = sourceName)
             {
                 return NativeMethods.sqlite3_backup_init(destDb, p_destName, sourceDb, p_sourceName);
@@ -422,6 +459,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName)
         {
+            verify_z_terminator(dbName);
             fixed (byte* p_dbName = dbName)
             {
                 return NativeMethods.sqlite3_db_readonly(db, p_dbName); 
@@ -430,6 +468,7 @@ namespace SQLitePCL
         
         unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
 		{
+            verify_z_terminator(att);
             fixed (byte* p_att = att)
             {
                 return sz_to_span(NativeMethods.sqlite3_db_filename(db, p_att));
@@ -621,6 +660,7 @@ namespace SQLitePCL
 
         unsafe void ISQLite3Provider.sqlite3_log(int errcode, ReadOnlySpan<byte> s)
         {
+            verify_z_terminator(s);
             fixed (byte* p = s)
             {
                 NativeMethods.sqlite3_log(errcode, p);
@@ -988,6 +1028,7 @@ namespace SQLitePCL
 
         unsafe void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, ReadOnlySpan<byte> val)
         {
+            verify_z_terminator(val); // TODO or len
             fixed (byte* p = val)
             {
                 // TODO len instead of -1 ?
@@ -997,6 +1038,7 @@ namespace SQLitePCL
 
         unsafe void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, ReadOnlySpan<byte> val)
         {
+            verify_z_terminator(val); // TODO or len
             fixed (byte* p = val)
             {
                 // TODO len instead of -1 ?
@@ -1091,8 +1133,10 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> t)
         {
+            verify_z_terminator(t); // TODO or len
             fixed (byte* p_t = t)
             {
+                // TODO len instead of -1 ?
                 return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, -1, new IntPtr(-1));
             }
         }
@@ -1132,6 +1176,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_parameter_index(sqlite3_stmt stm, ReadOnlySpan<byte> paramName)
         {
+            verify_z_terminator(paramName);
             fixed (byte* p_paramName = paramName)
             {
                 return NativeMethods.sqlite3_bind_parameter_index(stm, p_paramName);
@@ -1267,6 +1312,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName)
         {
+            verify_z_terminator(dbName);
             fixed (byte* p_dbName = dbName)
             {
                 return NativeMethods.sqlite3_wal_checkpoint(db, p_dbName);
@@ -1275,6 +1321,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_wal_checkpoint_v2(sqlite3 db, ReadOnlySpan<byte> dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
+            verify_z_terminator(dbName);
             fixed (byte* p_dbName = dbName)
             {
                 return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);

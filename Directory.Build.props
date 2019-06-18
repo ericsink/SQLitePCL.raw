@@ -4,7 +4,7 @@
     <Copyright>Copyright 2014-2019 SourceGear, LLC</Copyright>
     <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
-    <Version>2.0.0-pre20190618120443</Version>
+    <Version>2.0.0-pre20190618141154</Version>
     <AssemblyVersion>2.0.0.533</AssemblyVersion>
     <FileVersion>2.0.0.533</FileVersion>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
