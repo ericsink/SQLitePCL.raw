@@ -551,10 +551,29 @@ namespace SQLitePCL
             return util.from_utf8(_imp.sqlite3_errstr(rc));
         }
 
+        static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt)
+        {
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
         {
-            var ba_sql = sql.to_utf8_with_z();
-            int rc = _imp.sqlite3_prepare_v2(db, ba_sql, out var p, out var sp_tail);
+            return sqlite3_prepare_v2(db, sql.to_utf8_with_z(), out stmt);
+        }
+
+        static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
+        {
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out var sp_tail);
+            if (sp_tail == null)
+            {
+                tail = null;
+            }
+            else
+            {
+                tail = sp_tail;
+            }
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
@@ -583,10 +602,29 @@ namespace SQLitePCL
             return rc;
         }
 
+        static public int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out sqlite3_stmt stmt)
+        {
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
         {
-            var ba_sql = sql.to_utf8_with_z();
-            int rc = _imp.sqlite3_prepare_v3(db, ba_sql, flags, out var p, out var sp_tail);
+            return sqlite3_prepare_v3(db, sql.to_utf8_with_z(), flags, out stmt);
+        }
+
+        static public int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
+        {
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out var sp_tail);
+            if (sp_tail == null)
+            {
+                tail = null;
+            }
+            else
+            {
+                tail = sp_tail;
+            }
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
@@ -897,9 +935,14 @@ namespace SQLitePCL
             return _imp.sqlite3_bind_null(stmt, index);
         }
 
+        static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> val)
+        {
+            return _imp.sqlite3_bind_text(stmt, index, val);
+        }
+
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            return _imp.sqlite3_bind_text(stmt, index, val.to_utf8_with_z());
+            return sqlite3_bind_text(stmt, index, val.to_utf8_with_z());
         }
 
         static public int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
