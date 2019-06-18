@@ -7,6 +7,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.internal.snk</AssemblyOriginatorKeyFile>
+    <PackageDescription>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of '__Internal', which is the mechanism used for pinvoke with a static library on iOS.</PackageDescription>
   </PropertyGroup>
 
 <!--
