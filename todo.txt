@@ -9,11 +9,7 @@ finish writing v2 changes page
 
 test with Csf20
 
-review descriptions in nuspecs
-
-did release notes make it into both kinds of nuspecs?
-
-tidy up naming of utf8 functions wrt z or not
+none of the provider packages have a description
 
 why is impl callbacks a separate nuget package?
 because it is shared by all the providers, but not
