@@ -6,7 +6,7 @@
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_NAME_e_sqlcipher</DefineConstants>
+	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_NAME_winsqlite3</DefineConstants>
   </PropertyGroup>
 
 <ItemGroup>

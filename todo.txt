@@ -1,4 +1,14 @@
 
+might want build script to run the tests 
+against winsqlite3 as well
+
+need 3 ways of doing dynamic load:
+    plain name, used for winsqlite3
+    look for runtimes/rid
+    look for x86/x64
+do these by chance map nicely on to the flags
+for S.R.I.NativeLibrary ?
+
 a few places in the provider still have unresolved
 TODOs about whether to pass -1 and let sqlite do
 strlen or use the length given in the span

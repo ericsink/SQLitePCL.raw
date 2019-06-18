@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #define NETCOREAPP3_NATIVELIBRARY
+// TODO #define WINSQLITE3_DYNAMIC
 
 using System;
 using System.Collections.Generic;
@@ -631,20 +632,40 @@ public static class gen
 
             f.WriteStartElement("dependencies");
 
+#if WINSQLITE3_DYNAMIC 
+            // use dynamic provider
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NETSTANDARD20);
+#else
+            // use dllimport provider
             write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NETSTANDARD20);
-
+#endif
             f.WriteEndElement(); // dependencies
 
             f.WriteEndElement(); // metadata
 
             f.WriteStartElement("files");
 
+#if WINSQLITE3_DYNAMIC
+            // use dynamic provider
             write_nuspec_file_entry_lib_batteries(
-                    "winsqlite3",
+                    "winsqlite3.dynamic",
                     TFM.NETSTANDARD20,
                     f
                     );
-
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.nativelibrary",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
+                    f
+                    );
+#else
+            // use dllimport provider
+            write_nuspec_file_entry_lib_batteries(
+                    "winsqlite3.dllimport",
+                    TFM.NETSTANDARD20,
+                    f
+                    );
+#endif
 
             f.WriteEndElement(); // files
 

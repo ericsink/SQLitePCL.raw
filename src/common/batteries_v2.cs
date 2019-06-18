@@ -31,7 +31,7 @@ namespace SQLitePCL
 
     public static class Batteries_V2
     {
-#if PROVIDER_e_sqlite3_dynamic || PROVIDER_e_sqlcipher_dynamic || PROVIDER_sqlcipher_dynamic
+#if PROVIDER_dynamic
         class MyGetFunctionPointer : IGetFunctionPointer
         {
             readonly IntPtr _dll;
@@ -53,13 +53,14 @@ namespace SQLitePCL
                 }
             }
         }
+        // TODO need some kind of flag here
         static void DoDynamic(string name)
         {
             // TODO should this be GetExecutingAssembly()?
             var assy = typeof(SQLitePCL.raw).Assembly;
             var dll = SQLitePCL.NativeLibrary.Load(name, assy);
             var gf = new MyGetFunctionPointer(dll);
-            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
+            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf); // TODO for winsqlite3, this must be stdcall
             SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
         }
 #endif
@@ -76,24 +77,32 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
 #elif PROVIDER_e_sqlite3_uwp
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3_uwp());
-#elif PROVIDER_e_sqlcipher_uwp
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher_uwp());
-#elif PROVIDER_sqlcipher_uwp
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher_uwp());
-#elif PROVIDER_e_sqlite3_dynamic
-		    DoDynamic("e_sqlite3");
-#elif PROVIDER_e_sqlcipher_dynamic
-		    DoDynamic("e_sqlcipher");
-#elif PROVIDER_sqlcipher_dynamic
-		    DoDynamic("sqlcipher"); // TODO coordinate with zetetic
 #elif PROVIDER_e_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
+#elif PROVIDER_e_sqlcipher_uwp
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher_uwp());
+#elif PROVIDER_sqlcipher
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
+#elif PROVIDER_sqlcipher_uwp
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher_uwp());
 #elif PROVIDER_winsqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
 #elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif PROVIDER_sqlcipher
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
+#elif PROVIDER_dynamic
+
+#if PROVIDER_NAME_e_sqlite3
+		    DoDynamic("e_sqlite3");
+#elif PROVIDER_NAME_e_sqlcipher
+		    DoDynamic("e_sqlcipher");
+#elif PROVIDER_NAME_sqlcipher
+		    DoDynamic("sqlcipher"); // TODO coordinate with zetetic
+#elif PROVIDER_NAME_winsqlite3
+		    DoDynamic("winsqlite3");
+#else
+#error batteries_v2.cs built with PROVIDER_dynamic but no PROVIDER_NAME specified
+#endif
+
 #elif PROVIDER_none
             throw new Exception("This is the 'bait'.  You probably need to add one of the SQLitePCLRaw.bundle_* nuget packages to your platform project.");
 #else

@@ -84,7 +84,8 @@ let main argv =
         "sqlcipher.dynamic"
         "sqlcipher.dllimport"
         "sqlcipher.dllimport.uwp"
-        "winsqlite3"
+        "winsqlite3.dllimport"
+        "winsqlite3.dynamic"
         ]
     for s in batteries_dirs do
         let dir_name = sprintf "SQLitePCLRaw.batteries_v2.%s" s
@@ -137,15 +138,19 @@ let main argv =
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "fsmoke"))
 
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "real_xunit"))
+    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "winsqlite3", "real_xunit"))
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
 
     exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
     exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
 
     exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
     exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
 
     exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
     exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
 
     timer.Stop()
