@@ -30,7 +30,7 @@ namespace SQLitePCL
     using System.Text;
     using System.Collections.Generic;
 
-    public static class util
+    static class util
     {
         public static byte[] to_utf8_with_z(this string sourceText)
         {
