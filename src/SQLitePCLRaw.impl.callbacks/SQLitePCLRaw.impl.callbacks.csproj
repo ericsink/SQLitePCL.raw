@@ -12,9 +12,7 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="attributes.cs" />
-    <Compile Include="hook_handles.cs" />
-    <Compile Include="hook_info.cs" />
+    <Compile Include="callbacks.cs" />
 </ItemGroup>
 
 </Project>
