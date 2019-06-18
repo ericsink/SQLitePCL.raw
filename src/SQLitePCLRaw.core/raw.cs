@@ -628,8 +628,8 @@ namespace SQLitePCL
                     var a_n = new string[names.Length];
                     for (int i=0; i<values.Length; i++)
                     {
-                        a_v[i] = util.from_utf8(values[i]);
-                        a_n[i] = util.from_utf8(names[i]);
+                        a_v[i] = util.from_utf8_z(values[i]);
+                        a_n[i] = util.from_utf8_z(names[i]);
                     }
                     return callback(ob, a_v, a_n);
                 };
@@ -646,7 +646,7 @@ namespace SQLitePCL
             }
             else
             {
-                errMsg = util.from_utf8(p_errMsg);
+                errMsg = util.from_utf8_z(p_errMsg);
                 _imp.sqlite3_free(p_errMsg);
             }
             return rc;
@@ -661,7 +661,7 @@ namespace SQLitePCL
             }
             else
             {
-                errMsg = util.from_utf8(p_errMsg);
+                errMsg = util.from_utf8_z(p_errMsg);
                 _imp.sqlite3_free(p_errMsg);
             }
             return rc;

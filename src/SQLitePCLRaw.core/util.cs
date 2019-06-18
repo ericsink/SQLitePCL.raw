@@ -48,12 +48,13 @@ namespace SQLitePCL
             return byteArray;
         }
 
-        private static int GetNativeUTF8Size(System.IntPtr nativeString)
+        static int my_strlen(System.IntPtr nativeString)
         {
             var offset = 0;
 
             if (nativeString != IntPtr.Zero)
             {
+                // TODO would this be faster if it used unsafe code with a pointer?
                 while (Marshal.ReadByte(nativeString, offset) > 0)
                 {
                     offset++;
@@ -63,10 +64,9 @@ namespace SQLitePCL
             return offset;
         }
 
-        // TODO rename to clarify that this function looks for a zero terminator at the end
-        public static string from_utf8(IntPtr nativeString)
+        public static string from_utf8_z(IntPtr nativeString)
         {
-            return from_utf8(nativeString, GetNativeUTF8Size(nativeString));
+            return from_utf8(nativeString, my_strlen(nativeString));
         }
 
         public static string from_utf8(IntPtr nativeString, int size)
