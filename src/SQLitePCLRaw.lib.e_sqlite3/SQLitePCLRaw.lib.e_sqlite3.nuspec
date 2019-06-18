@@ -13,7 +13,7 @@
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
     <releaseNotes>$releaseNotes$</releaseNotes>
-    <description>This package contains a platform-specific native code build of SQLite for use with SQLitePCL.raw.  To use this, you need SQLitePCLRaw.core as well as SQLitePCLRaw.provider.e_sqlite3.net45 or similar.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
+    <description>This package contains platform-specific native code builds of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
     <file src="$src_path$\SQLitePCLRaw.lib.e_sqlite3.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlite3.ios.dll" target="lib\Xamarin.iOS10\" />

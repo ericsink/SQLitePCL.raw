@@ -64,8 +64,8 @@ public static class gen
     const string COPYRIGHT = "Copyright 2014-2019 SourceGear, LLC";
     const string AUTHORS = "Eric Sink";
     const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
-    const string PACKAGE_TAGS = "sqlite;xamarin"; // TODO
-                                                  // TODO	f.WriteElementString("tags", "sqlite pcl database xamarin monotouch ios monodroid android wp8 wpa netstandard uwp");
+    const string PACKAGE_TAGS = "sqlite";
+    //const string PACKAGE_TAGS = "sqlite;xamarin";
 
     private static void gen_directory_build_props(string root, string nupkgs_dir_name)
     {

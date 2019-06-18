@@ -13,7 +13,7 @@
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
     <releaseNotes>$releaseNotes$</releaseNotes>
-    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included</description>
+    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.</description>
     <dependencies>
       <group targetFramework="Xamarin.iOS10">
         <dependency id="SQLitePCLRaw.core" version="$version$" />

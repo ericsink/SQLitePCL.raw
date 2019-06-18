@@ -13,7 +13,7 @@
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
     <releaseNotes>$releaseNotes$</releaseNotes>
-    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll</description>
+    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses winsqlite3.dll from Windows 10.</description>
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="$version$" />

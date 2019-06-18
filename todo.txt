@@ -1,7 +1,26 @@
 
+clean up top level readme
+
+clean up blog release notes
+
+finish writing v2 changes page
+
+test with Csf20
+
+review descriptions in nuspecs
+
+did release notes make it into both kinds of nuspecs?
+
+tidy up naming of utf8 functions wrt z or not
+
 why is impl callbacks a separate nuget package?
 because it is shared by all the providers, but not
-needed in core.
+needed in core.  and because having it be a separate
+assembly complicates putting it into the core pkg
+because of dotnet pack.  HOWEVER, we could move this 
+stuff into the core assembly.  every provider does use it.
+
+more ROS<byte> vs string overloads
 
 xDelete fails on UWP.  but the call that fails comes
 from the result of db_filename?  probably not related.
@@ -17,9 +36,6 @@ add sqlite3_key et al to the raw layer?
 so does Utf8String include a zero terminator?  if not,
 passing a utf8string to sqlite functions that expect
 one will not be possible without a copy.  which is sad.
-
-nuspec tags.  write them into Directory.Build.props from
-gen_nuspecs?
 
 need to fix up name of sqlcipher lib for android.
 needs e_ prefix.  (what does this mean?  already done?)
