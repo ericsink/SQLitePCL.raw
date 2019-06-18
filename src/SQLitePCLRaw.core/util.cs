@@ -32,20 +32,18 @@ namespace SQLitePCL
 
     public static class util
     {
-        // TODO rename to clarify that this function adds a zero terminator at the end
-        public static byte[] to_utf8(this string sourceText)
+        public static byte[] to_utf8_with_z(this string sourceText)
         {
             if (sourceText == null)
             {
                 return null;
             }
 
-            byte[] byteArray;
-            int nlen = Encoding.UTF8.GetByteCount(sourceText) + 1;
+            int nlen = Encoding.UTF8.GetByteCount(sourceText);
 
-            byteArray = new byte[nlen];
-            nlen = Encoding.UTF8.GetBytes(sourceText, 0, sourceText.Length, byteArray, 0);
-            byteArray[nlen] = 0;
+            var byteArray = new byte[nlen + 1];
+            var wrote = Encoding.UTF8.GetBytes(sourceText, 0, sourceText.Length, byteArray, 0);
+            byteArray[wrote] = 0;
 
             return byteArray;
         }
