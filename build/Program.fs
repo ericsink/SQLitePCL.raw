@@ -59,7 +59,6 @@ let main argv =
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
-        "SQLitePCLRaw.impl.callbacks" 
         "SQLitePCLRaw.provider.dynamic" 
         "SQLitePCLRaw.provider.internal" 
         "SQLitePCLRaw.provider.e_sqlite3" 
