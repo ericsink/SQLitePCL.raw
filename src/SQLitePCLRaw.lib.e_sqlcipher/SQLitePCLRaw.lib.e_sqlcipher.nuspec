@@ -16,8 +16,6 @@
     <description>This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
-    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlcipher.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlcipher.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlcipher.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlcipher.android.dll" target="lib\MonoAndroid80\" />
     <file src="$cb_bin_path$\sqlcipher\win\v141\plain\x86\sqlcipher.dll" target="runtimes\win-x86\native\e_sqlcipher.dll" />
     <file src="$cb_bin_path$\sqlcipher\win\v141\plain\x64\sqlcipher.dll" target="runtimes\win-x64\native\e_sqlcipher.dll" />
     <file src="$cb_bin_path$\sqlcipher\win\v141\plain\arm\sqlcipher.dll" target="runtimes\win-arm\native\e_sqlcipher.dll" />

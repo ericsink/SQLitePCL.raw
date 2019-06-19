@@ -18,7 +18,12 @@
       <group targetFramework="Xamarin.iOS10">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
         <dependency id="SQLitePCLRaw.provider.internal" version="$version$" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3.ios" version="$version$" />
+      </group>
+      <group targetFramework="MonoAndroid80">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3.android" version="$version$" />
       </group>
       <group targetFramework="net461">
         <dependency id="SQLitePCLRaw.core" version="$version$" />

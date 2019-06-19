@@ -479,6 +479,7 @@ public static class gen
 
             f.WriteStartElement("files");
 
+#if not
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.lib.e_sqlite3.ios",
                     TFM.IOS,
@@ -490,6 +491,7 @@ public static class gen
                     TFM.ANDROID,
                     f
                     );
+#endif
 
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, f);
 
@@ -541,6 +543,7 @@ public static class gen
 
             f.WriteStartElement("files");
 
+#if not
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.lib.e_sqlcipher.ios",
                     TFM.IOS,
@@ -552,6 +555,7 @@ public static class gen
                     TFM.ANDROID,
                     f
                     );
+#endif
 
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, f);
 
@@ -708,15 +712,41 @@ public static class gen
 
         if (what == WhichLib.E_SQLITE3)
         {
+            string id;
+            switch (tfm)
+            {
+                case TFM.IOS:
+                    id = string.Format("{0}.lib.e_sqlite3.ios", gen.ROOT_NAME);
+                    break;
+                case TFM.ANDROID:
+                    id = string.Format("{0}.lib.e_sqlite3.android", gen.ROOT_NAME);
+                    break;
+                default:
+                    id = string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME);
+                    break;
+            }
             f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlite3", gen.ROOT_NAME));
+            f.WriteAttributeString("id", id);
             f.WriteAttributeString("version", "$version$");
             f.WriteEndElement(); // dependency
         }
         else if (what == WhichLib.E_SQLCIPHER)
         {
+            string id;
+            switch (tfm)
+            {
+                case TFM.IOS:
+                    id = string.Format("{0}.lib.e_sqlcipher.ios", gen.ROOT_NAME);
+                    break;
+                case TFM.ANDROID:
+                    id = string.Format("{0}.lib.e_sqlcipher.android", gen.ROOT_NAME);
+                    break;
+                default:
+                    id = string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME);
+                    break;
+            }
             f.WriteStartElement("dependency");
-            f.WriteAttributeString("id", string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME));
+            f.WriteAttributeString("id", id);
             f.WriteAttributeString("version", "$version$");
             f.WriteEndElement(); // dependency
         }
@@ -756,6 +786,7 @@ public static class gen
             f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
@@ -1085,6 +1116,7 @@ public static class gen
             f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY

@@ -16,8 +16,6 @@
     <description>This package contains platform-specific native code builds of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
   </metadata>
   <files>
-    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlite3.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.lib.e_sqlite3.ios.dll" target="lib\Xamarin.iOS10\" />
-    <file src="$src_path$\SQLitePCLRaw.lib.e_sqlite3.android\bin\Release\monoandroid80\80\SQLitePCLRaw.lib.e_sqlite3.android.dll" target="lib\MonoAndroid80\" />
     <file src="$cb_bin_path$\e_sqlite3\win\v141\plain\x86\e_sqlite3.dll" target="runtimes\win-x86\native\e_sqlite3.dll" />
     <file src="$cb_bin_path$\e_sqlite3\win\v141\plain\x64\e_sqlite3.dll" target="runtimes\win-x64\native\e_sqlite3.dll" />
     <file src="$cb_bin_path$\e_sqlite3\win\v141\plain\arm\e_sqlite3.dll" target="runtimes\win-arm\native\e_sqlite3.dll" />

@@ -94,10 +94,6 @@ let main argv =
         exec "dotnet" "build -c Release" (Path.Combine(top, "src", dir_name))
 
     let msbuild_dirs = [
-        "lib.e_sqlite3.android"
-        "lib.e_sqlite3.ios"
-        "lib.e_sqlcipher.android"
-        "lib.e_sqlcipher.ios"
         "lib.sqlcipher.ios.placeholder"
         "batteries_v2.e_sqlite3.internal.ios"
         "batteries_v2.e_sqlcipher.internal.ios"
@@ -108,6 +104,18 @@ let main argv =
         let dir = (Path.Combine(top, "src", dir_name))
         exec "dotnet" "restore" dir
         exec "msbuild" "/p:Configuration=Release" dir
+
+    let msbuild_pack_dirs = [
+        "lib.e_sqlite3.android"
+        "lib.e_sqlite3.ios"
+        "lib.e_sqlcipher.android"
+        "lib.e_sqlcipher.ios"
+        ]
+    for s in msbuild_pack_dirs do
+        let dir_name = sprintf "SQLitePCLRaw.%s" s
+        let dir = (Path.Combine(top, "src", dir_name))
+        exec "dotnet" "restore" dir
+        exec "msbuild" "/p:Configuration=Release /t:pack" dir
 
     let get_build_prop p =
         let path_xml = Path.Combine(top, "Directory.Build.props")
