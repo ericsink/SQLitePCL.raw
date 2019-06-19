@@ -340,8 +340,6 @@ namespace SQLitePCL
                 a.Add(libname);
             }
 
-			var rid = get_rid();
-
 #if not // TODO is this ever useful?
 			{
 				var dir = System.IO.Directory.GetCurrentDirectory();
@@ -351,11 +349,17 @@ namespace SQLitePCL
 
             if ((flags & WHERE_RUNTIME_RID) != 0)
 			{
+                var rid = get_rid();
 				var dir = System.IO.Path.GetDirectoryName(assy.Location);
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 
-			// TODO add other names and paths? depending on platform?
+            if ((flags & WHERE_ARCH) != 0)
+			{
+				var dir = System.IO.Path.GetDirectoryName(assy.Location);
+                var arch = get_rid_back();
+				a.Add(Path.Combine(dir, arch, libname));
+			}
 
 			return a;
 		}

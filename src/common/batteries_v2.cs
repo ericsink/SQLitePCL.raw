@@ -100,7 +100,7 @@ namespace SQLitePCL
 #elif PROVIDER_NAME_e_sqlcipher
 		    DoDynamic_cdecl("e_sqlcipher", NativeLibrary.WHERE_RUNTIME_RID);
 #elif PROVIDER_NAME_sqlcipher
-		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_RUNTIME_RID); // TODO coordinate with zetetic
+		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_ARCH); // TODO coordinate with zetetic
 #elif PROVIDER_NAME_winsqlite3
 		    DoDynamic_stdcall("winsqlite3", NativeLibrary.WHERE_PLAIN);
 #elif PROVIDER_NAME_sqlite3
