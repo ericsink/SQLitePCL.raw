@@ -631,7 +631,8 @@ namespace SQLitePCL.Tests
                     while (stmt.step() == raw.SQLITE_ROW)
                     {
                         var v = stmt.column_int(0);
-                        System.Console.WriteLine("", v);
+                        // TODO do something here?
+                        //System.Console.WriteLine("", v);
                     }
                 }
 
