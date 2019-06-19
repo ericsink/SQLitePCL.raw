@@ -103,6 +103,10 @@ namespace Xunit
     {
         static void w(string s)
         {
+            System.Console.Write("{0}", s);
+        }
+        static void wn(string s)
+        {
             System.Console.WriteLine("{0}", s);
         }
 
@@ -120,22 +124,23 @@ namespace Xunit
                     object inst = Activator.CreateInstance(t);
                     foreach (var m in ma)
                     {
-                        w($"{m.Name}");
+                        w($"{m.Name} -- ");
                         try
                         {
                             m.Invoke(inst, null);
-                            w("    pass");
+                            wn("pass");
                             pass++;
                         }
                         catch (Exception e)
                         {
-                            w($"    {e}");
+                            wn("FAIL");
+                            wn($"{e}");
                             fail++;
                         }
                     }
                 }
             }
-            w($"pass: {pass}  fail: {fail}");
+            wn($"pass: {pass}  fail: {fail}");
             return fail;
         }
         public static int AllTestsInCurrentAssembly()
