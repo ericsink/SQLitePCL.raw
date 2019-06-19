@@ -79,16 +79,13 @@ let main argv =
 
     let batteries_dirs = [
         "e_sqlite3.dllimport"
-        "e_sqlite3.dllimport.uwp"
         "e_sqlite3.dynamic"
         "e_sqlcipher.dllimport"
-        "e_sqlcipher.dllimport.uwp"
         "e_sqlcipher.dynamic"
         "sqlite3.dllimport"
         "sqlite3.dynamic"
         "sqlcipher.dynamic"
         "sqlcipher.dllimport"
-        "sqlcipher.dllimport.uwp"
         "winsqlite3.dllimport"
         "winsqlite3.dynamic"
         ]
