@@ -1,7 +1,4 @@
 
-bundle_e_sqlite3 on iOS fails with weird
-win-rid problem
-
 bundle_green on iOS passes 71 of 73 tests
 
 need tests for bundle_green
