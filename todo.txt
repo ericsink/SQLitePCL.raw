@@ -1,4 +1,27 @@
 
+clean up top level readme
+
+clean up blog release notes page
+
+finish writing v2 changes page
+
+test with Csf20
+
+--
+
+sqlite3_create_window_function
+
+sqlite3_normalized_sql
+
+sqlite3_stmt_isexplain
+
+sqlite3_value_frombind
+
+sqlite3_serialize
+sqlite3_deserialize
+
+sqlite3_keyword_count/name/check
+
 get AltCover working with fake_xunit?
 
 need 3 ways of doing dynamic load:
@@ -19,25 +42,16 @@ need for stubs in cb?
 
 hmmm.  does winsqlite3 have win32_set_directory8,
 the utf8 version?  not sure what version of sqlite it
-is based on.  3.25.3 ?
+is based on.  3.25.3 ?  yes, it looks like this was
+added in 3.23.
 
 need tests for bundle_green ?
 
 winsqlite3 xunit with net461 test aborted.
 
-net461 or net472 ?
-
 is the winsqlite3 bundle worth the trouble?
 
 clean up delegate _low naming
-
-clean up top level readme
-
-clean up blog release notes page
-
-finish writing v2 changes page
-
-test with Csf20
 
 verify versions of libtomcrypt.  submodule?
 
@@ -57,9 +71,6 @@ typeof(TODO).Assembly ?
 so does Utf8String include a zero terminator?  if not,
 passing a utf8string to sqlite functions that expect
 one will not be possible without a copy.  which is sad.
-
-need to fix up name of sqlcipher lib for android.
-needs e_ prefix.  (what does this mean?  already done?)
 
 android: 70 pass, 2 fail
     create_table_file

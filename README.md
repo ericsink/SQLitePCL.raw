@@ -16,21 +16,15 @@ And call this function:
 
 # Compatibility
 
-SQLitePCL.raw should work just about anywhere you want
-it to, including:
+As of version 2.0, SQLitePCL.raw requires NetStandard2.0:
 
 - Xamarin.Android
 - Xamarin.iOS
 - UWP
-- Windows Phone 8.1
-- .NET 4.5
-- .NET 4.0
-- .NET 3.5
-- Linux
-- MacOS
-- NetStandard 1.1
-- Windows Phone 8 (with limitations)
-- Windows Phone 8.1 Silverlight (with limitations)
+- .NET 4.6.1 or higher
+- Linux with Mono
+- MacOS with Mono
+- NetStandard 2.0
 
 (I have received a pull request for WatchOS support, but it's not merged yet.)
 
