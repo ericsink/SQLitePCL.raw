@@ -68,7 +68,7 @@ let main argv =
         "SQLitePCLRaw.provider.sqlite3" 
         "SQLitePCLRaw.provider.sqlcipher" 
         "SQLitePCLRaw.provider.sqlcipher.uwp" 
-        "SQLitePCLRaw.provider.winsqlite3" 
+        // "SQLitePCLRaw.provider.winsqlite3" 
     ]
     for s in pack_dirs do
         exec "dotnet" "pack -c Release" (Path.Combine(top, "src", s))
@@ -141,17 +141,22 @@ let main argv =
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "winsqlite3", "real_xunit"))
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
 
-    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=netcoreapp2.2" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+    let fake_xunit_tfms = [
+        "netcoreapp2.2"
+        "netcoreapp3.0"
+        "net461"
+        ]
 
-    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=net461" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+    let fake_xunit_dirs = [
+        "e_sqlite3"
+        "e_sqlcipher"
+        "winsqlite3"
+        ]
 
-    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "winsqlite3", "fake_xunit"))
-    exec "dotnet" "run --framework=netcoreapp3.0" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+    for tfm in fake_xunit_tfms do
+        for dir in fake_xunit_dirs do
+            let args = sprintf "run --framework=%s" tfm
+            exec "dotnet" args (Path.Combine(top, "test_nupkgs", dir, "fake_xunit"))
 
     timer.Stop()
     printfn "Total build time: %A milliseconds" timer.ElapsedMilliseconds

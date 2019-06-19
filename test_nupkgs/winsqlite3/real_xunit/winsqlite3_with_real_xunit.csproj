@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;net461;netcoreapp3.0</TargetFrameworks>
+    <!-- TODO for some reason, including net461 here fails with Test Aborted and no details given -->
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />

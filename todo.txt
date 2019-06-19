@@ -1,6 +1,7 @@
 
-might want build script to run the tests 
-against winsqlite3 as well
+so provider_sqlite3 could use dynamic too, right?
+
+winsqlite3 xunit with net461 test aborted.
 
 need 3 ways of doing dynamic load:
     plain name, used for winsqlite3

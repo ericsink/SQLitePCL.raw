@@ -14,7 +14,7 @@
    limitations under the License.
 */
 #define NETCOREAPP3_NATIVELIBRARY
-// TODO #define WINSQLITE3_DYNAMIC
+#define WINSQLITE3_DYNAMIC
 
 using System;
 using System.Collections.Generic;

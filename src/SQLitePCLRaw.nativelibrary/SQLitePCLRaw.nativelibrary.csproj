@@ -7,12 +7,9 @@
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.nativelibrary.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-<!--
-<Target Name="autogen" BeforeTargets="BeforeBuild">
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_cdecl.cs -p:CONV=Cdecl provider.tt"/>
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_stdcall.cs -p:CONV=StdCall provider.tt"/>
-</Target>
--->
+<ItemGroup>
+    <Compile Include="defines.cs" />
+</ItemGroup>
 
 <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <Compile Include="for_netstandard2.cs" />

@@ -18,14 +18,16 @@ using System;
 
 namespace SQLitePCL
 {
-    public static class NativeLibrary
+    public static partial class NativeLibrary
     {
-        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy)
+        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy, int flags)
         {
+            // TODO convert flags
             return System.Runtime.InteropServices.NativeLibrary.Load(libraryName, assy, null);
         }
-        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, out IntPtr handle)
+        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, int flags, out IntPtr handle)
         {
+            // TODO convert flags
             return System.Runtime.InteropServices.NativeLibrary.TryLoad(libraryName, assy, null, out handle);
         }
         public static IntPtr GetExport(IntPtr handle, string name)

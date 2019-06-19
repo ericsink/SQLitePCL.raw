@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 
 namespace SQLitePCL
 {
-    public static class NativeLibrary
+    public static partial class NativeLibrary
     {
         static class NativeLib_dlopen
         {
@@ -77,9 +77,9 @@ namespace SQLitePCL
             dlopen,
         }
 
-        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy)
+        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy, int flags)
         {
-            var h = MyLoad(libraryName, assy);
+            var h = MyLoad(libraryName, assy, flags, s => {});
             if (h == IntPtr.Zero)
             {
                 throw new Exception("not found");
@@ -127,9 +127,9 @@ namespace SQLitePCL
                 throw new NotImplementedException();
             }
         }
-        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, out IntPtr handle)
+        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, int flags, out IntPtr handle)
         {
-            var h = MyLoad(libraryName, assy);
+            var h = MyLoad(libraryName, assy, flags, s => {});
             handle = h;
             return h != IntPtr.Zero;
         }
@@ -324,6 +324,7 @@ namespace SQLitePCL
 		static List<string> MakePossibilitiesFor(
 			string basename,
             System.Reflection.Assembly assy,
+            int flags,
 			LibSuffix suffix
 			)
 		{
@@ -334,26 +335,21 @@ namespace SQLitePCL
 #endif
 
 			var libname = basename_to_libname(basename, suffix);
-#if false // TODO should we really do this?
-			a.Add(libname);
-#endif
+            if ((flags & WHERE_PLAIN) != 0)
+            {
+                a.Add(libname);
+            }
 
 			var rid = get_rid();
 
-#if not
-			{
-				var dir = System.AppContext.BaseDirectory;
-				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
-			}
-#endif
-
-#if not // TODO for some reason, need this one under real xunit for net461
+#if not // TODO is this ever useful?
 			{
 				var dir = System.IO.Directory.GetCurrentDirectory();
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
 			}
 #endif
 
+            if ((flags & WHERE_RUNTIME_RID) != 0)
 			{
 				var dir = System.IO.Path.GetDirectoryName(assy.Location);
 				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
@@ -375,25 +371,19 @@ namespace SQLitePCL
 
 		static IntPtr MyLoad(
 			string basename,
-            System.Reflection.Assembly assy
-			)
-		{
-			return MyLoad(basename, assy, s => {});
-		}
-
-		static IntPtr MyLoad(
-			string basename,
             System.Reflection.Assembly assy,
+            int flags,
 			Action<string> log
 			)
 		{
 			// TODO make this code accept a string that already has the suffix?
+            // TODO does S.R.I.NativeLibrary do that?
 
 			var plat = WhichLoader();
 			log($"plat: {plat}");
 			var suffix = WhichLibSuffix();
 			log($"suffix: {suffix}");
-			var a = MakePossibilitiesFor(basename, assy, suffix);
+			var a = MakePossibilitiesFor(basename, assy, flags, suffix);
 			log("possibilities:");
 			foreach (var s in a)
 			{

@@ -53,15 +53,25 @@ namespace SQLitePCL
                 }
             }
         }
-        // TODO need some kind of flag here
-        static void DoDynamic(string name)
+        static IGetFunctionPointer MakeDynamic(string name, int flags)
         {
             // TODO should this be GetExecutingAssembly()?
             var assy = typeof(SQLitePCL.raw).Assembly;
-            var dll = SQLitePCL.NativeLibrary.Load(name, assy);
+            var dll = SQLitePCL.NativeLibrary.Load(name, assy, flags);
             var gf = new MyGetFunctionPointer(dll);
-            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf); // TODO for winsqlite3, this must be stdcall
+            return gf;
+        }
+        static void DoDynamic_cdecl(string name, int flags)
+        {
+            var gf = MakeDynamic(name, flags);
+            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
             SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
+        }
+        static void DoDynamic_stdcall(string name, int flags)
+        {
+            var gf = MakeDynamic(name, flags);
+            SQLitePCL.SQLite3Provider_StdCall.Setup(gf);
+            SQLitePCL.raw.SetProvider(new SQLite3Provider_StdCall());
         }
 #endif
 
@@ -92,13 +102,13 @@ namespace SQLitePCL
 #elif PROVIDER_dynamic
 
 #if PROVIDER_NAME_e_sqlite3
-		    DoDynamic("e_sqlite3");
+		    DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_RUNTIME_RID);
 #elif PROVIDER_NAME_e_sqlcipher
-		    DoDynamic("e_sqlcipher");
+		    DoDynamic_cdecl("e_sqlcipher", NativeLibrary.WHERE_RUNTIME_RID);
 #elif PROVIDER_NAME_sqlcipher
-		    DoDynamic("sqlcipher"); // TODO coordinate with zetetic
+		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_RUNTIME_RID); // TODO coordinate with zetetic
 #elif PROVIDER_NAME_winsqlite3
-		    DoDynamic("winsqlite3");
+		    DoDynamic_stdcall("winsqlite3", NativeLibrary.WHERE_PLAIN);
 #else
 #error batteries_v2.cs built with PROVIDER_dynamic but no PROVIDER_NAME specified
 #endif
