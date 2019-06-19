@@ -1,7 +1,5 @@
 
-bundle_green on iOS passes 71 of 73 tests
-
-need tests for bundle_green
+need tests for bundle_green ?
 
 winsqlite3 xunit with net461 test aborted.
 
