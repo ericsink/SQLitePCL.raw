@@ -22,7 +22,7 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\provider_e_sqlcipher_uwp.cs" />
+    <Compile Include="Generated\provider_e_sqlcipher.cs" />
 </ItemGroup>
 
 </Project>

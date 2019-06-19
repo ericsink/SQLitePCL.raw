@@ -50,9 +50,9 @@ let main argv =
 
     gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
 
-    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3_uwp" "Cdecl" "dllimport" "true"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher_uwp" "Cdecl" "dllimport" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher_uwp" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true"
 
     exec "dotnet" "build -c Release" (Path.Combine(top, "src", "SQLitePCLRaw.nativelibrary"))
 
