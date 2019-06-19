@@ -933,7 +933,7 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "TODO");
+            f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlite3', the SQLite builds provided with SQLitePCLRaw.");
 
             f.WriteStartElement("dependencies");
             add_dep_core(f);
@@ -986,7 +986,7 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "TODO");
+            f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlcipher', the unofficial SQLCipher builds provided with SQLitePCLRaw.");
 
             f.WriteStartElement("dependencies");
             add_dep_core(f);
@@ -1039,7 +1039,7 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "TODO");
+            f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'sqlcipher' and is intended for use with official SQLCipher builds from Zetetic.");
 
             f.WriteStartElement("dependencies");
             add_dep_core(f);

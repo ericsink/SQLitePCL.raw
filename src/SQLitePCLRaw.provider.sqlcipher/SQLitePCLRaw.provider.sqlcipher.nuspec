@@ -13,7 +13,7 @@
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
     <releaseNotes>$releaseNotes$</releaseNotes>
-    <description>TODO</description>
+    <description>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'sqlcipher' and is intended for use with official SQLCipher builds from Zetetic.</description>
     <dependencies>
       <dependency id="SQLitePCLRaw.core" version="$version$" />
     </dependencies>
