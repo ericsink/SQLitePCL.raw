@@ -27,74 +27,92 @@ namespace Xunit
 
     public static class Assert
     {
+        public static int count;
         static void fail() => throw new Exception();
         public static void True(bool b)
         {
+            count++;
             if (!b) fail();
         }
         public static void True(bool b, string msg)
         {
+            count++;
             if (!b) fail();
         }
         public static void False(bool b)
         {
+            count++;
             if (b) fail();
         }
         public static void Null(object b)
         {
+            count++;
             if (b != null) fail();
         }
         public static void NotNull(object b)
         {
+            count++;
             if (b == null) fail();
         }
         public static void Equal<T>(T expected, T actual)
             where T : class
         {
+            count++;
             if (!Object.ReferenceEquals(expected, actual)) fail();
         }
         public static void Equal(byte expected, byte actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(int expected, byte actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(char expected, char actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(int expected, int actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(int expected, int? actual)
         {
+            count++;
             if (expected != actual.Value) fail();
         }
         public static void Equal(long expected, long actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(long expected, long? actual)
         {
+            count++;
             if (expected != actual.Value) fail();
         }
         public static void Equal(double expected, double actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Equal(double expected, double? actual)
         {
+            count++;
             if (expected != actual.Value) fail();
         }
         public static void Equal(string expected, string actual)
         {
+            count++;
             if (expected != actual) fail();
         }
         public static void Single<T>(IEnumerable<T> e)
         {
+            count++;
             if (e.Count() != 1) throw new Exception();
         }
     }
@@ -124,11 +142,15 @@ namespace Xunit
                     object inst = Activator.CreateInstance(t);
                     foreach (var m in ma)
                     {
-                        w($"{m.Name} -- ");
+                        w($"{m.Name,-40} -- ");
                         try
                         {
+                            Assert.count = 0;
+                            var sw = System.Diagnostics.Stopwatch.StartNew();
                             m.Invoke(inst, null);
-                            wn("pass");
+                            sw.Stop();
+                            var elapsed = (long) (sw.ElapsedMilliseconds);
+                            wn($"pass ({Assert.count,4} asserts, {elapsed,5} ms)");
                             pass++;
                         }
                         catch (Exception e)
