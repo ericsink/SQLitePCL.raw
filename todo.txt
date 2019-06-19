@@ -1,4 +1,15 @@
 
+can the 3 provider.foo.uwp packages somehow
+get folded in to their provider.foo package?
+multi-targeting?  the problem is that both
+packages are built for TFM.  the UWP-specific
+package does not actually build for UWP as
+a platform.  so there is nothing to multi-target on.
+so these need to be separate projects.  but we
+could still combine them into one nuspec if
+did the nuspec with gen_nuspec instead of just
+using dotnet pack.
+
 need tests for bundle_green
 
 winsqlite3 xunit with net461 test aborted.
