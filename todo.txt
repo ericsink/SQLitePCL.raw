@@ -1,6 +1,4 @@
 
-rename sqlcipher in cb to e_sqlcipher
-
 get AltCover working with fake_xunit?
 
 need 3 ways of doing dynamic load:

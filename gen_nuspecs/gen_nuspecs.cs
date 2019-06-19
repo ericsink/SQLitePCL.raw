@@ -56,7 +56,7 @@ public static class gen
         switch (e)
         {
             case WhichLib.E_SQLITE3: return "e_sqlite3";
-            case WhichLib.E_SQLCIPHER: return "sqlcipher"; // TODO no e_ prefix in cb yet
+            case WhichLib.E_SQLCIPHER: return "e_sqlcipher"; // TODO no e_ prefix in cb yet
             default:
                 throw new NotImplementedException(string.Format("WhichLib.AsString for {0}", e));
         }

@@ -15,7 +15,7 @@
 */
 
 [assembly: ObjCRuntime.LinkWith(
-        "sqlcipher.a",
+        "e_sqlcipher.a",
         ForceLoad=true,
         LinkerFlags="",
         Frameworks=""
