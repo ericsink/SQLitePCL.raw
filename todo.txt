@@ -1,4 +1,14 @@
 
+the special batteries uwp assemblies can probably
+go away also.  they call the provider, but they
+can just bait and switch on it.
+
+different assemblies with the same snk must
+have the same name.  most vs uwp.  why isn't
+this a problem already?  perhaps because 
+this is the first case where multi-targeting
+doesn't work out?
+
 can the 3 provider.foo.uwp packages somehow
 get folded in to their provider.foo package?
 multi-targeting?  the problem is that both

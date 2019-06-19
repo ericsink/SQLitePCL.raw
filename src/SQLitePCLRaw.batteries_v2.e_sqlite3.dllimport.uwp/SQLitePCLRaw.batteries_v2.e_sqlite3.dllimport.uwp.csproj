@@ -14,7 +14,7 @@
 </ItemGroup>
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlite3.uwp\SQLitePCLRaw.provider.e_sqlite3.uwp.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlite3.uwp\SQLitePCLRaw.provider.e_sqlite3.csproj" />
 </ItemGroup>
 
 </Project>

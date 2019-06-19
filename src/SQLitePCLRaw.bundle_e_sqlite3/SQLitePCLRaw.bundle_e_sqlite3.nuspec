@@ -25,11 +25,6 @@
         <dependency id="SQLitePCLRaw.provider.dynamic" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
-      <group targetFramework="uap10.0">
-        <dependency id="SQLitePCLRaw.core" version="$version$" />
-        <dependency id="SQLitePCLRaw.provider.e_sqlite3.uwp" version="$version$" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
-      </group>
       <group targetFramework="netstandard2.0">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
         <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />

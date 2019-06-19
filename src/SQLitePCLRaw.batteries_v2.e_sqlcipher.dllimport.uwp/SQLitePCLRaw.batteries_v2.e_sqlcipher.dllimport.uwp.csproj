@@ -14,7 +14,7 @@
 </ItemGroup>
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlcipher.uwp\SQLitePCLRaw.provider.e_sqlcipher.uwp.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlcipher.uwp\SQLitePCLRaw.provider.e_sqlcipher.csproj" />
 </ItemGroup>
 
 </Project>

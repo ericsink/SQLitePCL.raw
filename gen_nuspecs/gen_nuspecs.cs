@@ -204,6 +204,15 @@ public static class gen
             );
     }
 
+    private static void write_nuspec_file_entry_lib_mt(string dir_name, string assembly_name, TFM tfm_build, TFM tfm_dest, XmlWriter f)
+    {
+        write_nuspec_file_entry(
+            make_mt_path(dir_name, assembly_name, tfm_build),
+            string.Format("lib\\{0}\\", tfm_dest.AsString()),
+            f
+            );
+    }
+
     private static void write_nuspec_file_entry_lib_batteries(string basename, TFM tfm_build, TFM tfm_dest, XmlWriter f)
     {
         write_nuspec_file_entry(
@@ -579,13 +588,10 @@ public static class gen
     enum WhichProvider
     {
         E_SQLITE3,
-        E_SQLITE3_UWP,
         E_SQLCIPHER,
-        E_SQLCIPHER_UWP,
-        SQLITE3,
         SQLCIPHER,
-        SQLCIPHER_UWP,
         INTERNAL,
+        SQLITE3,
         WINSQLITE3,
         DYNAMIC,
     }
@@ -595,13 +601,10 @@ public static class gen
         switch (e)
         {
             case WhichProvider.E_SQLITE3: return "e_sqlite3";
-            case WhichProvider.E_SQLITE3_UWP: return "e_sqlite3.uwp";
             case WhichProvider.E_SQLCIPHER: return "e_sqlcipher";
-            case WhichProvider.E_SQLCIPHER_UWP: return "e_sqlcipher.uwp";
-            case WhichProvider.SQLITE3: return "sqlite3";
             case WhichProvider.SQLCIPHER: return "sqlcipher";
-            case WhichProvider.SQLCIPHER_UWP: return "sqlcipher.uwp";
             case WhichProvider.INTERNAL: return "internal";
+            case WhichProvider.SQLITE3: return "sqlite3";
             case WhichProvider.WINSQLITE3: return "winsqlite3";
             case WhichProvider.DYNAMIC: return "dynamic";
             default:
@@ -754,7 +757,6 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NET461);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER_UWP, WhichLib.E_SQLCIPHER, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NETCOREAPP30);
@@ -846,7 +848,6 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NET461);
-            write_bundle_dependency_group(f, WhichProvider.SQLCIPHER_UWP, WhichLib.NONE, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NETCOREAPP30);
@@ -912,6 +913,165 @@ public static class gen
         }
     }
 
+    private static void gen_nuspec_provider_e_sqlite3(string dir_src)
+    {
+        string id = string.Format("{0}.provider.e_sqlite3", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "TODO");
+
+            f.WriteStartElement("dependencies");
+            add_dep_core(f);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlite3.most",
+                    "SQLitePCLRaw.provider.e_sqlite3",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlite3.uwp",
+                    "SQLitePCLRaw.provider.e_sqlite3",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_provider_e_sqlcipher(string dir_src)
+    {
+        string id = string.Format("{0}.provider.e_sqlcipher", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "TODO");
+
+            f.WriteStartElement("dependencies");
+            add_dep_core(f);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlcipher.most",
+                    "SQLitePCLRaw.provider.e_sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlcipher.uwp",
+                    "SQLitePCLRaw.provider.e_sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_provider_sqlcipher(string dir_src)
+    {
+        string id = string.Format("{0}.provider.sqlcipher", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "TODO");
+
+            f.WriteStartElement("dependencies");
+            add_dep_core(f);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlcipher.most",
+                    "SQLitePCLRaw.provider.sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlcipher.uwp",
+                    "SQLitePCLRaw.provider.sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
     private static void gen_nuspec_bundle_e_sqlite3(string dir_src)
     {
         string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
@@ -938,7 +1098,6 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
@@ -1033,7 +1192,6 @@ public static class gen
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
 #endif
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
@@ -1207,6 +1365,10 @@ public static class gen
 
         gen_nuspec_lib_e_sqlite3(dir_src);
         gen_nuspec_lib_e_sqlcipher(dir_src);
+
+        gen_nuspec_provider_e_sqlite3(dir_src);
+        gen_nuspec_provider_e_sqlcipher(dir_src);
+        gen_nuspec_provider_sqlcipher(dir_src);
 
         gen_nuspec_bundle_green(dir_src);
         gen_nuspec_bundle_e_sqlite3(dir_src);

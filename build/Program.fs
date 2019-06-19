@@ -42,10 +42,10 @@ let main argv =
 
     gen_provider "dynamic" null "Cdecl" "Cdecl" "dynamic" "false"
     gen_provider "dynamic" null "StdCall" "StdCall" "dynamic" "false"
-    gen_provider "e_sqlite3" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "e_sqlcipher" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
     gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "sqlcipher" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
     gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false"
 
     gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
@@ -54,19 +54,23 @@ let main argv =
     gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true"
     gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true"
 
-    exec "dotnet" "build -c Release" (Path.Combine(top, "src", "SQLitePCLRaw.nativelibrary"))
+    let just_build_dirs = [
+        "SQLitePCLRaw.nativelibrary" 
+        "SQLitePCLRaw.provider.e_sqlite3.most" 
+        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
+        "SQLitePCLRaw.provider.e_sqlcipher.most" 
+        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
+        "SQLitePCLRaw.provider.sqlcipher.most" 
+        "SQLitePCLRaw.provider.sqlcipher.uwp" 
+    ]
+    for s in just_build_dirs do
+        exec "dotnet" "build -c Release" (Path.Combine(top, "src", s))
 
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
         "SQLitePCLRaw.provider.dynamic" 
         "SQLitePCLRaw.provider.internal" 
-        "SQLitePCLRaw.provider.e_sqlite3" 
-        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
-        "SQLitePCLRaw.provider.e_sqlcipher" 
-        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
-        "SQLitePCLRaw.provider.sqlcipher" 
-        "SQLitePCLRaw.provider.sqlcipher.uwp" 
         // "SQLitePCLRaw.provider.sqlite3" 
         // "SQLitePCLRaw.provider.winsqlite3" 
     ]
@@ -122,6 +126,9 @@ let main argv =
     let nuspecs = [
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
+        "provider.e_sqlite3"
+        "provider.e_sqlcipher"
+        "provider.sqlcipher"
         "bundle_green"
         "bundle_e_sqlite3"
         "bundle_e_sqlcipher"
