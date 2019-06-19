@@ -65,9 +65,9 @@ let main argv =
         "SQLitePCLRaw.provider.e_sqlite3.uwp" 
         "SQLitePCLRaw.provider.e_sqlcipher" 
         "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
-        "SQLitePCLRaw.provider.sqlite3" 
         "SQLitePCLRaw.provider.sqlcipher" 
         "SQLitePCLRaw.provider.sqlcipher.uwp" 
+        // "SQLitePCLRaw.provider.sqlite3" 
         // "SQLitePCLRaw.provider.winsqlite3" 
     ]
     for s in pack_dirs do
@@ -81,6 +81,7 @@ let main argv =
         "e_sqlcipher.dllimport.uwp"
         "e_sqlcipher.dynamic"
         "sqlite3.dllimport"
+        "sqlite3.dynamic"
         "sqlcipher.dynamic"
         "sqlcipher.dllimport"
         "sqlcipher.dllimport.uwp"

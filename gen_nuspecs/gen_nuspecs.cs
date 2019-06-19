@@ -15,6 +15,7 @@
 */
 #define NETCOREAPP3_NATIVELIBRARY
 #define WINSQLITE3_DYNAMIC
+#define SQLITE3_DYNAMIC
 
 using System;
 using System.Collections.Generic;
@@ -1026,7 +1027,11 @@ public static class gen
 
             f.WriteStartElement("dependencies");
 
+#if SQLITE3_DYNAMIC
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.IOS);
+#else
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
+#endif
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3_UWP, WhichLib.E_SQLITE3, TFM.UWP);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
@@ -1040,12 +1045,27 @@ public static class gen
 
             f.WriteStartElement("files");
 
+#if SQLITE3_DYNAMIC
+            write_nuspec_file_entry_lib_batteries(
+                    "sqlite3.dynamic",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.IOS,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.nativelibrary",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.IOS,
+                    f
+                    );
+#else
             write_nuspec_file_entry_lib_batteries(
                     "sqlite3.dllimport",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.IOS,
                     f
                     );
+#endif
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dynamic",
