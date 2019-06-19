@@ -1,12 +1,14 @@
 
+rename sqlcipher in cb to e_sqlcipher
+
+get AltCover working with fake_xunit?
+
 need 3 ways of doing dynamic load:
     plain name, used for winsqlite3
     look for runtimes/rid
     look for x86/x64
 do these by chance map nicely on to the flags
 for S.R.I.NativeLibrary ?
-
-rename sqlcipher in cb to e_sqlcipher
 
 a few places in the provider still have unresolved
 TODOs about whether to pass -1 and let sqlite do
@@ -19,15 +21,11 @@ need for stubs in cb?
 
 hmmm.  does winsqlite3 have win32_set_directory8,
 the utf8 version?  not sure what version of sqlite it
-is based on.
+is based on.  3.25.3 ?
 
 need tests for bundle_green ?
 
 winsqlite3 xunit with net461 test aborted.
-
-zetetic dynamic needs to look in dirs named x86/x64, 
-not rids.  for compat with their existing package.
-add a flag for this.
 
 net461 or net472 ?
 
