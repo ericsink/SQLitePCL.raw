@@ -1,8 +1,4 @@
 
-need tests for bundle_green ?
-
-winsqlite3 xunit with net461 test aborted.
-
 need 3 ways of doing dynamic load:
     plain name, used for winsqlite3
     look for runtimes/rid
@@ -10,12 +6,12 @@ need 3 ways of doing dynamic load:
 do these by chance map nicely on to the flags
 for S.R.I.NativeLibrary ?
 
+rename sqlcipher in cb to e_sqlcipher
+
 a few places in the provider still have unresolved
 TODOs about whether to pass -1 and let sqlite do
 strlen or use the length given in the span, which
 may need to be adjusted for a z terminator
-
-rename sqlcipher in cb to e_sqlcipher
 
 add sqlite3_key et al to the raw layer?  if we don't,
 then why is it in the pinvoke list, thus causing the
@@ -24,6 +20,10 @@ need for stubs in cb?
 hmmm.  does winsqlite3 have win32_set_directory8,
 the utf8 version?  not sure what version of sqlite it
 is based on.
+
+need tests for bundle_green ?
+
+winsqlite3 xunit with net461 test aborted.
 
 zetetic dynamic needs to look in dirs named x86/x64, 
 not rids.  for compat with their existing package.
