@@ -109,6 +109,8 @@ namespace SQLitePCL
 		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_RUNTIME_RID); // TODO coordinate with zetetic
 #elif PROVIDER_NAME_winsqlite3
 		    DoDynamic_stdcall("winsqlite3", NativeLibrary.WHERE_PLAIN);
+#elif PROVIDER_NAME_sqlite3
+		    DoDynamic_cdecl("sqlite3", NativeLibrary.WHERE_PLAIN);
 #else
 #error batteries_v2.cs built with PROVIDER_dynamic but no PROVIDER_NAME specified
 #endif

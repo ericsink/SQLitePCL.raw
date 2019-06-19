@@ -1041,7 +1041,7 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_batteries(
-                    "sqlite3",
+                    "sqlite3.dllimport",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.IOS,
                     f

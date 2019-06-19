@@ -80,7 +80,7 @@ let main argv =
         "e_sqlcipher.dllimport"
         "e_sqlcipher.dllimport.uwp"
         "e_sqlcipher.dynamic"
-        "sqlite3"
+        "sqlite3.dllimport"
         "sqlcipher.dynamic"
         "sqlcipher.dllimport"
         "sqlcipher.dllimport.uwp"
