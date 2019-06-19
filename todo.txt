@@ -1,8 +1,6 @@
 
 need tests for bundle_green
 
-so provider_sqlite3 could use dynamic too, right?
-
 winsqlite3 xunit with net461 test aborted.
 
 need 3 ways of doing dynamic load:
