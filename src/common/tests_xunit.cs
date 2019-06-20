@@ -1262,6 +1262,44 @@ namespace SQLitePCL.Tests
                 }
             }
         }
+
+        [Fact]
+        public void test_column_null()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int, t text);");
+                db.exec("INSERT INTO foo (x) VALUES (?)", 32);
+                using (sqlite3_stmt stmt = db.prepare("SELECT x,t FROM foo;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(32, stmt.column_int(0));
+                    var t = stmt.column_text(1);
+                    Assert.Null(t);
+                }
+            }
+        }
+
+        [Fact]
+        public void test_column_empty_string()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int, t text);");
+                db.exec("INSERT INTO foo (x,t) VALUES (?,?)", 32, "");
+                using (sqlite3_stmt stmt = db.prepare("SELECT x,t FROM foo;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(32, stmt.column_int(0));
+                    var t = stmt.column_text(1);
+                    Assert.NotNull(t);
+                    Assert.Equal(0, t.Length);
+                }
+            }
+        }
+
     }
 
     [Collection("Init")]
