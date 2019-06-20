@@ -5,20 +5,6 @@ clean up blog release notes page
 
 finish writing v2 changes page
 
-test with Csf20
-    column_blob() error, now returns span.  add .ToArray()
-
-   at System.Text.Encoding.GetString(Byte* bytes, Int32 byteCount)
-   at SQLitePCL.util.from_utf8(ReadOnlySpan`1 p)
-   at SQLitePCL.Ugly.ugly.column_text(sqlite3_stmt stmt, Int32 index)
-   at Csf20.Common.SQLiteExecuteQuery.my_column(sqlite3_stmt stmt, Int32 index, Type t)
-   at Csf20.Common.SQLiteExecuteQuery.my_row[T](sqlite3_stmt stmt)
-   at Csf20.Common.SQLiteExecuteQuery.Execute[TM](QueryDescription q, sqlite3 db)
-   at Csf20.Common.SQLiteDatabase.ExecuteInTransaction[TM](QueryDescription q, sqlite3 db)
-   at Csf20.Common.SQLiteDatabase.<OpenAndExecuteOneInTransaction>d__12`1.MoveNext()
-
-need a test that does column_text() with a null value
-
 --
 
 sqlite3_create_window_function
