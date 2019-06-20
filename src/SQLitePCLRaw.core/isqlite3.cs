@@ -27,16 +27,15 @@ namespace SQLitePCL
 {
     using System;
 
-    // TODO dislike _low names
-    public delegate int delegate_collation_low(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
-    public delegate void delegate_update_low(object user_data, int type, ReadOnlySpan<byte> database, ReadOnlySpan<byte> table, long rowid);
+    public delegate int delegate_collation(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
+    public delegate void delegate_update(object user_data, int type, ReadOnlySpan<byte> database, ReadOnlySpan<byte> table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
-    public delegate void delegate_log_low(object user_data, int errorCode, ReadOnlySpan<byte> msg);
-    public delegate int delegate_authorizer_low(object user_data, int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view);
+    public delegate void delegate_log(object user_data, int errorCode, ReadOnlySpan<byte> msg);
+    public delegate int delegate_authorizer(object user_data, int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view);
 
     // this delegate returns strings as IntPtrs because they are in an array,
-    public delegate int delegate_exec_low(object user_data, IntPtr[] values, IntPtr[] names);
+    public delegate int delegate_exec(object user_data, IntPtr[] values, IntPtr[] names);
 
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
@@ -164,7 +163,7 @@ namespace SQLitePCL
         int sqlite3_blob_read(sqlite3_blob blob, Span<byte> b, int offset);
         int sqlite3_blob_close(IntPtr blob);
 
-        int sqlite3_config_log(delegate_log_low func, object v);
+        int sqlite3_config_log(delegate_log func, object v);
         void sqlite3_log(int errcode, ReadOnlySpan<byte> s);
         void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
@@ -172,8 +171,8 @@ namespace SQLitePCL
         int sqlite3_trace_v2(sqlite3 db, uint mask, delegate_trace_v2 func, object v);
 
         void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v);
-        void sqlite3_update_hook(sqlite3 db, delegate_update_low func, object v);
-        int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation_low func);
+        void sqlite3_update_hook(sqlite3 db, delegate_update func, object v);
+        int sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_scalar func);
         int sqlite3_create_function(sqlite3 db, byte[] name, int nArg, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final);
 
@@ -204,7 +203,7 @@ namespace SQLitePCL
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
         // this function returns the errMsg as an IntPtr because it needs to be freed.
-        int sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec_low callback, object user_data, out IntPtr errMsg);
+        int sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec callback, object user_data, out IntPtr errMsg);
 
         int sqlite3_complete(ReadOnlySpan<byte> sql);
 
@@ -217,7 +216,7 @@ namespace SQLitePCL
 
         int sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc);
 
-        int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer_low authorizer, object user_data);
+        int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
         // TODO the following two calls wish the args were spans
         int sqlite3_stricmp(IntPtr p, IntPtr q);

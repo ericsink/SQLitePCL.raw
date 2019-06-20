@@ -210,7 +210,7 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec_low func, object user_data, out IntPtr errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
             verify_z_terminator(sql);
 
@@ -635,7 +635,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_config_log(delegate_log_low func, object v)
+        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (disp_log_hook_handle != null)
             {
@@ -756,7 +756,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation_low func)
+        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
             if (info.RemoveCollation(name))
@@ -799,7 +799,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update_low func, object v)
+        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
 			var info = get_hooks(db);
             if (info.update != null)
@@ -961,7 +961,7 @@ namespace SQLitePCL
         }
 
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
-        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer_low func, object v)
+        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
 			var info = get_hooks(db);
             if (info.authorizer != null)

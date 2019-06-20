@@ -197,12 +197,12 @@ namespace SQLitePCL.Ugly
 
         public static string errmsg(this sqlite3 db)
         {
-            return raw.sqlite3_errmsg(db);
+            return raw.sqlite3_errmsg(db).utf8_to_string();
         }
 
         public static string db_filename(this sqlite3 db, string att)
         {
-            return raw.sqlite3_db_filename(db, att);
+            return raw.sqlite3_db_filename(db, att).utf8_to_string();
         }
 
         public static void commit_hook(this sqlite3 db, delegate_commit f, object v)
@@ -220,12 +220,12 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_trace_v2(db, mask, f, v);
         }
 
-        public static void update_hook(this sqlite3 db, delegate_update f, object v)
+        public static void update_hook(this sqlite3 db, strdelegate_update f, object v)
         {
             raw.sqlite3_update_hook(db, f, v);
         }
 
-        public static void create_collation(this sqlite3 db, string name, object v, delegate_collation f)
+        public static void create_collation(this sqlite3 db, string name, object v, strdelegate_collation f)
         {
             int rc = raw.sqlite3_create_collation(db, name, v, f);
             check_ok(rc);
@@ -391,7 +391,7 @@ namespace SQLitePCL.Ugly
             return s;
         }
 
-        public static void exec(this sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
+        public static void exec(this sqlite3 db, string sql, strdelegate_exec callback, object user_data, out string errMsg)
         {
             int rc = raw.sqlite3_exec(db, sql, callback, user_data, out errMsg);
             check_ok(rc);
@@ -480,27 +480,27 @@ namespace SQLitePCL.Ugly
 
         public static string column_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_name(stmt, index);
+            return raw.sqlite3_column_name(stmt, index).utf8_to_string();
         }
 
         public static string column_database_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_database_name(stmt, index);
+            return raw.sqlite3_column_database_name(stmt, index).utf8_to_string();
         }
 
         public static string column_table_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_table_name(stmt, index);
+            return raw.sqlite3_column_table_name(stmt, index).utf8_to_string();
         }
 
         public static string column_origin_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_origin_name(stmt, index);
+            return raw.sqlite3_column_origin_name(stmt, index).utf8_to_string();
         }
 
         public static string column_decltype(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_decltype(stmt, index);
+            return raw.sqlite3_column_decltype(stmt, index).utf8_to_string();
         }
 
         public static int column_count(this sqlite3_stmt stmt)
@@ -515,7 +515,7 @@ namespace SQLitePCL.Ugly
 
         public static string column_text(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_text(stmt, index);
+            return raw.sqlite3_column_text(stmt, index).utf8_to_string();
         }
 
         public static int column_int(this sqlite3_stmt stmt, int index)
@@ -602,7 +602,7 @@ namespace SQLitePCL.Ugly
 
         public static string bind_parameter_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_bind_parameter_name(stmt, index);
+            return raw.sqlite3_bind_parameter_name(stmt, index).utf8_to_string();
         }
 
         public static int bind_parameter_index(this sqlite3_stmt stmt, string name)
@@ -634,7 +634,7 @@ namespace SQLitePCL.Ugly
 
         public static string sql(this sqlite3_stmt stmt)
         {
-            return raw.sqlite3_sql(stmt);
+            return raw.sqlite3_sql(stmt).utf8_to_string();
         }
 
         public static T column<T>(this sqlite3_stmt stmt, int index)
@@ -926,7 +926,7 @@ namespace SQLitePCL.Ugly
 
         public static string value_text(this sqlite3_value val)
         {
-            return raw.sqlite3_value_text(val);
+            return raw.sqlite3_value_text(val).utf8_to_string();
         }
 
         public static int value_int(this sqlite3_value val)

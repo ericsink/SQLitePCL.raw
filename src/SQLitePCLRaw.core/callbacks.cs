@@ -245,10 +245,10 @@ namespace SQLitePCL
 
     public class log_hook_info
     {
-        private delegate_log_low _func;
+        private delegate_log _func;
         private object _user_data;
 
-        public log_hook_info(delegate_log_low func, object v)
+        public log_hook_info(delegate_log func, object v)
         {
             _func = func;
             _user_data = v;
@@ -366,10 +366,10 @@ namespace SQLitePCL
 
     public class update_hook_info
     {
-        private delegate_update_low _func;
+        private delegate_update _func;
         private object _user_data;
 
-        public update_hook_info(delegate_update_low func, object v)
+        public update_hook_info(delegate_update func, object v)
         {
             _func = func;
             _user_data = v;
@@ -390,10 +390,10 @@ namespace SQLitePCL
 
     public class collation_hook_info
     {
-        private delegate_collation_low _func;
+        private delegate_collation _func;
         private object _user_data;
 
-        public collation_hook_info(delegate_collation_low func, object v)
+        public collation_hook_info(delegate_collation func, object v)
         {
             _func = func;
             _user_data = v;
@@ -414,10 +414,10 @@ namespace SQLitePCL
 
     public class exec_hook_info
     {
-        private delegate_exec_low _func;
+        private delegate_exec _func;
         private object _user_data;
 
-        public exec_hook_info(delegate_exec_low func, object v)
+        public exec_hook_info(delegate_exec func, object v)
         {
             _func = func;
             _user_data = v;
@@ -590,10 +590,10 @@ namespace SQLitePCL
 
     public class authorizer_hook_info
     {
-        private delegate_authorizer_low _func;
+        private delegate_authorizer _func;
         private object _user_data;
 
-        public authorizer_hook_info(delegate_authorizer_low func, object v)
+        public authorizer_hook_info(delegate_authorizer func, object v)
         {
             _func = func;
             _user_data = v;

@@ -7,6 +7,9 @@ finish writing v2 changes page
 
 --
 
+sqlite3_exec in the provider probably shouldn't
+alloc an array of IntPtr.  return them as a span.
+
 sqlite3_create_window_function
 
 sqlite3_normalized_sql
@@ -49,8 +52,6 @@ winsqlite3 xunit with net461 test aborted.  works
 fine with fake_xunit.
 
 is the winsqlite3 bundle worth the trouble?
-
-clean up delegate _low naming
 
 verify versions of libtomcrypt.  submodule?
 

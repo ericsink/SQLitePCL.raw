@@ -29,11 +29,11 @@ namespace SQLitePCL
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
-    public delegate int delegate_collation(object user_data, string s1, string s2);
-    public delegate void delegate_update(object user_data, int type, string database, string table, long rowid);
-    public delegate void delegate_log(object user_data, int errorCode, string msg);
-    public delegate int delegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
-    public delegate int delegate_exec(object user_data, string[] values, string[] names);
+    public delegate int strdelegate_collation(object user_data, string s1, string s2);
+    public delegate void strdelegate_update(object user_data, int type, string database, string table, long rowid);
+    public delegate void strdelegate_log(object user_data, int errorCode, string msg);
+    public delegate int strdelegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
+    public delegate int strdelegate_exec(object user_data, string[] values, string[] names);
 
     public static class raw
     {
@@ -289,24 +289,37 @@ namespace SQLitePCL
         public const int SQLITE_TRACE_ROW = 0x04;
         public const int SQLITE_TRACE_CLOSE = 0x08;
 
-        static public int sqlite3_open(string filename, out sqlite3 db)
+        static public int sqlite3_open(ReadOnlySpan<byte> filename, out sqlite3 db)
         {
-            int rc = _imp.sqlite3_open(filename.to_utf8_with_z(), out var p_db);
+            int rc = _imp.sqlite3_open(filename, out var p_db);
 			// TODO check rc?
             db = sqlite3.New(p_db);
             return rc;
         }
 
-        static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
+        static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            int rc = _imp.sqlite3_open_v2(filename.to_utf8_with_z(), out var p_db, flags, vfs.to_utf8_with_z());
+            return sqlite3_open(filename.to_utf8_with_z(), out db);
+        }
+
+        static public int sqlite3_open_v2(ReadOnlySpan<byte> filename, out sqlite3 db, int flags, ReadOnlySpan<byte> vfs)
+        {
+            int rc = _imp.sqlite3_open_v2(filename, out var p_db, flags, vfs);
 			// TODO check rc?
             db = sqlite3.New(p_db);
             return rc;
         }
+        static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
+        {
+            return sqlite3_open_v2(filename.to_utf8_with_z(), out db, flags, vfs.to_utf8_with_z());
+        }
+        static public int sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> pathname, int syncdir)
+        {
+            return _imp.sqlite3__vfs__delete(vfs, pathname, syncdir);
+        }
         static public int sqlite3__vfs__delete(string vfs, string pathname, int syncdir)
         {
-            return _imp.sqlite3__vfs__delete(vfs.to_utf8_with_z(), pathname.to_utf8_with_z(), syncdir);
+            return sqlite3__vfs__delete(vfs.to_utf8_with_z(), pathname.to_utf8_with_z(), syncdir);
         }
 
 		// called by the SafeHandle
@@ -345,17 +358,27 @@ namespace SQLitePCL
 
         static public int sqlite3_config_log(delegate_log f, object v)
         {
-            delegate_log_low cb =
+            return _imp.sqlite3_config_log(f, v);
+        }
+
+        static public int sqlite3_config_log(strdelegate_log f, object v)
+        {
+            delegate_log cb =
             (ob, e, msg) =>
             {
                 f(ob, e, util.from_utf8(msg));
             };
-            return _imp.sqlite3_config_log(cb, v);
+            return sqlite3_config_log(cb, v);
+        }
+
+        static public void sqlite3_log(int errcode, ReadOnlySpan<byte> s)
+        {
+            _imp.sqlite3_log(errcode, s);
         }
 
         static public void sqlite3_log(int errcode, string s)
         {
-            _imp.sqlite3_log(errcode, s.to_utf8_with_z());
+            sqlite3_log(errcode, s.to_utf8_with_z());
         }
 
         static public void sqlite3_commit_hook(sqlite3 db, delegate_commit f, object v)
@@ -380,25 +403,29 @@ namespace SQLitePCL
 
         static public void sqlite3_update_hook(sqlite3 db, delegate_update f, object v)
         {
-            delegate_update_low cb =
+            _imp.sqlite3_update_hook(db, f, v);
+        }
+
+        static public void sqlite3_update_hook(sqlite3 db, strdelegate_update f, object v)
+        {
+            delegate_update cb =
             (ob, typ, dbname, tbl, rowid) =>
             {
                 f(ob, typ, util.from_utf8(dbname), util.from_utf8(tbl), rowid);
             };
-            _imp.sqlite3_update_hook(db, cb, v);
+            sqlite3_update_hook(db, cb, v);
         }
 
-        static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
+        static public int sqlite3_create_collation(sqlite3 db, string name, object v, strdelegate_collation f)
         {
-            delegate_collation_low cb = 
+            delegate_collation cb = 
             (ob, s1, s2) =>
             {
                 return f(ob, util.from_utf8(s1), util.from_utf8(s2));
             };
 
             var p = name.to_utf8_with_z();
-            var rc = _imp.sqlite3_create_collation(db, p, v, cb);
-            return rc;
+            return _imp.sqlite3_create_collation(db, p, v, cb);
         }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
@@ -430,9 +457,14 @@ namespace SQLitePCL
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
-        static public string sqlite3_libversion()
+        public static string utf8_to_string(this ReadOnlySpan<byte> p)
         {
-            return util.from_utf8(_imp.sqlite3_libversion());
+            return util.from_utf8(p);
+        }
+
+        static public ReadOnlySpan<byte> sqlite3_libversion()
+        {
+            return _imp.sqlite3_libversion();
         }
 
         static public int sqlite3_libversion_number()
@@ -470,9 +502,9 @@ namespace SQLitePCL
             return _imp.sqlite3_enable_load_extension(db, onoff);
         }
 
-        static public string sqlite3_sourceid()
+        static public ReadOnlySpan<byte> sqlite3_sourceid()
         {
-            return util.from_utf8(_imp.sqlite3_sourceid());
+            return _imp.sqlite3_sourceid();
         }
 
         static public long sqlite3_memory_used()
@@ -490,20 +522,27 @@ namespace SQLitePCL
             return _imp.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
-        static public string sqlite3_errmsg(sqlite3 db)
+        static public ReadOnlySpan<byte> sqlite3_errmsg(sqlite3 db)
         {
-            return util.from_utf8(_imp.sqlite3_errmsg(db));
+            return _imp.sqlite3_errmsg(db);
         }
 
+        static public int sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName)
+        {
+            return _imp.sqlite3_db_readonly(db, dbName);
+        }
         static public int sqlite3_db_readonly(sqlite3 db, string dbName)
         {
-            return _imp.sqlite3_db_readonly(db, dbName.to_utf8_with_z());
+            return sqlite3_db_readonly(db, dbName.to_utf8_with_z());
         }
 
-        static public string sqlite3_db_filename(sqlite3 db, string att)
+        static public ReadOnlySpan<byte> sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att)
         {
-            var s = util.from_utf8(_imp.sqlite3_db_filename(db, att.to_utf8_with_z()));
-            return s;
+            return _imp.sqlite3_db_filename(db, att);
+        }
+        static public ReadOnlySpan<byte> sqlite3_db_filename(sqlite3 db, string att)
+        {
+            return sqlite3_db_filename(db, att.to_utf8_with_z());
         }
 
         static public long sqlite3_last_insert_rowid(sqlite3 db)
@@ -546,9 +585,9 @@ namespace SQLitePCL
             return _imp.sqlite3_extended_errcode(db);
         }
 
-        static public string sqlite3_errstr(int rc)
+        static public ReadOnlySpan<byte> sqlite3_errstr(int rc)
         {
-            return util.from_utf8(_imp.sqlite3_errstr(rc));
+            return _imp.sqlite3_errstr(rc);
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt)
@@ -581,24 +620,23 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
             var ba_sql = sql.to_utf8_with_z();
-            int rc = _imp.sqlite3_prepare_v2(db, ba_sql, out var p, out var sp_tail);
+            int rc = sqlite3_prepare_v2(db, ba_sql, out stmt, out var sp_tail);
             if (sp_tail == null)
             {
                 tail = null;
             }
             else
             {
-                var rem = util.from_utf8(sp_tail);
+                var rem = sp_tail;
                 if (rem.Length == 0)
                 {
                     tail = null;
                 }
                 else
                 {
-                    tail = rem;
+                    tail = util.from_utf8(rem);
                 }
             }
-            stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
@@ -632,30 +670,29 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
         {
             var ba_sql = sql.to_utf8_with_z();
-            int rc = _imp.sqlite3_prepare_v3(db, ba_sql, flags, out var p, out var sp_tail);
+            int rc = sqlite3_prepare_v3(db, ba_sql, flags, out stmt, out var sp_tail);
             if (sp_tail == null)
             {
                 tail = null;
             }
             else
             {
-                var rem = util.from_utf8(sp_tail);
+                var rem = sp_tail;
                 if (rem.Length == 0)
                 {
                     tail = null;
                 }
                 else
                 {
-                    tail = rem;
+                    tail = util.from_utf8(rem);
                 }
             }
-            stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
-        static public int sqlite3_exec(sqlite3 db, string sql, delegate_exec callback, object user_data, out string errMsg)
+        static public int sqlite3_exec(sqlite3 db, string sql, strdelegate_exec callback, object user_data, out string errMsg)
         {
-            delegate_exec_low cb;
+            delegate_exec cb;
 
             if (callback != null)
             {
@@ -750,32 +787,45 @@ namespace SQLitePCL
             return _imp.sqlite3_stmt_status(stmt, op, resetFlg);
         }
 
+        static public int sqlite3_complete(ReadOnlySpan<byte> sql)
+        {
+            return _imp.sqlite3_complete(sql);
+        }
         static public int sqlite3_complete(string sql)
         {
-            return _imp.sqlite3_complete(sql.to_utf8_with_z());
+            return sqlite3_complete(sql.to_utf8_with_z());
         }
 
+        static public int sqlite3_compileoption_used(ReadOnlySpan<byte> s)
+        {
+            return _imp.sqlite3_compileoption_used(s);
+        }
         static public int sqlite3_compileoption_used(string s)
         {
-            return _imp.sqlite3_compileoption_used(s.to_utf8_with_z());
+            return sqlite3_compileoption_used(s.to_utf8_with_z());
         }
 
-        static public string sqlite3_compileoption_get(int n)
+        static public ReadOnlySpan<byte> sqlite3_compileoption_get(int n)
         {
-            return util.from_utf8(_imp.sqlite3_compileoption_get(n));
+            return _imp.sqlite3_compileoption_get(n);
+        }
+
+        static public int sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc)
+        {
+            return _imp.sqlite3_table_column_metadata(db, dbName, tblName, colName, out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
         }
 
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            var rc = _imp.sqlite3_table_column_metadata(db, dbName.to_utf8_with_z(), tblName.to_utf8_with_z(), colName.to_utf8_with_z(), out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
+            var rc = sqlite3_table_column_metadata(db, dbName.to_utf8_with_z(), tblName.to_utf8_with_z(), colName.to_utf8_with_z(), out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
             dataType = util.from_utf8(p_dataType);
             collSeq = util.from_utf8(p_collSeq);
             return rc;
         }
 
-        static public string sqlite3_sql(sqlite3_stmt stmt)
+        static public ReadOnlySpan<byte> sqlite3_sql(sqlite3_stmt stmt)
         {
-            return util.from_utf8(_imp.sqlite3_sql(stmt));
+            return _imp.sqlite3_sql(stmt);
         }
 
         static public sqlite3 sqlite3_db_handle(sqlite3_stmt stmt)
@@ -806,9 +856,9 @@ namespace SQLitePCL
             return _imp.sqlite3_bind_zeroblob(stmt, index, size);
         }
 
-        static public string sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_bind_parameter_name(stmt, index));
+            return _imp.sqlite3_bind_parameter_name(stmt, index);
         }
 
         // probably unnecessary since we pass user_data back as one of the
@@ -905,9 +955,9 @@ namespace SQLitePCL
             return _imp.sqlite3_value_type(val.ptr);
         }
 
-        static public string sqlite3_value_text(sqlite3_value val)
+        static public ReadOnlySpan<byte> sqlite3_value_text(sqlite3_value val)
         {
-            return util.from_utf8(_imp.sqlite3_value_text(val.ptr));
+            return _imp.sqlite3_value_text(val.ptr);
         }
 
         static public int sqlite3_bind_blob(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> blob)
@@ -950,9 +1000,14 @@ namespace SQLitePCL
             return _imp.sqlite3_bind_parameter_count(stmt);
         }
 
+        static public int sqlite3_bind_parameter_index(sqlite3_stmt stmt, ReadOnlySpan<byte> strName)
+        {
+            return _imp.sqlite3_bind_parameter_index(stmt, strName);
+        }
+
         static public int sqlite3_bind_parameter_index(sqlite3_stmt stmt, string strName)
         {
-            return _imp.sqlite3_bind_parameter_index(stmt, strName.to_utf8_with_z());
+            return sqlite3_bind_parameter_index(stmt, strName.to_utf8_with_z());
         }
 
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)
@@ -965,29 +1020,29 @@ namespace SQLitePCL
             return _imp.sqlite3_stmt_readonly(stmt);
         }
 
-        static public string sqlite3_column_database_name(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_database_name(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_database_name(stmt, index));
+            return _imp.sqlite3_column_database_name(stmt, index);
         }
 
-        static public string sqlite3_column_name(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_name(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_name(stmt, index));
+            return _imp.sqlite3_column_name(stmt, index);
         }
 
-        static public string sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_origin_name(stmt, index));
+            return _imp.sqlite3_column_origin_name(stmt, index);
         }
 
-        static public string sqlite3_column_table_name(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_table_name(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_table_name(stmt, index));
+            return _imp.sqlite3_column_table_name(stmt, index);
         }
 
-        static public string sqlite3_column_text(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_text(stmt, index));
+            return _imp.sqlite3_column_text(stmt, index);
         }
 
         static public int sqlite3_column_count(sqlite3_stmt stmt)
@@ -1030,9 +1085,9 @@ namespace SQLitePCL
             return _imp.sqlite3_column_type(stmt, index);
         }
 
-        static public string sqlite3_column_decltype(sqlite3_stmt stmt, int index)
+        static public ReadOnlySpan<byte> sqlite3_column_decltype(sqlite3_stmt stmt, int index)
         {
-            return util.from_utf8(_imp.sqlite3_column_decltype(stmt, index));
+            return _imp.sqlite3_column_decltype(stmt, index);
         }
 
         static public sqlite3_backup sqlite3_backup_init(sqlite3 destDb, string destName, sqlite3 sourceDb, string sourceName)
@@ -1124,14 +1179,19 @@ namespace SQLitePCL
             return _imp.sqlite3_wal_checkpoint_v2(db, dbName.to_utf8_with_z(), eMode, out logSize, out framesCheckPointed);
         }
 
-        static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data)
+        static public int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer f, object user_data)
         {
-            delegate_authorizer_low cb =
+            return _imp.sqlite3_set_authorizer(db, f, user_data);
+        }
+
+        static public int sqlite3_set_authorizer(sqlite3 db, strdelegate_authorizer authorizer, object user_data)
+        {
+            delegate_authorizer cb =
             (ob, a, p0, p1, dbname, v) =>
             {
                 return authorizer(ob, a, util.from_utf8(p0), util.from_utf8(p1), util.from_utf8(dbname), util.from_utf8(v));
             };
-            return _imp.sqlite3_set_authorizer(db, cb, user_data);
+            return sqlite3_set_authorizer(db, cb, user_data);
         }
 
         static public int sqlite3_win32_set_directory(int typ, string path)

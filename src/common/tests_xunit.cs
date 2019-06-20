@@ -383,7 +383,7 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_prepare_v2_overload()
         {
-            var libversion = raw.sqlite3_libversion();
+            var libversion = raw.sqlite3_libversion().utf8_to_string();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 // prepare a stmt with raw, not ugly, no tail provided
@@ -408,7 +408,7 @@ namespace SQLitePCL.Tests
         public void test_prepare_v3_overload()
         {
             // identical to v2 version of this test
-            var libversion = raw.sqlite3_libversion();
+            var libversion = raw.sqlite3_libversion().utf8_to_string();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 // prepare a stmt with raw, not ugly, no tail provided
@@ -432,7 +432,7 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_prepare_v3()
         {
-            var libversion = raw.sqlite3_libversion();
+            var libversion = raw.sqlite3_libversion().utf8_to_string();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 using (sqlite3_stmt stmt = db.prepare_v3("SELECT sqlite_version()", 0))
@@ -447,11 +447,11 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_libversion()
         {
-            string sourceid = raw.sqlite3_sourceid();
+            string sourceid = raw.sqlite3_sourceid().utf8_to_string();
             Assert.True(sourceid != null);
             Assert.True(sourceid.Length > 0);
 
-            string libversion = raw.sqlite3_libversion();
+            string libversion = raw.sqlite3_libversion().utf8_to_string();
             Assert.True(libversion != null);
             Assert.True(libversion.Length > 0);
             Assert.Equal('3', libversion[0]);
@@ -553,7 +553,7 @@ namespace SQLitePCL.Tests
                 }
 
                 int count_cb = 0;
-                delegate_exec cb =
+                strdelegate_exec cb =
                     (user_data, values, names) =>
                     {
                         count_cb++;
@@ -645,7 +645,7 @@ namespace SQLitePCL.Tests
             int i = 0;
             while (true)
             {
-                string s = raw.sqlite3_compileoption_get(i++);
+                string s = raw.sqlite3_compileoption_get(i++).utf8_to_string();
                 if (s == null)
                 {
                     break;
@@ -1183,7 +1183,7 @@ namespace SQLitePCL.Tests
             {
                 var data = new Object();
 
-                delegate_authorizer authorizer =
+                strdelegate_authorizer authorizer =
                     (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
                         {
                             Assert.Equal(data, user_data);
@@ -1222,7 +1222,7 @@ namespace SQLitePCL.Tests
                 db.exec("SELECT * FROM foo;");
                 db.exec("CREATE VIEW TEST_VIEW AS SELECT * FROM foo;");
 
-                delegate_authorizer view_authorizer =
+                strdelegate_authorizer view_authorizer =
                     (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
                         {
                             switch (action_code)
@@ -1243,7 +1243,7 @@ namespace SQLitePCL.Tests
                 raw.sqlite3_set_authorizer(db, view_authorizer, data);
                 db.exec("SELECT * FROM TEST_VIEW;");
 
-                delegate_authorizer denied_authorizer =
+                strdelegate_authorizer denied_authorizer =
                     (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
                         {
                             return raw.SQLITE_DENY;
