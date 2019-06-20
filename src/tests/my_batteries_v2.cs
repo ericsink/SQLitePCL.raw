@@ -21,41 +21,47 @@ using System.IO;
 
 namespace SQLitePCL
 {
-#if false
-	class GetFunctionPointer_dotnetcore3 : IGetFunctionPointer
-	{
-		readonly IntPtr _dll;
-		public GetFunctionPointer_dotnetcore3(IntPtr dll)
-		{
-			_dll = dll;
-		}
-
-		public IntPtr GetFunctionPointer(string name)
-		{
-            if (System.Runtime.InteropServices.NativeLibrary.TryGetExport(_dll, name, out var f))
-            {
-                //System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
-                return f;
-            }
-            else
-            {
-                return IntPtr.Zero;
-            }
-		}
-	}
-#endif
-
     public static class Batteries_V2
     {
+        class MyGetFunctionPointer : IGetFunctionPointer
+        {
+            readonly IntPtr _dll;
+            public MyGetFunctionPointer(IntPtr dll)
+            {
+                _dll = dll;
+            }
+
+            public IntPtr GetFunctionPointer(string name)
+            {
+                if (NativeLibrary.TryGetExport(_dll, name, out var f))
+                {
+                    //System.Console.WriteLine("{0}.{1} : {2}", _dll, name, f);
+                    return f;
+                }
+                else
+                {
+                    return IntPtr.Zero;
+                }
+            }
+        }
+        static IGetFunctionPointer MakeDynamic(string name, int flags)
+        {
+            // TODO should this be GetExecutingAssembly()?
+            var assy = typeof(SQLitePCL.raw).Assembly;
+            var dll = SQLitePCL.NativeLibrary.Load(name, assy, flags);
+            var gf = new MyGetFunctionPointer(dll);
+            return gf;
+        }
+        static void DoDynamic_cdecl(string name, int flags)
+        {
+            var gf = MakeDynamic(name, flags);
+            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
+            SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
+        }
+
         public static void Init()
         {
-#if false
-            var dll = System.Runtime.InteropServices.NativeLibrary.Load("e_sqlite3");
-            var gf = new GetFunctionPointer_dotnetcore3(dll);
-            SQLitePCL.Setup.Load(gf);
-#else
-            SQLitePCL.Setup.Load("e_sqlite3", s => File.AppendAllLines("log.txt", new string[] { s }));
-#endif
+		    DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_PLAIN);
         }
     }
 }
