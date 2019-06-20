@@ -7,9 +7,6 @@ finish writing v2 changes page
 
 --
 
-sqlite3_exec in the provider probably shouldn't
-alloc an array of IntPtr.  return them as a span.
-
 sqlite3_create_window_function
 
 sqlite3_normalized_sql
@@ -160,12 +157,8 @@ the last byte in a span is NOT a zero.
 investigate GC.AddMemoryPressure()
 
 might want bind_blob to allow specifying something
-other than transient.  current implementation makes
-a copy of the blob every time.
-
-in the raw layer, how to distinguish things that
-return a string vs things that return a utf8
-byte span?  C# doesn't do overloads on return type.
+other than transient.  in the current implementation,
+sqlite makes a copy of the blob every time.
 
 investigate new utf8 things in System.Memory pkg
 
