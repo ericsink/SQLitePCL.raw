@@ -45,7 +45,8 @@ added in 3.23.
 
 need tests for bundle_green ?
 
-winsqlite3 xunit with net461 test aborted.
+winsqlite3 xunit with net461 test aborted.  works
+fine with fake_xunit.
 
 is the winsqlite3 bundle worth the trouble?
 
@@ -85,13 +86,21 @@ and pass null.
 need a test that actually uses the prepare flags
 for sqlite3_prepare_v3, like persistent
 
-restore those win32 set directory calls somewhere.
+restore those win32 set directory calls somewhere?
 but we don't want ifdef down in raw or provider.
 maybe in batteries?  problem is they prevent a
 sqlite3_config() call.
 
 		NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
 		NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+
+--
+
+so without a z, ROS byte can be 3 things:
+
+null -- string null
+length 0 -- empty string
+len > 0 -- string
 
 --
 
