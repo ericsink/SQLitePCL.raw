@@ -90,6 +90,10 @@ namespace SQLitePCL
             {
                 return null;
             }
+            if (p.Length == 0)
+            {
+                return "";
+            }
             unsafe
             {
                 fixed (byte* q = p)
