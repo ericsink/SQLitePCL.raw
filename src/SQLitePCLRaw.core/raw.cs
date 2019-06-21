@@ -33,6 +33,8 @@ namespace SQLitePCL
     public delegate void strdelegate_update(object user_data, int type, string database, string table, long rowid);
     public delegate void strdelegate_log(object user_data, int errorCode, string msg);
     public delegate int strdelegate_authorizer(object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view);
+    public delegate void strdelegate_trace(object user_data, string s);
+    public delegate void strdelegate_profile(object user_data, string statement, long ns);
     public delegate int strdelegate_exec(object user_data, string[] values, string[] names);
 
     public static class raw
@@ -399,6 +401,36 @@ namespace SQLitePCL
         static public int sqlite3_trace_v2(sqlite3 db, uint uMask, delegate_trace_v2 f, object v)
         {
             return _imp.sqlite3_trace_v2(db, uMask, f, v);
+        }
+
+        static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
+        {
+            _imp.sqlite3_trace(db, f, v);
+        }
+
+        static public void sqlite3_trace(sqlite3 db, strdelegate_trace f, object v)
+        {
+            delegate_trace cb =
+            (ob, sp) =>
+            {
+                f(v, util.from_utf8(sp));
+            };
+            sqlite3_trace(db, cb, v);
+        }
+
+        static public void sqlite3_profile(sqlite3 db, delegate_profile f, object v)
+        {
+            _imp.sqlite3_profile(db, f, v);
+        }
+
+        static public void sqlite3_profile(sqlite3 db, strdelegate_profile f, object v)
+        {
+            delegate_profile cb =
+            (ob, sp, ns) =>
+            {
+                f(v, util.from_utf8(sp), ns);
+            };
+            sqlite3_profile(db, cb, v);
         }
 
         static public void sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)

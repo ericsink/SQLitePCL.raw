@@ -168,6 +168,8 @@ namespace SQLitePCL
 		public IDisposable rollback;
 		public IDisposable commit;
 		public IDisposable trace_v2;
+		public IDisposable trace;
+		public IDisposable profile;
 		public IDisposable progress;
 		public IDisposable authorizer;
 
@@ -238,6 +240,8 @@ namespace SQLitePCL
 			if (rollback!=null) rollback.Dispose();
 			if (commit!=null) commit.Dispose();
 			if (trace_v2!=null) trace_v2.Dispose();
+			if (trace!=null) trace.Dispose();
+			if (profile!=null) profile.Dispose();
 			if (progress!=null) progress.Dispose();
 			if (authorizer!=null) authorizer.Dispose();
 		}
@@ -337,6 +341,54 @@ namespace SQLitePCL
         public void call(uint t, IntPtr p, IntPtr x)
         {
             _func(t, _user_data, p, x);
+        }
+    }
+
+    public class trace_hook_info
+    {
+        private delegate_trace _func;
+        private object _user_data;
+
+        public trace_hook_info(delegate_trace func, object v)
+        {
+            _func = func;
+            _user_data = v;
+        }
+
+        public static trace_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            trace_hook_info hi = h.Target as trace_hook_info;
+            return hi;
+        }
+
+        public void call(ReadOnlySpan<byte> s)
+        {
+            _func(_user_data, s);
+        }
+    }
+
+    public class profile_hook_info
+    {
+        private delegate_profile _func;
+        private object _user_data;
+
+        public profile_hook_info(delegate_profile func, object v)
+        {
+            _func = func;
+            _user_data = v;
+        }
+
+        public static profile_hook_info from_ptr(IntPtr p)
+        {
+            GCHandle h = (GCHandle) p;
+            profile_hook_info hi = h.Target as profile_hook_info;
+            return hi;
+        }
+
+        public void call(ReadOnlySpan<byte> s, long elapsed)
+        {
+            _func(_user_data, s, elapsed);
         }
     }
 

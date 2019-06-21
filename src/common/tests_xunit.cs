@@ -2216,11 +2216,10 @@ namespace SQLitePCL.Tests
             w.count_updates++;
         }
 
-        private static int my_trace_hook(uint t, object v, IntPtr p, IntPtr x)
+        private static void my_trace_hook(object v, string sql)
         {
             work w = v as work;
             w.count_traces++;
-            return 0;
         }
 
         [Fact]
@@ -2253,7 +2252,7 @@ namespace SQLitePCL.Tests
                 db.commit_hook(new delegate_commit(my_commit_hook), w);
                 db.rollback_hook(new delegate_rollback(my_rollback_hook), w);
                 db.update_hook(my_update_hook, w);
-                db.trace_v2(raw.SQLITE_TRACE_STMT, my_trace_hook, w);
+                db.trace(my_trace_hook, w);
 
                 GC.Collect();
 
@@ -2291,6 +2290,162 @@ namespace SQLitePCL.Tests
                 Assert.Equal(1, w.count_rollbacks);
                 Assert.Equal(2, w.count_updates);
                 Assert.Equal(5, w.count_traces);
+
+            }
+        }
+
+        [Fact]
+        public void test_hooks_2()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var count_commits = 0;
+
+                db.commit_hook(
+                    x =>
+                    {
+                        count_commits++;
+                        return 0;
+                    },
+                    null);
+
+                GC.Collect();
+
+                db.exec("CREATE TABLE foo (x int);");
+
+                GC.Collect();
+
+                Assert.Equal(1, count_commits);
+
+                GC.Collect();
+
+                db.exec("INSERT INTO foo (x) VALUES (1);");
+
+                Assert.Equal(2, count_commits);
+
+                db.exec("BEGIN TRANSACTION;");
+
+                GC.Collect();
+
+                Assert.Equal(2, count_commits);
+
+                db.exec("INSERT INTO foo (x) VALUES (2);");
+
+                Assert.Equal(2, count_commits);
+
+                db.exec("ROLLBACK TRANSACTION;");
+
+                Assert.Equal(2, count_commits);
+
+            }
+        }
+
+    }
+
+    [Collection("Init")]
+    public class class_test_hooks_profiles
+    {
+        private class work
+        {
+            public int count_commits;
+            public int count_rollbacks;
+            public int count_updates;
+            public int count_profiles;
+        }
+
+        private static int my_commit_hook(object v)
+        {
+            work w = v as work;
+            w.count_commits++;
+            return 0;
+        }
+
+        private static void my_rollback_hook(object v)
+        {
+            work w = v as work;
+            w.count_rollbacks++;
+        }
+
+        private static void my_update_hook(object v, int typ, string db, string tbl, long rowid)
+        {
+            work w = v as work;
+            w.count_updates++;
+        }
+
+        private static void my_profile_hook(object v, string sql, long ns)
+        {
+            work w = v as work;
+            w.count_profiles++;
+        }
+
+        [Fact]
+        public void test_rollback_hook_on_close_db()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                work w = new work();
+
+                db.rollback_hook(my_rollback_hook, w);
+
+                GC.Collect();
+
+                db.exec("BEGIN TRANSACTION;");
+                db.exec("CREATE TABLE foo (x int);");
+            }
+        }
+
+        [Fact]
+        public void test_hooks()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                work w = new work();
+                Assert.Equal(0, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(0, w.count_updates);
+                Assert.Equal(0, w.count_profiles);
+
+                db.commit_hook(new delegate_commit(my_commit_hook), w);
+                db.rollback_hook(new delegate_rollback(my_rollback_hook), w);
+                db.update_hook(my_update_hook, w);
+                db.profile(my_profile_hook, w);
+
+                GC.Collect();
+
+                db.exec("CREATE TABLE foo (x int);");
+
+                Assert.Equal(1, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(0, w.count_updates);
+                Assert.Equal(1, w.count_profiles);
+
+                db.exec("INSERT INTO foo (x) VALUES (1);");
+
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(1, w.count_updates);
+                Assert.Equal(2, w.count_profiles);
+
+                db.exec("BEGIN TRANSACTION;");
+
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(1, w.count_updates);
+                Assert.Equal(3, w.count_profiles);
+
+                db.exec("INSERT INTO foo (x) VALUES (2);");
+
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(0, w.count_rollbacks);
+                Assert.Equal(2, w.count_updates);
+                Assert.Equal(4, w.count_profiles);
+
+                db.exec("ROLLBACK TRANSACTION;");
+
+                Assert.Equal(2, w.count_commits);
+                Assert.Equal(1, w.count_rollbacks);
+                Assert.Equal(2, w.count_updates);
+                Assert.Equal(5, w.count_profiles);
 
             }
         }

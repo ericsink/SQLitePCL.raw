@@ -220,6 +220,16 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_trace_v2(db, mask, f, v);
         }
 
+        public static void trace(this sqlite3 db, strdelegate_trace f, object v)
+        {
+            raw.sqlite3_trace(db, f, v);
+        }
+
+        public static void profile(this sqlite3 db, strdelegate_profile f, object v)
+        {
+            raw.sqlite3_profile(db, f, v);
+        }
+
         public static void update_hook(this sqlite3 db, strdelegate_update f, object v)
         {
             raw.sqlite3_update_hook(db, f, v);

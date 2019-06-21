@@ -7,6 +7,12 @@ finish writing v2 changes page
 
 --
 
+need higher level typed delegate overloads for
+sqlite3_trace_v2().  but problem with mapping
+IntPtr (in the callback) to the actual safehandle.
+
+--
+
 sqlite3_create_window_function
 
 sqlite3_normalized_sql
