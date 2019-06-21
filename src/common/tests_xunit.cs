@@ -46,6 +46,12 @@ namespace SQLitePCL.Tests
     public class test_cases
     {
         [Fact]
+        public void test_native_library_name()
+        {
+            Assert.NotNull(raw.GetNativeLibraryName());
+        }
+
+        [Fact]
         public void test_bind_parameter_index()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -2354,6 +2360,7 @@ namespace SQLitePCL.Tests
         {
             if (is_sqlcipher())
             {
+                Assert.True(raw.GetNativeLibraryName().Contains("sqlcipher"));
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -2398,6 +2405,10 @@ namespace SQLitePCL.Tests
                 Assert.True(false == check_sum("wrong phrase"));
 
                 ugly.vfs__delete(null, name, 1);
+            }
+            else
+            {
+                Assert.False(raw.GetNativeLibraryName().Contains("sqlcipher"));
             }
         }
 

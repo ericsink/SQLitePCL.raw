@@ -64,13 +64,13 @@ namespace SQLitePCL
         static void DoDynamic_cdecl(string name, int flags)
         {
             var gf = MakeDynamic(name, flags);
-            SQLitePCL.SQLite3Provider_Cdecl.Setup(gf);
+            SQLitePCL.SQLite3Provider_Cdecl.Setup(name, gf);
             SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
         }
         static void DoDynamic_stdcall(string name, int flags)
         {
             var gf = MakeDynamic(name, flags);
-            SQLitePCL.SQLite3Provider_StdCall.Setup(gf);
+            SQLitePCL.SQLite3Provider_StdCall.Setup(name, gf);
             SQLitePCL.raw.SetProvider(new SQLite3Provider_StdCall());
         }
 #endif

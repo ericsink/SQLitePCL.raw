@@ -65,6 +65,11 @@ namespace SQLitePCL
             _frozen = b;
         }
 
+        static public string GetNativeLibraryName()
+        {
+            return _imp.GetNativeLibraryName();
+        }
+
         public const int SQLITE_UTF8 = 1;
         public const int SQLITE_UTF16LE = 2;
         public const int SQLITE_UTF16BE = 3;

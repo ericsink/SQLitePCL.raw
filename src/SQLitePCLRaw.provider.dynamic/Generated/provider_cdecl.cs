@@ -35,10 +35,16 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 
-		public static void Setup(IGetFunctionPointer gf)
+        private static string _native_library_name;
+		public static void Setup(string name, IGetFunctionPointer gf)
 		{
+            _native_library_name = name;
 			NativeMethods.Setup(gf);
 		}
+        string ISQLite3Provider.GetNativeLibraryName()
+        {
+            return _native_library_name;
+        }
 
         bool my_streq(IntPtr p, IntPtr q, int len)
         {

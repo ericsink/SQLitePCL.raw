@@ -35,6 +35,10 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.StdCall;
 
+        string ISQLite3Provider.GetNativeLibraryName()
+        {
+            return "winsqlite3";
+        }
 
         bool my_streq(IntPtr p, IntPtr q, int len)
         {

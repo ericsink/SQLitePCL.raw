@@ -80,6 +80,8 @@ namespace SQLitePCL
     /// </summary>
     public interface ISQLite3Provider
     {
+        string GetNativeLibraryName();
+
         int sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db);
         int sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs);
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
