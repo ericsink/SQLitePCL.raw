@@ -275,7 +275,7 @@ public static class gen
         XmlWriter f
         )
     {
-        f.WriteAttributeString("minClientVersion", "2.8.1"); // TODO this is wrong
+        f.WriteAttributeString("minClientVersion", "2.12"); // TODO not sure this is right
 
         f.WriteElementString("id", id);
         f.WriteElementString("title", id);
