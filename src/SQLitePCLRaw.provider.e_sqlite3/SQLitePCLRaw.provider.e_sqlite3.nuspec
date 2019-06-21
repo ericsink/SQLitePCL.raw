@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--Automatically generated-->
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata minClientVersion="2.8.1">
+  <metadata minClientVersion="2.12">
     <id>SQLitePCLRaw.provider.e_sqlite3</id>
     <title>SQLitePCLRaw.provider.e_sqlite3</title>
     <version>$version$</version>
