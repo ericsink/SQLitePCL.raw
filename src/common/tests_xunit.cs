@@ -52,6 +52,44 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_prepare_tail_span()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var s = "CREATE TABLE foo (x int)";
+
+                int len = Encoding.UTF8.GetByteCount(s);
+                var ba = new byte[len + 1];
+                var wrote = Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+                ba[wrote] = 0;
+
+                var rc = raw.sqlite3_prepare_v2(db, ba, out var stmt, out var tail);
+                using (stmt)
+                {
+                    Assert.Equal(0, rc);
+                    Assert.Equal(1, tail.Length);
+                    Assert.Equal(0, tail[0]);
+                }
+            }
+        }
+
+        [Fact]
+        public void test_prepare_tail_string()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var s = "CREATE TABLE foo (x int)";
+
+                var rc = raw.sqlite3_prepare_v2(db, s, out var stmt, out var tail);
+                using (stmt)
+                {
+                    Assert.Equal(0, rc);
+                    Assert.Equal(0, tail.Length);
+                }
+            }
+        }
+
+        [Fact]
         public void test_bind_parameter_index()
         {
             using (sqlite3 db = ugly.open(":memory:"))
