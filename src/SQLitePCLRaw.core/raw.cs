@@ -671,7 +671,9 @@ namespace SQLitePCL
                 }
                 else
                 {
-                    tail = util.from_utf8(rem);
+                    // unlike most strings that come from SQLite, this one has a zero terminator,
+                    // because it is just a slice of the span we passed in, which had one.
+                    tail = util.from_utf8_with_z(rem);
                 }
             }
             return rc;
@@ -721,7 +723,9 @@ namespace SQLitePCL
                 }
                 else
                 {
-                    tail = util.from_utf8(rem);
+                    // unlike most strings that come from SQLite, this one has a zero terminator,
+                    // because it is just a slice of the span we passed in, which had one.
+                    tail = util.from_utf8_with_z(rem);
                 }
             }
             return rc;

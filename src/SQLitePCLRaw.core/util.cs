@@ -102,6 +102,29 @@ namespace SQLitePCL
                 }
             }
         }
+
+        public static string from_utf8_with_z(ReadOnlySpan<byte> p)
+        {
+            if (p == null)
+            {
+                return null;
+            }
+            if (p.Length == 0)
+            {
+                throw new Exception("span is zero length but was supposed to have a zero terminator");
+            }
+            if (p[p.Length - 1] != 0)
+            {
+                throw new Exception("span was supposed to have a zero terminator but last byte is not zero");
+            }
+            unsafe
+            {
+                fixed (byte* q = p)
+                {
+                    return Encoding.UTF8.GetString(q, p.Length - 1);
+                }
+            }
+        }
     }
 
 }
