@@ -1712,6 +1712,46 @@ namespace SQLitePCL.Tests
             }
         }
 
+        [Fact]
+        public void test_collation_remove()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_collation("e2a", null, my_collation);
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+                {
+                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
+                    Assert.Equal("b", top);
+                }
+                GC.Collect();
+                {
+                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
+                    Assert.Equal("e", top);
+                }
+                GC.Collect();
+                {
+                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
+                    Assert.Equal("e", top);
+                }
+
+                db.create_collation("e2a", null, null);
+
+                {
+                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
+                    Assert.Equal("b", top);
+                }
+                {
+                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
+                    Assert.Equal("b", top);
+                }
+            }
+        }
+
         private static void setup(sqlite3 db)
         {
             db.exec("CREATE TABLE foo (x text COLLATE e2a);");
