@@ -626,7 +626,7 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
 			int rc = NativeMethods.sqlite3_create_function_v2(db, name, nargs, arg4, h, cb, null, null, null);
-			if (rc == 0)
+			if ((rc == 0) && (cb != null))
 			{
                 info.AddScalarFunction(name, nargs, h.ForDispose());
 			}
@@ -739,7 +739,7 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
 			int rc = NativeMethods.sqlite3_create_function_v2(db, name, nargs, arg4, h, null, cb_step, cb_final, null);
-			if (rc == 0)
+			if ((rc == 0) && (cb_step != null))
 			{
                 info.AddAggFunction(name, nargs, h.ForDispose());
 			}
@@ -789,7 +789,7 @@ namespace SQLitePCL
 			var h = new hook_handle(hi);
             // 1 is SQLITE_UTF8
 			int rc = NativeMethods.sqlite3_create_collation(db, name, 1, h, cb);
-			if (rc == 0)
+			if ((rc == 0) && (cb != null))
 			{
                 info.AddCollation(name, h.ForDispose());
 			}

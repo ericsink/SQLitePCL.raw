@@ -370,11 +370,19 @@ namespace SQLitePCL
 
         static public int sqlite3_config_log(strdelegate_log f, object v)
         {
-            delegate_log cb =
-            (ob, e, msg) =>
+            delegate_log cb;
+            if (f == null)
             {
-                f(ob, e, util.from_utf8(msg));
-            };
+                cb = null;
+            }
+            else
+            {
+                cb =
+                (ob, e, msg) =>
+                {
+                    f(ob, e, util.from_utf8(msg));
+                };
+            }
             return sqlite3_config_log(cb, v);
         }
 
@@ -410,11 +418,19 @@ namespace SQLitePCL
 
         static public void sqlite3_trace(sqlite3 db, strdelegate_trace f, object v)
         {
-            delegate_trace cb =
-            (ob, sp) =>
+            delegate_trace cb;
+            if (f == null)
             {
-                f(v, util.from_utf8(sp));
-            };
+                cb = null;
+            }
+            else
+            {
+                cb =
+                (ob, sp) =>
+                {
+                    f(v, util.from_utf8(sp));
+                };
+            }
             sqlite3_trace(db, cb, v);
         }
 
@@ -425,11 +441,19 @@ namespace SQLitePCL
 
         static public void sqlite3_profile(sqlite3 db, strdelegate_profile f, object v)
         {
-            delegate_profile cb =
-            (ob, sp, ns) =>
+            delegate_profile cb;
+            if (f == null)
             {
-                f(v, util.from_utf8(sp), ns);
-            };
+                cb = null;
+            }
+            else
+            {
+                cb =
+                (ob, sp, ns) =>
+                {
+                    f(v, util.from_utf8(sp), ns);
+                };
+            }
             sqlite3_profile(db, cb, v);
         }
 
@@ -445,23 +469,38 @@ namespace SQLitePCL
 
         static public void sqlite3_update_hook(sqlite3 db, strdelegate_update f, object v)
         {
-            delegate_update cb =
-            (ob, typ, dbname, tbl, rowid) =>
+            delegate_update cb;
+            if (f == null)
             {
-                f(ob, typ, util.from_utf8(dbname), util.from_utf8(tbl), rowid);
-            };
+                cb = null;
+            }
+            else
+            {
+                cb =
+                (ob, typ, dbname, tbl, rowid) =>
+                {
+                    f(ob, typ, util.from_utf8(dbname), util.from_utf8(tbl), rowid);
+                };
+            }
             sqlite3_update_hook(db, cb, v);
         }
 
         static public int sqlite3_create_collation(sqlite3 db, string name, object v, strdelegate_collation f)
         {
-            delegate_collation cb = 
-            (ob, s1, s2) =>
-            {
-                return f(ob, util.from_utf8(s1), util.from_utf8(s2));
-            };
-
             var p = name.to_utf8_with_z();
+            delegate_collation cb;
+            if (f == null)
+            {
+                cb = null;
+            }
+            else
+            {
+                cb = 
+                (ob, s1, s2) =>
+                {
+                    return f(ob, util.from_utf8(s1), util.from_utf8(s2));
+                };
+            }
             return _imp.sqlite3_create_collation(db, p, v, cb);
         }
 
@@ -1225,13 +1264,21 @@ namespace SQLitePCL
             return _imp.sqlite3_set_authorizer(db, f, user_data);
         }
 
-        static public int sqlite3_set_authorizer(sqlite3 db, strdelegate_authorizer authorizer, object user_data)
+        static public int sqlite3_set_authorizer(sqlite3 db, strdelegate_authorizer f, object user_data)
         {
-            delegate_authorizer cb =
-            (ob, a, p0, p1, dbname, v) =>
+            delegate_authorizer cb;
+            if (f == null)
             {
-                return authorizer(ob, a, util.from_utf8(p0), util.from_utf8(p1), util.from_utf8(dbname), util.from_utf8(v));
-            };
+                cb = null;
+            }
+            else
+            {
+                cb =
+                (ob, a, p0, p1, dbname, v) =>
+                {
+                    return f(ob, a, util.from_utf8(p0), util.from_utf8(p1), util.from_utf8(dbname), util.from_utf8(v));
+                };
+            }
             return sqlite3_set_authorizer(db, cb, user_data);
         }
 

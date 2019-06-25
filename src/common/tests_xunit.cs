@@ -1746,8 +1746,17 @@ namespace SQLitePCL.Tests
                     Assert.Equal("b", top);
                 }
                 {
-                    string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
-                    Assert.Equal("b", top);
+                    bool fail;
+                    try
+                    {
+                        string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
+                        fail = false;
+                    }
+                    catch (ugly.sqlite3_exception)
+                    {
+                        fail = true;
+                    }
+                    Assert.True(fail);
                 }
             }
         }
@@ -1901,6 +1910,19 @@ namespace SQLitePCL.Tests
                 GC.Collect();
                 long c2 = db.query_scalar<long>("SELECT cube(?);", val);
                 Assert.Equal(c2, val * val * val);
+
+                db.create_function("cube", 1, null, null);
+				bool fail;
+				try
+				{
+					var c3 = db.query_scalar<long>("SELECT cube(?);", 7);
+					fail = false;
+				}
+				catch (ugly.sqlite3_exception)
+				{
+					fail = true;
+				}
+				Assert.True(fail);
             }
         }
 
