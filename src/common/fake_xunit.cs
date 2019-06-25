@@ -115,6 +115,20 @@ namespace Xunit
             count++;
             if (e.Count() != 1) throw new Exception();
         }
+        public static T Throws<T>(Action a)
+            where T : System.Exception
+        {
+            count++;
+            try
+            {
+                a();
+            }
+            catch (T e)
+            {
+                return e;
+            }
+            throw new Exception();
+        }
     }
 
     public static class Run

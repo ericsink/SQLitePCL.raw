@@ -46,6 +46,34 @@ namespace SQLitePCL.Tests
     public class test_cases
     {
         [Fact]
+        public void CreateCollation_nocase()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                db.create_collation("MY_NOCASE", null, (v, s1, s2) => string.Compare(s1, s2, StringComparison.OrdinalIgnoreCase));
+
+                var b = db.query_scalar<long>("SELECT 'Νικοσ' = 'ΝΙΚΟΣ' COLLATE MY_NOCASE;");
+                Assert.True(b != 0);
+            }
+        }
+
+        [Fact]
+        public void CreateCollation_with_null_comparer_works()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                db.create_collation("MY_NOCASE", null, (v, s1, s2) => string.Compare(s1, s2, StringComparison.OrdinalIgnoreCase));
+                db.create_collation("MY_NOCASE", null, null);
+
+                var ex = Assert.Throws<ugly.sqlite3_exception>(
+                    () => db.query_scalar<long>("SELECT 'Νικοσ' = 'ΝΙΚΟΣ' COLLATE MY_NOCASE;"));
+
+                Assert.Equal(raw.SQLITE_ERROR, ex.errcode);
+                Assert.Equal("no such collation sequence: MY_NOCASE", ex.errmsg);
+            }
+        }
+
+        [Fact]
         public void test_native_library_name()
         {
             Assert.NotNull(raw.GetNativeLibraryName());
