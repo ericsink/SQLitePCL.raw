@@ -46,6 +46,134 @@ namespace SQLitePCL.Tests
     public class test_cases
     {
         [Fact]
+        public void test_authorizer_with_unregister()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+
+                db.exec("CREATE VIEW TEST_VIEW AS SELECT * FROM foo;");
+
+                strdelegate_authorizer denied_authorizer =
+                    (object user_data, int action_code, string param0, string param1, string dbName, string inner_most_trigger_or_view) =>
+                        {
+                            return raw.SQLITE_DENY;
+                        };
+
+                raw.sqlite3_set_authorizer(db, denied_authorizer, null);
+
+                var e = Assert.Throws<ugly.sqlite3_exception>(
+                    () => db.exec("SELECT * FROM TEST_VIEW;")
+                    );
+                Assert.Equal(raw.SQLITE_AUTH, e.errcode);
+
+                strdelegate_authorizer no_auth = null;
+                raw.sqlite3_set_authorizer(db, no_auth, null);
+                db.exec("SELECT * FROM TEST_VIEW;");
+            }
+        }
+
+        [Fact]
+        public void test_rollback_hook_with_unregister()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                int count = 0;
+                db.rollback_hook(v => count += 1, null);
+                Assert.Equal(0, count);
+                db.exec("CREATE TABLE foo (b int);");
+                Assert.Equal(0, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(0, count);
+                db.rollback_hook(null, null);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 42);
+                Assert.Equal(0, count);
+
+                db.rollback_hook(v => count += 1, null);
+                db.exec("BEGIN TRANSACTION");
+                Assert.Equal(0, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(0, count);
+                db.exec("ROLLBACK");
+                Assert.Equal(1, count);
+
+                db.rollback_hook(null, null);
+            }
+        }
+
+        [Fact]
+        public void test_update_hook_with_unregister()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                int count = 0;
+                db.update_hook((v, typ, dbname, tbl, rowid) => count += 1, null);
+                Assert.Equal(0, count);
+                db.exec("CREATE TABLE foo (b int);");
+                Assert.Equal(0, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(1, count);
+                db.update_hook(null, null);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 42);
+                Assert.Equal(1, count);
+            }
+        }
+
+        [Fact]
+        public void test_commit_hook_with_unregister()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                int count = 0;
+                db.commit_hook(v => { count++; return 0; }, null);
+                Assert.Equal(0, count);
+                db.exec("CREATE TABLE foo (b int);");
+                Assert.Equal(1, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(2, count);
+                db.commit_hook(null, null);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 42);
+                Assert.Equal(2, count);
+            }
+        }
+
+        [Fact]
+        public void test_trace_with_unregister()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                int count = 0;
+                db.trace((v, sql) => count += 1, null);
+                Assert.Equal(0, count);
+                db.exec("CREATE TABLE foo (b int);");
+                Assert.Equal(1, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(2, count);
+                db.trace(null, null);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 42);
+                Assert.Equal(2, count);
+            }
+        }
+
+        [Fact]
+        public void test_profile_with_unregister()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                int count = 0;
+                db.profile((v, sql, ns) => count += 1, null);
+                Assert.Equal(0, count);
+                db.exec("CREATE TABLE foo (b int);");
+                Assert.Equal(1, count);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 37);
+                Assert.Equal(2, count);
+                db.profile(null, null);
+                db.exec("INSERT INTO foo (b) VALUES (?)", 42);
+                Assert.Equal(2, count);
+            }
+        }
+
+        [Fact]
         public void CreateCollation_nocase()
         {
             using (var db = ugly.open(":memory:"))
