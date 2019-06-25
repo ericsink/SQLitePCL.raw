@@ -326,7 +326,7 @@ namespace SQLitePCL.Tests
                 }
 
                 byte[] blob3 = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob3.Length, len);
+                Assert.Equal(len, blob3.Length);
 
                 for (int i = 0; i < 50; i++)
                 {
@@ -800,18 +800,18 @@ namespace SQLitePCL.Tests
                     {
                         int errcode = db.errcode();
                         Assert.Equal(errcode, e.errcode);
-                        Assert.Equal(errcode, raw.SQLITE_CONSTRAINT);
+                        Assert.Equal(raw.SQLITE_CONSTRAINT, errcode);
 
-                        Assert.Equal(db.extended_errcode(), raw.SQLITE_CONSTRAINT_UNIQUE);
+                        Assert.Equal(raw.SQLITE_CONSTRAINT_UNIQUE, db.extended_errcode());
                     }
 
                     db.extended_result_codes(1);
 
                     {
                         int errcode = db.errcode();
-                        Assert.Equal(errcode, raw.SQLITE_CONSTRAINT_UNIQUE);
+                        Assert.Equal(raw.SQLITE_CONSTRAINT_UNIQUE, errcode);
 
-                        Assert.Equal(db.extended_errcode(), raw.SQLITE_CONSTRAINT_UNIQUE);
+                        Assert.Equal(raw.SQLITE_CONSTRAINT_UNIQUE, db.extended_errcode());
                     }
 
                     db.extended_result_codes(0);
@@ -871,34 +871,25 @@ namespace SQLitePCL.Tests
                 db.create_function("toobig", 0, null, toobig_func);
                 db.create_function("nomem", 0, null, nomem_func);
 
-                try
                 {
-                    db.exec("select errorcode();");
-                    Assert.True(false, "expected exception");
-                }
-                catch (ugly.sqlite3_exception e)
-                {
-                    Assert.Equal(e.errcode, code);
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => db.exec("select errorcode();")
+                        );
+                    Assert.Equal(code, e.errcode);
                 }
 
-                try
                 {
-                    db.exec("select toobig();");
-                    Assert.True(false, "expected exception");
-                }
-                catch (ugly.sqlite3_exception e)
-                {
-                    Assert.Equal(e.errcode, raw.SQLITE_TOOBIG);
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => db.exec("select toobig();")
+                        );
+                    Assert.Equal(raw.SQLITE_TOOBIG, e.errcode);
                 }
 
-                try
                 {
-                    db.exec("select nomem();");
-                    Assert.True(false, "expected exception");
-                }
-                catch (ugly.sqlite3_exception e)
-                {
-                    Assert.Equal(e.errcode, raw.SQLITE_NOMEM);
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => db.exec("select nomem();")
+                        );
+                    Assert.Equal(raw.SQLITE_NOMEM, e.errcode);
                 }
             }
         }
@@ -1029,25 +1020,8 @@ namespace SQLitePCL.Tests
 
             void should_throw(Action f, string err_should_contain)
             {
-                bool threw;
-                try
-                {
-                    f();
-                    threw = false;
-                }
-                catch (Exception e)
-                {
-                    if (e.ToString().Contains(err_should_contain))
-                    {
-                        threw = true;
-                    }
-                    else
-                    {
-                        // yeah, it threw, but not the error we were looking for
-                        threw = false;
-                    }
-                }
-                Assert.True(threw);
+                var e = Assert.Throws<Exception>(f);
+                Assert.True(e.ToString().Contains(err_should_contain));
             }
 
             var msg_should_contain = "is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true)";
@@ -1157,7 +1131,7 @@ namespace SQLitePCL.Tests
                     }
                 }
                 int c = db.query_scalar<int>("SELECT COUNT(*) FROM foo");
-                Assert.Equal(c, num);
+                Assert.Equal(num, c);
             }
         }
 
@@ -1323,15 +1297,10 @@ namespace SQLitePCL.Tests
 
                 raw.sqlite3_set_authorizer(db, denied_authorizer, data);
 
-                try
-                {
-                    db.exec("SELECT * FROM TEST_VIEW;");
-                    Assert.True(false);
-                }
-                catch (ugly.sqlite3_exception e)
-                {
-                    Assert.Equal(e.errcode, raw.SQLITE_AUTH);
-                }
+                var e = Assert.Throws<ugly.sqlite3_exception>(
+                    () => db.exec("SELECT * FROM TEST_VIEW;")
+                    );
+                Assert.Equal(raw.SQLITE_AUTH, e.errcode);
             }
         }
 
@@ -1412,7 +1381,7 @@ namespace SQLitePCL.Tests
                 {
                     stmt.step();
 
-                    Assert.Equal(stmt.db_handle(), db);
+                    Assert.Equal(db, stmt.db_handle());
 
                     Assert.Equal(32, stmt.column_int(0));
                     Assert.Equal(44, stmt.column_int64(1));
@@ -1426,7 +1395,7 @@ namespace SQLitePCL.Tests
                         Assert.Equal(b2[i], blob[i]);
                     }
 
-                    Assert.Equal(stmt.column_type(5), raw.SQLITE_NULL);
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(5));
 
                     Assert.Equal("x", stmt.column_name(0));
                     Assert.Equal("v", stmt.column_name(1));
@@ -1479,7 +1448,7 @@ namespace SQLitePCL.Tests
                     stmt.step();
 
                     Assert.Equal(44, stmt.column_int(0));
-                    Assert.Equal(stmt.column_type(1), raw.SQLITE_NULL);
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(1));
 
                     {
                         var v = stmt.column<int?>(0);
@@ -1496,7 +1465,7 @@ namespace SQLitePCL.Tests
                 {
                     stmt.step();
 
-                    Assert.Equal(stmt.column_type(0), raw.SQLITE_NULL);
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(0));
                     Assert.Equal(1.414, stmt.column_double(1));
 
                     {
@@ -1520,7 +1489,7 @@ namespace SQLitePCL.Tests
                     stmt.step();
 
                     Assert.Equal(0, stmt.column_int(0));
-                    Assert.Equal(stmt.column_type(1), raw.SQLITE_NULL);
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(1));
 
                     {
                         var v = stmt.column<int?>(0);
@@ -1548,16 +1517,12 @@ namespace SQLitePCL.Tests
                 {
                     stmt.step();
 
-                    var fail = false;
-                    try
-                    {
-                        var v = stmt.column<decimal>(0);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        fail = true;
-                    }
-                    Assert.True(fail);
+                    Assert.Throws<NotSupportedException>(
+                        () =>
+                        {
+                            var v = stmt.column<decimal>(0);
+                        }
+                        );
                 }
             }
         }
@@ -1646,15 +1611,10 @@ namespace SQLitePCL.Tests
                 raw.sqlite3_progress_handler(db, 1, handler, null);
                 using (sqlite3_stmt stmt = db.prepare("SELECT 1;"))
                 {
-                    try
-                    {
-                        stmt.step();
-                        Assert.True(false, "Expected sqlite3_exception");
-                    }
-                    catch (ugly.sqlite3_exception e)
-                    {
-                        Assert.Equal(raw.SQLITE_INTERRUPT, e.errcode);
-                    }
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => stmt.step()
+                        );
+                    Assert.Equal(raw.SQLITE_INTERRUPT, e.errcode);
                 }
 
                 // Fact that assigning null to the handler removes the progress handler.
@@ -1774,17 +1734,12 @@ namespace SQLitePCL.Tests
                     Assert.Equal("b", top);
                 }
                 {
-                    bool fail;
-                    try
-                    {
-                        string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
-                        fail = false;
-                    }
-                    catch (ugly.sqlite3_exception)
-                    {
-                        fail = true;
-                    }
-                    Assert.True(fail);
+                    Assert.Throws<ugly.sqlite3_exception>(
+                        () =>
+                        {
+                            string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE e2a ASC LIMIT 1;");
+                        }
+                        );
                 }
             }
         }
@@ -1923,7 +1878,7 @@ namespace SQLitePCL.Tests
         {
             Assert.Single(args);
             long x = args[0].value_int64();
-            Assert.Equal(x, val);
+            Assert.Equal(val, x);
             ctx.result_int64(x * x * x);
         }
 
@@ -1934,23 +1889,32 @@ namespace SQLitePCL.Tests
             {
                 db.create_function("cube", 1, null, cube);
                 long c = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c, val * val * val);
+                Assert.Equal(val * val * val, c);
                 GC.Collect();
                 long c2 = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c2, val * val * val);
+                Assert.Equal(val * val * val, c2);
+            }
+        }
+
+        [Fact]
+        public void test_cube_with_unregister()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("cube", 1, null, cube);
+                long c = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(val * val * val, c);
+                GC.Collect();
+                long c2 = db.query_scalar<long>("SELECT cube(?);", val);
+                Assert.Equal(val * val * val, c2);
 
                 db.create_function("cube", 1, null, null);
-				bool fail;
-				try
-				{
-					var c3 = db.query_scalar<long>("SELECT cube(?);", 7);
-					fail = false;
-				}
-				catch (ugly.sqlite3_exception)
-				{
-					fail = true;
-				}
-				Assert.True(fail);
+                Assert.Throws<ugly.sqlite3_exception>(
+                    () =>
+                    {
+                        var c3 = db.query_scalar<long>("SELECT cube(?);", 7);
+                    }
+                    );
             }
         }
 
@@ -1961,10 +1925,10 @@ namespace SQLitePCL.Tests
             {
                 db.create_function("cube", 1, raw.SQLITE_DETERMINISTIC, null, cube);
                 long c = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c, val * val * val);
+                Assert.Equal(val * val * val, c);
                 GC.Collect();
                 long c2 = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c2, val * val * val);
+                Assert.Equal(val * val * val, c2);
             }
         }
     }
@@ -1995,11 +1959,11 @@ namespace SQLitePCL.Tests
             {
                 db.create_function("cube", 1, null, cube_wrong);
                 long c = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c, val * 2);
+                Assert.Equal(val * 2, c);
                 GC.Collect();
                 db.create_function("Cube", 1, null, cube);
                 long c2 = db.query_scalar<long>("SELECT cube(?);", val);
-                Assert.Equal(c2, val * val * val);
+                Assert.Equal(val * val * val, c2);
             }
         }
     }
@@ -2033,10 +1997,10 @@ namespace SQLitePCL.Tests
                 db.create_function("foo", 1, null, mul_2);
                 db.create_function("foo", 2, null, mul);
                 long c = db.query_scalar<long>("SELECT foo(?);", val);
-                Assert.Equal(c, val * 2);
+                Assert.Equal(val * 2, c);
                 GC.Collect();
                 long c2 = db.query_scalar<long>("SELECT foo(?,?);", val, val2);
-                Assert.Equal(c2, val * val2);
+                Assert.Equal(val * val2, c2);
             }
         }
     }
@@ -2063,7 +2027,7 @@ namespace SQLitePCL.Tests
             {
                 db.create_function("makeblob", 1, null, makeblob);
                 byte[] c = db.query_scalar<byte[]>("SELECT makeblob(?);", val);
-                Assert.Equal(c.Length, val);
+                Assert.Equal(val, c.Length);
             }
         }
     }
