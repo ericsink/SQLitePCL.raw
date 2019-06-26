@@ -34,15 +34,65 @@ namespace SQLitePCL
     {
         readonly ReadOnlySpan<byte> sp;
 
-        public sz(string s)
-        {
-            var a = s.to_utf8_with_z();
-            sp = a;
-        }
-
         public ref readonly byte GetPinnableReference()
         {
             return ref sp.GetPinnableReference();
+        }
+
+        sz(ReadOnlySpan<byte> a)
+        {
+            if (a[a.Length - 1] != 0)
+            {
+                throw new ArgumentException("zero terminated string required");
+            }
+            sp = a;
+        }
+
+        public static sz FromString(string s)
+        {
+            return new sz(s.to_utf8_with_z());
+        }
+
+        unsafe static long my_strlen(byte* p)
+        {
+            var q = p;
+            while (*q != 0)
+            {
+                q++;
+            }
+            return q - p;
+        }
+
+        unsafe static ReadOnlySpan<byte> to_span(byte* p)
+        {
+            var len = (int) my_strlen(p);
+            return new ReadOnlySpan<byte>(p, len + 1);
+        }
+
+        unsafe static ReadOnlySpan<byte> to_span(IntPtr p)
+        {
+            return to_span((byte*) (p.ToPointer()));
+        }
+
+        unsafe public static sz FromPtr(byte* p)
+        {
+            return new sz(to_span(p));
+        }
+
+        public static sz FromIntPtr(IntPtr p)
+        {
+            return new sz(to_span(p));
+        }
+
+        public override string ToString()
+        {
+            unsafe
+            {
+                fixed (byte* q = sp)
+                {
+                    return Encoding.UTF8.GetString(q, sp.Length - 1);
+                }
+            }
         }
     }
 
@@ -108,6 +158,7 @@ namespace SQLitePCL
             }
             if (p.Length == 0)
             {
+                // assumes no zero terminator
                 return "";
             }
             unsafe

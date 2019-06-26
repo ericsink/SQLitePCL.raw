@@ -96,7 +96,7 @@ namespace SQLitePCL
         int sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> pathname, int syncDir);
 
         int sqlite3_threadsafe();
-        ReadOnlySpan<byte> sqlite3_libversion();
+        sz sqlite3_libversion();
         int sqlite3_libversion_number();
         ReadOnlySpan<byte> sqlite3_sourceid();
         long sqlite3_memory_used();

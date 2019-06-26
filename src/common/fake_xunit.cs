@@ -108,7 +108,7 @@ namespace Xunit
         public static void Equal(string expected, string actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected len {expected.Length} actual len {actual.Length} expected {expected} actual {actual}");
         }
         public static void Single<T>(IEnumerable<T> e)
         {

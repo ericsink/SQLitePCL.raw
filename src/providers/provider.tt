@@ -544,9 +544,9 @@ namespace SQLitePCL
             return sz_to_span(NativeMethods.sqlite3_errmsg(db));
         }
 
-        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_libversion()
+        unsafe sz ISQLite3Provider.sqlite3_libversion()
         {
-            return sz_to_span(NativeMethods.sqlite3_libversion());
+            return sz.FromPtr(NativeMethods.sqlite3_libversion());
         }
 
         int ISQLite3Provider.sqlite3_libversion_number()

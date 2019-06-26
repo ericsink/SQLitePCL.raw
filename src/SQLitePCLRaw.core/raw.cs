@@ -306,7 +306,7 @@ namespace SQLitePCL
 
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            return sqlite3_open(new sz(filename), out db);
+            return sqlite3_open(sz.FromString(filename), out db);
         }
 
         static public int sqlite3_open_v2(ReadOnlySpan<byte> filename, out sqlite3 db, int flags, ReadOnlySpan<byte> vfs)
@@ -538,7 +538,12 @@ namespace SQLitePCL
             return util.from_utf8(p);
         }
 
-        static public ReadOnlySpan<byte> sqlite3_libversion()
+        public static string utf8_to_string(this sz p)
+        {
+            return p.ToString();
+        }
+
+        static public sz sqlite3_libversion()
         {
             return _imp.sqlite3_libversion();
         }
