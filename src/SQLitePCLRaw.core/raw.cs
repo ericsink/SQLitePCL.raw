@@ -1125,7 +1125,7 @@ namespace SQLitePCL
             return _imp.sqlite3_column_table_name(stmt, index);
         }
 
-        static public ReadOnlySpan<byte> sqlite3_column_text(sqlite3_stmt stmt, int index)
+        static public sz sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
             return _imp.sqlite3_column_text(stmt, index);
         }

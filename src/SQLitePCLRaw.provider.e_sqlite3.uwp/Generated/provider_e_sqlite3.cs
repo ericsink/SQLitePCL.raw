@@ -1294,16 +1294,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
 
-        unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
+        unsafe sz ISQLite3Provider.sqlite3_column_text(sqlite3_stmt stm, int columnIndex)
         {
             byte* p = NativeMethods.sqlite3_column_text(stm, columnIndex);
-            if (p == null)
-            {
-                return null;
-            }
-
             var length = NativeMethods.sqlite3_column_bytes(stm, columnIndex);
-            return new ReadOnlySpan<byte>(p, length);
+            return sz.FromPtrLen(p, length);
         }
 
         unsafe ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_decltype(sqlite3_stmt stm, int columnIndex)

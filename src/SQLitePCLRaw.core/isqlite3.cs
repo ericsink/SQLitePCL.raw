@@ -143,7 +143,7 @@ namespace SQLitePCL
         ReadOnlySpan<byte> sqlite3_column_name(sqlite3_stmt stmt, int index);
         ReadOnlySpan<byte> sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
         ReadOnlySpan<byte> sqlite3_column_table_name(sqlite3_stmt stmt, int index);
-        ReadOnlySpan<byte> sqlite3_column_text(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_text(sqlite3_stmt stmt, int index);
         int sqlite3_data_count(sqlite3_stmt stmt);
         int sqlite3_column_count(sqlite3_stmt stmt);
         double sqlite3_column_double(sqlite3_stmt stmt, int index);

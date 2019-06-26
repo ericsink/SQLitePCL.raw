@@ -96,7 +96,7 @@ namespace SQLitePCL
             }
         }
 
-        unsafe public static sz FromPtr(byte* p, int len)
+        unsafe public static sz FromPtrLen(byte* p, int len)
         {
             if (p == null)
             {
