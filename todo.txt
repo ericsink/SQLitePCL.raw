@@ -26,8 +26,6 @@ sqlite3_deserialize
 
 sqlite3_keyword_count/name/check
 
-get AltCover working with fake_xunit?
-
 need 3 ways of doing dynamic load:
     plain name, used for winsqlite3
     look for runtimes/rid
