@@ -217,6 +217,12 @@ namespace SQLitePCL
             }
         }
 
+        // TODO temporary to minimize code changes
+        public static string from_utf8(sz p)
+        {
+            return p.ToString();
+        }
+
         public static string from_utf8_with_z(ReadOnlySpan<byte> p)
         {
             if (p == null)
