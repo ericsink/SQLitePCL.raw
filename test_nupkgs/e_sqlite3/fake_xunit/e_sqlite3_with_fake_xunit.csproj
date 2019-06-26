@@ -8,6 +8,7 @@
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\common\attrs_for_tests.cs" />
     <Compile Include="..\..\..\src\common\fake_xunit.cs" />
     <Compile Include="..\..\..\src\common\tests_xunit.cs" />
   </ItemGroup>

@@ -46,6 +46,16 @@ namespace SQLitePCL.Tests
     public class test_cases
     {
         [Fact]
+        public void test_call_sqlite3_enable_load_extension()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var rc = raw.sqlite3_enable_load_extension(db, 0);
+                Assert.Equal(raw.SQLITE_OK, rc);
+            }
+        }
+
+        [Fact]
         public void test_authorizer_with_unregister()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -2370,41 +2380,88 @@ namespace SQLitePCL.Tests
         }
     }
 
-#if not // sqlite3_config() cannot be called after sqlite initialize
-    [Collection("Init")]
-    public class class_test_log
+    [Order(0)]
+    public class class_test_sqlite3_config
     {
-        private class work
-        {
-            public List<string> msgs = new List<string>();
-        }
+        // this test class is special.  
+        // it needs to run first, before anything else.
+        // it is marked with attributes so that fake_xunit
+        // will find it and run it, but real xunit will ignore it.
 
-        private static void my_log_hook(object v, int errcode, string msg)
-        {
-            work w = v as work;
-            w.msgs.Add(msg);
-        }
-
-        [Fact]
+        [Test]
+        [Order(0)]
         public void test_log()
         {
+            var msgs = new List<string>();
+            var rc = raw.sqlite3_config_log(
+                (v, errcode, msg) => msgs.Add(msg), 
+                null
+                );
+            Assert.Equal(0, rc);
+
+            GC.Collect();
+
             const string VAL = "hello!";
-            work w = new work();
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                var rc = raw.sqlite3_config_log(my_log_hook, w);
-                Assert.Equal(0, rc);
+            raw.sqlite3_log(0, VAL);
+            Assert.Single(msgs);
+            Assert.Equal(VAL, msgs[0]);
 
-                GC.Collect();
-
-                raw.sqlite3_log(0, VAL);
-            }
-            Assert.Single(w.msgs);
-            Assert.Equal(VAL, w.msgs[0]);
+            strdelegate_log no_cb = null;
+            rc = raw.sqlite3_config_log(no_cb, null);
+            Assert.Equal(0, rc);
         }
 
+        [Test]
+        [Order(1)]
+        public void test_call_sqlite3_initialize()
+        {
+            var rc = raw.sqlite3_initialize();
+            Assert.Equal(0, rc);
+        }
+
+        [Test]
+        [Order(2)]
+        public void test_call_sqlite3_config_after_initialize()
+        {
+            var rc = raw.sqlite3_config(raw.SQLITE_CONFIG_SERIALIZED);
+            Assert.Equal(raw.SQLITE_MISUSE, rc);
+        }
+
+        [Test]
+        [Order(3)]
+        public void test_call_sqlite3_shutdown()
+        {
+            var rc = raw.sqlite3_shutdown();
+            Assert.Equal(0, rc);
+        }
+
+        [Test]
+        [Order(4)]
+        public void test_call_sqlite3_log_after_shutdown()
+        {
+            var msgs = new List<string>();
+            var rc = raw.sqlite3_config_log(
+                (v, errcode, msg) => msgs.Add(msg), 
+                null
+                );
+            Assert.Equal(raw.SQLITE_OK, rc);
+        }
+
+        [Test]
+        [Order(5)]
+        public void test_call_sqlite3_config_after_shutdown()
+        {
+            int rc;
+
+            rc = raw.sqlite3_config(raw.SQLITE_CONFIG_URI, 1);
+            Assert.Equal(raw.SQLITE_OK, rc);
+
+            rc = raw.sqlite3_config(raw.SQLITE_CONFIG_URI, 0);
+            Assert.Equal(raw.SQLITE_OK, rc);
+        }
+
+
     }
-#endif
 
     [Collection("Init")]
     public class class_test_hooks

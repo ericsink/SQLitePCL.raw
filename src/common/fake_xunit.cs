@@ -78,7 +78,7 @@ namespace Xunit
         public static void Equal(int expected, int actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(int expected, int? actual)
         {
@@ -142,14 +142,113 @@ namespace Xunit
             System.Console.WriteLine("{0}", s);
         }
 
+        class compare_test_classes : IComparer<Type>
+        {
+            public int Compare(Type t1, Type t2)
+            {
+                var order1 = t1.GetCustomAttribute<OrderAttribute>();
+                var order2 = t2.GetCustomAttribute<OrderAttribute>();
+                if (order1 != null)
+                {
+                    if (order2 != null)
+                    {
+                        if (order1.Value < order2.Value)
+                        {
+                            return -1;
+                        }
+                        else if (order2.Value < order1.Value)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (order2 != null)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        class compare_test_methods : IComparer<MethodInfo>
+        {
+            public int Compare(MethodInfo m1, MethodInfo m2)
+            {
+                var order1 = m1.GetCustomAttribute<OrderAttribute>();
+                var order2 = m2.GetCustomAttribute<OrderAttribute>();
+                if (order1 != null)
+                {
+                    if (order2 != null)
+                    {
+                        if (order1.Value < order2.Value)
+                        {
+                            return -1;
+                        }
+                        else if (order2.Value < order1.Value)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else
+                {
+                    if (order2 != null)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        static bool IsTest(MethodInfo m)
+        {
+            return 
+                (m.GetCustomAttribute(typeof(FactAttribute)) != null)
+                || (m.GetCustomAttribute(typeof(TestAttribute)) != null)
+                ;
+        }
+
         public static int AllTestsIn(Assembly a)
         {
             var pass = 0;
             var fail = 0;
-            foreach (var t in a.GetTypes())
+            var a_types = 
+                a.GetTypes()
+                    .Where(t => t.GetMethods().Where(m => IsTest(m)).Any())
+                    .OrderBy(t => t, new compare_test_classes())
+                    .ToArray()
+                    ;
+            foreach (var t in a_types)
             {
                 var ma = t.GetMethods()
-                        .Where(m => m.GetCustomAttribute(typeof(FactAttribute)) != null)
+                        .Where(m => IsTest(m))
+                        .OrderBy(m => m, new compare_test_methods())
                         .ToArray();
                 if (ma.Length > 0)
                 {

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\common\attrs_for_tests.cs" />
     <Compile Include="..\common\tests_xunit.cs" />
     <Compile Include="my_batteries_v2.cs" />
   </ItemGroup>
