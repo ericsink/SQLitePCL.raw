@@ -96,6 +96,19 @@ namespace SQLitePCL
             }
         }
 
+        unsafe public static sz FromPtr(byte* p, int len)
+        {
+            if (p == null)
+            {
+                return new sz(ReadOnlySpan<byte>.Empty);
+            }
+            else
+            {
+                var sp = new ReadOnlySpan<byte>(p, len + 1);
+                return new sz(sp);
+            }
+        }
+
         public static sz FromIntPtr(IntPtr p)
         {
             if (p == IntPtr.Zero)
