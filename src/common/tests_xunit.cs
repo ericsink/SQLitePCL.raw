@@ -1469,72 +1469,6 @@ namespace SQLitePCL.Tests
             }
         }
 
-    }
-
-    [Collection("Init")]
-    public class class_test_row
-    {
-        private class row
-        {
-            public int x { get; set; }
-            public long v { get; set; }
-            public string t { get; set; }
-            public double d { get; set; }
-            public byte[] b { get; set; }
-            public string q { get; set; }
-        }
-
-        [Fact]
-        public void test_row()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                db.exec("CREATE TABLE foo (x int, v int, t text, d real, b blob, q blob);");
-                byte[] blob = db.query_scalar<byte[]>("SELECT randomblob(5);");
-                db.exec("INSERT INTO foo (x,v,t,d,b,q) VALUES (?,?,?,?,?,?)", 32, 44, "hello", 3.14, blob, null);
-                foreach (row r in db.query<row>("SELECT x,v,t,d,b,q FROM foo;"))
-                {
-                    Assert.Equal(32, r.x);
-                    Assert.Equal(44, r.v);
-                    Assert.Equal("hello", r.t);
-                    Assert.Equal(3.14, r.d);
-                    Assert.Equal(blob.Length, r.b.Length);
-                    for (int i = 0; i < blob.Length; i++)
-                    {
-                        Assert.Equal(r.b[i], blob[i]);
-                    }
-                    Assert.Null(r.q);
-                }
-                using (sqlite3_stmt stmt = db.prepare("SELECT x,v,t,d,b,q FROM foo;"))
-                {
-                    stmt.step();
-
-                    Assert.Equal(db, stmt.db_handle());
-
-                    Assert.Equal(32, stmt.column_int(0));
-                    Assert.Equal(44, stmt.column_int64(1));
-                    Assert.Equal("hello", stmt.column_text(2));
-                    Assert.Equal(3.14, stmt.column_double(3));
-                    Assert.Equal(blob.Length, stmt.column_bytes(4));
-                    var b2 = stmt.column_blob(4);
-                    Assert.Equal(b2.Length, blob.Length);
-                    for (int i = 0; i < blob.Length; i++)
-                    {
-                        Assert.Equal(b2[i], blob[i]);
-                    }
-
-                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(5));
-
-                    Assert.Equal("x", stmt.column_name(0));
-                    Assert.Equal("v", stmt.column_name(1));
-                    Assert.Equal("t", stmt.column_name(2));
-                    Assert.Equal("d", stmt.column_name(3));
-                    Assert.Equal("b", stmt.column_name(4));
-                    Assert.Equal("q", stmt.column_name(5));
-                }
-            }
-        }
-
         [Fact]
         public void test_other_col_types()
         {
@@ -1754,6 +1688,72 @@ namespace SQLitePCL.Tests
                 }
             }
         }
+    }
+
+    [Collection("Init")]
+    public class class_test_row
+    {
+        private class row
+        {
+            public int x { get; set; }
+            public long v { get; set; }
+            public string t { get; set; }
+            public double d { get; set; }
+            public byte[] b { get; set; }
+            public string q { get; set; }
+        }
+
+        [Fact]
+        public void test_row()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int, v int, t text, d real, b blob, q blob);");
+                byte[] blob = db.query_scalar<byte[]>("SELECT randomblob(5);");
+                db.exec("INSERT INTO foo (x,v,t,d,b,q) VALUES (?,?,?,?,?,?)", 32, 44, "hello", 3.14, blob, null);
+                foreach (row r in db.query<row>("SELECT x,v,t,d,b,q FROM foo;"))
+                {
+                    Assert.Equal(32, r.x);
+                    Assert.Equal(44, r.v);
+                    Assert.Equal("hello", r.t);
+                    Assert.Equal(3.14, r.d);
+                    Assert.Equal(blob.Length, r.b.Length);
+                    for (int i = 0; i < blob.Length; i++)
+                    {
+                        Assert.Equal(r.b[i], blob[i]);
+                    }
+                    Assert.Null(r.q);
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT x,v,t,d,b,q FROM foo;"))
+                {
+                    stmt.step();
+
+                    Assert.Equal(db, stmt.db_handle());
+
+                    Assert.Equal(32, stmt.column_int(0));
+                    Assert.Equal(44, stmt.column_int64(1));
+                    Assert.Equal("hello", stmt.column_text(2));
+                    Assert.Equal(3.14, stmt.column_double(3));
+                    Assert.Equal(blob.Length, stmt.column_bytes(4));
+                    var b2 = stmt.column_blob(4);
+                    Assert.Equal(b2.Length, blob.Length);
+                    for (int i = 0; i < blob.Length; i++)
+                    {
+                        Assert.Equal(b2[i], blob[i]);
+                    }
+
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(5));
+
+                    Assert.Equal("x", stmt.column_name(0));
+                    Assert.Equal("v", stmt.column_name(1));
+                    Assert.Equal("t", stmt.column_name(2));
+                    Assert.Equal("d", stmt.column_name(3));
+                    Assert.Equal("b", stmt.column_name(4));
+                    Assert.Equal("q", stmt.column_name(5));
+                }
+            }
+        }
+
     }
 
     [Collection("Init")]
