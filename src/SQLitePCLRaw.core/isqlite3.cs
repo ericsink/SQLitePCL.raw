@@ -85,7 +85,7 @@ namespace SQLitePCL
         string GetNativeLibraryName();
 
         int sqlite3_open(sz filename, out IntPtr db);
-        int sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs);
+        int sqlite3_open_v2(sz filename, out IntPtr db, int flags, sz vfs);
         int sqlite3_close_v2(IntPtr db); /* 3.7.14+ */
         int sqlite3_close(IntPtr db);
 

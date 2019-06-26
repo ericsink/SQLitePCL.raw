@@ -309,7 +309,7 @@ namespace SQLitePCL
             return sqlite3_open(sz.FromString(filename), out db);
         }
 
-        static public int sqlite3_open_v2(ReadOnlySpan<byte> filename, out sqlite3 db, int flags, ReadOnlySpan<byte> vfs)
+        static public int sqlite3_open_v2(sz filename, out sqlite3 db, int flags, sz vfs)
         {
             int rc = _imp.sqlite3_open_v2(filename, out var p_db, flags, vfs);
 			// TODO check rc?
@@ -318,7 +318,7 @@ namespace SQLitePCL
         }
         static public int sqlite3_open_v2(string filename, out sqlite3 db, int flags, string vfs)
         {
-            return sqlite3_open_v2(filename.to_utf8_with_z(), out db, flags, vfs.to_utf8_with_z());
+            return sqlite3_open_v2(filename.to_sz(), out db, flags, vfs.to_sz());
         }
         static public int sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> pathname, int syncdir)
         {

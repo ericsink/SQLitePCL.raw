@@ -119,9 +119,8 @@ namespace SQLitePCL
             }
         }
 
-        unsafe int ISQLite3Provider.sqlite3_open_v2(ReadOnlySpan<byte> filename, out IntPtr db, int flags, ReadOnlySpan<byte> vfs)
+        unsafe int ISQLite3Provider.sqlite3_open_v2(sz filename, out IntPtr db, int flags, sz vfs)
         {
-            verify_z_terminator(filename);
             fixed (byte* p_filename = filename, p_vfs = vfs)
             {
                 return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
