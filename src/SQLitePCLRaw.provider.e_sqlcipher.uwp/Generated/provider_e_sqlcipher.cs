@@ -918,7 +918,7 @@ namespace SQLitePCL
         static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
             trace_hook_info hi = trace_hook_info.from_ptr(p);
-            hi.call(sz_to_span(s));
+            hi.call(sz.FromIntPtr(s));
         }
 
 		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 

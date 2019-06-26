@@ -428,7 +428,7 @@ namespace SQLitePCL
                 cb =
                 (ob, sp) =>
                 {
-                    f(v, util.from_utf8(sp));
+                    f(v, sp.ToString());
                 };
             }
             sqlite3_trace(db, cb, v);

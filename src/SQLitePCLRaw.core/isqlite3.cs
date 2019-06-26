@@ -40,7 +40,7 @@ namespace SQLitePCL
     public delegate int delegate_commit(object user_data);
     public delegate void delegate_rollback(object user_data);
 
-    public delegate void delegate_trace(object user_data, ReadOnlySpan<byte> statement);
+    public delegate void delegate_trace(object user_data, sz statement);
     public delegate void delegate_profile(object user_data, ReadOnlySpan<byte> statement, long ns);
     public delegate int delegate_progress(object user_data);
 

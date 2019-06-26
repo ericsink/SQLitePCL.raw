@@ -362,7 +362,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(ReadOnlySpan<byte> s)
+        public void call(sz s)
         {
             _func(_user_data, s);
         }
