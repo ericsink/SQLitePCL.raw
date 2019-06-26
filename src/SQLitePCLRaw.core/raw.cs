@@ -296,7 +296,7 @@ namespace SQLitePCL
         public const int SQLITE_TRACE_ROW = 0x04;
         public const int SQLITE_TRACE_CLOSE = 0x08;
 
-        static public int sqlite3_open(ReadOnlySpan<byte> filename, out sqlite3 db)
+        static public int sqlite3_open(sz filename, out sqlite3 db)
         {
             int rc = _imp.sqlite3_open(filename, out var p_db);
 			// TODO check rc?
@@ -306,7 +306,7 @@ namespace SQLitePCL
 
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            return sqlite3_open(filename.to_utf8_with_z(), out db);
+            return sqlite3_open(new sz(filename), out db);
         }
 
         static public int sqlite3_open_v2(ReadOnlySpan<byte> filename, out sqlite3 db, int flags, ReadOnlySpan<byte> vfs)

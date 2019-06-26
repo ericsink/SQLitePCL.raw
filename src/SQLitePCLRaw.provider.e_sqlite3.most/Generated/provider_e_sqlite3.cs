@@ -107,9 +107,8 @@ namespace SQLitePCL
             return raw.SQLITE_ERROR;
         }
 
-        unsafe int ISQLite3Provider.sqlite3_open(ReadOnlySpan<byte> filename, out IntPtr db)
+        unsafe int ISQLite3Provider.sqlite3_open(sz filename, out IntPtr db)
         {
-            verify_z_terminator(filename);
             fixed (byte* p = filename)
             {
                 return NativeMethods.sqlite3_open(p, out db);
