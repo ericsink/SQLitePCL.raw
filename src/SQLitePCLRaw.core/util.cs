@@ -41,7 +41,10 @@ namespace SQLitePCL
 
         sz(ReadOnlySpan<byte> a)
         {
-            if (a[a.Length - 1] != 0)
+            if (
+                (a.Length > 0)
+                && (a[a.Length - 1] != 0)
+                )
             {
                 throw new ArgumentException("zero terminated string required");
             }
@@ -50,7 +53,14 @@ namespace SQLitePCL
 
         public static sz FromString(string s)
         {
-            return new sz(s.to_utf8_with_z());
+            if (s == null)
+            {
+                return new sz(ReadOnlySpan<byte>.Empty);
+            }
+            else
+            {
+                return new sz(s.to_utf8_with_z());
+            }
         }
 
         unsafe static long my_strlen(byte* p)
@@ -76,16 +86,35 @@ namespace SQLitePCL
 
         unsafe public static sz FromPtr(byte* p)
         {
-            return new sz(to_span(p));
+            if (p == null)
+            {
+                return new sz(ReadOnlySpan<byte>.Empty);
+            }
+            else
+            {
+                return new sz(to_span(p));
+            }
         }
 
         public static sz FromIntPtr(IntPtr p)
         {
-            return new sz(to_span(p));
+            if (p == IntPtr.Zero)
+            {
+                return new sz(ReadOnlySpan<byte>.Empty);
+            }
+            else
+            {
+                return new sz(to_span(p));
+            }
         }
 
         public override string ToString()
         {
+            if (sp.Length == 0)
+            {
+                return null;
+            }
+
             unsafe
             {
                 fixed (byte* q = sp)
@@ -98,6 +127,11 @@ namespace SQLitePCL
 
     static class util
     {
+        public static sz to_sz(this string s)
+        {
+            return sz.FromString(s);
+        }
+
         public static byte[] to_utf8_with_z(this string sourceText)
         {
             if (sourceText == null)
