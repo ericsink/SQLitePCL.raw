@@ -991,6 +991,51 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_result_null_with_query_scalar()
+        {
+            delegate_function_scalar null_func =
+                (ctx, user_data, args) =>
+                {
+                    raw.sqlite3_result_null(ctx);
+                };
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x blob);");
+                db.create_function("foo", 0, null, null_func);
+                db.exec("INSERT INTO foo (x) VALUES(foo());");
+
+                var rowid = db.last_insert_rowid();
+                byte[] blob = db.query_scalar<byte[]>("SELECT x FROM foo WHERE rowid=" + rowid);
+                Assert.Null(blob);
+            }
+        }
+
+        [Fact]
+        public void test_result_null()
+        {
+            delegate_function_scalar null_func =
+                (ctx, user_data, args) =>
+                {
+                    raw.sqlite3_result_null(ctx);
+                };
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x blob);");
+                db.create_function("foo", 0, null, null_func);
+                db.exec("INSERT INTO foo (x) VALUES(foo());");
+
+                var rowid = db.last_insert_rowid();
+                using (var stmt = db.prepare("SELECT x FROM foo WHERE rowid=" + rowid))
+                {
+                    stmt.step_row();
+                    Assert.Equal(raw.SQLITE_NULL, stmt.column_type(0));
+                }
+            }
+        }
+
+        [Fact]
         public void test_result_errors()
         {
             int code = 10;

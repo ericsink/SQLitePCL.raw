@@ -726,8 +726,16 @@ namespace SQLitePCL.Ugly
             }
             else if (typeof(byte[]) == t) 
             {
-                // TODO hmmm.  how should this function adapte to Span/Memory ?
-                return stmt.column_blob(index).ToArray();
+                // TODO hmmm.  how should this function adapt to Span/Memory ?
+                // need a way to ask for ReadOnlySpan<byte> ?
+                if (stmt.column_type(index) == raw.SQLITE_NULL)
+                {
+                    return null;
+                }
+                else
+                {
+                    return stmt.column_blob(index).ToArray();
+                }
             }
             else
             {
