@@ -434,7 +434,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int typ, ReadOnlySpan<byte> db, ReadOnlySpan<byte> tbl, long rowid)
+        public void call(int typ, sz db, sz tbl, long rowid)
         {
             _func(_user_data, typ, db, tbl, rowid);
         }

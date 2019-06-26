@@ -803,7 +803,7 @@ namespace SQLitePCL
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
-            hi.call(typ, sz_to_span(db), sz_to_span(tbl), rowid);
+            hi.call(typ, sz.FromIntPtr(db), sz.FromIntPtr(tbl), rowid);
         }
 
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 

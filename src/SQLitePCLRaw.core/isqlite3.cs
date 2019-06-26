@@ -28,7 +28,7 @@ namespace SQLitePCL
     using System;
 
     public delegate int delegate_collation(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
-    public delegate void delegate_update(object user_data, int type, ReadOnlySpan<byte> database, ReadOnlySpan<byte> table, long rowid);
+    public delegate void delegate_update(object user_data, int type, sz database, sz table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
     public delegate void delegate_log(object user_data, int errorCode, ReadOnlySpan<byte> msg);
