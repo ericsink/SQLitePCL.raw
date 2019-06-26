@@ -1038,7 +1038,12 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_result_errors()
         {
-            int code = 10;
+            const int code = 10;
+            const string MSG = "epic fail";
+
+            delegate_function_scalar errormsg_func =
+                (ctx, user_data, args) => raw.sqlite3_result_error(ctx, MSG);
+
             delegate_function_scalar errorcode_func =
                 (ctx, user_data, args) => raw.sqlite3_result_error_code(ctx, code);
 
@@ -1050,9 +1055,18 @@ namespace SQLitePCL.Tests
 
             using (sqlite3 db = ugly.open(":memory:"))
             {
+                db.create_function("errormsg", 0, null, errormsg_func);
                 db.create_function("errorcode", 0, null, errorcode_func);
                 db.create_function("toobig", 0, null, toobig_func);
                 db.create_function("nomem", 0, null, nomem_func);
+
+                {
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => db.exec("select errormsg();")
+                        );
+                    Assert.Equal(raw.SQLITE_ERROR, e.errcode);
+                    Assert.Equal(MSG, e.errmsg);
+                }
 
                 {
                     var e = Assert.Throws<ugly.sqlite3_exception>(
