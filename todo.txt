@@ -1,4 +1,7 @@
 
+still a good idea to have provider cdecl and stdcall
+together in one?
+
 how to pass null to the tail for sqlite3_prepare_?
 chg the pinvoke signature from out byte* to byte**
 and pass null.
