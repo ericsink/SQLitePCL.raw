@@ -963,14 +963,34 @@ namespace SQLitePCL
             _imp.sqlite3_result_blob(context.ptr, val);
         }
 
+        static public void sqlite3_result_error(sqlite3_context context, ReadOnlySpan<byte> val)
+        {
+            _imp.sqlite3_result_error(context.ptr, val);
+        }
+
+        static public void sqlite3_result_error(sqlite3_context context, sz val)
+        {
+            _imp.sqlite3_result_error(context.ptr, val);
+        }
+
         static public void sqlite3_result_error(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_error(context.ptr, val.to_utf8_with_z());
+            sqlite3_result_error(context, val.to_sz());
+        }
+
+        static public void sqlite3_result_text(sqlite3_context context, ReadOnlySpan<byte> val)
+        {
+            _imp.sqlite3_result_text(context.ptr, val);
+        }
+
+        static public void sqlite3_result_text(sqlite3_context context, sz val)
+        {
+            _imp.sqlite3_result_text(context.ptr, val);
         }
 
         static public void sqlite3_result_text(sqlite3_context context, string val)
         {
-            _imp.sqlite3_result_text(context.ptr, val.to_utf8_with_z());
+            sqlite3_result_text(context, val.to_sz());
         }
 
         static public void sqlite3_result_double(sqlite3_context context, double val)
@@ -1075,9 +1095,14 @@ namespace SQLitePCL
             return _imp.sqlite3_bind_text(stmt, index, val);
         }
 
+        static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, sz val)
+        {
+            return _imp.sqlite3_bind_text(stmt, index, val);
+        }
+
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            return sqlite3_bind_text(stmt, index, val.to_utf8_with_z());
+            return sqlite3_bind_text(stmt, index, val.to_sz());
         }
 
         static public int sqlite3_bind_parameter_count(sqlite3_stmt stmt)

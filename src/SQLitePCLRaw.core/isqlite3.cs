@@ -136,6 +136,7 @@ namespace SQLitePCL
         int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
         int sqlite3_bind_null(sqlite3_stmt stmt, int index);
         int sqlite3_bind_text(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> text);
+        int sqlite3_bind_text(sqlite3_stmt stmt, int index, sz text);
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
         int sqlite3_bind_parameter_index(sqlite3_stmt stmt, sz strName);
 
@@ -188,10 +189,12 @@ namespace SQLitePCL
         void sqlite3_result_blob(IntPtr context, ReadOnlySpan<byte> val);
         void sqlite3_result_double(IntPtr context, double val);
         void sqlite3_result_error(IntPtr context, ReadOnlySpan<byte> strErr);
+        void sqlite3_result_error(IntPtr context, sz strErr);
         void sqlite3_result_int(IntPtr context, int val);
         void sqlite3_result_int64(IntPtr context, long val);
         void sqlite3_result_null(IntPtr context);
         void sqlite3_result_text(IntPtr context, ReadOnlySpan<byte> val);
+        void sqlite3_result_text(IntPtr context, sz val);
         void sqlite3_result_zeroblob(IntPtr context, int n);
         // TODO sqlite3_result_value
         void sqlite3_result_error_toobig(IntPtr context);

@@ -1093,20 +1093,32 @@ namespace SQLitePCL
 
         unsafe void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, ReadOnlySpan<byte> val)
         {
-            verify_z_terminator(val); // TODO or len
             fixed (byte* p = val)
             {
-                // TODO len instead of -1 ?
+                NativeMethods.sqlite3_result_error(ctx, p, val.Length);
+            }
+        }
+
+        unsafe void ISQLite3Provider.sqlite3_result_error(IntPtr ctx, sz val)
+        {
+            fixed (byte* p = val)
+            {
                 NativeMethods.sqlite3_result_error(ctx, p, -1);
             }
         }
 
         unsafe void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, ReadOnlySpan<byte> val)
         {
-            verify_z_terminator(val); // TODO or len
             fixed (byte* p = val)
             {
-                // TODO len instead of -1 ?
+                NativeMethods.sqlite3_result_text(ctx, p, val.Length, new IntPtr(-1));
+            }
+        }
+
+        unsafe void ISQLite3Provider.sqlite3_result_text(IntPtr ctx, sz val)
+        {
+            fixed (byte* p = val)
+            {
                 NativeMethods.sqlite3_result_text(ctx, p, -1, new IntPtr(-1));
             }
         }
@@ -1198,10 +1210,16 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> t)
         {
-            verify_z_terminator(t); // TODO or len
             fixed (byte* p_t = t)
             {
-                // TODO len instead of -1 ?
+                return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, t.Length, new IntPtr(-1));
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, sz t)
+        {
+            fixed (byte* p_t = t)
+            {
                 return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, -1, new IntPtr(-1));
             }
         }
