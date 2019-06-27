@@ -528,6 +528,7 @@ namespace SQLitePCL
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
+        // TODO do we need this to be public?
         public static string utf8_span_to_string(this ReadOnlySpan<byte> p)
         {
             if (p.Length == 0)

@@ -1,10 +1,5 @@
 
-rename sz to Utf8z
-
-need higher level typed delegate overloads for
-sqlite3_trace_v2().  but problem with mapping
-IntPtr (in the callback) to the actual safehandle.
-or remove trace_v2 for now.
+rename sz to Utf8z, or Strz ?
 
 still a good idea to have provider cdecl and stdcall
 together in one?  or should we separate them?
@@ -21,6 +16,11 @@ clean up blog release notes page
 finish writing v2 changes page
 
 --
+
+need higher level typed delegate overloads for
+sqlite3_trace_v2().  but problem with mapping
+IntPtr (in the callback) to the actual safehandle.
+or remove trace_v2 for now.
 
 for a ReadOnlySpan<byte> without a null terminator:
 empty "string" is indistinguishable from null string.
