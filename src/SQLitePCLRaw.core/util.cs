@@ -30,8 +30,13 @@ namespace SQLitePCL
     using System.Text;
     using System.Collections.Generic;
 
+    // TODO consider Length property, which returns sp.Length - 1, but what about null
+    // TODO consider way to get span, not included the zero terminator
     public readonly ref struct sz
     {
+        // this span will contain a zero terminator byte
+        // if sp.Length is 0, it represents a null string
+        // if sp.Length is 1, the only byte must be zero, and it is an empty string
         readonly ReadOnlySpan<byte> sp;
 
         public ref readonly byte GetPinnableReference()
@@ -46,7 +51,7 @@ namespace SQLitePCL
                 && (a[a.Length - 1] != 0)
                 )
             {
-                throw new ArgumentException("zero terminated string required");
+                throw new ArgumentException("zero terminator required");
             }
             sp = a;
         }
