@@ -428,6 +428,18 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
+        public static void key(this sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            int rc = raw.sqlite3_key(db, k);
+            check_ok(rc);
+        }
+
+        public static void rekey(this sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            int rc = raw.sqlite3_rekey(db, k);
+            check_ok(rc);
+        }
+
         public static void wal_autocheckpoint(this sqlite3 db, int n)
         {
             int rc = raw.sqlite3_wal_autocheckpoint(db, n);

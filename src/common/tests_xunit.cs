@@ -2969,7 +2969,7 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
-        public void test_encrypted_file()
+        public void test_encrypted_file_with_pragma()
         {
             if (is_sqlcipher())
             {
@@ -3016,6 +3016,63 @@ namespace SQLitePCL.Tests
                 Assert.True(true == check_sum(correct_phrase));
                 Assert.True(false == check_sum(null));
                 Assert.True(false == check_sum("wrong phrase"));
+
+                ugly.vfs__delete(null, name, 1);
+            }
+            else
+            {
+                Assert.False(raw.GetNativeLibraryName().Contains("sqlcipher"));
+            }
+        }
+
+        [Fact]
+        public void test_encrypted_file_with_key()
+        {
+            if (is_sqlcipher())
+            {
+                Assert.True(raw.GetNativeLibraryName().Contains("sqlcipher"));
+                string name;
+                using (sqlite3 db = ugly.open(":memory:"))
+                {
+                    name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
+                }
+                var correct_key = new byte[] { 8,6,7,5,3,0,9 };
+                var nums = new int[] { 1, 6, 3, 0, 9 };
+                using (sqlite3 db = ugly.open(name))
+                {
+                    db.key(correct_key);
+                    db.exec("CREATE TABLE foo (x int);");
+                    foreach (var x in nums)
+                    {
+                        db.exec("INSERT INTO foo (x) VALUES (?)", x);
+                    }
+                }
+                var sum_expected = nums.Sum();
+                bool check_sum(byte[] k)
+                {
+                    using (sqlite3 db = ugly.open(name))
+                    {
+                        if (k != null)
+                        {
+                            db.key(k);
+                        }
+                        bool fail;
+                        try
+                        {
+                            var sum = db.query_scalar<int>("SELECT sum(x) FROM foo;");
+                            Assert.Equal(sum_expected, sum);
+                            fail = false;
+                        }
+                        catch (ugly.sqlite3_exception)
+                        {
+                            fail = true;
+                        }
+                        return !fail;
+                    }
+                }
+                Assert.True(true == check_sum(correct_key));
+                Assert.True(false == check_sum(null));
+                Assert.True(false == check_sum(new byte[] { 5,6,7,8}));
 
                 ugly.vfs__delete(null, name, 1);
             }
