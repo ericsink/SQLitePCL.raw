@@ -45,61 +45,9 @@ namespace SQLitePCL
             return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
         }
 
-        unsafe static long my_strlen(byte* p)
-        {
-            var q = p;
-            while (*q != 0)
-            {
-                q++;
-            }
-            return q - p;
-        }
-
-        unsafe static ReadOnlySpan<byte> sz_to_span(byte* p)
-        {
-            if (p == null)
-            {
-                return null;
-            }
-
-            // for this case, we use the zero terminator to determine
-            // the length of the string, and we return a span that does
-            // NOT include that terminator.  this is for cases like
-            // passing a string from the C code up to .NET, where we
-            // probably want to convert to System.String, so the zero
-            // terminator is not needed.
-
-            var len = (int) my_strlen(p);
-            return new ReadOnlySpan<byte>(p, len);
-        }
-
-        unsafe static ReadOnlySpan<byte> sz_to_span(IntPtr p)
-        {
-            return sz_to_span((byte*) (p.ToPointer()));
-        }
-
         hook_handles get_hooks(sqlite3 db)
         {
 			return db.GetOrCreateExtra<hook_handles>(() => new hook_handles(my_streq));
-        }
-
-        static void verify_z_terminator(ReadOnlySpan<byte> s)
-        {
-            // many sqlite3 functions accept a zero-terminated string.
-            // in cases where we accept a ReadOnlySpan<byte> for this,
-            // the zero terminator byte is expected to be part of the span.
-
-            if (s.Length == 0)
-            {
-                // Span<T>.GetPinnableReference returns null if the span is empty,
-                // so a null will get passed down to sqlite in this case.
-                return;
-            }
-
-            if (s[s.Length - 1] != 0)
-            {
-                throw new ArgumentException("zero terminated string required");
-            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_win32_set_directory(int typ, sz path)
