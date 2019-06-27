@@ -406,11 +406,6 @@ namespace SQLitePCL
             _imp.sqlite3_rollback_hook(db, f, v);
         }
 
-        static public int sqlite3_trace_v2(sqlite3 db, uint uMask, delegate_trace_v2 f, object v)
-        {
-            return _imp.sqlite3_trace_v2(db, uMask, f, v);
-        }
-
         static public void sqlite3_trace(sqlite3 db, delegate_trace f, object v)
         {
             _imp.sqlite3_trace(db, f, v);

@@ -29,7 +29,6 @@ namespace SQLitePCL
 
     public delegate int delegate_collation(object user_data, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2);
     public delegate void delegate_update(object user_data, int type, sz database, sz table, long rowid);
-    public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
     public delegate void delegate_log(object user_data, int errorCode, sz msg);
     public delegate int delegate_authorizer(object user_data, int action_code, sz param0, sz param1, sz dbName, sz inner_most_trigger_or_view);
@@ -174,8 +173,6 @@ namespace SQLitePCL
         void sqlite3_log(int errcode, sz s);
         void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
-
-        int sqlite3_trace_v2(sqlite3 db, uint mask, delegate_trace_v2 func, object v);
 
         void sqlite3_trace(sqlite3 db, delegate_trace func, object v);
         void sqlite3_profile(sqlite3 db, delegate_profile func, object v);

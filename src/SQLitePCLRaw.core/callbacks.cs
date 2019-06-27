@@ -167,7 +167,6 @@ namespace SQLitePCL
 		public IDisposable update;
 		public IDisposable rollback;
 		public IDisposable commit;
-		public IDisposable trace_v2;
 		public IDisposable trace;
 		public IDisposable profile;
 		public IDisposable progress;
@@ -239,7 +238,6 @@ namespace SQLitePCL
 			if (update!=null) update.Dispose();
 			if (rollback!=null) rollback.Dispose();
 			if (commit!=null) commit.Dispose();
-			if (trace_v2!=null) trace_v2.Dispose();
 			if (trace!=null) trace.Dispose();
 			if (profile!=null) profile.Dispose();
 			if (progress!=null) progress.Dispose();
@@ -317,30 +315,6 @@ namespace SQLitePCL
         public void call()
         {
             _func(_user_data);
-        }
-    }
-
-    public class trace_v2_hook_info
-    {
-        private delegate_trace_v2 _func;
-        private object _user_data;
-
-        public trace_v2_hook_info(delegate_trace_v2 func, object v)
-        {
-            _func = func;
-            _user_data = v;
-        }
-
-        public static trace_v2_hook_info from_ptr(IntPtr p)
-        {
-            GCHandle h = (GCHandle) p;
-            trace_v2_hook_info hi = h.Target as trace_v2_hook_info;
-            return hi;
-        }
-
-        public void call(uint t, IntPtr p, IntPtr x)
-        {
-            _func(t, _user_data, p, x);
         }
     }
 

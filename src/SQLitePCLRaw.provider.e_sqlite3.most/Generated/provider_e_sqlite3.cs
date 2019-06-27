@@ -848,46 +848,6 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [MonoPInvokeCallback (typeof(NativeMethods.callback_trace_v2))]
-        static void trace_v2_hook_bridge_impl(uint t, IntPtr c, IntPtr p, IntPtr x)
-        {
-            trace_v2_hook_info hi = trace_v2_hook_info.from_ptr(c);
-            hi.call(t, p, x);
-        }
-
-		readonly NativeMethods.callback_trace_v2 trace_v2_hook_bridge = new NativeMethods.callback_trace_v2(trace_v2_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_trace_v2(sqlite3 db, uint uMask, delegate_trace_v2 func, object v)
-        {
-			var info = get_hooks(db);
-            if (info.trace_v2 != null)
-            {
-                // TODO maybe turn off the hook here, for now
-                info.trace_v2.Dispose();
-                info.trace_v2 = null;
-            }
-
-			NativeMethods.callback_trace_v2 cb;
-			trace_v2_hook_info hi;
-            if (func != null)
-            {
-				cb = trace_v2_hook_bridge;
-                hi = new trace_v2_hook_info(func, v);
-            }
-            else
-            {
-				cb = null;
-				hi = null;
-            }
-			var h = new hook_handle(hi);
-			info.trace_v2 = h.ForDispose();
-			return NativeMethods.sqlite3_trace_v2(db, uMask, cb, h);
-        }
-
-        // ----------------------------------------------------------------
-
-        // Passing a callback into SQLite is tricky.  See comments near commit_hook
-        // implementation in pinvoke/SQLite3Provider.cs
-
         [MonoPInvokeCallback (typeof(NativeMethods.callback_trace))]
         static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
@@ -1710,9 +1670,6 @@ namespace SQLitePCL
 		public static extern unsafe IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_trace_v2(sqlite3 db, uint uMask, NativeMethods.callback_trace_v2 func, hook_handle pvUser);
-
-		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
@@ -1842,9 +1799,6 @@ namespace SQLitePCL
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_trace(IntPtr puser, IntPtr statement);
-
-	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-	public delegate void callback_trace_v2(uint t, IntPtr puser, IntPtr p, IntPtr x);
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_rollback(IntPtr puser);
