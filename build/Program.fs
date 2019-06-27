@@ -40,8 +40,8 @@ let main argv =
         let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s %s provider.tt" cs_path provider_basename conv kind uwp dllimport_name_arg
         exec "t4" args dir_providers
 
-    gen_provider "dynamic" null "Cdecl" "Cdecl" "dynamic" "false"
-    gen_provider "dynamic" null "StdCall" "StdCall" "dynamic" "false"
+    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "false"
+    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "false"
     gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
     gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
     gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
@@ -69,7 +69,8 @@ let main argv =
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
-        "SQLitePCLRaw.provider.dynamic" 
+        "SQLitePCLRaw.provider.dynamic_cdecl" 
+        "SQLitePCLRaw.provider.dynamic_stdcall" 
         "SQLitePCLRaw.provider.internal" 
         // "SQLitePCLRaw.provider.sqlite3" 
         // "SQLitePCLRaw.provider.winsqlite3" 

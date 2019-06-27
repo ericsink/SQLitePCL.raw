@@ -61,17 +61,21 @@ namespace SQLitePCL
             var gf = new MyGetFunctionPointer(dll);
             return gf;
         }
+#endif
+#if PROVIDER_dynamic_cdecl
         static void DoDynamic_cdecl(string name, int flags)
         {
             var gf = MakeDynamic(name, flags);
-            SQLitePCL.SQLite3Provider_Cdecl.Setup(name, gf);
-            SQLitePCL.raw.SetProvider(new SQLite3Provider_Cdecl());
+            SQLitePCL.SQLite3Provider_dynamic_cdecl.Setup(name, gf);
+            SQLitePCL.raw.SetProvider(new SQLite3Provider_dynamic_cdecl());
         }
+#endif
+#if PROVIDER_dynamic_stdcall
         static void DoDynamic_stdcall(string name, int flags)
         {
             var gf = MakeDynamic(name, flags);
-            SQLitePCL.SQLite3Provider_StdCall.Setup(name, gf);
-            SQLitePCL.raw.SetProvider(new SQLite3Provider_StdCall());
+            SQLitePCL.SQLite3Provider_dynamic_stdcall.Setup(name, gf);
+            SQLitePCL.raw.SetProvider(new SQLite3Provider_dynamic_stdcall());
         }
 #endif
 

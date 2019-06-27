@@ -597,7 +597,8 @@ public static class gen
         INTERNAL,
         SQLITE3,
         WINSQLITE3,
-        DYNAMIC,
+        DYNAMIC_CDECL,
+        DYNAMIC_STDCALL,
     }
 
     static string AsString(this WhichProvider e)
@@ -610,7 +611,8 @@ public static class gen
             case WhichProvider.INTERNAL: return "internal";
             case WhichProvider.SQLITE3: return "sqlite3";
             case WhichProvider.WINSQLITE3: return "winsqlite3";
-            case WhichProvider.DYNAMIC: return "dynamic";
+            case WhichProvider.DYNAMIC_CDECL: return "dynamic_cdecl";
+            case WhichProvider.DYNAMIC_STDCALL: return "dynamic_stdcall";
             default:
                 throw new NotImplementedException(string.Format("WhichProvider.AsString for {0}", e));
         }
@@ -642,7 +644,7 @@ public static class gen
 
 #if WINSQLITE3_DYNAMIC 
             // use dynamic provider
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NETSTANDARD20);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_STDCALL, WhichLib.NONE, TFM.NETSTANDARD20);
 #else
             // use dllimport provider
             write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NETSTANDARD20);
@@ -787,10 +789,10 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.ANDROID);
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLCIPHER, TFM.NETCOREAPP30);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NETCOREAPP30);
 #endif
 
             f.WriteEndElement(); // dependencies
@@ -872,10 +874,10 @@ public static class gen
             f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.NETCOREAPP30);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.NETCOREAPP30);
 #endif
 
             f.WriteEndElement(); // dependencies
@@ -1117,10 +1119,10 @@ public static class gen
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
 #endif
             f.WriteEndElement(); // dependencies
 
@@ -1201,14 +1203,14 @@ public static class gen
             f.WriteStartElement("dependencies");
 
 #if SQLITE3_DYNAMIC
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.IOS);
 #else
             write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
 #endif
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NET461);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
 #if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
+            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
 #endif
 
             f.WriteEndElement(); // dependencies

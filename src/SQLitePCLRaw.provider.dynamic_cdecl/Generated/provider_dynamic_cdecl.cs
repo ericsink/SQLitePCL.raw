@@ -31,7 +31,7 @@ namespace SQLitePCL
 	using System.Reflection;
 
 	[Preserve(AllMembers = true)]
-    public sealed class SQLite3Provider_Cdecl : ISQLite3Provider
+    public sealed class SQLite3Provider_dynamic_cdecl : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 

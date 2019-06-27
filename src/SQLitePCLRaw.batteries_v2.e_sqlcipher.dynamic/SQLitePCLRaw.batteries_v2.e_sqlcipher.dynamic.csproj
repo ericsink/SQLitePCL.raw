@@ -6,7 +6,7 @@
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_NAME_e_sqlcipher</DefineConstants>
+	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_dynamic_cdecl;PROVIDER_NAME_e_sqlcipher</DefineConstants>
   </PropertyGroup>
 
 <ItemGroup>
@@ -14,7 +14,7 @@
 </ItemGroup>
 
 <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic\SQLitePCLRaw.provider.dynamic.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.nativelibrary\SQLitePCLRaw.nativelibrary.csproj" />
 </ItemGroup>
 

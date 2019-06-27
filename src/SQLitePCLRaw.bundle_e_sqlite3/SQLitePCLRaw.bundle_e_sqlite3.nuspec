@@ -27,7 +27,7 @@
       </group>
       <group targetFramework="net461">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
-        <dependency id="SQLitePCLRaw.provider.dynamic" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
       <group targetFramework="netstandard2.0">
@@ -37,7 +37,7 @@
       </group>
       <group targetFramework="netcoreapp3.0">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
-        <dependency id="SQLitePCLRaw.provider.dynamic" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
     </dependencies>

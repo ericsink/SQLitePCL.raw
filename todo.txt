@@ -1,4 +1,6 @@
 
+snk issue for provider dynamics
+
 rename sz to Utf8z, or Strz ?
 
 still a good idea to have provider cdecl and stdcall
