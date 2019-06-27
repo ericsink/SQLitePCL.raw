@@ -3013,9 +3013,9 @@ namespace SQLitePCL.Tests
                         return !fail;
                     }
                 }
-                Assert.True(true == check_sum(correct_phrase));
-                Assert.True(false == check_sum(null));
-                Assert.True(false == check_sum("wrong phrase"));
+                Assert.True(check_sum(correct_phrase));
+                Assert.False(check_sum(null));
+                Assert.False(check_sum("wrong phrase"));
 
                 ugly.vfs__delete(null, name, 1);
             }
@@ -3070,9 +3070,19 @@ namespace SQLitePCL.Tests
                         return !fail;
                     }
                 }
-                Assert.True(true == check_sum(correct_key));
-                Assert.True(false == check_sum(null));
-                Assert.True(false == check_sum(new byte[] { 5,6,7,8}));
+                Assert.True(check_sum(correct_key));
+                Assert.False(check_sum(null));
+                var new_key = new byte[] { 5,6,7,8};
+                Assert.False(check_sum(new_key));
+
+                using (sqlite3 db = ugly.open(name))
+                {
+                    db.key(correct_key);
+                    db.rekey(new_key);
+                }
+                Assert.False(check_sum(correct_key));
+                Assert.False(check_sum(null));
+                Assert.True(check_sum(new_key));
 
                 ugly.vfs__delete(null, name, 1);
             }
