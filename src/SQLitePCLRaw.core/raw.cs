@@ -498,7 +498,7 @@ namespace SQLitePCL
                 cb = 
                 (ob, s1, s2) =>
                 {
-                    return f(ob, util.from_utf8(s1), util.from_utf8(s2));
+                    return f(ob, s1.utf8_span_to_string(), s2.utf8_span_to_string());
                 };
             }
             return _imp.sqlite3_create_collation(db, p, v, cb);
@@ -531,6 +531,21 @@ namespace SQLitePCL
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
+        }
+
+        public static string utf8_span_to_string(this ReadOnlySpan<byte> p)
+        {
+            if (p.Length == 0)
+            {
+                return "";
+            }
+            unsafe
+            {
+                fixed (byte* q = p)
+                {
+                    return System.Text.Encoding.UTF8.GetString(q, p.Length);
+                }
+            }
         }
 
         static public int sqlite3_key(sqlite3 db, ReadOnlySpan<byte> k)

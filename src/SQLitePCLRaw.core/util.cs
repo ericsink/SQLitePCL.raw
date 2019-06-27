@@ -31,7 +31,7 @@ namespace SQLitePCL
     using System.Collections.Generic;
 
     // TODO consider Length property, which returns sp.Length - 1, but what about null
-    // TODO consider way to get span, not included the zero terminator
+    // TODO consider way to get span, not included the zero terminator, but what about null
     public readonly ref struct sz
     {
         // this span will contain a zero terminator byte
@@ -200,26 +200,6 @@ namespace SQLitePCL
             }
 
             return result;
-        }
-
-        public static string from_utf8(ReadOnlySpan<byte> p)
-        {
-            if (p == null)
-            {
-                return null;
-            }
-            if (p.Length == 0)
-            {
-                // assumes no zero terminator
-                return "";
-            }
-            unsafe
-            {
-                fixed (byte* q = p)
-                {
-                    return Encoding.UTF8.GetString(q, p.Length);
-                }
-            }
         }
 
     }
