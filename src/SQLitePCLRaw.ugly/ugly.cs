@@ -568,6 +568,18 @@ namespace SQLitePCL.Ugly
             //check_ok(rc);
         }
 
+        public static void bind_text(this sqlite3_stmt stmt, int index, ReadOnlySpan<byte> s)
+        {
+            int rc = raw.sqlite3_bind_text(stmt, index, s);
+            check_ok(rc);
+        }
+
+        public static void bind_text(this sqlite3_stmt stmt, int index, sz s)
+        {
+            int rc = raw.sqlite3_bind_text(stmt, index, s);
+            check_ok(rc);
+        }
+
         public static void bind_text(this sqlite3_stmt stmt, int index, string s)
         {
             int rc = raw.sqlite3_bind_text(stmt, index, s);
@@ -910,6 +922,16 @@ namespace SQLitePCL.Ugly
         public static int pagecount(this sqlite3_backup backup)
         {
             return raw.sqlite3_backup_pagecount(backup);
+        }
+
+        public static void result_text(this sqlite3_context ctx, ReadOnlySpan<byte> s)
+        {
+            raw.sqlite3_result_text(ctx, s);
+        }
+
+        public static void result_text(this sqlite3_context ctx, sz s)
+        {
+            raw.sqlite3_result_text(ctx, s);
         }
 
         public static void result_text(this sqlite3_context ctx, string s)

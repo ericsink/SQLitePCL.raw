@@ -42,6 +42,16 @@ namespace SQLitePCL.Tests
         }
     }
 
+    static class u
+    {
+        public static byte[] to_utf8(string s)
+        {
+            var ba = new byte[Encoding.UTF8.GetByteCount(s)];
+            Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+            return ba;
+        }
+    }
+
     [Collection("Init")]
     public class test_cases
     {
@@ -218,23 +228,59 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
-        public void test_prepare_tail_span()
+        public void test_prepare_v2_tail_span()
         {
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                var s = "CREATE TABLE foo (x int)";
+                var s_valid = "CREATE TABLE foo (x int)";
+                var s_bad = " and this is an error";
+                var s = s_valid + s_bad;
 
-                int len = Encoding.UTF8.GetByteCount(s);
-                var ba = new byte[len + 1];
-                var wrote = Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
-                ba[wrote] = 0;
+                var ba = new byte[Encoding.UTF8.GetByteCount(s)];
+                Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+                var span_all = ba.AsSpan();
 
-                var rc = raw.sqlite3_prepare_v2(db, ba, out var stmt, out var tail);
+                var rc = raw.sqlite3_prepare_v2(db, span_all, out var _);
+                Assert.Equal(raw.SQLITE_ERROR, rc);
+
+                // because all the chars are ASCII, the length of
+                // of the string will be the same
+                // as the number of bytes in its utf8 representation.
+
+                rc = raw.sqlite3_prepare_v2(db, span_all.Slice(0, s_valid.Length), out var stmt, out var tail);
                 using (stmt)
                 {
                     Assert.Equal(0, rc);
-                    Assert.Equal(1, tail.Length);
-                    Assert.Equal(0, tail[0]);
+                    Assert.Equal(0, tail.Length);
+                }
+            }
+        }
+
+        [Fact]
+        public void test_prepare_v3_tail_span()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var s_valid = "CREATE TABLE foo (x int)";
+                var s_bad = " and this is an error";
+                var s = s_valid + s_bad;
+
+                var ba = new byte[Encoding.UTF8.GetByteCount(s)];
+                Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+                var span_all = ba.AsSpan();
+
+                var rc = raw.sqlite3_prepare_v3(db, span_all, 0, out var _);
+                Assert.Equal(raw.SQLITE_ERROR, rc);
+
+                // because all the chars are ASCII, the length of
+                // of the string will be the same
+                // as the number of bytes in its utf8 representation.
+
+                rc = raw.sqlite3_prepare_v3(db, span_all.Slice(0, s_valid.Length), 0, out var stmt, out var tail);
+                using (stmt)
+                {
+                    Assert.Equal(0, rc);
+                    Assert.Equal(0, tail.Length);
                 }
             }
         }
@@ -1036,13 +1082,55 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_result_text_string()
+        {
+            const string MSG = "unless you need to move a piano";
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("foo", 0, null, (ctx, v, args) => raw.sqlite3_result_text(ctx, MSG));
+                var s = db.query_scalar<string>("SELECT foo();");
+                Assert.Equal(MSG, s);
+            }
+        }
+
+        [Fact]
+        public void test_result_text_span()
+        {
+            const string MSG = "Captain America";
+            var ba = u.to_utf8(MSG);
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.create_function("foo", 0, null, 
+                    (ctx, v, args) => 
+                    {
+                        var span_all = ba.AsSpan();
+                        raw.sqlite3_result_text(ctx, span_all.Slice(0, 3));
+                    }
+                    );
+                var s = db.query_scalar<string>("SELECT foo();");
+                Assert.Equal("Cap", s);
+            }
+        }
+
+        [Fact]
         public void test_result_errors()
         {
             const int code = 10;
             const string MSG = "epic fail";
+            const int partlen = 4;
+
+            // ascii string, so char len = utf8 byte len
 
             delegate_function_scalar errormsg_func =
                 (ctx, user_data, args) => raw.sqlite3_result_error(ctx, MSG);
+
+            delegate_function_scalar partial_errormsg_func =
+                (ctx, user_data, args) => 
+                {
+                    var ba = u.to_utf8(MSG);
+                    var span_all = ba.AsSpan();
+                    raw.sqlite3_result_error(ctx, span_all.Slice(0, partlen));
+                };
 
             delegate_function_scalar errorcode_func =
                 (ctx, user_data, args) => raw.sqlite3_result_error_code(ctx, code);
@@ -1056,6 +1144,7 @@ namespace SQLitePCL.Tests
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.create_function("errormsg", 0, null, errormsg_func);
+                db.create_function("partial_errormsg", 0, null, partial_errormsg_func);
                 db.create_function("errorcode", 0, null, errorcode_func);
                 db.create_function("toobig", 0, null, toobig_func);
                 db.create_function("nomem", 0, null, nomem_func);
@@ -1066,6 +1155,14 @@ namespace SQLitePCL.Tests
                         );
                     Assert.Equal(raw.SQLITE_ERROR, e.errcode);
                     Assert.Equal(MSG, e.errmsg);
+                }
+
+                {
+                    var e = Assert.Throws<ugly.sqlite3_exception>(
+                        () => db.exec("select partial_errormsg();")
+                        );
+                    Assert.Equal(raw.SQLITE_ERROR, e.errcode);
+                    Assert.Equal(MSG.Substring(0, 4), e.errmsg);
                 }
 
                 {
@@ -1307,6 +1404,31 @@ namespace SQLitePCL.Tests
                 db.exec("UPDATE foo SET x=5;");
                 Assert.Equal(6, db.total_changes());
                 Assert.Equal(3, db.changes());
+            }
+        }
+
+        [Fact]
+        public void test_bind_text()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                const string s = "hello world";
+                var ba = new byte[Encoding.UTF8.GetByteCount(s)];
+                Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+                var span_all = ba.AsSpan();
+                using (sqlite3_stmt stmt = db.prepare("INSERT INTO foo (x) VALUES (?)"))
+                {
+                    var slice = span_all.Slice(0, 5);
+                    stmt.bind_text(1, slice);
+                    stmt.step();
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT x FROM foo"))
+                {
+                    stmt.step_row();
+                    var s2 = stmt.column_text(0);
+                    Assert.Equal("hello", s2.ToString());
+                }
             }
         }
 
