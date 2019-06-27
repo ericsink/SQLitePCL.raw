@@ -1,4 +1,8 @@
 
+how to pass null to the tail for sqlite3_prepare_?
+chg the pinvoke signature from out byte* to byte**
+and pass null.
+
 clean up top level readme
 
 clean up blog release notes page
@@ -33,11 +37,6 @@ need 3 ways of doing dynamic load:
 do these by chance map nicely on to the flags
 for S.R.I.NativeLibrary ?
 
-a few places in the provider still have unresolved
-TODOs about whether to pass -1 and let sqlite do
-strlen or use the length given in the span, which
-may need to be adjusted for a z terminator
-
 add sqlite3_key et al to the raw layer?  if we don't,
 then why is it in the pinvoke list, thus causing the
 need for stubs in cb?
@@ -52,8 +51,6 @@ need tests for bundle_green ?
 winsqlite3 xunit with net461 test aborted.  works
 fine with fake_xunit.
 
-is the winsqlite3 bundle worth the trouble?
-
 verify versions of libtomcrypt.  submodule?
 
 what should the nuspecs say for min client version?
@@ -67,10 +64,6 @@ wrong directory?  needs a path?
 instead of GetExecutingAssembly, should use
 typeof(TODO).Assembly ?
 
-so does Utf8String include a zero terminator?  if not,
-passing a utf8string to sqlite functions that expect
-one will not be possible without a copy.  which is sad.
-
 android: 70 pass, 2 fail
     create_table_file
     wal
@@ -78,10 +71,6 @@ android: 70 pass, 2 fail
 can ios use provider dynamic with null for
 the dlopen argument?  seems like I tried this
 and it didn't work, but I don't remember for sure.
-
-how to pass null to the tail for sqlite3_prepare_?
-chg the pinvoke signature from out byte* to byte**
-and pass null.
 
 need a test that actually uses the prepare flags
 for sqlite3_prepare_v3, like persistent
@@ -93,66 +82,6 @@ sqlite3_config() call.
 
 		NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
 		NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
-
---
-
-so without a z, ROS byte can be 3 things:
-
-null -- string null
-length 0 -- empty string
-len > 0 -- string
-
---
-
-lots of places in the sqlite API give a pointer to
-a zero-terminated string, which would require a
-strlen-ish thing to convert to a span.  how many
-of these should just return ReadOnlySpan<byte> ?
-
-when using a span for a zero-terminated string,
-does the span length include the zero?  if we are
-converting to a string, we don't want the zero.
-actually we never want the zero to be considered
-part of the string.  but for sqlite apis that expect
-it to be there, we have to add one.  and that happens
-in to_utf8() alloc the byte array.  which means when
-that ba gets auto-cast to ReadOnlySpan<byte>, the
-length will include the zero.  so whenever we use the
-Length, we might need to check and see whether we
-need to strip the zero or not.
-
-if span has the zero byte, then we basically have two
-ways of determining the length of the string, and
-we therefore might want to verify that they agree.
-
-we might want to always include the zero byte in the
-length when passing strings back up, for consistency
-with the cases where we pass a string down, but that 
-seems silly, since it means the length is wrong.
-
-if we don't use or verify the length on a span passed
-down, then the length is just ignored.
-
-it would be wrong to pass down a string which has a
-zero terminator but not include that zero in the span
-length.  the zero is an expected part of the data
-sqlite wants.
-
-it would nice if span-with-z and span-without-z could
-be different types, so the compiler could tell us when
-we pass the wrong one.
-
-for strings that come back from sqlite, maybe it's just 
-better to leave things as they are, returning only
-the pointer, and leaving it up to from_utf8 to do
-the strlen.  but then why did we change all the downward
-cases to a span, when they have the same problem?  because
-all those cases need a pin, and we wanted the pin to
-happen inside the provider.
-
-we're gonna need functions that (1) make sure the zero
-terminator is the last byte in a span, and (2) make sure
-the last byte in a span is NOT a zero.
 
 --
 
