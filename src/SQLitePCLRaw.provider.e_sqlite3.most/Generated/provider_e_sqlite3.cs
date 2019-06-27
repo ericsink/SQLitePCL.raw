@@ -271,12 +271,9 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
-            verify_z_terminator(sql); // TODO or len
             fixed (byte* p_sql = sql)
             {
-                // TODO consider passing sql.Length instead of -1 for the length
-                // TODO but if so, check for z terminator and adjust length if needed
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -285,20 +282,28 @@ namespace SQLitePCL
                 }
                 else
                 {
-                    tail = null;
+                    tail = ReadOnlySpan<byte>.Empty;
                 }
+                return rc;
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, sz sql, out IntPtr stm, out sz tail)
+        {
+            fixed (byte* p_sql = sql)
+            {
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
+                // TODO we could skip the strlen by using the length we were given
+                tail = sz.FromPtr(p_tail);
                 return rc;
             }
         }
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
-            verify_z_terminator(sql); // TODO or len
             fixed (byte* p_sql = sql)
             {
-                // TODO consider passing sql.Length instead of -1 for the length
-                // TODO but if so, check for z terminator and adjust length if needed
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -307,8 +312,19 @@ namespace SQLitePCL
                 }
                 else
                 {
-                    tail = null;
+                    tail = ReadOnlySpan<byte>.Empty;
                 }
+                return rc;
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, sz sql, uint flags, out IntPtr stm, out sz tail)
+        {
+            fixed (byte* p_sql = sql)
+            {
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
+                // TODO we could skip the strlen by using the length we were given
+                tail = sz.FromPtr(p_tail);
                 return rc;
             }
         }

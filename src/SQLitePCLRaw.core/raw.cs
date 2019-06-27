@@ -678,48 +678,36 @@ namespace SQLitePCL
             return rc;
         }
 
+        static public int sqlite3_prepare_v2(sqlite3 db, sz sql, out sqlite3_stmt stmt)
+        {
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v2(db, sql.to_utf8_with_z(), out stmt);
+            return sqlite3_prepare_v2(db, sql.to_sz(), out stmt);
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
         {
-            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out var sp_tail);
-            if (sp_tail == null)
-            {
-                tail = null;
-            }
-            else
-            {
-                tail = sp_tail;
-            }
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
+        static public int sqlite3_prepare_v2(sqlite3 db, sz sql, out sqlite3_stmt stmt, out sz tail)
+        {
+            int rc = _imp.sqlite3_prepare_v2(db, sql, out var p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
-            var ba_sql = sql.to_utf8_with_z();
-            int rc = sqlite3_prepare_v2(db, ba_sql, out stmt, out var sp_tail);
-            if (sp_tail == null)
-            {
-                tail = null;
-            }
-            else
-            {
-                var rem = sp_tail;
-                if (rem.Length == 0)
-                {
-                    tail = null;
-                }
-                else
-                {
-                    // unlike most strings that come from SQLite, this one has a zero terminator,
-                    // because it is just a slice of the span we passed in, which had one.
-                    tail = util.from_utf8_with_z(rem);
-                }
-            }
+            int rc = sqlite3_prepare_v2(db, sql.to_sz(), out stmt, out var sp_tail);
+            tail = sp_tail.ToString();
             return rc;
         }
 
@@ -730,48 +718,36 @@ namespace SQLitePCL
             return rc;
         }
 
+        static public int sqlite3_prepare_v3(sqlite3 db, sz sql, uint flags, out sqlite3_stmt stmt)
+        {
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out var sp_tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v3(db, sql.to_utf8_with_z(), flags, out stmt);
+            return sqlite3_prepare_v3(db, sql.to_sz(), flags, out stmt);
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
         {
-            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out var sp_tail);
-            if (sp_tail == null)
-            {
-                tail = null;
-            }
-            else
-            {
-                tail = sp_tail;
-            }
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out tail);
+            stmt = sqlite3_stmt.From(p, db);
+            return rc;
+        }
+
+        static public int sqlite3_prepare_v3(sqlite3 db, sz sql, uint flags, out sqlite3_stmt stmt, out sz tail)
+        {
+            int rc = _imp.sqlite3_prepare_v3(db, sql, flags, out var p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
         {
-            var ba_sql = sql.to_utf8_with_z();
-            int rc = sqlite3_prepare_v3(db, ba_sql, flags, out stmt, out var sp_tail);
-            if (sp_tail == null)
-            {
-                tail = null;
-            }
-            else
-            {
-                var rem = sp_tail;
-                if (rem.Length == 0)
-                {
-                    tail = null;
-                }
-                else
-                {
-                    // unlike most strings that come from SQLite, this one has a zero terminator,
-                    // because it is just a slice of the span we passed in, which had one.
-                    tail = util.from_utf8_with_z(rem);
-                }
-            }
+            int rc = sqlite3_prepare_v3(db, sql.to_sz(), flags, out stmt, out var sp_tail);
+            tail = sp_tail.ToString();
             return rc;
         }
 
