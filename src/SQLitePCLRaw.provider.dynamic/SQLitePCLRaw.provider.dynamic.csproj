@@ -22,9 +22,6 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="IGetFunctionPointer.cs" />
-    <Compile Include="attributes.cs" />
-
     <Compile Include="Generated\provider_cdecl.cs" />
     <Compile Include="Generated\provider_stdcall.cs" />
 </ItemGroup>
