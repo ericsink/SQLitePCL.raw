@@ -126,7 +126,7 @@ namespace SQLitePCL
             }
         }
 
-        public override string ToString()
+        public string utf8_to_string()
         {
             if (sp.Length == 0)
             {

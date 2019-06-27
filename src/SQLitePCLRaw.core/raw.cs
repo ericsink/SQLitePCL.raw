@@ -380,7 +380,7 @@ namespace SQLitePCL
                 cb =
                 (ob, e, msg) =>
                 {
-                    f(ob, e, msg.ToString());
+                    f(ob, e, msg.utf8_to_string());
                 };
             }
             return sqlite3_config_log(cb, v);
@@ -428,7 +428,7 @@ namespace SQLitePCL
                 cb =
                 (ob, sp) =>
                 {
-                    f(v, sp.ToString());
+                    f(v, sp.utf8_to_string());
                 };
             }
             sqlite3_trace(db, cb, v);
@@ -451,7 +451,7 @@ namespace SQLitePCL
                 cb =
                 (ob, sp, ns) =>
                 {
-                    f(v, sp.ToString(), ns);
+                    f(v, sp.utf8_to_string(), ns);
                 };
             }
             sqlite3_profile(db, cb, v);
@@ -479,7 +479,7 @@ namespace SQLitePCL
                 cb =
                 (ob, typ, dbname, tbl, rowid) =>
                 {
-                    f(ob, typ, dbname.ToString(), tbl.ToString(), rowid);
+                    f(ob, typ, dbname.utf8_to_string(), tbl.utf8_to_string(), rowid);
                 };
             }
             sqlite3_update_hook(db, cb, v);
@@ -717,7 +717,7 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
             int rc = sqlite3_prepare_v2(db, sql.to_sz(), out stmt, out var sp_tail);
-            tail = sp_tail.ToString();
+            tail = sp_tail.utf8_to_string();
             return rc;
         }
 
@@ -757,7 +757,7 @@ namespace SQLitePCL
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
         {
             int rc = sqlite3_prepare_v3(db, sql.to_sz(), flags, out stmt, out var sp_tail);
-            tail = sp_tail.ToString();
+            tail = sp_tail.utf8_to_string();
             return rc;
         }
 
@@ -889,8 +889,8 @@ namespace SQLitePCL
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             var rc = sqlite3_table_column_metadata(db, dbName.to_sz(), tblName.to_sz(), colName.to_sz(), out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
-            dataType = p_dataType.ToString();
-            collSeq = p_collSeq.ToString();
+            dataType = p_dataType.utf8_to_string();
+            collSeq = p_collSeq.utf8_to_string();
             return rc;
         }
 
@@ -1292,7 +1292,7 @@ namespace SQLitePCL
                 cb =
                 (ob, a, p0, p1, dbname, v) =>
                 {
-                    return f(ob, a, p0.ToString(), p1.ToString(), dbname.ToString(), v.ToString());
+                    return f(ob, a, p0.utf8_to_string(), p1.utf8_to_string(), dbname.utf8_to_string(), v.utf8_to_string());
                 };
             }
             return sqlite3_set_authorizer(db, cb, user_data);

@@ -197,12 +197,12 @@ namespace SQLitePCL.Ugly
 
         public static string errmsg(this sqlite3 db)
         {
-            return raw.sqlite3_errmsg(db).ToString();
+            return raw.sqlite3_errmsg(db).utf8_to_string();
         }
 
         public static string db_filename(this sqlite3 db, string att)
         {
-            return raw.sqlite3_db_filename(db, att).ToString();
+            return raw.sqlite3_db_filename(db, att).utf8_to_string();
         }
 
         public static void commit_hook(this sqlite3 db, delegate_commit f, object v)
@@ -502,27 +502,27 @@ namespace SQLitePCL.Ugly
 
         public static string column_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_name(stmt, index).ToString();
+            return raw.sqlite3_column_name(stmt, index).utf8_to_string();
         }
 
         public static string column_database_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_database_name(stmt, index).ToString();
+            return raw.sqlite3_column_database_name(stmt, index).utf8_to_string();
         }
 
         public static string column_table_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_table_name(stmt, index).ToString();
+            return raw.sqlite3_column_table_name(stmt, index).utf8_to_string();
         }
 
         public static string column_origin_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_origin_name(stmt, index).ToString();
+            return raw.sqlite3_column_origin_name(stmt, index).utf8_to_string();
         }
 
         public static string column_decltype(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_decltype(stmt, index).ToString();
+            return raw.sqlite3_column_decltype(stmt, index).utf8_to_string();
         }
 
         public static int column_count(this sqlite3_stmt stmt)
@@ -537,7 +537,7 @@ namespace SQLitePCL.Ugly
 
         public static string column_text(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_column_text(stmt, index).ToString();
+            return raw.sqlite3_column_text(stmt, index).utf8_to_string();
         }
 
         public static int column_int(this sqlite3_stmt stmt, int index)
@@ -636,7 +636,7 @@ namespace SQLitePCL.Ugly
 
         public static string bind_parameter_name(this sqlite3_stmt stmt, int index)
         {
-            return raw.sqlite3_bind_parameter_name(stmt, index).ToString();
+            return raw.sqlite3_bind_parameter_name(stmt, index).utf8_to_string();
         }
 
         public static int bind_parameter_index(this sqlite3_stmt stmt, string name)
@@ -668,7 +668,7 @@ namespace SQLitePCL.Ugly
 
         public static string sql(this sqlite3_stmt stmt)
         {
-            return raw.sqlite3_sql(stmt).ToString();
+            return raw.sqlite3_sql(stmt).utf8_to_string();
         }
 
         public static T column<T>(this sqlite3_stmt stmt, int index)
@@ -978,7 +978,7 @@ namespace SQLitePCL.Ugly
 
         public static string value_text(this sqlite3_value val)
         {
-            return raw.sqlite3_value_text(val).ToString();
+            return raw.sqlite3_value_text(val).utf8_to_string();
         }
 
         public static int value_int(this sqlite3_value val)
