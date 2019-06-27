@@ -380,7 +380,7 @@ namespace SQLitePCL
                 cb =
                 (ob, e, msg) =>
                 {
-                    f(ob, e, util.from_utf8(msg));
+                    f(ob, e, msg.ToString());
                 };
             }
             return sqlite3_config_log(cb, v);
@@ -451,7 +451,7 @@ namespace SQLitePCL
                 cb =
                 (ob, sp, ns) =>
                 {
-                    f(v, util.from_utf8(sp), ns);
+                    f(v, sp.ToString(), ns);
                 };
             }
             sqlite3_profile(db, cb, v);
@@ -479,7 +479,7 @@ namespace SQLitePCL
                 cb =
                 (ob, typ, dbname, tbl, rowid) =>
                 {
-                    f(ob, typ, util.from_utf8(dbname), util.from_utf8(tbl), rowid);
+                    f(ob, typ, dbname.ToString(), tbl.ToString(), rowid);
                 };
             }
             sqlite3_update_hook(db, cb, v);
@@ -531,11 +531,6 @@ namespace SQLitePCL
         static public int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
-        }
-
-        public static string utf8_to_string(this ReadOnlySpan<byte> p)
-        {
-            return util.from_utf8(p);
         }
 
         public static string utf8_to_string(this sz p)
@@ -879,8 +874,8 @@ namespace SQLitePCL
         static public int sqlite3_table_column_metadata(sqlite3 db, string dbName, string tblName, string colName, out string dataType, out string collSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             var rc = sqlite3_table_column_metadata(db, dbName.to_sz(), tblName.to_sz(), colName.to_sz(), out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
-            dataType = util.from_utf8(p_dataType);
-            collSeq = util.from_utf8(p_collSeq);
+            dataType = p_dataType.ToString();
+            collSeq = p_collSeq.ToString();
             return rc;
         }
 
@@ -1282,7 +1277,7 @@ namespace SQLitePCL
                 cb =
                 (ob, a, p0, p1, dbname, v) =>
                 {
-                    return f(ob, a, util.from_utf8(p0), util.from_utf8(p1), util.from_utf8(dbname), util.from_utf8(v));
+                    return f(ob, a, p0.ToString(), p1.ToString(), dbname.ToString(), v.ToString());
                 };
             }
             return sqlite3_set_authorizer(db, cb, user_data);
