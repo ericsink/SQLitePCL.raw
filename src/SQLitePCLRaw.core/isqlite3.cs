@@ -31,8 +31,8 @@ namespace SQLitePCL
     public delegate void delegate_update(object user_data, int type, sz database, sz table, long rowid);
     public delegate int delegate_trace_v2(uint t, object user_data, IntPtr p, IntPtr x);
 
-    public delegate void delegate_log(object user_data, int errorCode, ReadOnlySpan<byte> msg);
-    public delegate int delegate_authorizer(object user_data, int action_code, ReadOnlySpan<byte> param0, ReadOnlySpan<byte> param1, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> inner_most_trigger_or_view);
+    public delegate void delegate_log(object user_data, int errorCode, sz msg);
+    public delegate int delegate_authorizer(object user_data, int action_code, sz param0, sz param1, sz dbName, sz inner_most_trigger_or_view);
 
     // this delegate returns strings as IntPtrs because they are in an array,
     public delegate int delegate_exec(object user_data, IntPtr[] values, IntPtr[] names);
@@ -41,7 +41,7 @@ namespace SQLitePCL
     public delegate void delegate_rollback(object user_data);
 
     public delegate void delegate_trace(object user_data, sz statement);
-    public delegate void delegate_profile(object user_data, ReadOnlySpan<byte> statement, long ns);
+    public delegate void delegate_profile(object user_data, sz statement, long ns);
     public delegate int delegate_progress(object user_data);
 
     public delegate void delegate_function_scalar(sqlite3_context ctx, object user_data, sqlite3_value[] args);
@@ -93,19 +93,19 @@ namespace SQLitePCL
 
         void sqlite3_interrupt(sqlite3 db);
 
-        int sqlite3__vfs__delete(ReadOnlySpan<byte> vfs, ReadOnlySpan<byte> pathname, int syncDir);
+        int sqlite3__vfs__delete(sz vfs, sz pathname, int syncDir);
 
         int sqlite3_threadsafe();
         sz sqlite3_libversion();
         int sqlite3_libversion_number();
-        ReadOnlySpan<byte> sqlite3_sourceid();
+        sz sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-        int sqlite3_db_readonly(sqlite3 db, ReadOnlySpan<byte> dbName);
-        ReadOnlySpan<byte> sqlite3_db_filename(sqlite3 db, ReadOnlySpan<byte> att);
-        ReadOnlySpan<byte> sqlite3_errmsg(sqlite3 db);
+        int sqlite3_db_readonly(sqlite3 db, sz dbName);
+        sz sqlite3_db_filename(sqlite3 db, sz att);
+        sz sqlite3_errmsg(sqlite3 db);
         long sqlite3_last_insert_rowid(sqlite3 db);
         int sqlite3_changes(sqlite3 db);
         int sqlite3_total_changes(sqlite3 db);
@@ -115,7 +115,7 @@ namespace SQLitePCL
         int sqlite3_extended_result_codes(sqlite3 db, int onoff);
         int sqlite3_errcode(sqlite3 db);
         int sqlite3_extended_errcode(sqlite3 db);
-        ReadOnlySpan<byte> sqlite3_errstr(int rc); /* 3.7.15+ */
+        sz sqlite3_errstr(int rc); /* 3.7.15+ */
 
         int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stmt, out ReadOnlySpan<byte> remain);
         int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stmt, out ReadOnlySpan<byte> remain);
@@ -124,12 +124,12 @@ namespace SQLitePCL
         int sqlite3_reset(sqlite3_stmt stmt);
         int sqlite3_clear_bindings(sqlite3_stmt stmt);
         int sqlite3_stmt_status(sqlite3_stmt stmt, int op, int resetFlg);
-        ReadOnlySpan<byte> sqlite3_sql(sqlite3_stmt stmt);
+        sz sqlite3_sql(sqlite3_stmt stmt);
         IntPtr sqlite3_db_handle(IntPtr stmt);
         IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
 
         int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
-        ReadOnlySpan<byte> sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
+        sz sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
         int sqlite3_bind_blob(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> blob);
         int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
         int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
@@ -137,12 +137,12 @@ namespace SQLitePCL
         int sqlite3_bind_null(sqlite3_stmt stmt, int index);
         int sqlite3_bind_text(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> text);
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
-        int sqlite3_bind_parameter_index(sqlite3_stmt stmt, ReadOnlySpan<byte> strName);
+        int sqlite3_bind_parameter_index(sqlite3_stmt stmt, sz strName);
 
-        ReadOnlySpan<byte> sqlite3_column_database_name(sqlite3_stmt stmt, int index);
-        ReadOnlySpan<byte> sqlite3_column_name(sqlite3_stmt stmt, int index);
-        ReadOnlySpan<byte> sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
-        ReadOnlySpan<byte> sqlite3_column_table_name(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_database_name(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_name(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_table_name(sqlite3_stmt stmt, int index);
         sz sqlite3_column_text(sqlite3_stmt stmt, int index);
         int sqlite3_data_count(sqlite3_stmt stmt);
         int sqlite3_column_count(sqlite3_stmt stmt);
@@ -152,15 +152,15 @@ namespace SQLitePCL
         ReadOnlySpan<byte> sqlite3_column_blob(sqlite3_stmt stmt, int index);
         int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
-        ReadOnlySpan<byte> sqlite3_column_decltype(sqlite3_stmt stmt, int index);
+        sz sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-        sqlite3_backup sqlite3_backup_init(sqlite3 destDb, ReadOnlySpan<byte> destName, sqlite3 sourceDb, ReadOnlySpan<byte> sourceName);
+        sqlite3_backup sqlite3_backup_init(sqlite3 destDb, sz destName, sqlite3 sourceDb, sz sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
         int sqlite3_backup_remaining(sqlite3_backup backup);
         int sqlite3_backup_pagecount(sqlite3_backup backup);
         int sqlite3_backup_finish(IntPtr backup);
 
-        int sqlite3_blob_open(sqlite3 db, ReadOnlySpan<byte> db_utf8, ReadOnlySpan<byte> table_utf8, ReadOnlySpan<byte> col_utf8, long rowid, int flags, out sqlite3_blob blob);
+        int sqlite3_blob_open(sqlite3 db, sz db_utf8, sz table_utf8, sz col_utf8, long rowid, int flags, out sqlite3_blob blob);
         int sqlite3_blob_bytes(sqlite3_blob blob);
         int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
         int sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset);
@@ -168,7 +168,7 @@ namespace SQLitePCL
         int sqlite3_blob_close(IntPtr blob);
 
         int sqlite3_config_log(delegate_log func, object v);
-        void sqlite3_log(int errcode, ReadOnlySpan<byte> s);
+        void sqlite3_log(int errcode, sz s);
         void sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v);
         void sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v);
 
@@ -204,24 +204,24 @@ namespace SQLitePCL
         int sqlite3_value_int(IntPtr p);
         long sqlite3_value_int64(IntPtr p);
         int sqlite3_value_type(IntPtr p);
-        ReadOnlySpan<byte> sqlite3_value_text(IntPtr p);
+        sz sqlite3_value_text(IntPtr p);
 
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
         // this function returns the errMsg as an IntPtr because it needs to be freed.
-        int sqlite3_exec(sqlite3 db, ReadOnlySpan<byte> sql, delegate_exec callback, object user_data, out IntPtr errMsg);
+        int sqlite3_exec(sqlite3 db, sz sql, delegate_exec callback, object user_data, out IntPtr errMsg);
 
-        int sqlite3_complete(ReadOnlySpan<byte> sql);
+        int sqlite3_complete(sz sql);
 
-        int sqlite3_compileoption_used(ReadOnlySpan<byte> sql);
-        ReadOnlySpan<byte> sqlite3_compileoption_get(int n);
+        int sqlite3_compileoption_used(sz sql);
+        sz sqlite3_compileoption_get(int n);
 
         int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
-        int sqlite3_wal_checkpoint(sqlite3 db, ReadOnlySpan<byte> dbName);
-        int sqlite3_wal_checkpoint_v2(sqlite3 db, ReadOnlySpan<byte> dbName, int eMode, out int logSize, out int framesCheckPointed);
+        int sqlite3_wal_checkpoint(sqlite3 db, sz dbName);
+        int sqlite3_wal_checkpoint_v2(sqlite3 db, sz dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-        int sqlite3_table_column_metadata(sqlite3 db, ReadOnlySpan<byte> dbName, ReadOnlySpan<byte> tblName, ReadOnlySpan<byte> colName, out ReadOnlySpan<byte> dataType, out ReadOnlySpan<byte> collSeq, out int notNull, out int primaryKey, out int autoInc);
+        int sqlite3_table_column_metadata(sqlite3 db, sz dbName, sz tblName, sz colName, out sz dataType, out sz collSeq, out int notNull, out int primaryKey, out int autoInc);
 
         int sqlite3_set_authorizer(sqlite3 db, delegate_authorizer authorizer, object user_data);
 
@@ -235,7 +235,7 @@ namespace SQLitePCL
         int sqlite3_key(sqlite3 db, byte[] key, int keylen);
         int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
 
-        int sqlite3_load_extension(sqlite3 db, ReadOnlySpan<byte> fileName, ReadOnlySpan<byte> procName, ref IntPtr pError);
+        int sqlite3_load_extension(sqlite3 db, sz fileName, sz procName, ref IntPtr pError);
 #endif
 
         int sqlite3_initialize();
@@ -248,7 +248,7 @@ namespace SQLitePCL
         int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 
-        int sqlite3_win32_set_directory(int typ, ReadOnlySpan<byte> path);
+        int sqlite3_win32_set_directory(int typ, sz path);
     }
 }
 

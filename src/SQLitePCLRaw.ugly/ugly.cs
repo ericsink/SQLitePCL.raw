@@ -341,7 +341,7 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_next_stmt(db, s);
         }
 
-        public static sqlite3_blob blob_open(this sqlite3 db, byte[] db_utf8, byte[] table_utf8, byte[] column_utf8, long rowid, int flags)
+        public static sqlite3_blob blob_open(this sqlite3 db, sz db_utf8, sz table_utf8, sz column_utf8, long rowid, int flags)
         {
             sqlite3_blob blob;
             int rc = raw.sqlite3_blob_open(db, db_utf8, table_utf8, column_utf8, rowid, flags, out blob);

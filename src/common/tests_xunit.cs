@@ -960,7 +960,7 @@ namespace SQLitePCL.Tests
                 }
                 Assert.True(fail);
 
-                Assert.True(raw.sqlite3_errstr(raw.SQLITE_CONSTRAINT) != null);
+                Assert.True(raw.sqlite3_errstr(raw.SQLITE_CONSTRAINT).ToString() != null);
             }
         }
 
