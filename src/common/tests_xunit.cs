@@ -593,7 +593,7 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_prepare_v2_overload()
         {
-            var libversion = raw.sqlite3_libversion().utf8_to_string();
+            var libversion = raw.sqlite3_libversion().ToString();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 // prepare a stmt with raw, not ugly, no tail provided
@@ -618,7 +618,7 @@ namespace SQLitePCL.Tests
         public void test_prepare_v3_overload()
         {
             // identical to v2 version of this test
-            var libversion = raw.sqlite3_libversion().utf8_to_string();
+            var libversion = raw.sqlite3_libversion().ToString();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 // prepare a stmt with raw, not ugly, no tail provided
@@ -642,7 +642,7 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_prepare_v3()
         {
-            var libversion = raw.sqlite3_libversion().utf8_to_string();
+            var libversion = raw.sqlite3_libversion().ToString();
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 using (sqlite3_stmt stmt = db.prepare_v3("SELECT sqlite_version()", 0))
@@ -657,11 +657,11 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_libversion()
         {
-            string sourceid = raw.sqlite3_sourceid().utf8_to_string();
+            string sourceid = raw.sqlite3_sourceid().ToString();
             Assert.True(sourceid != null);
             Assert.True(sourceid.Length > 0);
 
-            string libversion = raw.sqlite3_libversion().utf8_to_string();
+            string libversion = raw.sqlite3_libversion().ToString();
             Assert.True(libversion != null);
             Assert.True(libversion.Length > 0);
             Assert.Equal('3', libversion[0]);
@@ -855,7 +855,7 @@ namespace SQLitePCL.Tests
             int i = 0;
             while (true)
             {
-                string s = raw.sqlite3_compileoption_get(i++).utf8_to_string();
+                string s = raw.sqlite3_compileoption_get(i++).ToString();
                 if (s == null)
                 {
                     break;

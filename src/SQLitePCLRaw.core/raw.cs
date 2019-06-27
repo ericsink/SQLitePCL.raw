@@ -533,11 +533,6 @@ namespace SQLitePCL
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
-        public static string utf8_to_string(this sz p)
-        {
-            return p.ToString();
-        }
-
         static public sz sqlite3_libversion()
         {
             return _imp.sqlite3_libversion();
