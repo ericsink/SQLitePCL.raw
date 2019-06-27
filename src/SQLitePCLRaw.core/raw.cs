@@ -306,7 +306,7 @@ namespace SQLitePCL
 
         static public int sqlite3_open(string filename, out sqlite3 db)
         {
-            return sqlite3_open(sz.FromString(filename), out db);
+            return sqlite3_open(filename.to_sz(), out db);
         }
 
         static public int sqlite3_open_v2(sz filename, out sqlite3 db, int flags, sz vfs)
