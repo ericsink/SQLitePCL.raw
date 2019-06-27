@@ -236,10 +236,12 @@ namespace SQLitePCL
 
         void sqlite3_free(IntPtr p);
 
-#if not // TODO consider these
-        int sqlite3_key(sqlite3 db, byte[] key, int keylen);
-        int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
+        int sqlite3_key(sqlite3 db, ReadOnlySpan<byte> key);
+        int sqlite3_key_v2(sqlite3 db, sz dbname, ReadOnlySpan<byte> key);
+        int sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> key);
+        int sqlite3_rekey_v2(sqlite3 db, sz dbname, ReadOnlySpan<byte> key);
 
+#if not // TODO consider
         int sqlite3_load_extension(sqlite3 db, sz fileName, sz procName, ref IntPtr pError);
 #endif
 

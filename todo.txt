@@ -1,15 +1,16 @@
 
-rename sz to utf8z?  c8z?  s8z? str8z?
+rename sz to Utf8z
 
-needs tests for the ReadOnlySpan<byte> overloads.
-test them with strings that do not have a zero terminator.
+need higher level typed delegate overloads for
+sqlite3_trace_v2().  but problem with mapping
+IntPtr (in the callback) to the actual safehandle.
+or remove trace_v2 for now.
 
 still a good idea to have provider cdecl and stdcall
 together in one?  or should we separate them?
 still seems like stdcall only matters for winsqlite3.
 
-for a ReadOnlySpan<byte> without a null terminator:
-empty "string" is indistinguishable from null string.
+need test cases for sqlite3_key and friends
 
 how to pass null to the tail for sqlite3_prepare_?
 chg the pinvoke signature from out byte* to byte**
@@ -23,11 +24,8 @@ finish writing v2 changes page
 
 --
 
-need higher level typed delegate overloads for
-sqlite3_trace_v2().  but problem with mapping
-IntPtr (in the callback) to the actual safehandle.
-
---
+for a ReadOnlySpan<byte> without a null terminator:
+empty "string" is indistinguishable from null string.
 
 sqlite3_create_window_function
 
@@ -48,10 +46,6 @@ need 3 ways of doing dynamic load:
     look for x86/x64
 do these by chance map nicely on to the flags
 for S.R.I.NativeLibrary ?
-
-add sqlite3_key et al to the raw layer?  if we don't,
-then why is it in the pinvoke list, thus causing the
-need for stubs in cb?
 
 hmmm.  does winsqlite3 have win32_set_directory8,
 the utf8 version?  not sure what version of sqlite it

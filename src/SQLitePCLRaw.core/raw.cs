@@ -533,6 +533,26 @@ namespace SQLitePCL
             return _imp.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
+        static public int sqlite3_key(sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            return _imp.sqlite3_key(db, k);
+        }
+
+        static public int sqlite3_key_v2(sqlite3 db, sz name, ReadOnlySpan<byte> k)
+        {
+            return _imp.sqlite3_key_v2(db, name, k);
+        }
+
+        static public int sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            return _imp.sqlite3_rekey(db, k);
+        }
+
+        static public int sqlite3_rekey_v2(sqlite3 db, sz name, ReadOnlySpan<byte> k)
+        {
+            return _imp.sqlite3_rekey_v2(db, name, k);
+        }
+
         static public sz sqlite3_libversion()
         {
             return _imp.sqlite3_libversion();

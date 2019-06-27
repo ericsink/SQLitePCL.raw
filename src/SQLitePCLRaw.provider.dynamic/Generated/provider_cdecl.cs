@@ -226,6 +226,38 @@ namespace SQLitePCL
             }
         }
 
+        unsafe int ISQLite3Provider.sqlite3_key(sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_key(db, p, k.Length);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_key_v2(sqlite3 db, sz name, ReadOnlySpan<byte> k)
+        {
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_key_v2(db, p_name, p, k.Length);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> k)
+        {
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_rekey(db, p, k.Length);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_rekey_v2(sqlite3 db, sz name, ReadOnlySpan<byte> k)
+        {
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_rekey_v2(db, p_name, p, k.Length);
+            }
+        }
+
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
             fixed (byte* p_sql = sql)
@@ -1496,7 +1528,9 @@ namespace SQLitePCL
 			sqlite3_result_error_code = (MyDelegateTypes.sqlite3_result_error_code) Load(gf, typeof(MyDelegateTypes.sqlite3_result_error_code));
 			sqlite3_aggregate_context = (MyDelegateTypes.sqlite3_aggregate_context) Load(gf, typeof(MyDelegateTypes.sqlite3_aggregate_context));
 			sqlite3_key = (MyDelegateTypes.sqlite3_key) Load(gf, typeof(MyDelegateTypes.sqlite3_key));
+			sqlite3_key_v2 = (MyDelegateTypes.sqlite3_key_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_key_v2));
 			sqlite3_rekey = (MyDelegateTypes.sqlite3_rekey) Load(gf, typeof(MyDelegateTypes.sqlite3_rekey));
+			sqlite3_rekey_v2 = (MyDelegateTypes.sqlite3_rekey_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_rekey_v2));
 			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
 			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
 			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
@@ -1628,7 +1662,9 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_result_error_code sqlite3_result_error_code;
 		public static MyDelegateTypes.sqlite3_aggregate_context sqlite3_aggregate_context;
 		public static MyDelegateTypes.sqlite3_key sqlite3_key;
+		public static MyDelegateTypes.sqlite3_key_v2 sqlite3_key_v2;
 		public static MyDelegateTypes.sqlite3_rekey sqlite3_rekey;
+		public static MyDelegateTypes.sqlite3_rekey_v2 sqlite3_rekey_v2;
 		public static MyDelegateTypes.sqlite3_config_none sqlite3_config_none;
 		public static MyDelegateTypes.sqlite3_config_int sqlite3_config_int;
 		public static MyDelegateTypes.sqlite3_config_log sqlite3_config_log;
@@ -1987,10 +2023,16 @@ namespace SQLitePCL
 		public unsafe delegate IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_key(sqlite3 db, byte[] key, int keylen);
+		public unsafe delegate int sqlite3_key(sqlite3 db, byte* key, int keylen);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_rekey(sqlite3 db, byte[] key, int keylen);
+		public unsafe delegate int sqlite3_key_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_rekey(sqlite3 db, byte* key, int keylen);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 
 		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
 		// for all possible calls that we want to use.
