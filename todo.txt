@@ -1,7 +1,7 @@
 
-lib package for xamarin mac
+cleanup src/tests+t2, include sqlcipher as well
 
-rename sz to Utf8z, or Strz ?
+lib package for xamarin mac
 
 clean up top level readme
 
@@ -12,6 +12,11 @@ finish writing v2 changes page
 test with zetetic
 
 --
+
+for the sake of code coverage it would be nice to test
+attempting to create an a utf8z with a span that does
+not have a zero terminator and Assert.Throws().  but
+that constructor is not public and probably should not be.
 
 UWP test runner has problems with win32_set_dir and the
 sqlite3_config tests
