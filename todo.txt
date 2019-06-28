@@ -1,7 +1,7 @@
 
 there are a couple of providers we may not need
 anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
-for example.
+for example.  also sqlite3 dllimport I think.
 
 rename sz to Utf8z, or Strz ?
 
@@ -14,6 +14,15 @@ clean up top level readme
 clean up blog release notes page
 
 finish writing v2 changes page
+
+understand why Span seems nullable when it is not
+
+might want bind_blob to allow specifying something
+other than transient.  in the current implementation,
+sqlite makes a copy of the blob every time.  same for
+bind_text as well.
+
+test with zetetic
 
 --
 
@@ -86,10 +95,6 @@ sqlite3_config() call.
 --
 
 investigate GC.AddMemoryPressure()
-
-might want bind_blob to allow specifying something
-other than transient.  in the current implementation,
-sqlite makes a copy of the blob every time.
 
 investigate new utf8 things in System.Memory pkg
 
