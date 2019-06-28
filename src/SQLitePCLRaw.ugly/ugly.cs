@@ -179,11 +179,11 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
-	public static void vfs__delete(string vfs, string filename, int syncdir)
-	{
-	    int rc = raw.sqlite3__vfs__delete(vfs, filename, syncdir);
-	    check_ok(rc);
-	}
+        public static void vfs__delete(string vfs, string filename, int syncdir)
+        {
+            int rc = raw.sqlite3__vfs__delete(vfs, filename, syncdir);
+            check_ok(rc);
+        }
 
         public static int errcode(this sqlite3 db)
         {
@@ -285,7 +285,7 @@ namespace SQLitePCL.Ugly
         }
 
         public static void db_status(this sqlite3 db, int op, out int current, out int highest, int resetFlg)
-        {    
+        {
             int rc = raw.sqlite3_db_status(db, op, out current, out highest, resetFlg);
             check_ok(db, rc);
         }
@@ -361,7 +361,7 @@ namespace SQLitePCL.Ugly
             }
         }
 
-		public static IEnumerable<T> query<T> (this sqlite3 db, string sql, params object[] a) where T: class, new()
+        public static IEnumerable<T> query<T>(this sqlite3 db, string sql, params object[] a) where T : class, new()
         {
             using (sqlite3_stmt stmt = db.prepare(sql, a))
             {
@@ -372,7 +372,7 @@ namespace SQLitePCL.Ugly
             }
         }
 
-		public static IEnumerable<T> query_one_column<T> (this sqlite3 db, string sql, params object[] a)
+        public static IEnumerable<T> query_one_column<T>(this sqlite3 db, string sql, params object[] a)
         {
             using (sqlite3_stmt stmt = db.prepare(sql, a))
             {
@@ -668,82 +668,82 @@ namespace SQLitePCL.Ugly
 
         public static T column<T>(this sqlite3_stmt stmt, int index)
         {
-            return (T) stmt.column(index, typeof(T));
+            return (T)stmt.column(index, typeof(T));
         }
 
         public static object column(this sqlite3_stmt stmt, int index, Type t)
         {
-            if (typeof(String) == t) 
+            if (typeof(String) == t)
             {
                 return stmt.column_text(index);
             }
             else if (
-                       (typeof(Int32) == t) 
-                    || (typeof(Boolean) == t) 
-                    || (typeof(Byte) == t) 
-                    || (typeof(UInt16) == t) 
-                    || (typeof(Int16) == t) 
-                    || (typeof(sbyte) == t) 
+                       (typeof(Int32) == t)
+                    || (typeof(Boolean) == t)
+                    || (typeof(Byte) == t)
+                    || (typeof(UInt16) == t)
+                    || (typeof(Int16) == t)
+                    || (typeof(sbyte) == t)
                     )
             {
                 return Convert.ChangeType(stmt.column_int(index), t, null);
             }
             else if (
-                       (typeof(double) == t) 
-                    || (typeof(float) == t) 
+                       (typeof(double) == t)
+                    || (typeof(float) == t)
                     )
             {
                 return Convert.ChangeType(stmt.column_double(index), t, null);
             }
-            else if (typeof(DateTime) == t) 
+            else if (typeof(DateTime) == t)
             {
                 DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                 return origin.AddSeconds(stmt.column_int64(index));
             }
             else if (
-                       (typeof(Int64) == t) 
-                    || (typeof(UInt32) == t) 
+                       (typeof(Int64) == t)
+                    || (typeof(UInt32) == t)
                     )
             {
                 return Convert.ChangeType(stmt.column_int64(index), t, null);
             }
-            else if (typeof(System.Nullable<long>) == t) 
+            else if (typeof(System.Nullable<long>) == t)
             {
                 if (stmt.column_type(index) == raw.SQLITE_NULL)
                 {
                     return null;
                 }
-		else
-		{
-		    long? x = stmt.column_int64(index);
-		    return x;
-		}
+                else
+                {
+                    long? x = stmt.column_int64(index);
+                    return x;
+                }
             }
-            else if (typeof(System.Nullable<double>) == t) 
+            else if (typeof(System.Nullable<double>) == t)
             {
                 if (stmt.column_type(index) == raw.SQLITE_NULL)
                 {
                     return null;
                 }
-		else
-		{
-		    double? x = stmt.column_double(index);
-		    return x;
-		}
+                else
+                {
+                    double? x = stmt.column_double(index);
+                    return x;
+                }
             }
-            else if (typeof(System.Nullable<int>) == t) 
+            else if (typeof(System.Nullable<int>) == t)
             {
                 if (stmt.column_type(index) == raw.SQLITE_NULL)
                 {
                     return null;
                 }
-		else
-		{
-		    int? x = stmt.column_int(index);
-		    return x;
-		}
+                else
+                {
+                    int? x = stmt.column_int(index);
+                    return x;
+                }
             }
-            else if (typeof(byte[]) == t) 
+            else if (typeof(byte[]) == t)
             {
                 // TODO hmmm.  how should this function adapt to Span/Memory ?
                 // need a way to ask for ReadOnlySpan<byte> ?
@@ -758,15 +758,15 @@ namespace SQLitePCL.Ugly
             }
             else
             {
-                throw new NotSupportedException ("Invalid type conversion" + t);
+                throw new NotSupportedException("Invalid type conversion" + t);
             }
         }
 
-        public static T row<T>(this sqlite3_stmt stmt) where T: new()
+        public static T row<T>(this sqlite3_stmt stmt) where T : new()
         {
             Type typ = typeof(T);
             var obj = new T();
-            for (int i=0; i<stmt.column_count(); i++)
+            for (int i = 0; i < stmt.column_count(); i++)
             {
                 string colname = stmt.column_name(i);
 
@@ -784,7 +784,7 @@ namespace SQLitePCL.Ugly
                 }
                 else
                 {
-                    throw new NotSupportedException ("property not found");
+                    throw new NotSupportedException("property not found");
                 }
 
             }
@@ -802,56 +802,56 @@ namespace SQLitePCL.Ugly
             // TODO instead of Math.Min(), consider comparing the two
             // counts and throwing if they're not equal.
 
-            for (int i=0; i<count; i++)
+            for (int i = 0; i < count; i++)
             {
-                int ndx = i+1;
+                int ndx = i + 1;
                 if (a[i] == null)
                 {
                     //Console.WriteLine("bind: {0} null", i);
                     stmt.bind_null(ndx);
                 }
-                else 
+                else
                 {
                     Type t = a[i].GetType();
                     //Console.WriteLine("bind: {0} {1} -- {2}", i, t, a[i]);
-                    if (typeof(String) == t) 
+                    if (typeof(String) == t)
                     {
-                        stmt.bind_text(ndx, (string) a[i]);
+                        stmt.bind_text(ndx, (string)a[i]);
                     }
                     else if (
-                               (typeof(Int32) == t) 
-                            || (typeof(Boolean) == t) 
-                            || (typeof(Byte) == t) 
-                            || (typeof(UInt16) == t) 
-                            || (typeof(Int16) == t) 
-                            || (typeof(sbyte) == t) 
-                            || (typeof(Int64) == t) 
-                            || (typeof(UInt32) == t) 
+                               (typeof(Int32) == t)
+                            || (typeof(Boolean) == t)
+                            || (typeof(Byte) == t)
+                            || (typeof(UInt16) == t)
+                            || (typeof(Int16) == t)
+                            || (typeof(sbyte) == t)
+                            || (typeof(Int64) == t)
+                            || (typeof(UInt32) == t)
                             )
                     {
-                        stmt.bind_int64(ndx, (long) (Convert.ChangeType(a[i], typeof(long), null)));
+                        stmt.bind_int64(ndx, (long)(Convert.ChangeType(a[i], typeof(long), null)));
                     }
                     else if (
-                               (typeof(double) == t) 
-                            || (typeof(float) == t) 
+                               (typeof(double) == t)
+                            || (typeof(float) == t)
                             )
                     {
-                        stmt.bind_double(ndx, (double) (Convert.ChangeType(a[i], typeof(double), null)));
+                        stmt.bind_double(ndx, (double)(Convert.ChangeType(a[i], typeof(double), null)));
                     }
-                    else if (typeof(DateTime) == t) 
+                    else if (typeof(DateTime) == t)
                     {
-                        DateTime d = (DateTime) a[i];
+                        DateTime d = (DateTime)a[i];
                         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                         TimeSpan diff = d.ToUniversalTime() - origin;
-                        stmt.bind_int64(ndx, (long) diff.TotalSeconds);
+                        stmt.bind_int64(ndx, (long)diff.TotalSeconds);
                     }
-                    else if (typeof(byte[]) == t) 
+                    else if (typeof(byte[]) == t)
                     {
-                        stmt.bind_blob(ndx, (byte[]) a[i]);
+                        stmt.bind_blob(ndx, (byte[])a[i]);
                     }
                     else
                     {
-                        throw new NotSupportedException ("Invalid type conversion" + t);
+                        throw new NotSupportedException("Invalid type conversion" + t);
                     }
                 }
             }

@@ -1100,8 +1100,8 @@ namespace SQLitePCL.Tests
             var ba = u.to_utf8(MSG);
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                db.create_function("foo", 0, null, 
-                    (ctx, v, args) => 
+                db.create_function("foo", 0, null,
+                    (ctx, v, args) =>
                     {
                         var span_all = ba.AsSpan();
                         raw.sqlite3_result_text(ctx, span_all.Slice(0, 3));
@@ -1125,7 +1125,7 @@ namespace SQLitePCL.Tests
                 (ctx, user_data, args) => raw.sqlite3_result_error(ctx, MSG);
 
             delegate_function_scalar partial_errormsg_func =
-                (ctx, user_data, args) => 
+                (ctx, user_data, args) =>
                 {
                     var ba = u.to_utf8(MSG);
                     var span_all = ba.AsSpan();
@@ -2575,7 +2575,7 @@ namespace SQLitePCL.Tests
         {
             var msgs = new List<string>();
             var rc = raw.sqlite3_config_log(
-                (v, errcode, msg) => msgs.Add(msg), 
+                (v, errcode, msg) => msgs.Add(msg),
                 null
                 );
             Assert.Equal(0, rc);
@@ -2622,7 +2622,7 @@ namespace SQLitePCL.Tests
         {
             var msgs = new List<string>();
             var rc = raw.sqlite3_config_log(
-                (v, errcode, msg) => msgs.Add(msg), 
+                (v, errcode, msg) => msgs.Add(msg),
                 null
                 );
             Assert.Equal(raw.SQLITE_OK, rc);
@@ -2963,7 +2963,7 @@ namespace SQLitePCL.Tests
         {
             using (sqlite3 db = ugly.open(":memory:"))
             {
-                var s = db.query_scalar<string>("PRAGMA cipher_version");	
+                var s = db.query_scalar<string>("PRAGMA cipher_version");
                 return !string.IsNullOrEmpty(s);
             }
         }
@@ -3036,7 +3036,7 @@ namespace SQLitePCL.Tests
                 {
                     name = "tmp" + db.query_scalar<string>("SELECT lower(hex(randomblob(16)));");
                 }
-                var correct_key = new byte[] { 8,6,7,5,3,0,9 };
+                var correct_key = new byte[] { 8, 6, 7, 5, 3, 0, 9 };
                 var nums = new int[] { 1, 6, 3, 0, 9 };
                 using (sqlite3 db = ugly.open(name))
                 {
@@ -3072,7 +3072,7 @@ namespace SQLitePCL.Tests
                 }
                 Assert.True(check_sum(correct_key));
                 Assert.False(check_sum(null));
-                var new_key = new byte[] { 5,6,7,8};
+                var new_key = new byte[] { 5, 6, 7, 8 };
                 Assert.False(check_sum(new_key));
 
                 using (sqlite3 db = ugly.open(name))

@@ -61,7 +61,7 @@ namespace SQLitePCL
 
         public static void Init()
         {
-		    DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_PLAIN);
+            DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_PLAIN);
         }
     }
 }

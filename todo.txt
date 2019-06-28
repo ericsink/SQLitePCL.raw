@@ -181,8 +181,6 @@ the version
 
 .editorconfig
 
-dotnet-format.  but won't work for provider.tt.
-
 should the other batteries also build on a placeholder
 instead of the actual ios lib assembly?  allows
 dotnet cli instead of desktop msbuild.

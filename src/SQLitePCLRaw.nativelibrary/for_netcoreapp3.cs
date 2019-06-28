@@ -42,6 +42,6 @@ namespace SQLitePCL
         {
             System.Runtime.InteropServices.NativeLibrary.Free(handle);
         }
-	}
+    }
 }
 

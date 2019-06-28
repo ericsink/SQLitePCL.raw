@@ -80,7 +80,7 @@ namespace SQLitePCL
         public const int SQLITE_UTF16_ALIGNED = 8;  /* sqlite3_create_function only */
 
         public const int SQLITE_DETERMINISTIC = 0x800;
-		
+
         public const int SQLITE_CONFIG_SINGLETHREAD = 1;  /* nil */
         public const int SQLITE_CONFIG_MULTITHREAD = 2;  /* nil */
         public const int SQLITE_CONFIG_SERIALIZED = 3;  /* nil */
@@ -299,7 +299,7 @@ namespace SQLitePCL
         static public int sqlite3_open(sz filename, out sqlite3 db)
         {
             int rc = _imp.sqlite3_open(filename, out var p_db);
-			// TODO check rc?
+            // TODO check rc?
             db = sqlite3.New(p_db);
             return rc;
         }
@@ -312,7 +312,7 @@ namespace SQLitePCL
         static public int sqlite3_open_v2(sz filename, out sqlite3 db, int flags, sz vfs)
         {
             int rc = _imp.sqlite3_open_v2(filename, out var p_db, flags, vfs);
-			// TODO check rc?
+            // TODO check rc?
             db = sqlite3.New(p_db);
             return rc;
         }
@@ -329,28 +329,28 @@ namespace SQLitePCL
             return sqlite3__vfs__delete(vfs.to_sz(), pathname.to_sz(), syncdir);
         }
 
-		// called by the SafeHandle
+        // called by the SafeHandle
         static internal int internal_sqlite3_close_v2(IntPtr p)
         {
             return _imp.sqlite3_close_v2(p);
         }
 
-		// called by the SafeHandle
+        // called by the SafeHandle
         static internal int internal_sqlite3_close(IntPtr p)
         {
             return _imp.sqlite3_close(p);
         }
 
-		// called by apps that want the return code
+        // called by apps that want the return code
         static public int sqlite3_close_v2(sqlite3 db)
-		{
-			return db.manual_close_v2();
-		}
+        {
+            return db.manual_close_v2();
+        }
 
-		// called by apps that want the return code
+        // called by apps that want the return code
         static public int sqlite3_close(sqlite3 db)
         {
-			return db.manual_close();
+            return db.manual_close();
         }
 
         static public int sqlite3_enable_shared_cache(int enable)
@@ -490,7 +490,7 @@ namespace SQLitePCL
             }
             else
             {
-                cb = 
+                cb =
                 (ob, s1, s2) =>
                 {
                     return f(ob, s1.utf8_span_to_string(), s2.utf8_span_to_string());
@@ -783,7 +783,7 @@ namespace SQLitePCL
                 {
                     var a_v = new string[values.Length];
                     var a_n = new string[names.Length];
-                    for (int i=0; i<values.Length; i++)
+                    for (int i = 0; i < values.Length; i++)
                     {
                         a_v[i] = util.from_utf8_z(values[i]);
                         a_n[i] = util.from_utf8_z(names[i]);
@@ -842,16 +842,16 @@ namespace SQLitePCL
             return _imp.sqlite3_step(stmt);
         }
 
-		// called by apps that want the return code
+        // called by apps that want the return code
         static public int sqlite3_finalize(sqlite3_stmt stmt)
         {
-			return stmt.manual_close();
+            return stmt.manual_close();
         }
 
-		// called by the SafeHandle
+        // called by the SafeHandle
         static public int internal_sqlite3_finalize(IntPtr stmt)
         {
-			return _imp.sqlite3_finalize(stmt);
+            return _imp.sqlite3_finalize(stmt);
         }
 
         static public int sqlite3_reset(sqlite3_stmt stmt)
@@ -1217,13 +1217,13 @@ namespace SQLitePCL
             return _imp.sqlite3_backup_pagecount(backup);
         }
 
-		// called by something that wants the return code
+        // called by something that wants the return code
         static public int sqlite3_backup_finish(sqlite3_backup backup)
         {
-			return backup.manual_close();
+            return backup.manual_close();
         }
 
-		// this is called by the SafeHandle
+        // this is called by the SafeHandle
         static internal int internal_sqlite3_backup_finish(IntPtr p)
         {
             return _imp.sqlite3_backup_finish(p);
@@ -1259,16 +1259,16 @@ namespace SQLitePCL
             return _imp.sqlite3_blob_read(blob, b, offset);
         }
 
-		// called by something that wants the return code
+        // called by something that wants the return code
         static public int sqlite3_blob_close(sqlite3_blob blob)
         {
-			return blob.manual_close();
+            return blob.manual_close();
         }
 
-		// this is called by the SafeHandle
+        // this is called by the SafeHandle
         static internal int internal_sqlite3_blob_close(IntPtr blob)
         {
-			return _imp.sqlite3_blob_close(blob);
+            return _imp.sqlite3_blob_close(blob);
         }
 
         static public int sqlite3_wal_autocheckpoint(sqlite3 db, int n)

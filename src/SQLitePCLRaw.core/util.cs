@@ -80,13 +80,13 @@ namespace SQLitePCL
 
         unsafe static ReadOnlySpan<byte> to_span(byte* p)
         {
-            var len = (int) my_strlen(p);
+            var len = (int)my_strlen(p);
             return new ReadOnlySpan<byte>(p, len + 1);
         }
 
         unsafe static ReadOnlySpan<byte> to_span(IntPtr p)
         {
-            return to_span((byte*) (p.ToPointer()));
+            return to_span((byte*)(p.ToPointer()));
         }
 
         unsafe public static sz FromPtr(byte* p)
@@ -195,7 +195,7 @@ namespace SQLitePCL
             {
                 unsafe
                 {
-                    result = Encoding.UTF8.GetString((byte*) nativeString.ToPointer(), size);
+                    result = Encoding.UTF8.GetString((byte*)nativeString.ToPointer(), size);
                 }
             }
 

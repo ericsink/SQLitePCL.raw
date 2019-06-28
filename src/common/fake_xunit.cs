@@ -238,7 +238,7 @@ namespace Xunit
 
         static bool IsTest(MethodInfo m)
         {
-            return 
+            return
                 (m.GetCustomAttribute(typeof(FactAttribute)) != null)
                 || (m.GetCustomAttribute(typeof(TestAttribute)) != null)
                 ;
@@ -248,7 +248,7 @@ namespace Xunit
         {
             var pass = 0;
             var fail = 0;
-            var a_types = 
+            var a_types =
                 a.GetTypes()
                     .Where(t => t.GetMethods().Where(m => IsTest(m)).Any())
                     .OrderBy(t => t, new compare_test_classes())
@@ -272,7 +272,7 @@ namespace Xunit
                             var sw = System.Diagnostics.Stopwatch.StartNew();
                             m.Invoke(inst, null);
                             sw.Stop();
-                            var elapsed = (long) (sw.ElapsedMilliseconds);
+                            var elapsed = (long)(sw.ElapsedMilliseconds);
                             wn($"pass ({Assert.count,4} asserts, {elapsed,5} ms)");
                             pass++;
                         }

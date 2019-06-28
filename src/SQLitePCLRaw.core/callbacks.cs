@@ -31,74 +31,74 @@
 namespace SQLitePCL
 {
     using System;
-	using System.Collections.Concurrent;
+    using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Collections.Generic;
 
-	public sealed class PreserveAttribute : System.Attribute
-	{
-		public bool AllMembers;
-		public bool Conditional;
-	}
+    public sealed class PreserveAttribute : System.Attribute
+    {
+        public bool AllMembers;
+        public bool Conditional;
+    }
 
-	public sealed class MonoPInvokeCallbackAttribute : Attribute
-	{
-		public MonoPInvokeCallbackAttribute (Type t) { }
-	}
+    public sealed class MonoPInvokeCallbackAttribute : Attribute
+    {
+        public MonoPInvokeCallbackAttribute(Type t) { }
+    }
 
     public class SafeGCHandle : SafeHandle
-	{
-		public SafeGCHandle(object v, GCHandleType typ)
-			: base(IntPtr.Zero, true)
-		{
-			if (v != null)
-			{
-				var h = GCHandle.Alloc(v, typ);
-				SetHandle(GCHandle.ToIntPtr(h));
-			}
-		}
+    {
+        public SafeGCHandle(object v, GCHandleType typ)
+            : base(IntPtr.Zero, true)
+        {
+            if (v != null)
+            {
+                var h = GCHandle.Alloc(v, typ);
+                SetHandle(GCHandle.ToIntPtr(h));
+            }
+        }
 
-		public override bool IsInvalid => handle == IntPtr.Zero;
+        public override bool IsInvalid => handle == IntPtr.Zero;
 
-		protected override bool ReleaseHandle()
-		{
-			var h = GCHandle.FromIntPtr(handle);
-			h.Free();
-			return true;
-		}
+        protected override bool ReleaseHandle()
+        {
+            var h = GCHandle.FromIntPtr(handle);
+            h.Free();
+            return true;
+        }
 
-	}
+    }
 
     public class hook_handle : SafeGCHandle
     {
         public hook_handle(object target)
-			: base(target, GCHandleType.Normal)
+            : base(target, GCHandleType.Normal)
         {
         }
 
-		public IDisposable ForDispose()
-		{
-			if (IsInvalid)
-			{
-				return null;
-			}
-			else
-			{
-				return this;
-			}
-		}
+        public IDisposable ForDispose()
+        {
+            if (IsInvalid)
+            {
+                return null;
+            }
+            else
+            {
+                return this;
+            }
+        }
     }
 
-	class CompareBuf : System.Collections.Generic.EqualityComparer<byte[]>
-	{
-        Func<IntPtr,IntPtr,int,bool> _f;
-        public CompareBuf(Func<IntPtr,IntPtr,int,bool> f)
+    class CompareBuf : System.Collections.Generic.EqualityComparer<byte[]>
+    {
+        Func<IntPtr, IntPtr, int, bool> _f;
+        public CompareBuf(Func<IntPtr, IntPtr, int, bool> f)
         {
             _f = f;
         }
-		public override bool Equals(byte[] p1, byte[] p2)
-		{
+        public override bool Equals(byte[] p1, byte[] p2)
+        {
             if (p1.Length != p2.Length)
             {
                 return false;
@@ -109,13 +109,13 @@ namespace SQLitePCL
             h1.Free();
             h2.Free();
             return result;
-		}
+        }
 
-		public override int GetHashCode(byte[] p)
-		{
+        public override int GetHashCode(byte[] p)
+        {
             return p.Length; // TODO do better
-		}
-	}
+        }
+    }
 
     class FuncName
     {
@@ -129,31 +129,31 @@ namespace SQLitePCL
         }
     }
 
-	class CompareFuncName : System.Collections.Generic.EqualityComparer<FuncName>
-	{
+    class CompareFuncName : System.Collections.Generic.EqualityComparer<FuncName>
+    {
         System.Collections.Generic.IEqualityComparer<byte[]> _ptrlencmp;
         public CompareFuncName(System.Collections.Generic.IEqualityComparer<byte[]> ptrlencmp)
         {
             _ptrlencmp = ptrlencmp;
         }
-		public override bool Equals(FuncName p1, FuncName p2)
-		{
+        public override bool Equals(FuncName p1, FuncName p2)
+        {
             if (p1.n != p2.n)
             {
                 return false;
             }
             return _ptrlencmp.Equals(p1.name, p2.name);
-		}
+        }
 
-		public override int GetHashCode(FuncName p)
-		{
+        public override int GetHashCode(FuncName p)
+        {
             return p.n + p.name.Length; // TODO do better
-		}
-	}
+        }
+    }
 
-	public class hook_handles : IDisposable
-	{
-        public hook_handles(Func<IntPtr,IntPtr,int,bool> f)
+    public class hook_handles : IDisposable
+    {
+        public hook_handles(Func<IntPtr, IntPtr, int, bool> f)
         {
             var cmp = new CompareBuf(f);
             collation = new ConcurrentDictionary<byte[], IDisposable>(cmp);
@@ -161,16 +161,16 @@ namespace SQLitePCL
             agg = new ConcurrentDictionary<FuncName, IDisposable>(new CompareFuncName(cmp));
         }
 
-		readonly ConcurrentDictionary<byte[], IDisposable> collation;
-		readonly ConcurrentDictionary<FuncName, IDisposable> scalar;
-		readonly ConcurrentDictionary<FuncName, IDisposable> agg;
-		public IDisposable update;
-		public IDisposable rollback;
-		public IDisposable commit;
-		public IDisposable trace;
-		public IDisposable profile;
-		public IDisposable progress;
-		public IDisposable authorizer;
+        readonly ConcurrentDictionary<byte[], IDisposable> collation;
+        readonly ConcurrentDictionary<FuncName, IDisposable> scalar;
+        readonly ConcurrentDictionary<FuncName, IDisposable> agg;
+        public IDisposable update;
+        public IDisposable rollback;
+        public IDisposable commit;
+        public IDisposable trace;
+        public IDisposable profile;
+        public IDisposable progress;
+        public IDisposable authorizer;
 
         public bool RemoveScalarFunction(byte[] name, int nargs)
         {
@@ -230,20 +230,20 @@ namespace SQLitePCL
             collation[name] = d;
         }
 
-		public void Dispose()
-		{
-			foreach (var h in collation.Values) h.Dispose();
-			foreach (var h in scalar.Values) h.Dispose();
-			foreach (var h in agg.Values) h.Dispose();
-			if (update!=null) update.Dispose();
-			if (rollback!=null) rollback.Dispose();
-			if (commit!=null) commit.Dispose();
-			if (trace!=null) trace.Dispose();
-			if (profile!=null) profile.Dispose();
-			if (progress!=null) progress.Dispose();
-			if (authorizer!=null) authorizer.Dispose();
-		}
-	}
+        public void Dispose()
+        {
+            foreach (var h in collation.Values) h.Dispose();
+            foreach (var h in scalar.Values) h.Dispose();
+            foreach (var h in agg.Values) h.Dispose();
+            if (update != null) update.Dispose();
+            if (rollback != null) rollback.Dispose();
+            if (commit != null) commit.Dispose();
+            if (trace != null) trace.Dispose();
+            if (profile != null) profile.Dispose();
+            if (progress != null) progress.Dispose();
+            if (authorizer != null) authorizer.Dispose();
+        }
+    }
 
     public class log_hook_info
     {
@@ -258,7 +258,7 @@ namespace SQLitePCL
 
         public static log_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             log_hook_info hi = h.Target as log_hook_info;
             return hi;
         }
@@ -287,7 +287,7 @@ namespace SQLitePCL
 
         public static commit_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             commit_hook_info hi = h.Target as commit_hook_info;
             return hi;
         }
@@ -306,7 +306,7 @@ namespace SQLitePCL
 
         public static rollback_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             rollback_hook_info hi = h.Target as rollback_hook_info;
             // TODO assert(hi._h == h)
             return hi;
@@ -331,7 +331,7 @@ namespace SQLitePCL
 
         public static trace_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             trace_hook_info hi = h.Target as trace_hook_info;
             return hi;
         }
@@ -355,7 +355,7 @@ namespace SQLitePCL
 
         public static profile_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             profile_hook_info hi = h.Target as profile_hook_info;
             return hi;
         }
@@ -403,7 +403,7 @@ namespace SQLitePCL
 
         public static update_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             update_hook_info hi = h.Target as update_hook_info;
             return hi;
         }
@@ -427,7 +427,7 @@ namespace SQLitePCL
 
         public static collation_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             collation_hook_info hi = h.Target as collation_hook_info;
             return hi;
         }
@@ -451,7 +451,7 @@ namespace SQLitePCL
 
         public static exec_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             exec_hook_info hi = h.Target as exec_hook_info;
             return hi;
         }
@@ -462,7 +462,7 @@ namespace SQLitePCL
             var names = new IntPtr[n];
             // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
-            for (int i=0; i<n; i++)
+            for (int i = 0; i < n; i++)
             {
                 IntPtr vp;
 
@@ -497,19 +497,19 @@ namespace SQLitePCL
         }
 
         public function_hook_info(
-			delegate_function_scalar func_scalar,
-			object user_data
-			)
+            delegate_function_scalar func_scalar,
+            object user_data
+            )
         {
-			_func_scalar = func_scalar;
+            _func_scalar = func_scalar;
             _user_data = user_data;
         }
 
         public function_hook_info(
-			delegate_function_aggregate_step func_step, 
-			delegate_function_aggregate_final func_final, 
-			object user_data
-			)
+            delegate_function_aggregate_step func_step,
+            delegate_function_aggregate_final func_final,
+            object user_data
+            )
         {
             _func_step = func_step;
             _func_final = func_final;
@@ -518,7 +518,7 @@ namespace SQLitePCL
 
         public static function_hook_info from_ptr(IntPtr p)
         {
-            GCHandle h = (GCHandle) p;
+            GCHandle h = (GCHandle)p;
             function_hook_info hi = h.Target as function_hook_info;
             return hi;
         }
@@ -542,13 +542,13 @@ namespace SQLitePCL
                 // and store a handle in the agg_context storage area so we
                 // can get this back next time.
                 GCHandle h = GCHandle.Alloc(ctx);
-                Marshal.WriteIntPtr(agg_context, (IntPtr) h);
+                Marshal.WriteIntPtr(agg_context, (IntPtr)h);
             }
             else
             {
                 // we've been through here before.  retrieve the sqlite3_context
                 // object from the agg_context storage area.
-                GCHandle h = (GCHandle) c;
+                GCHandle h = (GCHandle)c;
                 ctx = h.Target as agg_sqlite3_context;
             }
 
@@ -576,7 +576,7 @@ namespace SQLitePCL
             sqlite3_value[] a = new sqlite3_value[num_args];
             // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
-            for (int i=0; i<num_args; i++)
+            for (int i = 0; i < num_args; i++)
             {
                 IntPtr vp = Marshal.ReadIntPtr(argsptr, i * ptr_size);
                 a[i] = new sqlite3_value(vp);
@@ -592,7 +592,7 @@ namespace SQLitePCL
             sqlite3_value[] a = new sqlite3_value[num_args];
             // TODO warning on the following line.  SizeOf(Type) replaced in .NET 4.5.1 with SizeOf<T>()
             int ptr_size = Marshal.SizeOf(typeof(IntPtr));
-            for (int i=0; i<num_args; i++)
+            for (int i = 0; i < num_args; i++)
             {
                 IntPtr vp = Marshal.ReadIntPtr(argsptr, i * ptr_size);
                 a[i] = new sqlite3_value(vp);
@@ -608,7 +608,7 @@ namespace SQLitePCL
             _func_final(ctx, _user_data);
 
             IntPtr c = Marshal.ReadIntPtr(agg_context);
-            GCHandle h = (GCHandle) c;
+            GCHandle h = (GCHandle)c;
             h.Free();
         }
 

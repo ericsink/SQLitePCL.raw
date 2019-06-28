@@ -26,32 +26,32 @@
 namespace SQLitePCL
 {
     using System;
-	using System.Collections.Concurrent;
+    using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
 
     public class sqlite3_backup : SafeHandle
     {
-		sqlite3_backup() : base(IntPtr.Zero, true)
-		{
-		}
+        sqlite3_backup() : base(IntPtr.Zero, true)
+        {
+        }
 
-		public override bool IsInvalid => handle == IntPtr.Zero;
+        public override bool IsInvalid => handle == IntPtr.Zero;
 
-		protected override bool ReleaseHandle()
-		{
-			int rc = raw.internal_sqlite3_backup_finish(handle);
+        protected override bool ReleaseHandle()
+        {
+            int rc = raw.internal_sqlite3_backup_finish(handle);
             // TODO check rc?
-			return true;
-		}
+            return true;
+        }
 
-		public int manual_close()
-		{
-			int rc = raw.internal_sqlite3_backup_finish(handle);
-			// TODO review.  should handle always be nulled here?
-			// TODO maybe called SetHandleAsInvalid instead?
-			handle = IntPtr.Zero;
-			return rc;
-		}
+        public int manual_close()
+        {
+            int rc = raw.internal_sqlite3_backup_finish(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+            return rc;
+        }
     }
 
     // typed wrapper for an IntPtr.  still opaque.  the upper layers can't
@@ -125,27 +125,27 @@ namespace SQLitePCL
 
     public class sqlite3_blob : SafeHandle
     {
-		sqlite3_blob() : base(IntPtr.Zero, true)
-		{
-		}
+        sqlite3_blob() : base(IntPtr.Zero, true)
+        {
+        }
 
-		public override bool IsInvalid => handle == IntPtr.Zero;
+        public override bool IsInvalid => handle == IntPtr.Zero;
 
-		protected override bool ReleaseHandle()
-		{
-			int rc = raw.internal_sqlite3_blob_close(handle);
+        protected override bool ReleaseHandle()
+        {
+            int rc = raw.internal_sqlite3_blob_close(handle);
             // TODO check rc?
-			return true;
-		}
+            return true;
+        }
 
-		public int manual_close()
-		{
-			int rc = raw.internal_sqlite3_blob_close(handle);
-			// TODO review.  should handle always be nulled here?
-			// TODO maybe called SetHandleAsInvalid instead?
-			handle = IntPtr.Zero;
-			return rc;
-		}
+        public int manual_close()
+        {
+            int rc = raw.internal_sqlite3_blob_close(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+            return rc;
+        }
     }
 
     public class sqlite3_stmt : SafeHandle
@@ -154,38 +154,38 @@ namespace SQLitePCL
 
         internal static sqlite3_stmt From(IntPtr p, sqlite3 db)
         {
-			var h = new sqlite3_stmt();
-			h.SetHandle(p);
+            var h = new sqlite3_stmt();
+            h.SetHandle(p);
             db.add_stmt(h);
             h._db = db;
-			return h;
+            return h;
         }
 
-		sqlite3_stmt() : base(IntPtr.Zero, true)
-		{
-		}
+        sqlite3_stmt() : base(IntPtr.Zero, true)
+        {
+        }
 
-		public override bool IsInvalid => handle == IntPtr.Zero;
+        public override bool IsInvalid => handle == IntPtr.Zero;
 
-		protected override bool ReleaseHandle()
-		{
-			int rc = raw.internal_sqlite3_finalize(handle);
+        protected override bool ReleaseHandle()
+        {
+            int rc = raw.internal_sqlite3_finalize(handle);
             // TODO check rc?
-			_db.remove_stmt(this);
-			return true;
-		}
+            _db.remove_stmt(this);
+            return true;
+        }
 
-		public int manual_close()
-		{
-			int rc = raw.internal_sqlite3_finalize(handle);
-			// TODO review.  should handle always be nulled here?
-			// TODO maybe called SetHandleAsInvalid instead?
-			handle = IntPtr.Zero;
-			_db.remove_stmt(this);
-			return rc;
-		}
+        public int manual_close()
+        {
+            int rc = raw.internal_sqlite3_finalize(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+            _db.remove_stmt(this);
+            return rc;
+        }
 
-		// TODO rm?  used by the next_stmt code.
+        // TODO rm?  used by the next_stmt code.
         internal IntPtr ptr => handle;
 
         // We keep track of the db connection handle for this stmt, even though
@@ -206,48 +206,48 @@ namespace SQLitePCL
 
     public class sqlite3 : SafeHandle
     {
-		sqlite3() : base(IntPtr.Zero, true)
-		{
-		}
+        sqlite3() : base(IntPtr.Zero, true)
+        {
+        }
 
-		public override bool IsInvalid => handle == IntPtr.Zero;
+        public override bool IsInvalid => handle == IntPtr.Zero;
 
-		protected override bool ReleaseHandle()
-		{
-			int rc = raw.internal_sqlite3_close_v2(handle);
+        protected override bool ReleaseHandle()
+        {
+            int rc = raw.internal_sqlite3_close_v2(handle);
             // TODO check rc?
-			dispose_extra();
-			return true;
-		}
+            dispose_extra();
+            return true;
+        }
 
-		public int manual_close_v2()
-		{
-			int rc = raw.internal_sqlite3_close_v2(handle);
-			// TODO review.  should handle always be nulled here?
-			// TODO maybe called SetHandleAsInvalid instead?
-			handle = IntPtr.Zero;
-			dispose_extra();
-			return rc;
-		}
+        public int manual_close_v2()
+        {
+            int rc = raw.internal_sqlite3_close_v2(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+            dispose_extra();
+            return rc;
+        }
 
-		public int manual_close()
-		{
-			int rc = raw.internal_sqlite3_close(handle);
-			// TODO review.  should handle always be nulled here?
-			// TODO maybe called SetHandleAsInvalid instead?
-			handle = IntPtr.Zero;
-			dispose_extra();
-			return rc;
-		}
+        public int manual_close()
+        {
+            int rc = raw.internal_sqlite3_close(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+            dispose_extra();
+            return rc;
+        }
 
         internal static sqlite3 New(IntPtr p)
         {
-			var h = new sqlite3();
-			h.SetHandle(p);
+            var h = new sqlite3();
+            h.SetHandle(p);
 #if not // changing this to default OFF for v2
             h.enable_sqlite3_next_stmt(true);
 #endif
-			return h;
+            return h;
         }
 
         // this dictionary is used only for the purpose of supporting sqlite3_next_stmt.
@@ -284,7 +284,7 @@ namespace SQLitePCL
             }
             else
             {
-				// any change to the wording of this error message might break a test case
+                // any change to the wording of this error message might break a test case
                 throw new Exception("The sqlite3_next_stmt() function is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true) immediately after opening the sqlite3 connection.");
             }
         }
@@ -297,31 +297,31 @@ namespace SQLitePCL
             }
         }
 
-		IDisposable extra;
+        IDisposable extra;
 
-		public T GetOrCreateExtra<T>(Func<T> f)
-			where T : class, IDisposable
-		{
-			if (extra != null)
-			{
-				return (T) extra;
-			}
-			else
-			{
-				var q = f();
-				extra = q;
-				return q;
-			}
-		}
+        public T GetOrCreateExtra<T>(Func<T> f)
+            where T : class, IDisposable
+        {
+            if (extra != null)
+            {
+                return (T)extra;
+            }
+            else
+            {
+                var q = f();
+                extra = q;
+                return q;
+            }
+        }
 
-		private void dispose_extra()
-		{
-			if (extra != null)
-			{
-				extra.Dispose();
-				extra = null;
-			}
-		}
+        private void dispose_extra()
+        {
+            if (extra != null)
+            {
+                extra.Dispose();
+                extra = null;
+            }
+        }
 
     }
 }
