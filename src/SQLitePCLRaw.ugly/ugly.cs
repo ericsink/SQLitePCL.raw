@@ -336,7 +336,7 @@ namespace SQLitePCL.Ugly
             return raw.sqlite3_next_stmt(db, s);
         }
 
-        public static sqlite3_blob blob_open(this sqlite3 db, sz db_utf8, sz table_utf8, sz column_utf8, long rowid, int flags)
+        public static sqlite3_blob blob_open(this sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z column_utf8, long rowid, int flags)
         {
             sqlite3_blob blob;
             int rc = raw.sqlite3_blob_open(db, db_utf8, table_utf8, column_utf8, rowid, flags, out blob);
@@ -581,7 +581,7 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
-        public static void bind_text(this sqlite3_stmt stmt, int index, sz s)
+        public static void bind_text(this sqlite3_stmt stmt, int index, utf8z s)
         {
             int rc = raw.sqlite3_bind_text(stmt, index, s);
             check_ok(rc);
@@ -936,7 +936,7 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_result_text(ctx, s);
         }
 
-        public static void result_text(this sqlite3_context ctx, sz s)
+        public static void result_text(this sqlite3_context ctx, utf8z s)
         {
             raw.sqlite3_result_text(ctx, s);
         }

@@ -263,7 +263,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int rc, sz msg)
+        public void call(int rc, utf8z msg)
         {
             _func(_user_data, rc, msg);
         }
@@ -336,7 +336,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(sz s)
+        public void call(utf8z s)
         {
             _func(_user_data, s);
         }
@@ -360,7 +360,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(sz s, long elapsed)
+        public void call(utf8z s, long elapsed)
         {
             _func(_user_data, s, elapsed);
         }
@@ -408,7 +408,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public void call(int typ, sz db, sz tbl, long rowid)
+        public void call(int typ, utf8z db, utf8z tbl, long rowid)
         {
             _func(_user_data, typ, db, tbl, rowid);
         }
@@ -632,7 +632,7 @@ namespace SQLitePCL
             return hi;
         }
 
-        public int call(int action_code, sz param0, sz param1, sz dbName, sz inner_most_trigger_or_view)
+        public int call(int action_code, utf8z param0, utf8z param1, utf8z dbName, utf8z inner_most_trigger_or_view)
         {
             return _func(_user_data, action_code, param0, param1, dbName, inner_most_trigger_or_view);
         }

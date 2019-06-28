@@ -15,6 +15,7 @@
     <Compile Include="handles.cs" />
     <Compile Include="isqlite3.cs" />
     <Compile Include="util.cs" />
+    <Compile Include="utf8z.cs" />
 
     <Compile Include="callbacks.cs" />
 
