@@ -1,11 +1,5 @@
 
-snk issue for provider dynamics
-
 rename sz to Utf8z, or Strz ?
-
-still a good idea to have provider cdecl and stdcall
-together in one?  or should we separate them?
-still seems like stdcall only matters for winsqlite3.
 
 how to pass null to the tail for sqlite3_prepare_?
 chg the pinvoke signature from out byte* to byte**
