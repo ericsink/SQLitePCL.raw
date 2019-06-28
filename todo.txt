@@ -13,6 +13,9 @@ test with zetetic
 
 --
 
+UWP test runner has problems with win32_set_dir and the
+sqlite3_config tests
+
 when trying to build on Mac, why isn't t4 in the path?
 
 there are a couple of providers we may not need
