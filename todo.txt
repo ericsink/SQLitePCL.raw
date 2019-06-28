@@ -1,13 +1,7 @@
 
-there are a couple of providers we may not need
-anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
-for example.  also sqlite3 dllimport I think.
+lib package for xamarin mac
 
 rename sz to Utf8z, or Strz ?
-
-how to pass null to the tail for sqlite3_prepare_?
-chg the pinvoke signature from out byte* to byte**
-and pass null.
 
 clean up top level readme
 
@@ -15,14 +9,26 @@ clean up blog release notes page
 
 finish writing v2 changes page
 
+test with zetetic
+
+--
+
+when trying to build on Mac, why isn't t4 in the path?
+
+there are a couple of providers we may not need
+anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
+for example.  also sqlite3 dllimport I think.
+
+how to pass null to the tail for sqlite3_prepare_?
+chg the pinvoke signature from out byte* to byte**
+and pass null.
+
 understand why Span seems nullable when it is not
 
 might want bind_blob to allow specifying something
 other than transient.  in the current implementation,
 sqlite makes a copy of the blob every time.  same for
 bind_text as well.
-
-test with zetetic
 
 --
 
@@ -53,11 +59,6 @@ need 3 ways of doing dynamic load:
     look for x86/x64
 do these by chance map nicely on to the flags
 for S.R.I.NativeLibrary ?
-
-hmmm.  does winsqlite3 have win32_set_directory8,
-the utf8 version?  not sure what version of sqlite it
-is based on.  3.25.3 ?  yes, it looks like this was
-added in 3.23.
 
 need tests for bundle_green ?
 
