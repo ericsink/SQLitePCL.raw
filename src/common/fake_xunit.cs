@@ -28,52 +28,62 @@ namespace Xunit
     public static class Assert
     {
         public static int count;
-        static void fail() => throw new Exception();
+
         public static void True(bool b)
         {
             count++;
-            if (!b) fail();
+            if (!b) throw new Exception("expected True");
         }
         public static void True(bool b, string msg)
         {
             count++;
-            if (!b) fail();
+            if (!b) throw new Exception($"expected True: {msg}");
         }
         public static void False(bool b)
         {
             count++;
-            if (b) fail();
+            if (b) throw new Exception("expected False");
         }
         public static void Null(object b)
         {
             count++;
-            if (b != null) fail();
+            if (b != null) throw new Exception("expected Null");
         }
         public static void NotNull(object b)
         {
             count++;
-            if (b == null) fail();
+            if (b == null) throw new Exception("expected NotNull");
+        }
+        public static void Contains(string sub, string actual)
+        {
+            count++;
+            if (!actual.Contains(sub)) throw new Exception($"expected that {actual} contains {sub}");
+        }
+        public static void DoesNotContain(string sub, string actual)
+        {
+            count++;
+            if (actual.Contains(sub)) throw new Exception($"expected that {actual} not contain {sub}");
         }
         public static void Equal<T>(T expected, T actual)
             where T : class
         {
             count++;
-            if (!Object.ReferenceEquals(expected, actual)) fail();
+            if (!Object.ReferenceEquals(expected, actual)) throw new Exception($"expected ReferenceEquals {expected} but actual {actual}");
         }
         public static void Equal(byte expected, byte actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(int expected, byte actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(char expected, char actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(int expected, int actual)
         {
@@ -83,27 +93,27 @@ namespace Xunit
         public static void Equal(int expected, int? actual)
         {
             count++;
-            if (expected != actual.Value) fail();
+            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(long expected, long actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(long expected, long? actual)
         {
             count++;
-            if (expected != actual.Value) fail();
+            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(double expected, double actual)
         {
             count++;
-            if (expected != actual) fail();
+            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(double expected, double? actual)
         {
             count++;
-            if (expected != actual.Value) fail();
+            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
         }
         public static void Equal(string expected, string actual)
         {
@@ -127,7 +137,7 @@ namespace Xunit
             {
                 return e;
             }
-            throw new Exception();
+            throw new Exception($"expected throw {typeof(T).Name}");
         }
     }
 

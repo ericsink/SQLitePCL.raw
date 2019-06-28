@@ -1,4 +1,8 @@
 
+there are a couple of providers we may not need
+anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
+for example.
+
 rename sz to Utf8z, or Strz ?
 
 how to pass null to the tail for sqlite3_prepare_?

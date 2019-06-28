@@ -1315,7 +1315,7 @@ namespace SQLitePCL.Tests
             void should_throw(Action f, string err_should_contain)
             {
                 var e = Assert.Throws<Exception>(f);
-                Assert.True(e.ToString().Contains(err_should_contain));
+                Assert.Contains(err_should_contain, e.ToString());
             }
 
             var msg_should_contain = "is disabled.  To enable it, call sqlite3.enable_sqlite3_next_stmt(true)";
@@ -2973,7 +2973,7 @@ namespace SQLitePCL.Tests
         {
             if (is_sqlcipher())
             {
-                Assert.True(raw.GetNativeLibraryName().Contains("sqlcipher"));
+                Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3021,7 +3021,7 @@ namespace SQLitePCL.Tests
             }
             else
             {
-                Assert.False(raw.GetNativeLibraryName().Contains("sqlcipher"));
+                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
             }
         }
 
@@ -3030,7 +3030,7 @@ namespace SQLitePCL.Tests
         {
             if (is_sqlcipher())
             {
-                Assert.True(raw.GetNativeLibraryName().Contains("sqlcipher"));
+                Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3088,7 +3088,7 @@ namespace SQLitePCL.Tests
             }
             else
             {
-                Assert.False(raw.GetNativeLibraryName().Contains("sqlcipher"));
+                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
             }
         }
 
