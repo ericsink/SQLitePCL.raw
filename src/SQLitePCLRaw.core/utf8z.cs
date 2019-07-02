@@ -37,6 +37,15 @@ namespace SQLitePCL
 
         utf8z(ReadOnlySpan<byte> a)
         {
+            // no check here.  anything that calls this
+            // constructor must make assurances about the
+            // zero terminator.
+            sp = a;
+        }
+
+        // TODO we could consider making this public
+        static utf8z FromSpan(ReadOnlySpan<byte> a)
+        {
             if (
                 (a.Length > 0)
                 && (a[a.Length - 1] != 0)
@@ -44,7 +53,7 @@ namespace SQLitePCL
             {
                 throw new ArgumentException("zero terminator required");
             }
-            sp = a;
+            return new utf8z(a);
         }
 
         public static utf8z FromString(string s)
@@ -69,15 +78,10 @@ namespace SQLitePCL
             return q - p;
         }
 
-        unsafe static ReadOnlySpan<byte> to_span(byte* p)
+        unsafe static ReadOnlySpan<byte> find_zero_terminator(byte* p)
         {
             var len = (int)my_strlen(p);
             return new ReadOnlySpan<byte>(p, len + 1);
-        }
-
-        unsafe static ReadOnlySpan<byte> to_span(IntPtr p)
-        {
-            return to_span((byte*)(p.ToPointer()));
         }
 
         unsafe public static utf8z FromPtr(byte* p)
@@ -88,10 +92,11 @@ namespace SQLitePCL
             }
             else
             {
-                return new utf8z(to_span(p));
+                return new utf8z(find_zero_terminator(p));
             }
         }
 
+        // TODO maybe remove this and just use FromSpan?
         unsafe public static utf8z FromPtrLen(byte* p, int len)
         {
             if (p == null)
@@ -100,12 +105,13 @@ namespace SQLitePCL
             }
             else
             {
+                // the given len does NOT include the zero terminator
                 var sp = new ReadOnlySpan<byte>(p, len + 1);
-                return new utf8z(sp);
+                return FromSpan(sp);
             }
         }
 
-        public static utf8z FromIntPtr(IntPtr p)
+        unsafe public static utf8z FromIntPtr(IntPtr p)
         {
             if (p == IntPtr.Zero)
             {
@@ -113,7 +119,7 @@ namespace SQLitePCL
             }
             else
             {
-                return new utf8z(to_span(p));
+                return new utf8z(find_zero_terminator((byte*) (p.ToPointer())));
             }
         }
 
