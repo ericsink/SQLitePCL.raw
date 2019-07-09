@@ -1296,7 +1296,7 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.");
+            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.  Note that this bundle is identical to bundle_e_sqlite3, except on iOS where it uses the system SQLite library instead of e_sqlite3.  In other words, when you use this bundle in a cross-platform app, your app is not using the same SQLite build configuration on all platforms.");
 
             f.WriteStartElement("dependencies");
 
