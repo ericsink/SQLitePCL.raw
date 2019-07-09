@@ -517,6 +517,54 @@ public static class gen
         }
     }
 
+    private static void gen_nuspec_lib_e_sqlite3_xamarin_mac(string dir_src)
+    {
+        string id = string.Format("{0}.lib.e_sqlite3.xamarin_mac", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "This package contains platform-specific native code builds of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.");
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_native_mac(WhichLib.E_SQLITE3, f);
+
+            var tname = string.Format("{0}.targets", id);
+            var path_targets = Path.Combine(dir_proj, tname);
+            var relpath_targets = Path.Combine(".", tname);
+            gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
+            write_nuspec_file_entry(
+                relpath_targets,
+                string.Format("build\\{0}", TFM.XAMARIN_MAC.AsString()),
+                f
+                );
+
+            write_empty(f, TFM.XAMARIN_MAC); // TODO need this?
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
     private static void gen_nuspec_lib_e_sqlcipher(string dir_src)
     {
         string id = string.Format("{0}.lib.e_sqlcipher", gen.ROOT_NAME);
@@ -572,6 +620,54 @@ public static class gen
             // TODO need a comment here to explain these
             write_empty(f, TFM.NET461);
             write_empty(f, TFM.NETSTANDARD20);
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_lib_e_sqlcipher_xamarin_mac(string dir_src)
+    {
+        string id = string.Format("{0}.lib.e_sqlcipher.xamarin_mac", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.");
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_native_mac(WhichLib.E_SQLCIPHER, f);
+
+            var tname = string.Format("{0}.targets", id);
+            var path_targets = Path.Combine(dir_proj, tname);
+            var relpath_targets = Path.Combine(".", tname);
+            gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
+            write_nuspec_file_entry(
+                relpath_targets,
+                string.Format("build\\{0}", TFM.XAMARIN_MAC.AsString()),
+                f
+                );
+
+            write_empty(f, TFM.XAMARIN_MAC); // TODO need this?
 
             f.WriteEndElement(); // files
 
@@ -794,6 +890,7 @@ public static class gen
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NETCOREAPP30);
 #endif
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.XAMARIN_MAC);
 
             f.WriteEndElement(); // dependencies
 
@@ -1124,6 +1221,7 @@ public static class gen
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
 #endif
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.XAMARIN_MAC);
             f.WriteEndElement(); // dependencies
 
             f.WriteEndElement(); // metadata
@@ -1212,6 +1310,7 @@ public static class gen
 #if NETCOREAPP3_NATIVELIBRARY
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
 #endif
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.XAMARIN_MAC);
 
             f.WriteEndElement(); // dependencies
 
@@ -1375,6 +1474,9 @@ public static class gen
 
         gen_nuspec_lib_e_sqlite3(dir_src);
         gen_nuspec_lib_e_sqlcipher(dir_src);
+
+        gen_nuspec_lib_e_sqlite3_xamarin_mac(dir_src);
+        gen_nuspec_lib_e_sqlcipher_xamarin_mac(dir_src);
 
         gen_nuspec_provider_e_sqlite3(dir_src);
         gen_nuspec_provider_e_sqlcipher(dir_src);

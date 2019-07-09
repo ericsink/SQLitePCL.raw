@@ -34,6 +34,11 @@
         <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
+      <group targetFramework="Xamarin.Mac20">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
+      </group>
     </dependencies>
   </metadata>
   <files>

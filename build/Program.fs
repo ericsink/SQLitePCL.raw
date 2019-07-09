@@ -131,7 +131,9 @@ let main argv =
 
     let nuspecs = [
         "lib.e_sqlite3"
+        "lib.e_sqlite3.xamarin_mac"
         "lib.e_sqlcipher"
+        "lib.e_sqlcipher.xamarin_mac"
         "provider.e_sqlite3"
         "provider.e_sqlcipher"
         "provider.sqlcipher"

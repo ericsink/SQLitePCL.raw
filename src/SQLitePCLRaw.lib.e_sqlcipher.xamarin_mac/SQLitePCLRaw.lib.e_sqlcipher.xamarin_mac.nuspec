@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>SQLitePCLRaw.lib.e_sqlcipher.xamarin_mac</id>
+    <title>SQLitePCLRaw.lib.e_sqlcipher.xamarin_mac</title>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <copyright>$copyright$</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
+    <summary>$summary$</summary>
+    <tags>sqlite;xamarin</tags>
+    <releaseNotes>$releaseNotes$</releaseNotes>
+    <description>This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</description>
+  </metadata>
+  <files>
+    <file src="$cb_bin_path$\e_sqlcipher\mac\libe_sqlcipher.dylib" target="runtimes\osx-x64\native\libe_sqlcipher.dylib" />
+    <file src=".\SQLitePCLRaw.lib.e_sqlcipher.xamarin_mac.targets" target="build\Xamarin.Mac20" />
+    <!--empty directory in lib to avoid nuget adding a reference-->
+    <file src="empty\" target="lib\Xamarin.Mac20" />
+  </files>
+</package>
