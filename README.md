@@ -4,15 +4,10 @@
 SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw)
 access to SQLite. License:  Apache License v2.
 
-# TLDR
+# Version 2.0
 
-Add this package:
-
-    SQLitePCLRaw.bundle_e_sqlite3 
-    
-And call this function:
-
-    SQLitePCL.Batteries_V2.Init()
+SQLitePCLRaw 2.0 is a major release.  See [the release notes](v2.md)
+for more information.
 
 # Compatibility
 
