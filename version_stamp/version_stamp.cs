@@ -51,7 +51,8 @@ public static class gen
         );
 
     // chg this to be the version string we want, one of the above
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+
     public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}",
         MAJOR_VERSION,
         MINOR_VERSION,
