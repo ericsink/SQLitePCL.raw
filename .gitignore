@@ -1,5 +1,7 @@
 *~
 */bin/**
+*/*/*/bin/**
+*/*/*/obj/**
 */*/bin/**
 */*/obj/**
 */obj/**
@@ -11,6 +13,6 @@ project.lock.json
 *.nuget.props
 *.nuget.targets
 /Tests/packages
-/bld
-/gen_build.exe
+/nupkgs
+/gen_nuspecs.exe
 

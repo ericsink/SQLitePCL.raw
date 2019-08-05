@@ -1,0 +1,38 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>MonoAndroid80</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlcipher.snk</AssemblyOriginatorKeyFile>
+        <PackageDescription>This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
+	</PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\common\embedded_init.cs" />
+</ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'x86', 'libe_sqlcipher.so'))">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>x86\libe_sqlcipher.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'x86_64', 'libe_sqlcipher.so'))">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>x86_64\libe_sqlcipher.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'armeabi', 'libe_sqlcipher.so'))">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>armeabi\libe_sqlcipher.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'arm64-v8a', 'libe_sqlcipher.so'))">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>arm64-v8a\libe_sqlcipher.so</Link>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'armeabi-v7a', 'libe_sqlcipher.so'))">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>armeabi-v7a\libe_sqlcipher.so</Link>
+    </EmbeddedNativeLibrary>
+  </ItemGroup>
+
+</Project>
+

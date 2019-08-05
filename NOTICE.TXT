@@ -1,5 +1,16 @@
 
 ----------------------------------------------------------------
+Copyright on SQLitePCL.raw
+----------------------------------------------------------------
+
+Version prior to 2.0 were labeled with the copyright owned by
+Zumero.  In 2.0, this changed to SourceGear.  There is no legal
+distinction, as Zumero is simply a dba name for SourceGear.
+
+And in either case, the open source license remains the same,
+Apache v2.
+
+----------------------------------------------------------------
 License for SQLite
 ----------------------------------------------------------------
 

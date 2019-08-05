@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>SQLitePCLRaw.bundle_green</id>
+    <title>SQLitePCLRaw.bundle_green</title>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <copyright>$copyright$</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
+    <summary>$summary$</summary>
+    <tags>sqlite;xamarin</tags>
+    <releaseNotes>$releaseNotes$</releaseNotes>
+    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.  Note that this bundle is identical to bundle_e_sqlite3, except on iOS where it uses the system SQLite library instead of e_sqlite3.  In other words, when you use this bundle in a cross-platform app, your app is not using the same SQLite build configuration on all platforms.</description>
+    <dependencies>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
+      </group>
+      <group targetFramework="net461">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
+      </group>
+      <group targetFramework="netstandard2.0">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
+      </group>
+      <group targetFramework="netcoreapp3.0">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
+        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
+    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netstandard2.0\SQLitePCLRaw.nativelibrary.dll" target="lib\Xamarin.iOS10\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
+    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netstandard2.0\SQLitePCLRaw.nativelibrary.dll" target="lib\net461\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netcoreapp3.0\" />
+    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netcoreapp3.0\SQLitePCLRaw.nativelibrary.dll" target="lib\netcoreapp3.0\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
+  </files>
+</package>

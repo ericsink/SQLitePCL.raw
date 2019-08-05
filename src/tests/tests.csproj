@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.nativelibrary\SQLitePCLRaw.nativelibrary.csproj" />
+	<!-- <ProjectReference Include="..\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.csproj" /> -->
+	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AltCover" Version="5.3.675" />
+    <DotNetCliToolReference Include="dotnet-reportgenerator-cli" Version="4.1.10" />
+    <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
+    <PackageReference Include="xunit" Version="$(depversion_xunit)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\common\attrs_for_tests.cs" />
+    <Compile Include="..\common\tests_xunit.cs" />
+    <Compile Include="my_batteries_v2.cs" />
+  </ItemGroup>
+
+</Project>

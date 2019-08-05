@@ -1,0 +1,15 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>xamarin.ios10</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyName>SQLitePCLRaw.lib.sqlcipher</AssemblyName>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.sqlcipher.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\common\embedded_init.cs" />
+</ItemGroup>
+
+</Project>
+

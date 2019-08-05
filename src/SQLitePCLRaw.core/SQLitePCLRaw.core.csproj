@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.core.snk</AssemblyOriginatorKeyFile>
+    <PackageDescription>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  This package does not provide an API which is friendly to app developers.  Rather, it provides an API which handles platform and configuration issues, upon which a friendlier API can be built.  In order to use this package, you will need to also add one of the SQLitePCLRaw.provider.* packages and call raw.SetProvider().  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="raw.cs" />
+    <Compile Include="handles.cs" />
+    <Compile Include="isqlite3.cs" />
+    <Compile Include="util.cs" />
+    <Compile Include="utf8z.cs" />
+
+    <Compile Include="callbacks.cs" />
+
+    <Compile Include="attributes.cs" />
+    <Compile Include="IGetFunctionPointer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+</Project>

@@ -1,10 +1,296 @@
 
-cb/bld
+cleanup src/tests+t2, include sqlcipher as well
 
-worry about Batteries_V2 bait and switch across
-bundle types with project.json or new csproj, where
-the "better" support for transitive dependencies
-might break things.
+lib package for xamarin mac
+
+clean up top level readme
+
+clean up blog release notes page
+
+finish writing v2 changes page
+
+test with zetetic
+
+--
+
+for the sake of code coverage it would be nice to test
+attempting to create an a utf8z with a span that does
+not have a zero terminator and Assert.Throws().  but
+that constructor is not public and probably should not be.
+
+UWP test runner has problems with win32_set_dir and the
+sqlite3_config tests
+
+when trying to build on Mac, why isn't t4 in the path?
+
+there are a couple of providers we may not need
+anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
+for example.  also sqlite3 dllimport I think.
+
+how to pass null to the tail for sqlite3_prepare_?
+chg the pinvoke signature from out byte* to byte**
+and pass null.
+
+understand why Span seems nullable when it is not
+
+might want bind_blob to allow specifying something
+other than transient.  in the current implementation,
+sqlite makes a copy of the blob every time.  same for
+bind_text as well.
+
+--
+
+need higher level typed delegate overloads for
+sqlite3_trace_v2().  but problem with mapping
+IntPtr (in the callback) to the actual safehandle.
+or remove trace_v2 for now.
+
+for a ReadOnlySpan<byte> without a null terminator:
+empty "string" is indistinguishable from null string.
+
+sqlite3_create_window_function
+
+sqlite3_normalized_sql
+
+sqlite3_stmt_isexplain
+
+sqlite3_value_frombind
+
+sqlite3_serialize
+sqlite3_deserialize
+
+sqlite3_keyword_count/name/check
+
+need 3 ways of doing dynamic load:
+    plain name, used for winsqlite3
+    look for runtimes/rid
+    look for x86/x64
+do these by chance map nicely on to the flags
+for S.R.I.NativeLibrary ?
+
+need tests for bundle_green ?
+
+winsqlite3 xunit with net461 test aborted.  works
+fine with fake_xunit.
+
+verify versions of libtomcrypt.  submodule?
+
+xDelete fails on UWP.  but the call that fails comes
+from the result of db_filename?  probably not related.
+wrong directory?  needs a path?
+
+instead of GetExecutingAssembly, should use
+typeof(TODO).Assembly ?
+
+android: 70 pass, 2 fail
+    create_table_file
+    wal
+
+can ios use provider dynamic with null for
+the dlopen argument?  seems like I tried this
+and it didn't work, but I don't remember for sure.
+
+need a test that actually uses the prepare flags
+for sqlite3_prepare_v3, like persistent
+
+restore those win32 set directory calls somewhere?
+but we don't want ifdef down in raw or provider.
+maybe in batteries?  problem is they prevent a
+sqlite3_config() call.
+
+		NativeMethods.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
+		NativeMethods.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+
+--
+
+investigate GC.AddMemoryPressure()
+
+investigate new utf8 things in System.Memory pkg
+
+multi-target to avoid dep on System.Memory for netcore2.1+ ?
+
+need some tests for sqlite-ish case insensitivity of
+collation names
+
+--
+
+revisit passing 'object' as user data round trip
+through a callback
+
+--
+
+instead of just IGetFunctionPointer, should
+we have IResolveLibrary?  how should we wrap the
+Load part of NativeLibrary?  or maybe the resulting
+IGetFunctionPointer is all that matters, since that's
+all provider.dynamic needs?
+
+but who owns the dll handle, and therefore has the
+obligation to free it?
+
+explore bundle native code in embedded resource,
+extract to known location and use provider dynamic.
+would allow builds to be done entirely without
+xamarin sdks.  but the location to write the dll
+would need to be injected from platform code?
+
+to be even more ridiculous, we could bundle the
+native code in C# as a binary array.  :-)  at
+least then we would eliminate all involvement
+from msbuild.
+
+problem with embed is that it won't work for all
+platforms, still prefer runtimes folder for .net core.  
+which means we need two copies?  
+
+use embed for ios and android, like now?  but
+for ios, better than static.  and both avoid the
+need for platform-specific build sdk stuff?
+
+or maybe just emulate the runtimes folder on all
+platforms?  ios and android included?
+
+hmph.  xam android says normal content item is
+not supported.  and xam ios also.
+
+but does plain embedded resource work on both
+android and ios?
+
+might need to go back to separating the nuget
+packages for e_sqlite3 and e_sqlcipher by
+platform?  still don't need v120 and v110 and
+so on.  but maybe windows, mac, linux separate
+again.  but ms ships libuv with all platforms
+in one package...
+
+resolver should probably check File.Exists
+(on things that are an absolute path) before trying
+LoadLibrary/dlopen.
+
+--
+
+gen_nuspec should write the same EOL convention
+on all platforms.  using XmlWriterSettings. NewLineChars
+doesn't seem to do what it should.  actually, that
+seems fine.  now the problem is the slash-vs-backslash
+issue in the nuspec paths.
+
+whether in embedded resource or just a content
+file, test using the dylib for ios.  or perhaps not.
+
+review EntryPoint attribute
+
+fix build script to do clean
+
+NuspecProperties doesn't work for PackageTags
+because of the semicolon inside it.  how to escape
+that?
+
+use new t4 local cli tool package
+    PlatformNotSupportedException
+    logged, mono/t4 #42, fix pending
+
+need push script.  reads the xml file to get
+the version
+
+.editorconfig
+
+should the other batteries also build on a placeholder
+instead of the actual ios lib assembly?  allows
+dotnet cli instead of desktop msbuild.
+
+with an SDK-style net461 project, how to control
+the cpu target of the build?  msbuild prop Platform?
+
+I wonder if there are any other ways that v2 breaks 
+the existing zetetic package.
+
+nuspec should show SQLitePCLRaw org account as
+owner?
+
+DONE: consider default enable_next_stmt() to false
+
+msbuild props to omit native builds in targets?
+
+concern about dictionary<intptr, T> because it's
+a value type?  ios AOT.  ToString() instead?
+it would seem that the latest versions of mono
+now support this case.
+
+DONE: maybe v2 should use the v141 builds and include arm64
+
+--
+
+the top half of the provider class is the
+same for dynamic vs dllimport.  use a partial
+class and share it?
+
+new sn key for lib.e_sqlcipher.  hmmm.
+or should we just use the same one as before?
+and why do we have the same key for 
+the android and ios versions of this?
+same goes for e_sqlite3.
+
+--
+
+in general, only one of the following is true:
+	win, LoadLibrary, dll suffix
+	everything else, dlopen
+		macos, dylib suffix
+		everything else, so suffix
+
+ios: either system or internal
+
+android: std places
+	just load e_sqlite3?
+
+.net core: should find from rid, just
+load "e_sqlite3" ?
+
+mono on mac
+Xamarin.Mac
+mono on linux
+.net framework on windows
+    subdirs from the targets file
+
+cdecl vs stdcall?
+
+maybe everything which needs a targets file should
+also need to pass more info (a path) to Setup
+
+--
+
+constructing the string:
+	basename
+		e_sqlite3
+		e_sqlcipher
+		sqlite3
+		sqlcipher
+	add dll/dylib/so suffix
+	path
+		starting
+			cwd
+			executingassembly.location
+			other?
+		subdir
+			nothing?
+			native/rid (targets)
+
+--
+
+review the weird stuff agg functions do
+with the context pointer
+
+--
+
+need to setup some x86 stdcall builds for testing?
+or just use winsqlite3 itself.  irritating that 
+the test suite passes using winsqlite3 and either 
+calling convention.  why?
+
+goal is to have no ifdefs in core
+
+--
 
 in the readme, explain why iOS lib has static in name.
 and why internal.  and why SQLitePCL.lib.embedded.Init()
@@ -19,89 +305,16 @@ for bundle_e_sqlite3, we want to build two things for netstandard11:
 
 enable_shared_cache.  is this present?  does akavache need it?
 
-it's kinda wrong to always build batteries.cs with provider_none
-for portable and netstandard.
-
-is the v140 e_sqlite build compiled for app container only?
-
-the batteries assemblies for wp80 don't need to
-go in build, do they?
-
-config_esqlite3 should get reworked, because it only
-generates a nuspec, not a csproj.  in fact, it's just
-a string toolset.
-
-maybe the subdirs x86/x64 for loading with anycpu
-should be the rid.  but this would break things,
-so probably not.
-
-several of the targets files are using the name
-InjectReference when really they're just copying
-the native DLL into the bin dir
-
-change all the lib packages to put the binaries
-in runtimes/rid/native, and change the .targets files
-to use that path, and also change the targets files
-to not do the copy when packages.config is present.
-
-oren says kill the (equiv) platform builds and just use
-netstandard.  and yes, keep NetStandard.Library in
-the deps, even though it drags in tons of transitives.
+change the targets files
+to not do the copy when packages.config is present?
 
 understand runtime.json and rid-specific deps, even
 if they are not officially supported
 
-cppinterop is now the only assembly which has the
-old name.  grumble.
-
-problem with uwp test apps pfx file
-
-problem with uwp test app, deploy, id ?
-
-test runner for net45
-
-rm cruft for old sqlcipher builds
-
-in order to get back to netstandard for the tests,
-we would need to switch xunit to the pre
-
 --------
-
-I wish the json generation code was using structures
-instead of text writelines
-
-how many cases are there where we could ditch a
-platform-specific build and just let it use
-netstandard?  but then NetStandard.Library gets
-dragged in, which is a lot of weird stuff.
-
-problem with current testapps sln is that the
-framework used to resolve is predetermined.
-it would be better to gen the projects from
-scratch and somehow add the nuget packages.
-problem is specific to packages.config?
-
-consider creating a new build directory on
-every build
-
-why does the error msg say ios project.json needs runtimes : win ?
 
 is CopyNuGetImplementations causing trouble?
 with project.json : runtimes?
-
-ios build machine needs sdk 9.3
-
-should MonoAndroid version be 2.3 or 6.0 ?
-
-general-purpose gen_nuspec function
-
-combine net45 libs into one pkg?
-
-do we need a copy of the main raw assembly compiled specifically
-for every tfm?  like android?  or is it sufficient to have
-it compiled for each set of compile options, and each platform
-use the one that is compatible with it.  problem with netstandard
-is that it brings in lots of little deps.
 
 need to go to nuget.org and mark some of the older 
 packages deprecated
@@ -109,67 +322,11 @@ packages deprecated
 maybe the "first pinvoke set that works" code should
 go somewhere else, higher up?
 
-currently wp8-SL support is limited to e_sqlite3.  no
-sqlcipher.  no extension SDK.  although we could in
-theory build multiple versions of this, each linked
-against a different library name.
-
 --------
 
 can we do a dylib ios version?
 
-version numbers on SQLitePCL.custom stuff should
-not need to match SQLitePCL.raw, and might want to
-match the underlying SQLite version number.
-
-does the native code stuff in nuget 3.x get this
-specific?  can we provide a package which just looks
-at the environment and then has a dependency on
-The Right One?
-
-xamarin.mac shouldn't even need to be built on the Mac.
-just use a compatible build of SQLitePCL.raw.dll
-
 ----
-
-clean out the rest of this file
-
-----
-
-Do the collation hook fix thing for config_log
-
-consider whether maybe the sqlite3 intptr dispose should check
-the version number and call sqlite3_close_v2 when it's supposedly
-available.
-
-add visual studio 2013 c++ runtime sdkreference.  but injecting an
-SDKReference in the .targets file sort of doesn't work, and using
-a powershell tool is so inelegant.  MESSAGE.
-
-annoying that an injected reference doesn't show up in the
-References list in visual studio
-
-error if configuration is not release or debug
-but configuration in xamarin.ios is actually stuff like iPhone, etc
-
-why does the sqlitepcl ios platform assembly show
-no assembly info when viewed in xamarin studio?
-
-Win32 in the sln file
-
-auto-generate the test projects as well?
-
-docs: need a complete list, in tabular form, of the platform
-assemblies and an explanation of the use cases for each one.
-auto-generate this.
-
-need at least one test project for each platform assembly.  
-
-add an NUnit project on Windows/Net45, so that build breakage
-with NUnit can be detected when making changes on windows.
-should reference NUnit as a nuget package
-
-sqlite3.Mac?  or use platform-installed sqlite on MacOS?
 
 docs on all the methods in raw, especially where the params
 differ from the C API
@@ -184,6 +341,9 @@ the fact that it returns void, since we can't check errors on it.  but
 the underlying C function doesn't really return any useful info for error
 checking either.
 
+should maybe use the value from commit_hook (and rollback_hook) internally
+to verify/dispose the hook_handle?
+
 unprotected sqlite3_value:  sqlite3_column_value, sqlite3_bind_value, sqlite3_result_value
 
 sqlite3_create_module
@@ -196,8 +356,6 @@ sqlite3_get_auxdata
 sqlite3_set_auxdata
 
 sqlite3_limit
-
-sqlite3_progress_handler
 
 sqlite3_randomness
 

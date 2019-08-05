@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_dynamic_cdecl;PROVIDER_NAME_e_sqlite3</DefineConstants>
+  </PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\common\batteries_v2.cs" />
+</ItemGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.nativelibrary\SQLitePCLRaw.nativelibrary.csproj" />
+</ItemGroup>
+
+</Project>

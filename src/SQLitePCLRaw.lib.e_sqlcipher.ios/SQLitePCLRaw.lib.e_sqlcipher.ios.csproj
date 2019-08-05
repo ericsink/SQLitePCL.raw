@@ -1,0 +1,22 @@
+<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>xamarin.ios10</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlcipher.snk</AssemblyOriginatorKeyFile>
+        <PackageDescription>This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
+	</PropertyGroup>
+
+<ItemGroup>
+    <Compile Include="..\..\src\common\embedded_init.cs" />
+    <Compile Include="imp_ios_internal.cs" />
+</ItemGroup>
+
+  <ItemGroup>
+    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlcipher\ios\e_sqlcipher.a">
+      <Link>e_sqlcipher.a</Link>
+    </ManifestResourceWithNoCulture>
+  </ItemGroup>
+
+</Project>
+
