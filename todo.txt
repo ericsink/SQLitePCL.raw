@@ -1,13 +1,43 @@
 
+what type should the first param in the
+vfs callbacks be?  stay with void* ?
+or define sqlite3_vfs struct and use sqlite3_vfs* ?
+but won't that do marshalling?  do we want that?
+might be slow?
+
+the sqlite3_vfs* given to the native code must
+be unmanaged memory or pinned.  it must be in the
+struct layout expected by the native code (which
+should also work when compiled from llvm to cil,
+right?).  can we build this by defining a struct
+and then marshalling everything to it and then
+pinning it?
+
+each delegate in the struct will be a bridge_impl
+with MonoPInvokeCallback.  its signature must match
+the native code, but its job is to use the data it
+is given to lookup the actual delegate/Func provided
+by the vfs implementor and call that.  use pAppData
+to lookup in a dictionary?
+
+and there is a bridge static that basically gets
+the bridge_impl into the delegat type.
+
+and that bridge static is what goes into the vfs struct.
+
+need clearer understanding of what the vfs API provided
+to the upper layer should look like
+
+--
+
+need special sqlite3_config() overload to call to set 
+up memsys5 ?
+
+--
+
 cleanup src/tests+t2, include sqlcipher as well
 
 lib package for xamarin mac
-
-clean up top level readme
-
-clean up blog release notes page
-
-finish writing v2 changes page
 
 test with zetetic
 
