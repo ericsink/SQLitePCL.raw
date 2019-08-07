@@ -74,8 +74,13 @@ namespace SQLitePCL
             }
         }
 
+        // --------
+        // this code pre-dates the vfs code.  it was simply a way
+        // to call the xDelete method of a vfs.
+        // this code was taken from aspnet/DataCommon.SQLite, Apache License 2.0
+
 		#pragma warning disable 649
-		private struct sqlite3_vfs
+		private struct my_sqlite3_vfs
 		{
 			public int iVersion;
 			public int szOsFile;
@@ -106,11 +111,12 @@ namespace SQLitePCL
             fixed (byte* p_vfs = vfs, p_filename = filename)
             {
                 IntPtr ptrVfs = NativeMethods.sqlite3_vfs_find(p_vfs);
-                // this code and the struct it uses was taken from aspnet/DataCommon.SQLite, Apache License 2.0
-                sqlite3_vfs vstruct = (sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(sqlite3_vfs));
+                my_sqlite3_vfs vstruct = (my_sqlite3_vfs) Marshal.PtrToStructure(ptrVfs, typeof(my_sqlite3_vfs));
                 return vstruct.xDelete(ptrVfs, p_filename, 1);
             }
 		}
+
+        // --------
 
         int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
