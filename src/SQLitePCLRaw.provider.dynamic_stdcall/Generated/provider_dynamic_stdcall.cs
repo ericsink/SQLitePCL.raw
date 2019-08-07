@@ -1705,6 +1705,217 @@ namespace SQLitePCL
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
+
+    // --------
+    // delegate types for vfs and io methods
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xOpen(
+        void* p_vfs,
+        byte* psz_name,
+        void* p_file,
+        int flags,
+        int* p_out_flags
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xDelete(
+        void* p_vfs,
+        byte* psz_name,
+        int flags
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xAccess(
+        void* p_vfs,
+        byte* psz_name,
+        int flags,
+        int* p_out
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xFullPathname(
+        void* p_vfs,
+        byte* psz_name,
+        int nOut,
+        byte* psz_out
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate void* delegate_vfs_xDlOpen(
+        void* p_vfs,
+        byte* psz_name
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate void delegate_vfs_xDlError(
+        void* p_vfs,
+        int nByte,
+        byte* psz_errMsg
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate void* delegate_vfs_xDlSym(
+        void* p_vfs,
+        void* p_dl,
+        byte* psz_name
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate void delegate_vfs_xDlClose(
+        void* p_vfs,
+        void* p_dl
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xRandomness(
+        void* p_vfs,
+        int nByte,
+        byte* psz_out
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xSleep(
+        void* p_vfs,
+        int microseconds
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xCurrentTime(
+        void* p_vfs,
+        double* p
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xGetLastError(
+        void* p_vfs,
+        int nByte,
+        byte* psz_out
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_vfs_xCurrentTimeInt64(
+        void* p_vfs,
+        long* p
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xClose(
+        void* p_file
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xRead(
+        void* p_file,
+        void* p_buf,
+        int iAmt,
+        long iOfst
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xWrite(
+        void* p_file,
+        void* p_buf,
+        int iAmt,
+        long iOfst
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xTruncate(
+        void* p_file,
+        long size
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xSync(
+        void* p_file,
+        int flags
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xFileSize(
+        void* p_file,
+        long* p_size
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xLock(
+        void* p_file,
+        int x
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xUnlock(
+        void* p_file,
+        int x
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xCheckReservedLock(
+        void* p_file,
+        int* pResOut
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xFileControl(
+        void* p_file,
+        int op,
+        void* pArg
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xSectorSize(
+        void* p_file
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xDeviceCharateristics(
+        void* p_file
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xShmMap(
+        void* p_file,
+        int iPg,
+        int pgsz,
+        int x,
+        void* p
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xShmLock(
+        void* p_file,
+        int offset,
+        int n,
+        int flags
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate void delegate_io_xShmBarrier(
+        void* p_file
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xShmUnmap(
+        void* p_file,
+        int deleteFlag
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xFetch(
+        void* p_file,
+        long iOfst,
+        int iAmt,
+        void** p
+        );
+
+	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+	public unsafe delegate int delegate_io_xUnfetch(
+        void* p_file,
+        long iOfst,
+        void* p
+        );
+
 	}
 
 	static class MyDelegateTypes
