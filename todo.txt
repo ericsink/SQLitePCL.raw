@@ -1,4 +1,8 @@
 
+does bridge = bridge_impl need to be readonly
+member?  or can it be static?  either way, need
+this on every callback, to prevent GC.
+
 vfs methods must never throw.  put try/catch
 wrapping in the _bridge functions.
 

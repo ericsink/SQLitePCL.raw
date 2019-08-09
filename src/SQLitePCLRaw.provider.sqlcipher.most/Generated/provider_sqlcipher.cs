@@ -153,12 +153,12 @@ namespace SQLitePCL
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_exec))]
-        static int exec_hook_bridge(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
+        static int exec_hook_bridge_impl(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
         {
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
-		// TODO shouldn't there be a impl/bridge thing here?
+		readonly NativeMethods.callback_exec exec_hook_bridge = new NativeMethods.callback_exec(exec_hook_bridge_impl); 
 
         int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
@@ -1451,8 +1451,9 @@ namespace SQLitePCL
 
         // --------
 
+		static unsafe NativeMethods.delegate_vfs_xOpen xOpen_bridge = new NativeMethods.delegate_vfs_xOpen(xOpen_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xOpen))]
-        static unsafe int xOpen_bridge(
+        static unsafe int xOpen_bridge_impl(
             void* p_vfs,
             byte* psz_name,
             void* p_file,
@@ -1521,8 +1522,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_vfs_xDelete xDelete_bridge = new NativeMethods.delegate_vfs_xDelete(xDelete_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDelete))]
-        static unsafe int xDelete_bridge(
+        static unsafe int xDelete_bridge_impl(
             void* p_vfs,
             byte* psz_name,
             int flags
@@ -1532,8 +1534,9 @@ namespace SQLitePCL
             return vfs.xDelete(utf8z.FromIntPtr((IntPtr)psz_name), flags);
         }
 
+		static unsafe NativeMethods.delegate_vfs_xAccess xAccess_bridge = new NativeMethods.delegate_vfs_xAccess(xAccess_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xAccess))]
-        static unsafe int xAccess_bridge(
+        static unsafe int xAccess_bridge_impl(
             void* p_vfs,
             byte* psz_name,
             int flags,
@@ -1546,8 +1549,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_vfs_xFullPathname xFullPathname_bridge = new NativeMethods.delegate_vfs_xFullPathname(xFullPathname_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xFullPathname))]
-        static unsafe int xFullPathname_bridge(
+        static unsafe int xFullPathname_bridge_impl(
             void* p_vfs,
             byte* psz_name,
             int nOut,
@@ -1558,8 +1562,9 @@ namespace SQLitePCL
             return vfs.xFullPathname(utf8z.FromPtr(psz_name), new Span<byte>(psz_out, nOut));
         }
 
+		static unsafe NativeMethods.delegate_vfs_xDlOpen xDlOpen_bridge = new NativeMethods.delegate_vfs_xDlOpen(xDlOpen_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlOpen))]
-        static unsafe void* xDlOpen_bridge(
+        static unsafe void* xDlOpen_bridge_impl(
             void* p_vfs,
             byte* psz_name
             )
@@ -1569,8 +1574,9 @@ namespace SQLitePCL
             return null; // TODO
         }
 
+		static unsafe NativeMethods.delegate_vfs_xDlError xDlError_bridge = new NativeMethods.delegate_vfs_xDlError(xDlError_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlError))]
-        static unsafe void xDlError_bridge(
+        static unsafe void xDlError_bridge_impl(
             void* p_vfs,
             int nByte,
             byte* psz_errMsg
@@ -1580,8 +1586,9 @@ namespace SQLitePCL
             // TODO
         }
 
+		static unsafe NativeMethods.delegate_vfs_xDlSym xDlSym_bridge = new NativeMethods.delegate_vfs_xDlSym(xDlSym_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlSym))]
-        static unsafe void* xDlSym_bridge(
+        static unsafe void* xDlSym_bridge_impl(
             void* p_vfs,
             void* p_dl,
             byte* psz_name
@@ -1592,8 +1599,9 @@ namespace SQLitePCL
             return null; // TODO
         }
 
+		static unsafe NativeMethods.delegate_vfs_xDlClose xDlClose_bridge = new NativeMethods.delegate_vfs_xDlClose(xDlClose_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlClose))]
-        static unsafe void xDlClose_bridge(
+        static unsafe void xDlClose_bridge_impl(
             void* p_vfs,
             void* p_dl
             )
@@ -1602,8 +1610,9 @@ namespace SQLitePCL
             // TODO
         }
 
+		static unsafe NativeMethods.delegate_vfs_xRandomness xRandomness_bridge = new NativeMethods.delegate_vfs_xRandomness(xRandomness_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xRandomness))]
-        static unsafe int xRandomness_bridge(
+        static unsafe int xRandomness_bridge_impl(
             void* p_vfs,
             int nByte,
             byte* buf
@@ -1613,8 +1622,9 @@ namespace SQLitePCL
             return vfs.xRandomness(new Span<byte>(buf, nByte));
         }
 
+		static unsafe NativeMethods.delegate_vfs_xSleep xSleep_bridge = new NativeMethods.delegate_vfs_xSleep(xSleep_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xSleep))]
-        static unsafe int xSleep_bridge(
+        static unsafe int xSleep_bridge_impl(
             void* p_vfs,
             int microseconds
             )
@@ -1623,8 +1633,9 @@ namespace SQLitePCL
             return vfs.xSleep(microseconds);
         }
 
+		static unsafe NativeMethods.delegate_vfs_xCurrentTime xCurrentTime_bridge = new NativeMethods.delegate_vfs_xCurrentTime(xCurrentTime_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTime))]
-        static unsafe int xCurrentTime_bridge(
+        static unsafe int xCurrentTime_bridge_impl(
             void* p_vfs,
             double* p
             )
@@ -1635,8 +1646,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_vfs_xGetLastError xGetLastError_bridge = new NativeMethods.delegate_vfs_xGetLastError(xGetLastError_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xGetLastError))]
-        static unsafe int xGetLastError_bridge(
+        static unsafe int xGetLastError_bridge_impl(
             void* p_vfs,
             int nByte,
             byte* psz_out
@@ -1646,6 +1658,7 @@ namespace SQLitePCL
             return vfs.xGetLastError(new Span<byte>(psz_out, nByte));
         }
 
+		static unsafe NativeMethods.delegate_vfs_xCurrentTimeInt64 xCurrentTimeInt64_bridge = new NativeMethods.delegate_vfs_xCurrentTimeInt64(xCurrentTimeInt64_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTimeInt64))]
         static unsafe int xCurrentTimeInt64_bridge_impl(
             void* p_vfs,
@@ -1657,12 +1670,12 @@ namespace SQLitePCL
             *p = res;
             return rc;
         }
-		readonly unsafe NativeMethods.delegate_vfs_xCurrentTimeInt64 xCurrentTimeInt64_bridge = new NativeMethods.delegate_vfs_xCurrentTimeInt64(xCurrentTimeInt64_bridge_impl); 
 
         // --------
 
+		static unsafe NativeMethods.delegate_io_xClose xClose_bridge = new NativeMethods.delegate_io_xClose(xClose_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xClose))]
-        static unsafe int xClose_bridge(
+        static unsafe int xClose_bridge_impl(
             void* p_file
             )
         {
@@ -1672,8 +1685,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_io_xRead xRead_bridge = new NativeMethods.delegate_io_xRead(xRead_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xRead))]
-        static unsafe int xRead_bridge(
+        static unsafe int xRead_bridge_impl(
             void* p_file,
             void* p_buf,
             int iAmt,
@@ -1684,8 +1698,9 @@ namespace SQLitePCL
             return io.xRead(new Span<byte>(p_buf, iAmt), iOfst);
         }
 
+		static unsafe NativeMethods.delegate_io_xWrite xWrite_bridge = new NativeMethods.delegate_io_xWrite(xWrite_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xWrite))]
-        static unsafe int xWrite_bridge(
+        static unsafe int xWrite_bridge_impl(
             void* p_file,
             void* p_buf,
             int iAmt,
@@ -1696,8 +1711,9 @@ namespace SQLitePCL
             return io.xWrite(new ReadOnlySpan<byte>(p_buf, iAmt), iOfst);
         }
 
+		static unsafe NativeMethods.delegate_io_xTruncate xTruncate_bridge = new NativeMethods.delegate_io_xTruncate(xTruncate_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xTruncate))]
-        static unsafe int xTruncate_bridge(
+        static unsafe int xTruncate_bridge_impl(
             void* p_file,
             long size
             )
@@ -1706,8 +1722,9 @@ namespace SQLitePCL
             return io.xTruncate(size);
         }
 
+		static unsafe NativeMethods.delegate_io_xSync xSync_bridge = new NativeMethods.delegate_io_xSync(xSync_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xSync))]
-        static unsafe int xSync_bridge(
+        static unsafe int xSync_bridge_impl(
             void* p_file,
             int flags
             )
@@ -1716,8 +1733,9 @@ namespace SQLitePCL
             return io.xSync(flags);
         }
 
+		static unsafe NativeMethods.delegate_io_xFileSize xFileSize_bridge = new NativeMethods.delegate_io_xFileSize(xFileSize_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFileSize))]
-        static unsafe int xFileSize_bridge(
+        static unsafe int xFileSize_bridge_impl(
             void* p_file,
             long* p_size
             )
@@ -1728,8 +1746,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_io_xLock xLock_bridge = new NativeMethods.delegate_io_xLock(xLock_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xLock))]
-        static unsafe int xLock_bridge(
+        static unsafe int xLock_bridge_impl(
             void* p_file,
             int x
             )
@@ -1738,8 +1757,9 @@ namespace SQLitePCL
             return io.xLock(x);
         }
 
+		static unsafe NativeMethods.delegate_io_xUnlock xUnlock_bridge = new NativeMethods.delegate_io_xUnlock(xUnlock_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xUnlock))]
-        static unsafe int xUnlock_bridge(
+        static unsafe int xUnlock_bridge_impl(
             void* p_file,
             int x
             )
@@ -1748,8 +1768,9 @@ namespace SQLitePCL
             return io.xUnlock(x);
         }
 
+		static unsafe NativeMethods.delegate_io_xCheckReservedLock xCheckReservedLock_bridge = new NativeMethods.delegate_io_xCheckReservedLock(xCheckReservedLock_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xCheckReservedLock))]
-        static unsafe int xCheckReservedLock_bridge(
+        static unsafe int xCheckReservedLock_bridge_impl(
             void* p_file,
             int* pResOut
             )
@@ -1760,8 +1781,9 @@ namespace SQLitePCL
             return rc;
         }
 
+		static unsafe NativeMethods.delegate_io_xFileControl xFileControl_bridge = new NativeMethods.delegate_io_xFileControl(xFileControl_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFileControl))]
-        static unsafe int xFileControl_bridge(
+        static unsafe int xFileControl_bridge_impl(
             void* p_file,
             int op,
             void* pArg
@@ -1771,8 +1793,9 @@ namespace SQLitePCL
             return io.xFileControl(op, (IntPtr)pArg);
         }
 
+		static unsafe NativeMethods.delegate_io_xSectorSize xSectorSize_bridge = new NativeMethods.delegate_io_xSectorSize(xSectorSize_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xSectorSize))]
-        static unsafe int xSectorSize_bridge(
+        static unsafe int xSectorSize_bridge_impl(
             void* p_file
             )
         {
@@ -1780,8 +1803,9 @@ namespace SQLitePCL
             return io.xSectorSize();
         }
 
+		static unsafe NativeMethods.delegate_io_xDeviceCharacteristics xDeviceCharacteristics_bridge = new NativeMethods.delegate_io_xDeviceCharacteristics(xDeviceCharacteristics_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xDeviceCharacteristics))]
-        static unsafe int xDeviceCharacteristics_bridge(
+        static unsafe int xDeviceCharacteristics_bridge_impl(
             void* p_file
             )
         {
@@ -1790,8 +1814,9 @@ namespace SQLitePCL
         }
 
 #if not
+		static unsafe NativeMethods.delegate_io_xShmMap xShmMap_bridge = new NativeMethods.delegate_io_xShmMap(xShmMap_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmMap))]
-        static unsafe int xShmMap_bridge(
+        static unsafe int xShmMap_bridge_impl(
             void* p_file,
             int iPg,
             int pgsz,
@@ -1803,8 +1828,9 @@ namespace SQLitePCL
             return -1; // TODO
         }
 
+		static unsafe NativeMethods.delegate_io_xShmLock xShmLock_bridge = new NativeMethods.delegate_io_xShmLock(xShmLock_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmLock))]
-        static unsafe int xShmLock_bridge(
+        static unsafe int xShmLock_bridge_impl(
             void* p_file,
             int offset,
             int n,
@@ -1815,8 +1841,9 @@ namespace SQLitePCL
             return -1; // TODO
         }
 
+		static unsafe NativeMethods.delegate_io_xShmBarrier xShmBarrier_bridge = new NativeMethods.delegate_io_xShmBarrier(xShmBarrier_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmBarrier))]
-        static unsafe void xShmBarrier_bridge(
+        static unsafe void xShmBarrier_bridge_impl(
             void* p_file
             )
         {
@@ -1824,8 +1851,9 @@ namespace SQLitePCL
             // TODO
         }
 
+		static unsafe NativeMethods.delegate_io_xShmUnmap xShmUnmap_bridge = new NativeMethods.delegate_io_xShmUnmap(xShmUnmap_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmUnmap))]
-        static unsafe int xShmUnmap_bridge(
+        static unsafe int xShmUnmap_bridge_impl(
             void* p_file,
             int deleteFlag
             )
@@ -1834,8 +1862,9 @@ namespace SQLitePCL
             return -1; // TODO
         }
 
+		static unsafe NativeMethods.delegate_io_xFetch xFetch_bridge = new NativeMethods.delegate_io_xFetch(xFetch_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFetch))]
-        static unsafe int xFetch_bridge(
+        static unsafe int xFetch_bridge_impl(
             void* p_file,
             long iOfst,
             int iAmt,
@@ -1846,8 +1875,9 @@ namespace SQLitePCL
             return -1; // TODO
         }
 
+		static unsafe NativeMethods.delegate_io_xUnfetch xUnfetch_bridge = new NativeMethods.delegate_io_xUnfetch(xUnfetch_bridge_impl); 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xUnfetch))]
-        static unsafe int xUnfetch_bridge(
+        static unsafe int xUnfetch_bridge_impl(
             void* p_file,
             long iOfst,
             void* p
