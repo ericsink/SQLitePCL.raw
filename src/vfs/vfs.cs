@@ -53,6 +53,7 @@ namespace SQLitePCL.Tests
                 var pos = _f.Seek(iOfst, SeekOrigin.Begin);
                 // not in netstandard2.0
                 var got = _f.Read(buf);
+                // TODO loop to avoid returning short read if possible?
                 if (got == buf.Length)
                 {
                     return 0;

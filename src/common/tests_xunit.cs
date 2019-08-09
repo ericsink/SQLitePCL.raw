@@ -50,11 +50,37 @@ namespace SQLitePCL.Tests
             Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
             return ba;
         }
+		public static string NewId_hex()
+        {
+            string id = Guid
+                .NewGuid()
+                .ToString()
+                .Replace("{", "")
+                .Replace("}", "")
+                .Replace("-", "");
+            return id;
+        }
     }
 
     [Collection("Init")]
     public class test_cases
     {
+        [Fact]
+        public void test_actual_file()
+        {
+            var filename = u.NewId_hex();
+            using (sqlite3 db = ugly.open(filename))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                db.exec("INSERT INTO foo (x) VALUES (3)");
+                db.exec("INSERT INTO foo (x) VALUES (12)");
+                db.exec("INSERT INTO foo (x) VALUES (-2)");
+                var q = db.query_scalar<int>("SELECT sum(x) from foo;");
+                Assert.Equal(13, q);
+            }
+            ugly.vfs__delete(null, filename, 1);
+        }
+
         [Fact]
         public void test_call_sqlite3_enable_load_extension()
         {
