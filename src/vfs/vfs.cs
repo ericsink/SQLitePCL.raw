@@ -51,7 +51,7 @@ namespace SQLitePCL.Tests
             {
                 System.Console.WriteLine($"Read: off={iOfst} len={buf.Length}");
                 var pos = _f.Seek(iOfst, SeekOrigin.Begin);
-                // .NET Core 3.0
+                // not in netstandard2.0
                 var got = _f.Read(buf);
                 if (got == buf.Length)
                 {
@@ -71,7 +71,7 @@ namespace SQLitePCL.Tests
             {
                 System.Console.WriteLine($"Write: off={iOfst} len={buf.Length}");
                 var pos = _f.Seek(iOfst, SeekOrigin.Begin);
-                // .NET Core 3.0
+                // not in netstandard2.0
                 _f.Write(buf);
                 return 0;
             }
@@ -288,31 +288,37 @@ namespace SQLitePCL.Tests
             )
         {
             System.Console.WriteLine($"FullPathname: {psz_name.utf8_to_string()}");
-            // TODO make this a full path?
+            // TODO make this a full path
             psz_name.AsSpan().CopyTo(sz_res);
             return 0;
         }
 
+        // TODO need better quality random numbers than this
+        readonly Random _r = new Random();
         int Randomness(
             Span<byte> res
             )
         {
-            System.Console.WriteLine("Randomness");
-            return 1;
+            System.Console.WriteLine($"Randomness: {res.Length} bytes");
+            // not in netstandard 2.0
+            _r.NextBytes(res);
+            return res.Length;
         }
 
         int Sleep(
             int microseconds
             )
         {
-            System.Console.WriteLine("Sleep");
-            return 1;
+            System.Console.WriteLine($"Sleep: {microseconds}");
+            System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(microseconds / 1000));
+            return 0;
         }
 
         int CurrentTime(
             out double res
             )
         {
+            // TODO probably don't need this if CurrentTimeInt64 is implemented
             System.Console.WriteLine("CurrentTime");
             res = 0;
             return 1;
