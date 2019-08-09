@@ -1649,7 +1649,7 @@ namespace SQLitePCL
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTimeInt64))]
-        static unsafe int xCurrentTimeInt64_bridge(
+        static unsafe int xCurrentTimeInt64_bridge_impl(
             void* p_vfs,
             long* p
             )
@@ -1659,6 +1659,7 @@ namespace SQLitePCL
             *p = res;
             return rc;
         }
+		readonly unsafe NativeMethods.delegate_vfs_xCurrentTimeInt64 xCurrentTimeInt64_bridge = new NativeMethods.delegate_vfs_xCurrentTimeInt64(xCurrentTimeInt64_bridge_impl); 
 
         // --------
 
