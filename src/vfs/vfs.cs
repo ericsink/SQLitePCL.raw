@@ -320,9 +320,10 @@ namespace SQLitePCL.Tests
             )
         {
             // TODO probably don't need this if CurrentTimeInt64 is implemented
-            System.Console.WriteLine("CurrentTime");
-            res = 0;
-            return 1;
+            // TODO probably npt robust
+            var jd = DateTime.UtcNow.ToOADate() + 2415018.5;
+            res = jd;
+            return 0;
         }
 
         int GetLastError(
@@ -330,7 +331,7 @@ namespace SQLitePCL.Tests
             )
         {
             System.Console.WriteLine("GetLastError");
-            return 1;
+            return 0; // TODO
         }
 
         int CurrentTimeInt64(
@@ -338,8 +339,10 @@ namespace SQLitePCL.Tests
             )
         {
             System.Console.WriteLine("CurrentTimeInt64");
-            res = 0;
-            return 1;
+            // TODO probably npt robust
+            var jd = DateTime.UtcNow.ToOADate() + 2415018.5;
+            res = ((long) jd) * 86400 * 1000;
+            return 0;
         }
 
         public int maxPathname => 255; // TODO

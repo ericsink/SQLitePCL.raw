@@ -1605,12 +1605,11 @@ namespace SQLitePCL
         static unsafe int xRandomness_bridge(
             void* p_vfs,
             int nByte,
-            byte* psz_out
+            byte* buf
             )
         {
             var vfs = extract_vfs((IntPtr)p_vfs);
-
-            return -1; // TODO
+            return vfs.xRandomness(new Span<byte>(buf, nByte));
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xSleep))]
@@ -1620,8 +1619,7 @@ namespace SQLitePCL
             )
         {
             var vfs = extract_vfs((IntPtr)p_vfs);
-
-            return -1; // TODO
+            return vfs.xSleep(microseconds);
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTime))]
@@ -1631,8 +1629,9 @@ namespace SQLitePCL
             )
         {
             var vfs = extract_vfs((IntPtr)p_vfs);
-
-            return -1; // TODO
+            var rc = vfs.xCurrentTime(out var res);
+            *p = res;
+            return rc;
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xGetLastError))]
@@ -1643,8 +1642,7 @@ namespace SQLitePCL
             )
         {
             var vfs = extract_vfs((IntPtr)p_vfs);
-
-            return -1; // TODO
+            return vfs.xGetLastError(new Span<byte>(psz_out, nByte));
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTimeInt64))]
@@ -1654,8 +1652,9 @@ namespace SQLitePCL
             )
         {
             var vfs = extract_vfs((IntPtr)p_vfs);
-
-            return -1; // TODO
+            var rc = vfs.xCurrentTimeInt64(out var res);
+            *p = res;
+            return rc;
         }
 
         // --------
