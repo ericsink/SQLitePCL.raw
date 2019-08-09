@@ -1516,6 +1516,7 @@ namespace SQLitePCL
                 f.pMethods = IntPtr.Zero;
             }
 
+            // TODO worry about whether this handle is enough to prevent GC
             var h = GCHandle.Alloc(io, GCHandleType.Normal);
             f.pAppData = GCHandle.ToIntPtr(h);
 
@@ -1899,6 +1900,7 @@ namespace SQLitePCL
 
             vfs.xCurrentTimeInt64 = xCurrentTimeInt64_bridge;
 
+            // TODO worry about whether this handle is enough to prevent GC
             var h = GCHandle.Alloc(top_vfs, GCHandleType.Normal);
             vfs.pAppData = GCHandle.ToIntPtr(h);
 
