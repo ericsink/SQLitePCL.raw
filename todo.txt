@@ -1,4 +1,12 @@
 
+support xOpen null tempfile
+
+need tests that involve locks.
+
+would be nice to be able to run all the regular
+test cases twice, once with :memory: and once with
+an actual file, which gets deleted after.
+
 does bridge = bridge_impl need to be readonly
 member?  or can it be static?  either way, need
 this on every callback, to prevent GC.
