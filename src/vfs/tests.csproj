@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.nativelibrary\SQLitePCLRaw.nativelibrary.csproj" />
+	<!-- <ProjectReference Include="..\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic.csproj" /> -->
+	<ProjectReference Include="..\SQLitePCLRaw.ugly\SQLitePCLRaw.ugly.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-reportgenerator-cli" Version="4.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\common\attrs_for_tests.cs" />
+    <Compile Include="vfs.cs" />
+    <Compile Include="cases.cs" />
+    <Compile Include="..\common\fake_xunit.cs" />
+    <Compile Include="my_batteries_v2.cs" />
+    <Compile Include="Program.cs" />
+  </ItemGroup>
+
+</Project>

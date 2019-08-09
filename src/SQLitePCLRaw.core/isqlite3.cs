@@ -47,6 +47,140 @@ namespace SQLitePCL
     public delegate void delegate_function_aggregate_step(sqlite3_context ctx, object user_data, sqlite3_value[] args);
     public delegate void delegate_function_aggregate_final(sqlite3_context ctx, object user_data);
 
+    public interface sqlite3_vfs
+    {
+        // iVersion is 2
+        // szOsFile is done in unmanaged layer
+        int maxPathname { get; }
+        // pNext
+        // name
+        // pAppData
+
+        delegate_vfs_xOpen xOpen { get; }
+        delegate_vfs_xDelete xDelete { get; }
+        delegate_vfs_xAccess xAccess { get; }
+        delegate_vfs_xFullPathname xFullPathname { get; }
+        // DlOpen
+        // DlError
+        // DlSym
+        // DlClose
+        delegate_vfs_xRandomness xRandomness { get; }
+        delegate_vfs_xSleep xSleep { get; }
+        delegate_vfs_xCurrentTime xCurrentTime { get; }
+        delegate_vfs_xGetLastError xGetLastError { get; }
+
+        delegate_vfs_xCurrentTimeInt64 xCurrentTimeInt64 { get; }
+    }
+
+    public interface sqlite3_io_methods
+    {
+        // iVersion is 1
+        delegate_io_xClose xClose { get; }
+        delegate_io_xRead xRead { get; }
+        delegate_io_xWrite xWrite { get; }
+        delegate_io_xTruncate xTruncate { get; }
+        delegate_io_xSync xSync { get; }
+        delegate_io_xFileSize xFileSize { get; }
+        delegate_io_xLock xLock { get; }
+        delegate_io_xUnlock xUnlock { get; }
+        delegate_io_xCheckReservedLock xCheckReservedLock { get; }
+        delegate_io_xFileControl xFileControl { get; }
+        delegate_io_xSectorSize xSectorSize { get; }
+        delegate_io_xDeviceCharacteristics xDeviceCharacteristics { get; }
+    }
+
+	public delegate int delegate_vfs_xOpen(
+        utf8z name,
+        out sqlite3_io_methods io,
+        int flags,
+        out int out_flags // TODO in C, this can be null
+        );
+
+	public delegate int delegate_vfs_xDelete(
+        utf8z name,
+        int flags
+        );
+
+	public delegate int delegate_vfs_xAccess(
+        utf8z psz_name,
+        int flags,
+        out int res
+        );
+
+	public delegate int delegate_vfs_xFullPathname(
+        utf8z psz_name,
+        Span<byte> sz_res
+        );
+
+	public delegate int delegate_vfs_xRandomness(
+        Span<byte> res
+        );
+
+	public delegate int delegate_vfs_xSleep(
+        int microseconds
+        );
+
+	public delegate int delegate_vfs_xCurrentTime(
+        out double res
+        );
+
+	public delegate int delegate_vfs_xGetLastError(
+        Span<byte> sz_res
+        );
+
+	public delegate int delegate_vfs_xCurrentTimeInt64(
+        out long res
+        );
+
+
+	public delegate int delegate_io_xClose(
+        );
+
+	public delegate int delegate_io_xRead(
+        Span<byte> buf,
+        long iOfst
+        );
+
+	public delegate int delegate_io_xWrite(
+        ReadOnlySpan<byte> buf,
+        long iOfst
+        );
+
+	public delegate int delegate_io_xTruncate(
+        long size
+        );
+
+	public delegate int delegate_io_xSync(
+        int flags
+        );
+
+	public delegate int delegate_io_xFileSize(
+        out long size
+        );
+
+	public delegate int delegate_io_xLock(
+        int x
+        );
+
+	public delegate int delegate_io_xUnlock(
+        int x
+        );
+
+	public delegate int delegate_io_xCheckReservedLock(
+        out int res
+        );
+
+	public delegate int delegate_io_xFileControl(
+        int op,
+        IntPtr pArg
+        );
+
+	public delegate int delegate_io_xSectorSize(
+        );
+
+	public delegate int delegate_io_xDeviceCharacteristics(
+        );
+
     /// <summary>
     ///
     /// This interface provides core functionality of the SQLite3 API.  It is the
@@ -82,6 +216,8 @@ namespace SQLitePCL
     public interface ISQLite3Provider
     {
         string GetNativeLibraryName();
+
+        int sqlite3_vfs_register(utf8z name, sqlite3_vfs vfs, int def);
 
         int sqlite3_open(utf8z filename, out IntPtr db);
         int sqlite3_open_v2(utf8z filename, out IntPtr db, int flags, utf8z vfs);

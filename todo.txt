@@ -1,4 +1,21 @@
 
+vfs methods must never throw.  put try/catch
+wrapping in the _bridge functions.
+
+vfs_find is problematic if we want to convert it
+back to a managed equivalent, because it might not
+have started that way.
+
+maybe vfs unregister should be done by name instead
+of sqlite3_vfs pointer
+
+too many places where we are using a real unsafe ptr
+and then calling Marshal functions so we have to cast
+to IntPtr, and it would probably be simpler to just
+declare things as an IntPtr to begin with.
+
+--
+
 what type should the first param in the
 vfs callbacks be?  stay with void* ?
 or define sqlite3_vfs struct and use sqlite3_vfs* ?

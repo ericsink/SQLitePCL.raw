@@ -138,6 +138,8 @@ namespace SQLitePCL
                 }
             }
         }
+
+        public ReadOnlySpan<byte> AsSpan() => sp;
     }
 
 }

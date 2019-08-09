@@ -1365,6 +1365,541 @@ namespace SQLitePCL
             }
         }
 
+        // ----------------------------------------------------------------
+        // vfs
+
+		private struct native_sqlite3_vfs
+		{
+			public int iVersion;
+
+			public int szOsFile;
+			public int mxPathname;
+			public IntPtr pNext;
+			public IntPtr zName;
+			public IntPtr pAppData;
+
+			public NativeMethods.delegate_vfs_xOpen xOpen;
+			public NativeMethods.delegate_vfs_xDelete xDelete;
+			public NativeMethods.delegate_vfs_xAccess xAccess;
+			public NativeMethods.delegate_vfs_xFullPathname xFullPathname;
+			public NativeMethods.delegate_vfs_xDlOpen xDlOpen;
+			public NativeMethods.delegate_vfs_xDlError xDlError;
+			public NativeMethods.delegate_vfs_xDlSym xDlSym;
+			public NativeMethods.delegate_vfs_xDlClose xDlClose;
+			public NativeMethods.delegate_vfs_xRandomness xRandomness;
+			public NativeMethods.delegate_vfs_xSleep xSleep;
+			public NativeMethods.delegate_vfs_xCurrentTime xCurrentTime;
+			public NativeMethods.delegate_vfs_xGetLastError xGetLastError;
+			public NativeMethods.delegate_vfs_xCurrentTimeInt64 xCurrentTimeInt64;
+		}
+
+		private struct native_sqlite3_file
+        {
+            public IntPtr pMethods;
+            public IntPtr pAppData;
+        }
+
+		private struct native_sqlite3_io_methods
+        {
+			public int iVersion;
+
+            public NativeMethods.delegate_io_xClose xClose;
+            public NativeMethods.delegate_io_xRead xRead;
+            public NativeMethods.delegate_io_xWrite xWrite;
+            public NativeMethods.delegate_io_xTruncate xTruncate;
+            public NativeMethods.delegate_io_xSync xSync;
+            public NativeMethods.delegate_io_xFileSize xFileSize;
+            public NativeMethods.delegate_io_xLock xLock;
+            public NativeMethods.delegate_io_xUnlock xUnlock;
+            public NativeMethods.delegate_io_xCheckReservedLock xCheckReservedLock;
+            public NativeMethods.delegate_io_xFileControl xFileControl;
+            public NativeMethods.delegate_io_xSectorSize xSectorSize;
+            public NativeMethods.delegate_io_xDeviceCharacteristics xDeviceCharacteristics;
+
+#if not
+            public NativeMethods.delegate_io_xShmMap xShmMap;
+            public NativeMethods.delegate_io_xShmLock xShmLock;
+            public NativeMethods.delegate_io_xShmBarrier xShmBarrier;
+            public NativeMethods.delegate_io_xShmUnmap xShmUnmap;
+
+            public NativeMethods.delegate_io_xFetch xFetch;
+            public NativeMethods.delegate_io_xUnfetch xUnfetch;
+#endif
+        }
+
+        static sqlite3_vfs extract_vfs(IntPtr p_vfs)
+        {
+            // TODO how to get pAppData without marshaling the whole struct?
+            // maybe don't marshal it or use pAppData at all?  
+            // just keep a dictionary by IntPtr?
+
+            var nat = Marshal.PtrToStructure<native_sqlite3_vfs>(p_vfs);
+            var h = GCHandle.FromIntPtr(nat.pAppData);
+            var vfs = (sqlite3_vfs) h.Target;
+            return vfs;
+        }
+
+        static sqlite3_io_methods extract_io_methods(IntPtr p_file)
+        {
+            // TODO see above. again, perf concerns of marshalling the whole struct?
+
+            var nat = Marshal.PtrToStructure<native_sqlite3_file>(p_file);
+            var h = GCHandle.FromIntPtr(nat.pAppData);
+            var io = (sqlite3_io_methods) h.Target;
+            return io;
+        }
+
+        // --------
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xOpen))]
+        static unsafe int xOpen_bridge(
+            void* p_vfs,
+            byte* psz_name,
+            void* p_file,
+            int flags,
+            int* p_out_flags
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            var rc = vfs.xOpen(
+                utf8z.FromIntPtr((IntPtr)psz_name),
+                out var io,
+                flags,
+                out var out_flags
+                );
+
+            var f = new native_sqlite3_file();
+
+            if (io != null)
+            {
+                var nat_io = new native_sqlite3_io_methods();
+                nat_io.iVersion = 1; // TODO
+                nat_io.xClose = xClose_bridge;
+                nat_io.xRead = xRead_bridge;
+                nat_io.xWrite = xWrite_bridge;
+                nat_io.xTruncate = xTruncate_bridge;
+                nat_io.xSync = xSync_bridge;
+                nat_io.xFileSize = xFileSize_bridge;
+                nat_io.xLock = xLock_bridge;
+                nat_io.xUnlock = xUnlock_bridge;
+                nat_io.xCheckReservedLock = xCheckReservedLock_bridge;
+                nat_io.xFileControl = xFileControl_bridge;
+                nat_io.xSectorSize = xSectorSize_bridge;
+                nat_io.xDeviceCharacteristics = xDeviceCharacteristics_bridge;
+
+#if not
+                nat_io.xShmMap = xShmMap_bridge;
+                nat_io.xShmBarrier = xShmBarrier_bridge;
+                nat_io.xShmLock = xShmLock_bridge;
+                nat_io.xShmUnmap = xShmUnmap_bridge;
+
+                nat_io.xFetch = xFetch_bridge;
+                nat_io.xUnfetch = xUnfetch_bridge;
+#endif
+
+                var p = Marshal.AllocHGlobal(Marshal.SizeOf<native_sqlite3_io_methods>());
+                // TODO need to free this somewhere
+                Marshal.StructureToPtr(nat_io, p, false);
+                f.pMethods = p;
+            }
+            else
+            {
+                f.pMethods = IntPtr.Zero;
+            }
+
+            var h = GCHandle.Alloc(io, GCHandleType.Normal);
+            f.pAppData = GCHandle.ToIntPtr(h);
+
+            Marshal.StructureToPtr(f, (IntPtr)p_file, false);
+            if (p_out_flags != null)
+            {
+                *p_out_flags = out_flags;
+            }
+
+
+            return rc;
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDelete))]
+        static unsafe int xDelete_bridge(
+            void* p_vfs,
+            byte* psz_name,
+            int flags
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            return vfs.xDelete(utf8z.FromIntPtr((IntPtr)psz_name), flags);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xAccess))]
+        static unsafe int xAccess_bridge(
+            void* p_vfs,
+            byte* psz_name,
+            int flags,
+            int* p_out
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            var rc = vfs.xAccess(utf8z.FromPtr(psz_name), flags, out var res);
+            *p_out = res;
+            return rc;
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xFullPathname))]
+        static unsafe int xFullPathname_bridge(
+            void* p_vfs,
+            byte* psz_name,
+            int nOut,
+            byte* psz_out
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            return vfs.xFullPathname(utf8z.FromPtr(psz_name), new Span<byte>(psz_out, nOut));
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlOpen))]
+        static unsafe void* xDlOpen_bridge(
+            void* p_vfs,
+            byte* psz_name
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return null; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlError))]
+        static unsafe void xDlError_bridge(
+            void* p_vfs,
+            int nByte,
+            byte* psz_errMsg
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlSym))]
+        static unsafe void* xDlSym_bridge(
+            void* p_vfs,
+            void* p_dl,
+            byte* psz_name
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return null; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xDlClose))]
+        static unsafe void xDlClose_bridge(
+            void* p_vfs,
+            void* p_dl
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+            // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xRandomness))]
+        static unsafe int xRandomness_bridge(
+            void* p_vfs,
+            int nByte,
+            byte* psz_out
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xSleep))]
+        static unsafe int xSleep_bridge(
+            void* p_vfs,
+            int microseconds
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTime))]
+        static unsafe int xCurrentTime_bridge(
+            void* p_vfs,
+            double* p
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xGetLastError))]
+        static unsafe int xGetLastError_bridge(
+            void* p_vfs,
+            int nByte,
+            byte* psz_out
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_vfs_xCurrentTimeInt64))]
+        static unsafe int xCurrentTimeInt64_bridge(
+            void* p_vfs,
+            long* p
+            )
+        {
+            var vfs = extract_vfs((IntPtr)p_vfs);
+
+            return -1; // TODO
+        }
+
+        // --------
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xClose))]
+        static unsafe int xClose_bridge(
+            void* p_file
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            var rc = io.xClose();
+            // TODO free io stuff
+            return rc;
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xRead))]
+        static unsafe int xRead_bridge(
+            void* p_file,
+            void* p_buf,
+            int iAmt,
+            long iOfst
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xRead(new Span<byte>(p_buf, iAmt), iOfst);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xWrite))]
+        static unsafe int xWrite_bridge(
+            void* p_file,
+            void* p_buf,
+            int iAmt,
+            long iOfst
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xWrite(new ReadOnlySpan<byte>(p_buf, iAmt), iOfst);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xTruncate))]
+        static unsafe int xTruncate_bridge(
+            void* p_file,
+            long size
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xTruncate(size);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xSync))]
+        static unsafe int xSync_bridge(
+            void* p_file,
+            int flags
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xSync(flags);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFileSize))]
+        static unsafe int xFileSize_bridge(
+            void* p_file,
+            long* p_size
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            var rc = io.xFileSize(out var len);
+            *p_size = len;
+            return rc;
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xLock))]
+        static unsafe int xLock_bridge(
+            void* p_file,
+            int x
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xLock(x);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xUnlock))]
+        static unsafe int xUnlock_bridge(
+            void* p_file,
+            int x
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xUnlock(x);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xCheckReservedLock))]
+        static unsafe int xCheckReservedLock_bridge(
+            void* p_file,
+            int* pResOut
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            var rc = io.xCheckReservedLock(out var res);
+            *pResOut = res;
+            return rc;
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFileControl))]
+        static unsafe int xFileControl_bridge(
+            void* p_file,
+            int op,
+            void* pArg
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xFileControl(op, (IntPtr)pArg);
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xSectorSize))]
+        static unsafe int xSectorSize_bridge(
+            void* p_file
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xSectorSize();
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xDeviceCharacteristics))]
+        static unsafe int xDeviceCharacteristics_bridge(
+            void* p_file
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return io.xDeviceCharacteristics();
+        }
+
+#if not
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmMap))]
+        static unsafe int xShmMap_bridge(
+            void* p_file,
+            int iPg,
+            int pgsz,
+            int x,
+            void* p
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmLock))]
+        static unsafe int xShmLock_bridge(
+            void* p_file,
+            int offset,
+            int n,
+            int flags
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmBarrier))]
+        static unsafe void xShmBarrier_bridge(
+            void* p_file
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xShmUnmap))]
+        static unsafe int xShmUnmap_bridge(
+            void* p_file,
+            int deleteFlag
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xFetch))]
+        static unsafe int xFetch_bridge(
+            void* p_file,
+            long iOfst,
+            int iAmt,
+            void** p
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return -1; // TODO
+        }
+
+        [MonoPInvokeCallback (typeof(NativeMethods.delegate_io_xUnfetch))]
+        static unsafe int xUnfetch_bridge(
+            void* p_file,
+            long iOfst,
+            void* p
+            )
+        {
+            var io = extract_io_methods((IntPtr) p_file);
+            return -1; // TODO
+        }
+#endif
+
+        // --------
+
+        unsafe int ISQLite3Provider.sqlite3_vfs_register(utf8z name, sqlite3_vfs top_vfs, int def)
+        {
+            var vfs = new native_sqlite3_vfs();
+            vfs.iVersion = 2;
+            vfs.szOsFile = Marshal.SizeOf<native_sqlite3_file>();
+            vfs.mxPathname = top_vfs.maxPathname;
+            {
+                var len = name.AsSpan().Length;
+                var ptr_name = Marshal.AllocHGlobal(len); // TODO free this
+                var sp_name = new Span<byte>((void*)ptr_name, len);
+                name.AsSpan().CopyTo(sp_name);
+                vfs.zName = ptr_name;
+            }
+
+            vfs.xOpen = xOpen_bridge;
+            vfs.xDelete = xDelete_bridge;
+            vfs.xAccess = xAccess_bridge;
+            vfs.xFullPathname = xFullPathname_bridge;
+
+            vfs.xDlOpen = xDlOpen_bridge;
+            vfs.xDlError = xDlError_bridge;
+            vfs.xDlSym = xDlSym_bridge;
+            vfs.xDlClose = xDlClose_bridge;
+
+            vfs.xRandomness = xRandomness_bridge;
+            vfs.xSleep = xSleep_bridge;
+            vfs.xCurrentTime = xCurrentTime_bridge;
+            vfs.xGetLastError = xGetLastError_bridge;
+
+            vfs.xCurrentTimeInt64 = xCurrentTimeInt64_bridge;
+
+            var h = GCHandle.Alloc(top_vfs, GCHandleType.Normal);
+            vfs.pAppData = GCHandle.ToIntPtr(h);
+
+            var p = Marshal.AllocHGlobal(Marshal.SizeOf<native_sqlite3_vfs>());
+            // TODO need to free this somewhere
+            Marshal.StructureToPtr(vfs, p, false);
+
+            return NativeMethods.sqlite3_vfs_register(p, def);
+        }
+
 	static class NativeMethods
 	{
         private const string SQLITE_DLL = "__Internal";
@@ -1765,6 +2300,12 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
 
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_vfs_register(IntPtr p, int def);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_vfs_unregister(IntPtr p);
+
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
@@ -1975,7 +2516,7 @@ namespace SQLitePCL
         );
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-	public unsafe delegate int delegate_io_xDeviceCharateristics(
+	public unsafe delegate int delegate_io_xDeviceCharacteristics(
         void* p_file
         );
 

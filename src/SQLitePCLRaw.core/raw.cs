@@ -296,6 +296,18 @@ namespace SQLitePCL
         public const int SQLITE_TRACE_ROW = 0x04;
         public const int SQLITE_TRACE_CLOSE = 0x08;
 
+        public const int SQLITE_ACCESS_EXISTS = 0;
+        public const int SQLITE_ACCESS_READWRITE = 1;
+        public const int SQLITE_ACCESS_READ = 2;
+
+        static public int sqlite3_vfs_register(utf8z name, sqlite3_vfs v, int def)
+        {
+            return _imp.sqlite3_vfs_register(name, v, def);
+        }
+
+        // TODO vfs_find
+        // TODO vfs_unregister
+
         static public int sqlite3_open(utf8z filename, out sqlite3 db)
         {
             int rc = _imp.sqlite3_open(filename, out var p_db);
