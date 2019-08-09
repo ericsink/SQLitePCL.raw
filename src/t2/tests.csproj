@@ -20,7 +20,7 @@
     <Compile Include="..\common\attrs_for_tests.cs" />
     <Compile Include="..\common\tests_xunit.cs" />
     <Compile Include="..\common\fake_xunit.cs" />
-    <!--
+    <!-- uncomment these lines to setup vfs for the tests
     <Compile Include="..\vfs\vfs.cs" />
     <Compile Include="setup_vfs.cs" />
     -->
