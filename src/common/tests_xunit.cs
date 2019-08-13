@@ -228,6 +228,17 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_prepare_null_sql()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                string s = null;
+                var rc = raw.sqlite3_prepare_v2(db, s, out var stmt);
+                Assert.Equal(raw.SQLITE_MISUSE, rc);
+            }
+        }
+
+        [Fact]
         public void test_prepare_v2_tail_span()
         {
             using (sqlite3 db = ugly.open(":memory:"))
