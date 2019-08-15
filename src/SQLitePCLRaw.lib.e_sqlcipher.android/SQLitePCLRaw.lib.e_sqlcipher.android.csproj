@@ -11,6 +11,10 @@
     <Compile Include="..\..\src\common\embedded_init.cs" />
 </ItemGroup>
 
+  <PropertyGroup Label="Android DesignTimeBuild error workaround"> 
+    <DesignTimeBuild>false</DesignTimeBuild>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmbeddedNativeLibrary Include="$([System.IO.Path]::Combine($(cb_bin_path), 'e_sqlcipher', 'android', 'x86', 'libe_sqlcipher.so'))">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
