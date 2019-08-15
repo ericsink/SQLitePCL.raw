@@ -26,7 +26,7 @@ public static class gen
 
     public const int MAJOR_VERSION = 2;
     public const int MINOR_VERSION = 0;
-    public const int PATCH_VERSION = 0;
+    public const int PATCH_VERSION = 1;
 
     // a version string with a -pre-timestamp in it
     public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
