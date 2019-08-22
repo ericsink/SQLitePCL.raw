@@ -1022,6 +1022,74 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_value_blob_issue_289()
+        {
+            var ka = new byte[]
+            {
+                37,
+                42,
+                22,
+                198,
+                0,
+                222,
+                16,
+                4
+            };
+
+            int compare_and_return_sum(byte[] ba)
+            {
+                Assert.Equal(ka.Length, ba.Length);
+                //System.Console.WriteLine($"got ba: {string.Join(",", ba.Select(x => x.ToString()))}");
+                int sum = 0;
+                for (int i=0; i<ka.Length; i++)
+                {
+                    Assert.Equal(ka[i], ba[i]);
+                    sum += ba[i];
+                }
+                return sum;
+            }
+
+            delegate_function_scalar func289 =
+                (ctx, user_data, args) =>
+                {
+                    var ba = raw.sqlite3_value_blob(args[0]).ToArray();
+                    var sum = compare_and_return_sum(ba);
+                    raw.sqlite3_result_int(ctx, sum);
+                };
+
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x blob);");
+                db.create_function("func289", 1, null, func289);
+                db.exec("INSERT INTO foo (x) VALUES(?);", ka);
+                var rowid = db.last_insert_rowid();
+
+                int sum_expected;
+                {
+                    var tot = 0;
+                    foreach (var b in ka)
+                    {
+                        tot += b;
+                    }
+                    sum_expected = tot;
+                }
+
+                // make sure the blob went into the table correctly
+                {
+                    var ba = db.query_scalar<byte[]>("SELECT x FROM foo WHERE rowid=" + rowid);
+                    var sum_result = compare_and_return_sum(ba);
+                    Assert.Equal(sum_expected, sum_result);
+                }
+
+                // now call the function to see if the blob arrives properly
+                {
+                    var sum_result = db.query_scalar<int>("SELECT func289(x) FROM foo;");
+                    Assert.Equal(sum_expected, sum_result);
+                }
+            }
+        }
+
+        [Fact]
         public void test_result_zeroblob()
         {
             delegate_function_scalar zeroblob_func =
