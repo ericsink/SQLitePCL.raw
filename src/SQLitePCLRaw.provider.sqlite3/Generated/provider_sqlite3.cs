@@ -1120,7 +1120,7 @@ namespace SQLitePCL
             var length = NativeMethods.sqlite3_value_bytes(p);
             unsafe
             {
-                return new ReadOnlySpan<byte>(p.ToPointer(), length);
+                return new ReadOnlySpan<byte>(blobPointer.ToPointer(), length);
             }
         }
 
