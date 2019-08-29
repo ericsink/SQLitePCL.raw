@@ -1247,9 +1247,25 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> blob)
         {
-            fixed (byte* p = blob)
+            if (blob.Length == 0)
             {
-                return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p, blob.Length, new IntPtr(-1));
+                // passing a zero-length blob to sqlite3_bind_blob() requires
+                // a non-null pointer, even though conceptually, that pointer
+                // point to zero things, ie nothing.
+
+                var ba_fake = new byte[] { 42 };
+                ReadOnlySpan<byte> span_fake = ba_fake;
+                fixed (byte* p_fake = span_fake)
+                {
+                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p_fake, 0, new IntPtr(-1));
+                }
+            }
+            else
+            {
+                fixed (byte* p = blob)
+                {
+                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p, blob.Length, new IntPtr(-1));
+                }
             }
         }
 
