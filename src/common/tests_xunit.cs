@@ -1022,6 +1022,20 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_insert_empty_blob_17494()
+        {
+            var ka = new byte[] {};
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x blob NOT NULL);");
+                db.exec("INSERT INTO foo (x) VALUES(?);", ka);
+                var rowid = db.last_insert_rowid();
+                var ba = db.query_scalar<byte[]>("SELECT x FROM foo WHERE rowid=" + rowid);
+                Assert.Equal(0, ba.Length);
+            }
+        }
+
+        [Fact]
         public void test_value_blob_issue_289()
         {
             var ka = new byte[]
