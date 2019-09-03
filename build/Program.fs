@@ -97,6 +97,7 @@ let main argv =
     let msbuild_dirs = [
         "lib.sqlcipher.ios.placeholder"
         "batteries_v2.e_sqlite3.internal.ios"
+        "batteries_v2.e_sqlite3.internal.tvos"
         "batteries_v2.e_sqlcipher.internal.ios"
         "batteries_v2.sqlcipher.internal.ios"
         ]
@@ -109,6 +110,7 @@ let main argv =
     let msbuild_pack_dirs = [
         "lib.e_sqlite3.android"
         "lib.e_sqlite3.ios"
+        "lib.e_sqlite3.tvos"
         "lib.e_sqlcipher.android"
         "lib.e_sqlcipher.ios"
         ]
