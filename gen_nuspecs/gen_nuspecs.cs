@@ -31,6 +31,7 @@ public static class gen
     {
         NONE,
         IOS,
+        TVOS,
         ANDROID,
         UWP,
         NETSTANDARD20,
@@ -106,6 +107,7 @@ public static class gen
         {
             case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
             case TFM.IOS: return "Xamarin.iOS10";
+            case TFM.TVOS: return "Xamarin.tvOS10";
             case TFM.ANDROID: return "MonoAndroid80";
             case TFM.UWP: return "uap10.0";
             case TFM.NETSTANDARD20: return "netstandard2.0";
@@ -720,6 +722,9 @@ public static class gen
                 case TFM.IOS:
                     id = string.Format("{0}.lib.e_sqlite3.ios", gen.ROOT_NAME);
                     break;
+                case TFM.TVOS:
+                    id = string.Format("{0}.lib.e_sqlite3.tvos", gen.ROOT_NAME);
+                    break;
                 case TFM.ANDROID:
                     id = string.Format("{0}.lib.e_sqlite3.android", gen.ROOT_NAME);
                     break;
@@ -739,6 +744,9 @@ public static class gen
             {
                 case TFM.IOS:
                     id = string.Format("{0}.lib.e_sqlcipher.ios", gen.ROOT_NAME);
+                    break;
+                case TFM.TVOS:
+                    id = string.Format("{0}.lib.e_sqlcipher.tvos", gen.ROOT_NAME);
                     break;
                 case TFM.ANDROID:
                     id = string.Format("{0}.lib.e_sqlcipher.android", gen.ROOT_NAME);
@@ -1118,6 +1126,7 @@ public static class gen
             f.WriteStartElement("dependencies");
 
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.TVOS);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
@@ -1133,6 +1142,12 @@ public static class gen
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.internal.ios",
                     TFM.IOS,
+                    f
+                    );
+
+            write_nuspec_file_entry_lib_batteries(
+                    "e_sqlite3.internal.tvos",
+                    TFM.TVOS,
                     f
                     );
 
