@@ -28,7 +28,8 @@ let main argv =
     let dir_providers = Path.Combine(top, "src", "providers")
     exec "dotnet" "restore" dir_providers
 
-    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind uwp =
+    // TODO the arg list for this function has become ridiculous
+    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind uwp ftr_key =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (provider_basename.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
@@ -37,22 +38,22 @@ let main argv =
             then "" 
             else sprintf "-p:NAME_FOR_DLLIMPORT=%s" dllimport_name
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s %s provider.tt" cs_path provider_basename conv kind uwp dllimport_name_arg
+        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s -p:FEATURE_KEY=%s %s provider.tt" cs_path provider_basename conv kind uwp ftr_key dllimport_name_arg
         exec "t4" args dir_providers
 
-    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "false"
-    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "false"
-    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false"
-    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false"
-    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false"
-    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false"
+    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "false" "true"
+    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "false" "true"
+    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false" "false"
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false" "true"
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false" "true"
+    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false" "false"
+    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false" "true"
 
-    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true"
+    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true" "false"
 
-    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true" "false"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
@@ -73,7 +74,7 @@ let main argv =
         "SQLitePCLRaw.provider.dynamic_stdcall" 
         "SQLitePCLRaw.provider.internal" 
         // "SQLitePCLRaw.provider.sqlite3" 
-        // "SQLitePCLRaw.provider.winsqlite3" 
+        "SQLitePCLRaw.provider.winsqlite3" 
     ]
     for s in pack_dirs do
         exec "dotnet" "pack -c Release" (Path.Combine(top, "src", s))
@@ -173,6 +174,14 @@ let main argv =
         for dir in fake_xunit_dirs do
             let args = sprintf "run --framework=%s" tfm
             exec "dotnet" args (Path.Combine(top, "test_nupkgs", dir, "fake_xunit"))
+
+    printfn "generating push.bat"
+    let bat = System.Collections.Generic.List<string>()
+    for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
+        let fname = Path.GetFileName(s)
+        let line = sprintf ".\\nuget push %s -Source https://api.nuget.org/v3/index.json -ApiKey %%1" fname
+        bat.Add(line)
+    File.WriteAllLines(Path.Combine(dir_nupkgs, "push.bat"), bat)
 
     timer.Stop()
     printfn "Total build time: %A milliseconds" timer.ElapsedMilliseconds

@@ -24,8 +24,8 @@ sqlite3_config tests
 when trying to build on Mac, why isn't t4 in the path?
 
 there are a couple of providers we may not need
-anymore.  ifdefs in gen_nuspec.  winsqlite3 dllimport,
-for example.  also sqlite3 dllimport I think.
+anymore.  ifdefs in gen_nuspec.  like sqlite3 dllimport
+for example.
 
 how to pass null to the tail for sqlite3_prepare_?
 chg the pinvoke signature from out byte* to byte**
