@@ -1328,12 +1328,16 @@ public static class gen
         var suffix = get_lib_suffix_from_rid(rid);
         var filename = lib.AsString_libname_in_nupkg(suffix);
 
-        f.WriteStartElement("Content");
-        f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\{0}\\native\\{1}", rid, filename));
-        f.WriteElementString("Link", string.Format("runtimes\\{0}\\native\\{1}", rid, filename));
+        f.WriteComment(@" Using **\runtimes here so that we can refer to runtimes\{rid}\native\ in the Link element below with %(RecursiveDir) ");
+        f.WriteStartElement("SQLiteNativeLibraries");
+        f.WriteAttributeString("Include", $@"$(MSBuildThisFileDirectory)..\..\**\runtimes\{rid}\native\{filename}");
+        f.WriteEndElement(); // SQLiteNativeLibraries
+        f.WriteStartElement("None");
+        f.WriteAttributeString("Include", "@(SQLiteNativeLibraries)");
+        f.WriteElementString("Link", "%(RecursiveDir)%(Filename)%(Extension)");
         f.WriteElementString("CopyToOutputDirectory", "PreserveNewest");
-        f.WriteElementString("Pack", "false");
-        f.WriteEndElement(); // Content
+        f.WriteElementString("Visible", "false");
+        f.WriteEndElement(); // None
     }
 
     private static void gen_nuget_targets(string dest, WhichLib lib)
@@ -1343,6 +1347,8 @@ public static class gen
 
         using (XmlWriter f = XmlWriter.Create(dest, settings))
         {
+            const string isNetFrameworkCondition = "'$(TargetFrameworkIdentifier)' == '.NETFramework'";
+
             f.WriteStartDocument();
             f.WriteComment("Automatically generated");
 
@@ -1350,25 +1356,18 @@ public static class gen
             f.WriteAttributeString("ToolsVersion", "4.0");
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
-            write_nuget_target_item("win-x86", lib, f);
-            write_nuget_target_item("win-x64", lib, f);
-            write_nuget_target_item("win-arm", lib, f);
+            f.WriteAttributeString("Condition", $" {isNetFrameworkCondition} AND '$(OS)' == 'Windows_NT' ");
+            write_nuget_target_item("win-*", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
-            write_nuget_target_item("osx-x64", lib, f);
+            f.WriteAttributeString("Condition", $" {isNetFrameworkCondition} AND '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
+            write_nuget_target_item("osx-*", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
-            write_nuget_target_item("linux-x86", lib, f);
-            write_nuget_target_item("linux-x64", lib, f);
-            write_nuget_target_item("linux-arm", lib, f);
-            write_nuget_target_item("linux-armel", lib, f);
-            write_nuget_target_item("linux-arm64", lib, f);
-            write_nuget_target_item("linux-x64", lib, f);
+            f.WriteAttributeString("Condition", $" {isNetFrameworkCondition} AND '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
+            write_nuget_target_item("linux-*", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteEndElement(); // Project
