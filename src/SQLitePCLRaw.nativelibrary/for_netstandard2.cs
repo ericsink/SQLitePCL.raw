@@ -82,7 +82,7 @@ namespace SQLitePCL
             var h = MyLoad(libraryName, assy, flags, s => { });
             if (h == IntPtr.Zero)
             {
-                throw new Exception("not found");
+                throw new Exception($"Library {libraryName} not found");
             }
             return h;
         }
@@ -107,7 +107,7 @@ namespace SQLitePCL
             var h = MyGetExport(handle, name);
             if (h == IntPtr.Zero)
             {
-                throw new Exception("not found");
+                throw new Exception($"Symbol {name} not found");
             }
             return h;
         }
