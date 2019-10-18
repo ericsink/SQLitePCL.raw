@@ -1101,9 +1101,25 @@ public static class gen
         }
     }
 
-    private static void gen_nuspec_bundle_e_sqlite3(string dir_src)
+    enum WhichBasicBundle
     {
-        string id = string.Format("{0}.bundle_e_sqlite3", gen.ROOT_NAME);
+        E_SQLITE3,
+        GREEN,
+    }
+
+    private static void gen_nuspec_bundle_e_sqlite3_or_green(
+        string dir_src,
+        WhichBasicBundle bund
+        )
+    {
+        string bund_name;
+        switch (bund)
+        {
+            case WhichBasicBundle.E_SQLITE3: bund_name = "e_sqlite3"; break;
+            case WhichBasicBundle.GREEN: bund_name = "green"; break;
+            default: throw new NotImplementedException(); break;
+        }
+        string id = $"{gen.ROOT_NAME}.bundle_{bund_name}";
 
         var settings = XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
@@ -1121,12 +1137,44 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included");
+            switch (bund)
+            {
+                case WhichBasicBundle.E_SQLITE3:
+                    f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included");
+                    break;
+                case WhichBasicBundle.GREEN:
+                    f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.  Note that this bundle is identical to bundle_e_sqlite3, except on iOS where it uses the system SQLite library instead of e_sqlite3.  In other words, when you use this bundle in a cross-platform app, your app is not using the same SQLite build configuration on all platforms.");
+                    break;
+                default: 
+                    throw new NotImplementedException();
+            }
 
             f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.TVOS);
+            switch (bund)
+            {
+                case WhichBasicBundle.E_SQLITE3:
+                    write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+                    write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.TVOS);
+                    break;
+                case WhichBasicBundle.GREEN:
+#if SQLITE3_DYNAMIC
+                    write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.IOS);
+#else
+                    write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
+#endif
+#if notyet
+#if SQLITE3_DYNAMIC
+                    write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.TVOS);
+#else
+                    write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.TVOS);
+#endif
+#endif
+                    break;
+                default: 
+                    throw new NotImplementedException();
+            }
+
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
@@ -1139,17 +1187,70 @@ public static class gen
 
             f.WriteStartElement("files");
 
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.internal.ios",
-                    TFM.IOS,
-                    f
-                    );
+            switch (bund)
+            {
+                case WhichBasicBundle.E_SQLITE3:
+                    write_nuspec_file_entry_lib_batteries(
+                            "e_sqlite3.internal.ios",
+                            TFM.IOS,
+                            f
+                            );
 
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.internal.tvos",
-                    TFM.TVOS,
-                    f
-                    );
+                    write_nuspec_file_entry_lib_batteries(
+                            "e_sqlite3.internal.tvos",
+                            TFM.TVOS,
+                            f
+                            );
+                    break;
+                case WhichBasicBundle.GREEN:
+#if SQLITE3_DYNAMIC
+                    write_nuspec_file_entry_lib_batteries(
+                            "sqlite3.dynamic",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.IOS,
+                            f
+                            );
+                    write_nuspec_file_entry_lib_mt(
+                            "SQLitePCLRaw.nativelibrary",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.IOS,
+                            f
+                            );
+#if notyet
+                    write_nuspec_file_entry_lib_batteries(
+                            "sqlite3.dynamic",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.TVOS,
+                            f
+                            );
+                    write_nuspec_file_entry_lib_mt(
+                            "SQLitePCLRaw.nativelibrary",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.TVOS,
+                            f
+                            );
+#endif
+#else
+                    write_nuspec_file_entry_lib_batteries(
+                            "sqlite3.dllimport",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.IOS,
+                            f
+                            );
+#if notyet
+                    write_nuspec_file_entry_lib_batteries(
+                            "sqlite3.dllimport",
+                            tfm_build: TFM.NETSTANDARD20,
+                            tfm_dest: TFM.TVOS,
+                            f
+                            );
+#endif
+#endif
+
+                    break;
+                default: 
+                    throw new NotImplementedException();
+            }
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dynamic",
@@ -1184,112 +1285,6 @@ public static class gen
                     TFM.NETSTANDARD20,
                     f
                     );
-
-            f.WriteEndElement(); // files
-
-            f.WriteEndElement(); // package
-
-            f.WriteEndDocument();
-        }
-    }
-
-    private static void gen_nuspec_bundle_green(string dir_src)
-    {
-        string id = string.Format("{0}.bundle_green", gen.ROOT_NAME);
-
-        var settings = XmlWriterSettings_default();
-        settings.OmitXmlDeclaration = false;
-
-        var dir_proj = Path.Combine(dir_src, id);
-        Directory.CreateDirectory(dir_proj);
-        gen_dummy_csproj(dir_proj, id);
-
-        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
-        {
-            f.WriteStartDocument();
-            f.WriteComment("Automatically generated");
-
-            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
-
-            f.WriteStartElement("metadata");
-            write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.  Note that this bundle is identical to bundle_e_sqlite3, except on iOS where it uses the system SQLite library instead of e_sqlite3.  In other words, when you use this bundle in a cross-platform app, your app is not using the same SQLite build configuration on all platforms.");
-
-            f.WriteStartElement("dependencies");
-
-#if SQLITE3_DYNAMIC
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.IOS);
-#else
-            write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
-#endif
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
-#if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP30);
-#endif
-
-            f.WriteEndElement(); // dependencies
-
-            f.WriteEndElement(); // metadata
-
-            f.WriteStartElement("files");
-
-#if SQLITE3_DYNAMIC
-            write_nuspec_file_entry_lib_batteries(
-                    "sqlite3.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.IOS,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.IOS,
-                    f
-                    );
-#else
-            write_nuspec_file_entry_lib_batteries(
-                    "sqlite3.dllimport",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.IOS,
-                    f
-                    );
-#endif
-
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NET461,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NET461,
-                    f
-                    );
-
-#if NETCOREAPP3_NATIVELIBRARY
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NETCOREAPP30,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETCOREAPP30,
-                    tfm_dest: TFM.NETCOREAPP30,
-                    f
-                    );
-#endif
-
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.dllimport",
-                    TFM.NETSTANDARD20,
-                    f
-                    );
-
 
             f.WriteEndElement(); // files
 
@@ -1395,8 +1390,8 @@ public static class gen
         gen_nuspec_provider_e_sqlcipher(dir_src);
         gen_nuspec_provider_sqlcipher(dir_src);
 
-        gen_nuspec_bundle_green(dir_src);
-        gen_nuspec_bundle_e_sqlite3(dir_src);
+        gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.GREEN);
+        gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.E_SQLITE3);
         gen_nuspec_bundle_winsqlite3(dir_src);
         gen_nuspec_bundle_e_sqlcipher(dir_src);
         gen_nuspec_bundle_zetetic(dir_src);
