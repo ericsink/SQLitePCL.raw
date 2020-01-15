@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;net461;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;net461;netcoreapp3.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />

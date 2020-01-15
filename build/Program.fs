@@ -159,7 +159,7 @@ let main argv =
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
 
     let fake_xunit_tfms = [
-        "netcoreapp2.2"
+        "netcoreapp2.1"
         "netcoreapp3.0"
         "net461"
         ]
