@@ -1451,6 +1451,39 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_stmt_isexplain()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x int);");
+                db.exec("INSERT INTO foo (x) VALUES (1);");
+                string sql = "SELECT x FROM foo";
+                using (sqlite3_stmt stmt = db.prepare(sql))
+                {
+                    Assert.Equal(sql, stmt.sql());
+
+                    Assert.Equal(0, stmt.stmt_isexplain());
+                }
+                
+                sql = "EXPLAIN SELECT x FROM foo";
+                using (sqlite3_stmt stmt = db.prepare(sql))
+                {
+                    Assert.Equal(sql, stmt.sql());
+
+                    Assert.Equal(1, stmt.stmt_isexplain());
+                }
+                
+                sql = "EXPLAIN QUERY PLAN SELECT x FROM foo";
+                using (sqlite3_stmt stmt = db.prepare(sql))
+                {
+                    Assert.Equal(sql, stmt.sql());
+
+                    Assert.Equal(2, stmt.stmt_isexplain());
+                }
+            }
+        }
+
+        [Fact]
         public void test_stmt_status()
         {
             using (sqlite3 db = ugly.open(":memory:"))
