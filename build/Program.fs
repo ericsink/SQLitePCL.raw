@@ -46,7 +46,7 @@ let main argv =
     gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false" "false"
     gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false" "true"
     gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false" "true"
-    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false" "false"
+    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false" "false"
     gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false" "true"
 
     gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true" "false"
@@ -54,6 +54,7 @@ let main argv =
     gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true" "false"
     gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true" "true"
     gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
+    gen_provider "sqlite3.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
@@ -63,6 +64,8 @@ let main argv =
         "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlcipher.most" 
         "SQLitePCLRaw.provider.sqlcipher.uwp" 
+        "SQLitePCLRaw.provider.sqlite3.most" 
+        "SQLitePCLRaw.provider.sqlite3.uwp" 
     ]
     for s in just_build_dirs do
         exec "dotnet" "build -c Release" (Path.Combine(top, "src", s))
@@ -138,6 +141,7 @@ let main argv =
         "provider.e_sqlite3"
         "provider.e_sqlcipher"
         "provider.sqlcipher"
+        "provider.sqlite3"
         "bundle_green"
         "bundle_e_sqlite3"
         "bundle_e_sqlcipher"

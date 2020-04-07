@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>SQLitePCLRaw.provider.sqlite3</id>
+    <title>SQLitePCLRaw.provider.sqlite3</title>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <copyright>$copyright$</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
+    <summary>$summary$</summary>
+    <tags>sqlite;xamarin</tags>
+    <releaseNotes>$releaseNotes$</releaseNotes>
+    <description>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'sqlite3' to reference the 'system' SQLite.</description>
+    <dependencies>
+      <dependency id="SQLitePCLRaw.core" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$src_path$\SQLitePCLRaw.provider.sqlite3.most\bin\Release\netstandard2.0\SQLitePCLRaw.provider.sqlite3.dll" target="lib\netstandard2.0\" />
+    <file src="$src_path$\SQLitePCLRaw.provider.sqlite3.uwp\bin\Release\netstandard2.0\SQLitePCLRaw.provider.sqlite3.dll" target="lib\uap10.0\" />
+  </files>
+</package>
