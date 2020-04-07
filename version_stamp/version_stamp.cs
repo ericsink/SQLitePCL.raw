@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2019 SourceGear, LLC
+   Copyright 2014-2020 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public static class gen
 
     public const int MAJOR_VERSION = 2;
     public const int MINOR_VERSION = 0;
-    public const int PATCH_VERSION = 2;
+    public const int PATCH_VERSION = 3;
 
     // a version string with a -pre-timestamp in it
     public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
@@ -51,7 +51,7 @@ public static class gen
         );
 
     // chg this to be the version string we want, one of the above
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
 
     public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}",
         MAJOR_VERSION,
@@ -62,7 +62,7 @@ public static class gen
 
     private const string NUSPEC_RELEASE_NOTES = "TODO url";
 
-    const string COPYRIGHT = "Copyright 2014-2019 SourceGear, LLC";
+    const string COPYRIGHT = "Copyright 2014-2020 SourceGear, LLC";
     const string AUTHORS = "Eric Sink";
     const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
     const string PACKAGE_TAGS = "sqlite";
