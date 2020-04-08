@@ -1233,6 +1233,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_step(stm);
         }
 
+        int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
+        {
+            return NativeMethods.sqlite3_stmt_isexplain(stm);
+        }
+
         int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_busy(stm);
@@ -1676,6 +1681,9 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_stmt_isexplain(sqlite3_stmt stmt);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_stmt_busy(sqlite3_stmt stmt);

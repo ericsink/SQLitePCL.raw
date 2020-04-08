@@ -54,7 +54,7 @@ let main argv =
     gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true" "false"
     gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true" "true"
     gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
-    gen_provider "sqlite3.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
+    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "true" "false"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 

@@ -1251,6 +1251,11 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_step(stm);
         }
 
+        int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
+        {
+            return NativeMethods.sqlite3_stmt_isexplain(stm);
+        }
+
         int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_busy(stm);
@@ -1520,6 +1525,7 @@ namespace SQLitePCL
 			sqlite3_rollback_hook = (MyDelegateTypes.sqlite3_rollback_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_rollback_hook));
 			sqlite3_db_handle = (MyDelegateTypes.sqlite3_db_handle) Load(gf, typeof(MyDelegateTypes.sqlite3_db_handle));
 			sqlite3_next_stmt = (MyDelegateTypes.sqlite3_next_stmt) Load(gf, typeof(MyDelegateTypes.sqlite3_next_stmt));
+			sqlite3_stmt_isexplain = (MyDelegateTypes.sqlite3_stmt_isexplain) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_isexplain));
 			sqlite3_stmt_busy = (MyDelegateTypes.sqlite3_stmt_busy) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_busy));
 			sqlite3_stmt_readonly = (MyDelegateTypes.sqlite3_stmt_readonly) Load(gf, typeof(MyDelegateTypes.sqlite3_stmt_readonly));
 			sqlite3_exec = (MyDelegateTypes.sqlite3_exec) Load(gf, typeof(MyDelegateTypes.sqlite3_exec));
@@ -1653,6 +1659,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_rollback_hook sqlite3_rollback_hook;
 		public static MyDelegateTypes.sqlite3_db_handle sqlite3_db_handle;
 		public static MyDelegateTypes.sqlite3_next_stmt sqlite3_next_stmt;
+		public static MyDelegateTypes.sqlite3_stmt_isexplain sqlite3_stmt_isexplain;
 		public static MyDelegateTypes.sqlite3_stmt_busy sqlite3_stmt_busy;
 		public static MyDelegateTypes.sqlite3_stmt_readonly sqlite3_stmt_readonly;
 		public static MyDelegateTypes.sqlite3_exec sqlite3_exec;
@@ -2045,6 +2052,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_stmt_isexplain(sqlite3_stmt stmt);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_stmt_busy(sqlite3_stmt stmt);
