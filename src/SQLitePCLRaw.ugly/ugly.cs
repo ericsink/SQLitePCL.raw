@@ -485,6 +485,11 @@ namespace SQLitePCL.Ugly
             }
         }
 
+        public static int stmt_isexplain(this sqlite3_stmt stmt)
+        {
+            return raw.sqlite3_stmt_isexplain(stmt);
+        }
+
         public static int stmt_busy(this sqlite3_stmt stmt)
         {
             return raw.sqlite3_stmt_busy(stmt);

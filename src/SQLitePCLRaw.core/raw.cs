@@ -1126,6 +1126,11 @@ namespace SQLitePCL
             return sqlite3_bind_parameter_index(stmt, strName.to_utf8z());
         }
 
+        static public int sqlite3_stmt_isexplain(sqlite3_stmt stmt)
+        {
+            return _imp.sqlite3_stmt_isexplain(stmt);
+        }
+
         static public int sqlite3_stmt_busy(sqlite3_stmt stmt)
         {
             return Provider.sqlite3_stmt_busy(stmt);

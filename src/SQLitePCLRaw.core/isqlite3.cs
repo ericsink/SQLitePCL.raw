@@ -208,6 +208,7 @@ namespace SQLitePCL
         int sqlite3_value_type(IntPtr p);
         utf8z sqlite3_value_text(IntPtr p);
 
+        int sqlite3_stmt_isexplain(sqlite3_stmt stmt);
         int sqlite3_stmt_busy(sqlite3_stmt stmt);
         int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 

@@ -52,8 +52,6 @@ sqlite3_create_window_function
 
 sqlite3_normalized_sql
 
-sqlite3_stmt_isexplain
-
 sqlite3_value_frombind
 
 sqlite3_serialize
