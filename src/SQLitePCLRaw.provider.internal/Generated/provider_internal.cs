@@ -363,6 +363,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_snapshot_get(sqlite3 db, utf8z schema, out sqlite3_snapshot snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_get(db, p_schema, out snap);
+            }
+        }
+
+        int ISQLite3Provider.sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            return NativeMethods.sqlite3_snapshot_cmp(p1, p2);
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_open(sqlite3 db, utf8z schema, sqlite3_snapshot snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_open(db, p_schema, snap);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_recover(sqlite3 db, utf8z name)
+        {
+            fixed (byte* p_name = name)
+            {
+                return NativeMethods.sqlite3_snapshot_recover(db, p_name);
+            }
+        }
+
+        void ISQLite3Provider.sqlite3_snapshot_free(IntPtr snap)
+        {
+            NativeMethods.sqlite3_snapshot_free(snap);
+        }
+
         unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, utf8z destName, sqlite3 sourceDb, utf8z sourceName)
         {
             fixed (byte* p_destName = destName, p_sourceName = sourceName)
@@ -1770,6 +1804,21 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_blob_close(IntPtr blob);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+        public static extern unsafe int sqlite3_snapshot_get(sqlite3 db, byte* schema, out sqlite3_snapshot snap);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+        public static extern unsafe int sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+        public static extern unsafe int sqlite3_snapshot_open(sqlite3 db, byte* schema, sqlite3_snapshot snap);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+        public static extern unsafe int sqlite3_snapshot_recover(sqlite3 db, byte* name);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+        public static extern unsafe void sqlite3_snapshot_free(IntPtr snap);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
