@@ -156,12 +156,6 @@ namespace SQLitePCL
         int sqlite3_column_type(sqlite3_stmt stmt, int index);
         utf8z sqlite3_column_decltype(sqlite3_stmt stmt, int index);
 
-        int sqlite3_snapshot_get(sqlite3 db, utf8z schema, out sqlite3_snapshot snap);
-        int sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2);
-        int sqlite3_snapshot_open(sqlite3 db, utf8z schema, sqlite3_snapshot snap);
-        int sqlite3_snapshot_recover(sqlite3 db, utf8z name);
-        void sqlite3_snapshot_free(IntPtr snap);
-
         sqlite3_backup sqlite3_backup_init(sqlite3 destDb, utf8z destName, sqlite3 sourceDb, utf8z sourceName);
         int sqlite3_backup_step(sqlite3_backup backup, int nPage);
         int sqlite3_backup_remaining(sqlite3_backup backup);
