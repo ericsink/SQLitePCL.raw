@@ -47,35 +47,26 @@ namespace WpfAppSqliteTesting
                 });
             }
 
-            Task taskMain = Task.Factory.StartNew(async () =>
+            // Save Entities
+            List<Task> tasks = new List<Task>();
+            var entityBatches = entities.Batch(10_000).Select(_ => _.ToList()).ToList();
+            foreach (var entityBatch in entityBatches)
             {
-                // Save Entities
-                List<Task> tasks = new List<Task>();
-                var entityBatches = entities.Batch(10_000).Select(_ => _.ToList()).ToList();
-                entities = null;
-                foreach (var entityBatch in entityBatches)
+                Task task = Task.Run(async () =>
                 {
-                    Task task = Task.Run(async () =>
+                    using (AppDbContext appDbContext = CreateAppDbContext())
                     {
-                        using (AppDbContext appDbContext = CreateAppDbContext())
-                        {
-                            appDbContext.Entities.AddRange(entityBatch.ToArray());
-                            await appDbContext.SaveChangesAsync();
+                        appDbContext.Entities.AddRange(entityBatch.ToArray());
+                        await appDbContext.SaveChangesAsync();
 
-                            entityBatch.Clear();
-                        }
-                    });
+                        entityBatch.Clear();
+                    }
+                });
 
-                    await Task.Delay(1000);
+                tasks.Add(task);
+            }
 
-                    tasks.Add(task);
-                }
-
-                // Wait
-                Task.WaitAll(tasks.ToArray());
-            }, TaskCreationOptions.LongRunning).Unwrap();
-
-            await taskMain;
+            await Task.WhenAll(tasks.ToArray());
         }
 
         static AppDbContext CreateAppDbContext()
@@ -85,7 +76,6 @@ namespace WpfAppSqliteTesting
                 new DbContextOptionsBuilder<AppDbContext>()
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
-                    //.UseLoggerFactory(this.LoggerFactory)
                     ;
 
             optionsBuilder.UseSqlite($"Data Source=Test.db");
