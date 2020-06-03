@@ -125,7 +125,8 @@ namespace SQLitePCL
 
         public string utf8_to_string()
         {
-            if (sp.Length == 0)
+            var len = sp.Length;
+            if (len == 0)
             {
                 return null;
             }
@@ -134,7 +135,7 @@ namespace SQLitePCL
             {
                 fixed (byte* q = sp)
                 {
-                    return Encoding.UTF8.GetString(q, sp.Length - 1);
+                    return Encoding.UTF8.GetString(q, len - 1);
                 }
             }
         }
