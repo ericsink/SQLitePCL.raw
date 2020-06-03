@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
     <PackageReference Include="microsoft.entityframeworkcore.sqlite" Version="3.1.4" />
     <PackageReference Include="morelinq" Version="3.3.2" />
   </ItemGroup>
