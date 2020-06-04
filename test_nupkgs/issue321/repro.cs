@@ -94,7 +94,7 @@ namespace WpfAppSqliteTesting
 
         public static void Main()
         {
-            var num = 10;
+            var num = 20;
             for (var i = 0; i<num; i++)
             {
                 Console.Write($"{i + 1} of {num}: ");

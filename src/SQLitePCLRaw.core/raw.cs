@@ -736,8 +736,10 @@ namespace SQLitePCL
 
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt, out string tail)
         {
-            int rc = sqlite3_prepare_v2(db, sql.to_utf8z(), out stmt, out var sp_tail);
-            tail = sp_tail.utf8_to_string();
+            var ba = sql.to_utf8_with_z();
+            var sp = new ReadOnlySpan<byte>(ba);
+            int rc = sqlite3_prepare_v2(db, sp, out stmt, out var sp_tail);
+            tail = utf8_span_to_string(sp_tail.Slice(0, sp_tail.Length - 1));
             return rc;
         }
 
