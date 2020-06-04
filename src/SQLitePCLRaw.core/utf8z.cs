@@ -132,7 +132,7 @@ namespace SQLitePCL
 
             unsafe
             {
-                fixed (byte* q = sp)
+                fixed (byte* q = &sp.GetPinnableReference())
                 {
                     return Encoding.UTF8.GetString(q, sp.Length - 1);
                 }
