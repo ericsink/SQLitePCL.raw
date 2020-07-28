@@ -35,6 +35,7 @@
 	if (
 		(KIND == "dynamic")
 		|| (KIND == "dllimport")
+		|| (KIND == "cil")
 		)
 	{
 	}
@@ -71,12 +72,21 @@ namespace SQLitePCL
         }
 <#
 	}
-    else
+    else if (KIND == "dllimport")
     {
 #>
         string ISQLite3Provider.GetNativeLibraryName()
         {
             return "<#= NAME_FOR_DLLIMPORT #>";
+        }
+<#
+    }
+    else if (KIND == "cil")
+    {
+#>
+        string ISQLite3Provider.GetNativeLibraryName()
+        {
+            return "(cil)";
         }
 <#
     }
@@ -1508,6 +1518,10 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
+    else if (KIND == "cil")
+    {
+		write_cil_setup_stuff();
+    }
 #>
 
 <#
@@ -1516,7 +1530,10 @@ namespace SQLitePCL
 	}
 
 <#
-	if (KIND == "dynamic")
+	if (
+        (KIND == "dynamic")
+        || (KIND == "cil")
+        )
 	{
 #>
 	static class MyDelegateTypes
@@ -1532,8 +1549,6 @@ namespace SQLitePCL
     }
 }
 <#+
-	void write_dynamic_load_stuff()
-	{
 	string[] funcs = new string[]
 	{
 		"sqlite3_close",
@@ -1668,8 +1683,10 @@ namespace SQLitePCL
 		"sqlite3_wal_checkpoint",
 		"sqlite3_wal_checkpoint_v2",
 		"sqlite3_set_authorizer",
-		"sqlite3_win32_set_directory8",
+		"sqlite3_win32_set_directory8", // TODO only for uwp?
 	};
+	void write_dynamic_load_stuff()
+	{
 #>
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
 		{
@@ -1715,6 +1732,15 @@ namespace SQLitePCL
 	{
 #>
 		public static MyDelegateTypes.<#= s #> <#= s #>;
+<#+
+	}
+	}
+	void write_cil_setup_stuff()
+	{
+	foreach (var s in funcs)
+	{
+#>
+		public static MyDelegateTypes.<#= s #> <#= s #> = (MyDelegateTypes.<#= s #>) foo.<#= s #>;
 <#+
 	}
 	}
@@ -1781,6 +1807,12 @@ namespace SQLitePCL
 			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
 			front = "public static extern unsafe";
+		}
+		else if (k == "cil")
+		{
+			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
+			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
+			front = "public unsafe delegate";
 		}
 		else
 		{

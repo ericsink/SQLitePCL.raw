@@ -77,6 +77,11 @@ namespace SQLitePCL
         {
         }
 
+        public IntPtr ToIntPtr()
+        {
+            return handle;
+        }
+
         public IDisposable ForDispose()
         {
             if (IsInvalid)

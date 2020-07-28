@@ -35,6 +35,19 @@ namespace SQLitePCL
         {
         }
 
+        public static sqlite3_backup New(IntPtr x)
+        {
+            var h = new sqlite3_backup();
+            // TODO probably throw if invalid
+            h.SetHandle(x);
+            return h;
+        }
+
+        public IntPtr ToIntPtr()
+        {
+            return handle;
+        }
+
         public override bool IsInvalid => handle == IntPtr.Zero;
 
         protected override bool ReleaseHandle()
@@ -129,6 +142,19 @@ namespace SQLitePCL
         {
         }
 
+        public static sqlite3_blob New(IntPtr x)
+        {
+            var h = new sqlite3_blob();
+            // TODO probably throw if invalid
+            h.SetHandle(x);
+            return h;
+        }
+
+        public IntPtr ToIntPtr()
+        {
+            return handle;
+        }
+
         public override bool IsInvalid => handle == IntPtr.Zero;
 
         protected override bool ReleaseHandle()
@@ -151,6 +177,11 @@ namespace SQLitePCL
     public class sqlite3_stmt : SafeHandle
     {
         private sqlite3 _db;
+
+        public IntPtr ToIntPtr()
+        {
+            return handle;
+        }
 
         internal static sqlite3_stmt From(IntPtr p, sqlite3 db)
         {
@@ -208,6 +239,11 @@ namespace SQLitePCL
     {
         sqlite3() : base(IntPtr.Zero, true)
         {
+        }
+
+        public IntPtr ToIntPtr()
+        {
+            return handle;
         }
 
         public override bool IsInvalid => handle == IntPtr.Zero;
