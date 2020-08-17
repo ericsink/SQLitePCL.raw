@@ -166,10 +166,11 @@ let main argv =
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "real_xunit"))
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "winsqlite3", "real_xunit"))
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
+    // TODO do bundle_sqlite3 real_xunit here?
 
     let fake_xunit_tfms = [
         "netcoreapp2.1"
-        "netcoreapp3.0"
+        "netcoreapp3.1"
         "net461"
         ]
 
@@ -177,6 +178,7 @@ let main argv =
         "e_sqlite3"
         "e_sqlcipher"
         "winsqlite3"
+        "sqlite3"
         ]
 
     for tfm in fake_xunit_tfms do
