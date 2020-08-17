@@ -395,17 +395,18 @@ public static class gen
 
     static void write_nuspec_file_entries_from_cb(
         WhichLib lib,
+        string win_toolset,
         XmlWriter f
         )
     {
-        write_nuspec_file_entry_native_win(lib, "v141", "plain", "x86", "win-x86", f);
-        write_nuspec_file_entry_native_win(lib, "v141", "plain", "x64", "win-x64", f);
-        write_nuspec_file_entry_native_win(lib, "v141", "plain", "arm", "win-arm", f);
-        write_nuspec_file_entry_native_win(lib, "v141", "plain", "arm64", "win-arm64", f);
-        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "arm64", "win10-arm64", f);
-        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "arm", "win10-arm", f);
-        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "x64", "win10-x64", f);
-        write_nuspec_file_entry_native_uwp(lib, "v141", "appcontainer", "x86", "win10-x86", f);
+        write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "x86", "win-x86", f);
+        write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "x64", "win-x64", f);
+        write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm", "win-arm", f);
+        write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm64", "win-arm64", f);
+        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
+        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
+        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
+        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
 
         write_nuspec_file_entry_native_mac(lib, f);
 
@@ -495,7 +496,7 @@ public static class gen
                     );
 #endif
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v142", f);
 
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(dir_proj, tname);
@@ -559,7 +560,7 @@ public static class gen
                     );
 #endif
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, "v141", f);
 
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(dir_proj, tname);
