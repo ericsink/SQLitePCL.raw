@@ -1293,6 +1293,54 @@ public static class gen
         }
     }
 
+    private static void gen_nuspec_bundle_sqlite3(
+        string dir_src
+        )
+    {
+        string bund_name = "sqlite3";
+        string id = $"{gen.ROOT_NAME}.bundle_{bund_name}";
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: always just DLLImport(sqlite3), aka, the 'system SQLite'");
+
+            f.WriteStartElement("dependencies");
+
+            write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.NETSTANDARD20);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_batteries(
+                    "sqlite3.dllimport",
+                    TFM.NETSTANDARD20,
+                    f
+                    );
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
     static LibSuffix get_lib_suffix_from_rid(string rid)
     {
         var parts = rid.Split('-');
@@ -1391,6 +1439,7 @@ public static class gen
 
         gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.GREEN);
         gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.E_SQLITE3);
+        gen_nuspec_bundle_sqlite3(dir_src);
         gen_nuspec_bundle_winsqlite3(dir_src);
         gen_nuspec_bundle_e_sqlcipher(dir_src);
         gen_nuspec_bundle_zetetic(dir_src);

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Automatically generated-->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.12">
+    <id>SQLitePCLRaw.bundle_sqlite3</id>
+    <title>SQLitePCLRaw.bundle_sqlite3</title>
+    <version>$version$</version>
+    <authors>$authors$</authors>
+    <copyright>$copyright$</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
+    <summary>$summary$</summary>
+    <tags>sqlite;xamarin</tags>
+    <releaseNotes>$releaseNotes$</releaseNotes>
+    <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: always just DLLImport(sqlite3), aka, the 'system SQLite'</description>
+    <dependencies>
+      <group targetFramework="netstandard2.0">
+        <dependency id="SQLitePCLRaw.core" version="$version$" />
+        <dependency id="SQLitePCLRaw.provider.sqlite3" version="$version$" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlite3.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
+  </files>
+</package>

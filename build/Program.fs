@@ -151,6 +151,7 @@ let main argv =
         "bundle_e_sqlcipher"
         "bundle_zetetic"
         "bundle_winsqlite3"
+        "bundle_sqlite3"
         ]
     for s in nuspecs do
         let name = sprintf "SQLitePCLRaw.%s" s
