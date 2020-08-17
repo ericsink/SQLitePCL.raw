@@ -27,7 +27,7 @@
         <dependency id="SQLitePCLRaw.core" version="$version$" />
         <dependency id="SQLitePCLRaw.provider.sqlcipher" version="$version$" />
       </group>
-      <group targetFramework="netcoreapp3.0">
+      <group targetFramework="netcoreapp3.1">
         <dependency id="SQLitePCLRaw.core" version="$version$" />
         <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
       </group>
@@ -37,8 +37,8 @@
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlcipher.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlcipher.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
     <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netstandard2.0\SQLitePCLRaw.nativelibrary.dll" target="lib\net461\" />
-    <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlcipher.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netcoreapp3.0\" />
-    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netcoreapp3.0\SQLitePCLRaw.nativelibrary.dll" target="lib\netcoreapp3.0\" />
+    <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlcipher.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netcoreapp3.1\" />
+    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netcoreapp3.1\SQLitePCLRaw.nativelibrary.dll" target="lib\netcoreapp3.1\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.sqlcipher.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
   </files>
 </package>

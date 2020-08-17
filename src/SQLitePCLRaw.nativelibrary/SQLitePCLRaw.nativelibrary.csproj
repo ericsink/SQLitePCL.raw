@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.nativelibrary.snk</AssemblyOriginatorKeyFile>
@@ -15,7 +15,7 @@
     <Compile Include="for_netstandard2.cs" />
 </ItemGroup>
 
-<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <Compile Include="for_netcoreapp3.cs" />
 </ItemGroup>
 
