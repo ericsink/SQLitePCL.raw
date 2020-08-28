@@ -415,6 +415,7 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "arm64", "linux-arm64", f);
         write_nuspec_file_entry_native_linux(lib, "musl-x64", "linux-musl-x64", f);
         write_nuspec_file_entry_native_linux(lib, "musl-x64", "alpine-x64", f);
+        write_nuspec_file_entry_native_linux(lib, "mips64", "linux-mips64", f);
     }
 
     private static XmlWriterSettings XmlWriterSettings_default()
@@ -1416,6 +1417,7 @@ public static class gen
             write_nuget_target_item("linux-armel", lib, f);
             write_nuget_target_item("linux-arm64", lib, f);
             write_nuget_target_item("linux-x64", lib, f);
+            write_nuget_target_item("linux-mips64", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteEndElement(); // Project
