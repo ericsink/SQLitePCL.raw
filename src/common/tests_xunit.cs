@@ -1900,9 +1900,7 @@ namespace SQLitePCL.Tests
 
                     {
                         var v = stmt.column<DateTime>(0);
-                        Assert.Equal(1968, v.Year);
-                        Assert.Equal(3, v.Month);
-                        Assert.Equal(15, v.Day);
+                        Assert.Equal(new DateTime(1968, 3, 15), v);
                     }
                 }
                 using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=5;"))

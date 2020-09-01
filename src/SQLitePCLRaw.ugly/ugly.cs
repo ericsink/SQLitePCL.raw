@@ -853,7 +853,7 @@ namespace SQLitePCL.Ugly
                     {
                         DateTime d = (DateTime)a[i];
                         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-                        TimeSpan diff = d.ToUniversalTime() - origin;
+                        TimeSpan diff = d - origin;
                         stmt.bind_int64(ndx, (long)diff.TotalSeconds);
                     }
                     else if (typeof(byte[]) == t)
