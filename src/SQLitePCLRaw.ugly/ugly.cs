@@ -708,7 +708,7 @@ namespace SQLitePCL.Ugly
             }
             else if (typeof(DateTime) == t)
             {
-                DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 return origin.AddSeconds(stmt.column_int64(index));
             }
             else if (
@@ -853,7 +853,7 @@ namespace SQLitePCL.Ugly
                     {
                         DateTime d = (DateTime)a[i];
                         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-                        TimeSpan diff = d - origin;
+                        TimeSpan diff = d.ToUniversalTime() - origin;
                         stmt.bind_int64(ndx, (long)diff.TotalSeconds);
                     }
                     else if (typeof(byte[]) == t)
