@@ -191,7 +191,13 @@ away flexibility and control.  You don't have to use them.
 
 ## How do I build this?
 
-From a Developer Command Prompt for Visual Studio 2017 or 2019:
+#### Requirements
+
+* Install the `t4` cli tool with `dotnet tool install --global dotnet-t4`
+* Clone the [cb](https://github.com/ericsink/cb) repository in the same directory as you cloned this `SQLitePCL.raw` repository
+* Make sure that the *Mobile development with.NET* workload [is installed](https://docs.microsoft.com/en-us/visualstudio/install/modify-visual-studio)
+
+Then, from a Developer Command Prompt for Visual Studio 2017 or 2019:
 
 ```
 cd build
