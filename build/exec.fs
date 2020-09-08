@@ -25,7 +25,7 @@ module build
 
         let desc = sprintf "%s %s in %s" filename args wd
         printfn "-------- %s" desc
-        p.Start()
+        p.Start() |> ignore
         //printfn "Started %s with pid %i" p.ProcessName p.Id
         p.BeginOutputReadLine()
         p.BeginErrorReadLine()
