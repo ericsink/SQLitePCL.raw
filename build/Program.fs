@@ -21,7 +21,7 @@ let main argv =
     exec "dotnet" "run .." (Path.Combine(top, "gen_nuspecs"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
-    Directory.CreateDirectory(dir_nupkgs)
+    Directory.CreateDirectory(dir_nupkgs) |> ignore
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
@@ -152,7 +152,7 @@ let main argv =
     for s in nuspecs do
         let name = sprintf "SQLitePCLRaw.%s" s
         let dir_proj = Path.Combine(top, "src", name)
-        Directory.CreateDirectory(Path.Combine(dir_proj, "empty"))
+        Directory.CreateDirectory(Path.Combine(dir_proj, "empty")) |> ignore
         exec "dotnet" "pack" dir_proj
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))
