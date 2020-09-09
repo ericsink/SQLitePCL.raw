@@ -1,7 +1,8 @@
-﻿
+
 open System
 open System.Diagnostics
 open System.IO
+open System.Runtime.InteropServices
 open System.Xml.Linq
 open System.Linq
 
@@ -165,10 +166,15 @@ let main argv =
 
     exec "dotnet" (sprintf "run --framework=%s" "net5.0") (Path.Combine(top, "test_nupkgs", "cil", "fake_xunit"))
 
-    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "real_xunit"))
-    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "winsqlite3", "real_xunit"))
-    exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "real_xunit"))
-    // TODO do bundle_sqlite3 real_xunit here?
+    let real_xunit_dirs = [
+        yield "e_sqlite3"
+        yield "e_sqlcipher"
+        // TODO do bundle_sqlite3 real_xunit here?
+        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
+        ]
+
+    for dir in real_xunit_dirs do
+        exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", dir, "real_xunit"))
 
     let fake_xunit_tfms = [
         "netcoreapp2.1"
@@ -176,12 +182,9 @@ let main argv =
         "net461"
         ]
 
-    let fake_xunit_dirs = [
-        "e_sqlite3"
-        "e_sqlcipher"
-        "winsqlite3"
-        "sqlite3"
-        ]
+    // /usr/lib/libsqlite3.dylib doesn't have all the required features on macOS 10.15.6
+    // The following tests are failing: test_log, test_call_sqlite3_enable_load_extension, test_enable_shared_cache and test_sqlite3_status
+    let fake_xunit_dirs = real_xunit_dirs @ [ if not (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) then yield "sqlite3" ]
 
     for tfm in fake_xunit_tfms do
         for dir in fake_xunit_dirs do
