@@ -123,7 +123,8 @@ namespace Xunit
         public static void Single<T>(IEnumerable<T> e)
         {
             count++;
-            if (e.Count() != 1) throw new Exception();
+            var enumerableCount = e.Count();
+            if (enumerableCount != 1) throw new Exception($"expected enumerable to contain a single element but contains {enumerableCount} elements");
         }
         public static T Throws<T>(Action a)
             where T : System.Exception
