@@ -4,6 +4,7 @@
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="fluentassertions" Version="$(depversion_fluentassertions)" />
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
     <PackageReference Include="xunit" Version="$(depversion_xunit)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />

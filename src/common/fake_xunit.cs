@@ -25,123 +25,6 @@ namespace Xunit
 
     public interface ICollectionFixture<TFixture> where TFixture : class { }
 
-    public static class Assert
-    {
-        public static int count;
-
-        public static void True(bool b)
-        {
-            count++;
-            if (!b) throw new Exception("expected True");
-        }
-        public static void True(bool b, string msg)
-        {
-            count++;
-            if (!b) throw new Exception($"expected True: {msg}");
-        }
-        public static void False(bool b)
-        {
-            count++;
-            if (b) throw new Exception("expected False");
-        }
-        public static void Null(object b)
-        {
-            count++;
-            if (b != null) throw new Exception("expected Null");
-        }
-        public static void NotNull(object b)
-        {
-            count++;
-            if (b == null) throw new Exception("expected NotNull");
-        }
-        public static void Contains(string sub, string actual)
-        {
-            count++;
-            if (!actual.Contains(sub)) throw new Exception($"expected that {actual} contains {sub}");
-        }
-        public static void DoesNotContain(string sub, string actual)
-        {
-            count++;
-            if (actual.Contains(sub)) throw new Exception($"expected that {actual} not contain {sub}");
-        }
-        public static void Equal<T>(T expected, T actual)
-            where T : class
-        {
-            count++;
-            if (!Object.ReferenceEquals(expected, actual)) throw new Exception($"expected ReferenceEquals {expected} but actual {actual}");
-        }
-        public static void Equal(byte expected, byte actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(int expected, byte actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(char expected, char actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(int expected, int actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(int expected, int? actual)
-        {
-            count++;
-            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(long expected, long actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(long expected, long? actual)
-        {
-            count++;
-            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(double expected, double actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(double expected, double? actual)
-        {
-            count++;
-            if (expected != actual.Value) throw new Exception($"expected {expected} but actual {actual}");
-        }
-        public static void Equal(string expected, string actual)
-        {
-            count++;
-            if (expected != actual) throw new Exception($"expected len {expected.Length} actual len {actual.Length} expected {expected} actual {actual}");
-        }
-        public static void Single<T>(IEnumerable<T> e)
-        {
-            count++;
-            var enumerableCount = e.Count();
-            if (enumerableCount != 1) throw new Exception($"expected enumerable to contain a single element but contains {enumerableCount} elements");
-        }
-        public static T Throws<T>(Action a)
-            where T : System.Exception
-        {
-            count++;
-            try
-            {
-                a();
-            }
-            catch (T e)
-            {
-                return e;
-            }
-            throw new Exception($"expected throw {typeof(T).Name}");
-        }
-    }
-
     public static class Run
     {
         static void w(string s)
@@ -269,12 +152,11 @@ namespace Xunit
                         w($"{m.Name,-40} -- ");
                         try
                         {
-                            Assert.count = 0;
                             var sw = System.Diagnostics.Stopwatch.StartNew();
                             m.Invoke(inst, null);
                             sw.Stop();
                             var elapsed = (long)(sw.ElapsedMilliseconds);
-                            wn($"pass ({Assert.count,4} asserts, {elapsed,5} ms)");
+                            wn($"pass ({elapsed,5} ms)");
                             pass++;
                         }
                         catch (Exception e)

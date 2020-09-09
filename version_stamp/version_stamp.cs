@@ -104,6 +104,7 @@ public static class gen
             f.WriteElementString("pkg_version_for_testing", "$(Version)");
             f.WriteElementString("depversion_xunit", "2.4.1");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
+            f.WriteElementString("depversion_fluentassertions", "5.10.3");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
 
             f.WriteEndElement(); // PropertyGroup

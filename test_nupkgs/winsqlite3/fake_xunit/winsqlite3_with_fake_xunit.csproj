@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="fluentassertions" Version="$(depversion_fluentassertions)" />
     <PackageReference Include="sqlitepclraw.bundle_winsqlite3" Version="$(pkg_version_for_testing)" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
