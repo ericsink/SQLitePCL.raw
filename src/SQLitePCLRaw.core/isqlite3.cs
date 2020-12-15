@@ -254,6 +254,9 @@ namespace SQLitePCL
 
 
         int sqlite3_win32_set_directory(int typ, utf8z path);
+
+		int sqlite3_keyword_count();
+		int sqlite3_keyword_name(int i, out string name);
     }
 }
 

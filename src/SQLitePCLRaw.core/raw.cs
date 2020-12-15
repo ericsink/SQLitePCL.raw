@@ -1329,6 +1329,16 @@ namespace SQLitePCL
         {
             return Provider.sqlite3_win32_set_directory(typ, path.to_utf8z());
         }
+
+		static public int sqlite3_keyword_count()
+		{
+			return Provider.sqlite3_keyword_count();
+		}
+
+		static public int sqlite3_keyword_name(int i, out string name)
+		{
+			return Provider.sqlite3_keyword_name(i, out name);
+		}
     }
 }
 

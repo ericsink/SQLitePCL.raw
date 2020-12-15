@@ -49,6 +49,7 @@ namespace SQLitePCL
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 	using System.Reflection;
+	using System.Text;
 
 	[Preserve(AllMembers = true)]
     public sealed class SQLite3Provider_<#= NAME #> : ISQLite3Provider
@@ -1493,6 +1494,20 @@ namespace SQLitePCL
             }
         }
 
+		int ISQLite3Provider.sqlite3_keyword_count()
+		{
+			return NativeMethods.sqlite3_keyword_count();
+		}
+
+		unsafe int ISQLite3Provider.sqlite3_keyword_name(int i, out string name)
+		{
+			var rc = NativeMethods.sqlite3_keyword_name(i, out var p_name, out var length);
+
+			// p_name is NOT null-terminated
+			name = Encoding.UTF8.GetString(p_name, length);
+			return rc;
+		}
+
 	static class NativeMethods
 	{
 <#
@@ -1669,6 +1684,8 @@ namespace SQLitePCL
 		"sqlite3_wal_checkpoint_v2",
 		"sqlite3_set_authorizer",
 		"sqlite3_win32_set_directory8",
+		"sqlite3_keyword_count",
+		"sqlite3_keyword_name",
 	};
 #>
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
@@ -2209,6 +2226,11 @@ namespace SQLitePCL
 		<#= attr #>
 		<#= front #> int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
+		<#= attr #>
+		<#= front #> int sqlite3_keyword_count();
+
+		<#= attr #>
+		<#= front #> int sqlite3_keyword_name(int i, out byte *name, out int length);
 <#+
 	}
 #>
