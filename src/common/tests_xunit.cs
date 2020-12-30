@@ -648,6 +648,19 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_keywords()
+        {
+            var n = SQLitePCL.raw.sqlite3_keyword_count();
+            Assert.True(n > 0);
+            for (var i=0; i<n; i++)
+            {
+                var rc = SQLitePCL.raw.sqlite3_keyword_name(i, out var s);
+                Assert.Equal(0, rc);
+                Assert.True(s.Length > 0);
+            }
+        }
+
+        [Fact]
         public void test_prepare_v2_overload()
         {
             var libversion = raw.sqlite3_libversion().utf8_to_string();

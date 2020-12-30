@@ -29,6 +29,7 @@ namespace SQLitePCL
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 	using System.Reflection;
+	using System.Text;
 
 	[Preserve(AllMembers = true)]
     public sealed class SQLite3Provider_dynamic_cdecl : ISQLite3Provider
@@ -1389,6 +1390,20 @@ namespace SQLitePCL
             }
         }
 
+		int ISQLite3Provider.sqlite3_keyword_count()
+		{
+			return NativeMethods.sqlite3_keyword_count();
+		}
+
+		unsafe int ISQLite3Provider.sqlite3_keyword_name(int i, out string name)
+		{
+			var rc = NativeMethods.sqlite3_keyword_name(i, out var p_name, out var length);
+
+			// p_name is NOT null-terminated
+			name = Encoding.UTF8.GetString(p_name, length);
+			return rc;
+		}
+
 	static class NativeMethods
 	{
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
@@ -1552,6 +1567,8 @@ namespace SQLitePCL
 			sqlite3_wal_checkpoint_v2 = (MyDelegateTypes.sqlite3_wal_checkpoint_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint_v2));
 			sqlite3_set_authorizer = (MyDelegateTypes.sqlite3_set_authorizer) Load(gf, typeof(MyDelegateTypes.sqlite3_set_authorizer));
 			sqlite3_win32_set_directory8 = (MyDelegateTypes.sqlite3_win32_set_directory8) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory8));
+			sqlite3_keyword_count = (MyDelegateTypes.sqlite3_keyword_count) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_count));
+			sqlite3_keyword_name = (MyDelegateTypes.sqlite3_keyword_name) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_name));
 		}
 
 		public static MyDelegateTypes.sqlite3_close sqlite3_close;
@@ -1686,6 +1703,8 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2;
 		public static MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer;
 		public static MyDelegateTypes.sqlite3_win32_set_directory8 sqlite3_win32_set_directory8;
+		public static MyDelegateTypes.sqlite3_keyword_count sqlite3_keyword_count;
+		public static MyDelegateTypes.sqlite3_keyword_name sqlite3_keyword_name;
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
@@ -2140,6 +2159,11 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
 
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_keyword_count();
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_keyword_name(int i, out byte *name, out int length);
 	}
 
     }
