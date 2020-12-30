@@ -559,7 +559,7 @@ public static class gen
                     );
 #endif
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, "v141", f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, "v142", f);
 
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(dir_proj, tname);
