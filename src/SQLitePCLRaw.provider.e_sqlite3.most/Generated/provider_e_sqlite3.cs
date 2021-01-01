@@ -1466,8 +1466,7 @@ namespace SQLitePCL
 		public static extern unsafe byte* sqlite3_value_text(IntPtr p);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_enable_load_extension(
-		sqlite3 db, int enable);
+		public static extern unsafe int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_load_extension(
@@ -1529,7 +1528,7 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe long sqlite3_memory_highwater(int resetFlag);
-		
+
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
@@ -1719,7 +1718,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_extended_errcode(sqlite3 db);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe byte* sqlite3_errstr(int rc); /* 3.7.15+ */
+		public static extern unsafe byte* sqlite3_errstr(int rc);
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 

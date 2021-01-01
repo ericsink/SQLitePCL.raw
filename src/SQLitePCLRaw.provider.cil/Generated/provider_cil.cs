@@ -1441,9 +1441,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<IntPtr, byte*> sqlite3_value_text = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_enable_load_extension(
-		sqlite3 db, int enable);
+		public unsafe static delegate*<sqlite3, int, int> sqlite3_enable_load_extension = null;
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_load_extension(
@@ -1487,9 +1485,8 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<long> sqlite3_memory_used = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate long sqlite3_memory_highwater(int resetFlag);
-		
+		public unsafe static delegate*<int, long> sqlite3_memory_highwater = null;
+
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
@@ -1619,8 +1616,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<sqlite3, int> sqlite3_extended_errcode = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate byte* sqlite3_errstr(int rc); /* 3.7.15+ */
+		public unsafe static delegate*<int, byte*> sqlite3_errstr = null;
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 

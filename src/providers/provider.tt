@@ -2084,12 +2084,16 @@ namespace SQLitePCL
                     new Parm("IntPtr", "p"),
                 }
                 ));
+            write_method(new Function(
+                "int",
+                "sqlite3_enable_load_extension",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "enable"),
+                }
+                ));
         }
 #>
-		<#= attr #>
-		<#= front #> int sqlite3_enable_load_extension(
-		sqlite3 db, int enable);
-
 		<#= attr #>
 		<#= front #> int sqlite3_load_extension(
 		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
@@ -2215,11 +2219,15 @@ namespace SQLitePCL
                 new Parm[] {
                 }
                 ));
+            write_method(new Function(
+                "long",
+                "sqlite3_memory_highwater",
+                new Parm[] {
+                    new Parm("int", "resetFlag"),
+                }
+                ));
         }
 #>
-		<#= attr #>
-		<#= front #> long sqlite3_memory_highwater(int resetFlag);
-		
 		<#= attr #>
 		<#= front #> int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
@@ -2765,11 +2773,15 @@ namespace SQLitePCL
                     new Parm("sqlite3", "db"),
                 }
                 ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_errstr",
+                new Parm[] {
+                    new Parm("int", "rc"),
+                }
+                ));
         }
 #>
-		<#= attr #>
-		<#= front #> byte* sqlite3_errstr(int rc); /* 3.7.15+ */
-
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 
 		// depend on the caller to format the string.
