@@ -35,6 +35,7 @@
 	if (
 		(KIND == "dynamic")
 		|| (KIND == "dllimport")
+		|| (KIND == "cil")
 		)
 	{
 	}
@@ -72,7 +73,7 @@ namespace SQLitePCL
         }
 <#
 	}
-    else
+    else if (KIND == "dllimport")
     {
 #>
         string ISQLite3Provider.GetNativeLibraryName()
@@ -81,9 +82,18 @@ namespace SQLitePCL
         }
 <#
     }
+    else if (KIND == "cil")
+    {
+#>
+        string ISQLite3Provider.GetNativeLibraryName()
+        {
+            return "(cil)";
+        }
+<#
+    }
 #>
 
-        bool my_streq(IntPtr p, IntPtr q, int len)
+        <#= KIND=="cil"?"unsafe ":"" #>bool my_streq(IntPtr p, IntPtr q, int len)
         {
             return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
         }
@@ -171,39 +181,39 @@ namespace SQLitePCL
             }
 		}
 
-        int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close_v2(db);
 			return rc;
         }
 
-        int ISQLite3Provider.sqlite3_close(IntPtr db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close(db);
 			return rc;
         }
 
-        void ISQLite3Provider.sqlite3_free(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_free(IntPtr p)
         {
             NativeMethods.sqlite3_free(p);
         }
 
-        int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
         {
             return NativeMethods.sqlite3_stricmp(p, q);
         }
 
-        int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
         {
             return NativeMethods.sqlite3_strnicmp(p, q, n);
         }
 
-        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
         }
 
-        void ISQLite3Provider.sqlite3_interrupt(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_interrupt(sqlite3 db)
         {
             NativeMethods.sqlite3_interrupt(db);
         }
@@ -433,7 +443,7 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_sql(stmt));
         }
 
-        IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
+        <#= KIND=="cil"?"unsafe ":"" #>IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
         {
             return NativeMethods.sqlite3_db_handle(stmt);
         }
@@ -446,12 +456,12 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_bytes(blob);
         }
 
-        int ISQLite3Provider.sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
         {
             return NativeMethods.sqlite3_blob_reopen(blob, rowid);
         }
@@ -472,7 +482,7 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_close(blob);
         }
@@ -485,47 +495,47 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
             return NativeMethods.sqlite3_backup_step(backup, nPage);
         }
 
-        int ISQLite3Provider.sqlite3_backup_remaining(sqlite3_backup backup)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_remaining(sqlite3_backup backup)
         {
             return NativeMethods.sqlite3_backup_remaining(backup);
         }
 
-        int ISQLite3Provider.sqlite3_backup_pagecount(sqlite3_backup backup)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_pagecount(sqlite3_backup backup)
         {
             return NativeMethods.sqlite3_backup_pagecount(backup);
         }
 
-        int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_finish(backup);
         }
 
-        IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
+        <#= KIND=="cil"?"unsafe ":"" #>IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
         {
             return NativeMethods.sqlite3_next_stmt(db, stmt);
         }
 
-        long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
         {
             return NativeMethods.sqlite3_last_insert_rowid(db);
         }
 
-        int ISQLite3Provider.sqlite3_changes(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_changes(db);
         }
 
-        int ISQLite3Provider.sqlite3_total_changes(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_total_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_total_changes(db);
         }
 
-        int ISQLite3Provider.sqlite3_extended_result_codes(sqlite3 db, int onoff)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
@@ -535,22 +545,22 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_errstr(rc));
         }
 
-        int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_errcode(db);
         }
 
-        int ISQLite3Provider.sqlite3_extended_errcode(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_extended_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_extended_errcode(db);
         }
 
-        int ISQLite3Provider.sqlite3_busy_timeout(sqlite3 db, int ms)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_busy_timeout(sqlite3 db, int ms)
         {
             return NativeMethods.sqlite3_busy_timeout(db, ms);
         }
 
-        int ISQLite3Provider.sqlite3_get_autocommit(sqlite3 db)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_get_autocommit(sqlite3 db)
         {
             return NativeMethods.sqlite3_get_autocommit(db);
         }
@@ -581,37 +591,37 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_libversion());
         }
 
-        int ISQLite3Provider.sqlite3_libversion_number()
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_libversion_number()
         {
             return NativeMethods.sqlite3_libversion_number();
         }
 
-        int ISQLite3Provider.sqlite3_threadsafe()
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_threadsafe()
         {
             return NativeMethods.sqlite3_threadsafe();
         }
 
-        int ISQLite3Provider.sqlite3_config(int op)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config(int op)
         {
             return NativeMethods.sqlite3_config_none(op);
         }
 
-        int ISQLite3Provider.sqlite3_config(int op, int val)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config(int op, int val)
         {
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
-        int ISQLite3Provider.sqlite3_initialize()
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
         }
 
-        int ISQLite3Provider.sqlite3_shutdown()
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_shutdown()
         {
             return NativeMethods.sqlite3_shutdown();
         }
 
-        int ISQLite3Provider.sqlite3_enable_load_extension(sqlite3 db, int onoff)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_enable_load_extension(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
@@ -642,7 +652,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
 			var info = get_hooks(db);
             if (info.commit != null)
@@ -675,7 +685,7 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_scalar_function))]
-        static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
+        <#= KIND=="cil"?"unsafe ":"" #>static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = NativeMethods.sqlite3_user_data(context);
             function_hook_info hi = function_hook_info.from_ptr(p);
@@ -684,7 +694,7 @@ namespace SQLitePCL
 
 		readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
 			var info = get_hooks(db);
             if (info.RemoveScalarFunction(name, nargs))
@@ -727,7 +737,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (disp_log_hook_handle != null)
             {
@@ -768,7 +778,7 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))]
-        static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
+        <#= KIND=="cil"?"unsafe ":"" #>static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -779,7 +789,7 @@ namespace SQLitePCL
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))]
-        static void agg_function_hook_bridge_final_impl(IntPtr context)
+        <#= KIND=="cil"?"unsafe ":"" #>static void agg_function_hook_bridge_final_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -792,7 +802,7 @@ namespace SQLitePCL
 		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
 		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
 			var info = get_hooks(db);
             if (info.RemoveAggFunction(name, nargs))
@@ -847,7 +857,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
-        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
             if (info.RemoveCollation(name))
@@ -890,7 +900,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
 			var info = get_hooks(db);
             if (info.update != null)
@@ -930,7 +940,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
 			var info = get_hooks(db);
             if (info.rollback != null)
@@ -970,7 +980,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
 			var info = get_hooks(db);
             if (info.trace != null)
@@ -1010,7 +1020,7 @@ namespace SQLitePCL
         }
 
 		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
-        void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
 			var info = get_hooks(db);
             if (info.profile != null)
@@ -1050,7 +1060,7 @@ namespace SQLitePCL
         }
 
         readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
-        void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
 			var info = get_hooks(db);
             if (info.progress != null)
@@ -1092,7 +1102,7 @@ namespace SQLitePCL
         }
 
         readonly NativeMethods.callback_authorizer authorizer_hook_bridge = new NativeMethods.callback_authorizer(authorizer_hook_bridge_impl);
-        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
 			var info = get_hooks(db);
             if (info.authorizer != null)
@@ -1121,17 +1131,17 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-        long ISQLite3Provider.sqlite3_memory_used()
+        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_memory_used()
         {
             return NativeMethods.sqlite3_memory_used();
         }
 
-        long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
+        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
         {
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
-        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
             return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
         }
@@ -1141,22 +1151,22 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_sourceid());
         }
 
-        void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
         {
             NativeMethods.sqlite3_result_int64(ctx, val);
         }
 
-        void ISQLite3Provider.sqlite3_result_int(IntPtr ctx, int val)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_int(IntPtr ctx, int val)
         {
             NativeMethods.sqlite3_result_int(ctx, val);
         }
 
-        void ISQLite3Provider.sqlite3_result_double(IntPtr ctx, double val)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_double(IntPtr ctx, double val)
         {
             NativeMethods.sqlite3_result_double(ctx, val);
         }
 
-        void ISQLite3Provider.sqlite3_result_null(IntPtr stm)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_null(IntPtr stm)
         {
             NativeMethods.sqlite3_result_null(stm);
         }
@@ -1201,29 +1211,29 @@ namespace SQLitePCL
             }
         }
 
-        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
         {
             NativeMethods.sqlite3_result_zeroblob(ctx, n);
         }
 
         // TODO sqlite3_result_value
 
-        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_toobig(ctx);
         }
 
-        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_nomem(ctx);
         }
 
-        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
+        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
         {
             NativeMethods.sqlite3_result_error_code(ctx, code);
         }
 
-        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_blob(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_value_blob(p);
             if (blobPointer == IntPtr.Zero)
@@ -1238,27 +1248,27 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
         {
             return NativeMethods.sqlite3_value_bytes(p);
         }
 
-        double ISQLite3Provider.sqlite3_value_double(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>double ISQLite3Provider.sqlite3_value_double(IntPtr p)
         {
             return NativeMethods.sqlite3_value_double(p);
         }
 
-        int ISQLite3Provider.sqlite3_value_int(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_int(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int(p);
         }
 
-        long ISQLite3Provider.sqlite3_value_int64(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_value_int64(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int64(p);
         }
 
-        int ISQLite3Provider.sqlite3_value_type(IntPtr p)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_type(IntPtr p)
         {
             return NativeMethods.sqlite3_value_type(p);
         }
@@ -1268,12 +1278,12 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_value_text(p));
         }
 
-        int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
         {
             return NativeMethods.sqlite3_bind_int(stm, paramIndex, val);
         }
 
-        int ISQLite3Provider.sqlite3_bind_int64(sqlite3_stmt stm, int paramIndex, long val)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_int64(sqlite3_stmt stm, int paramIndex, long val)
         {
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
@@ -1294,7 +1304,7 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
         {
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
@@ -1323,17 +1333,17 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
         {
             return NativeMethods.sqlite3_bind_zeroblob(stm, paramIndex, size);
         }
 
-        int ISQLite3Provider.sqlite3_bind_null(sqlite3_stmt stm, int paramIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_null(sqlite3_stmt stm, int paramIndex)
         {
             return NativeMethods.sqlite3_bind_null(stm, paramIndex);
         }
 
-        int ISQLite3Provider.sqlite3_bind_parameter_count(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_parameter_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
@@ -1351,32 +1361,32 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_step(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_step(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_step(stm);
         }
 
-        int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_isexplain(stm);
         }
 
-        int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_busy(stm);
         }
 
-        int ISQLite3Provider.sqlite3_stmt_readonly(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_readonly(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_readonly(stm);
         }
 
-        int ISQLite3Provider.sqlite3_column_int(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_int(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int(stm, columnIndex);
         }
 
-        long ISQLite3Provider.sqlite3_column_int64(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_column_int64(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
@@ -1393,12 +1403,12 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
         }
 
-        double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_double(stm, columnIndex);
         }
 
-        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_column_blob(stm, columnIndex);
             if (blobPointer == IntPtr.Zero)
@@ -1413,22 +1423,22 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_column_type(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_type(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_type(stm, columnIndex);
         }
 
-        int ISQLite3Provider.sqlite3_column_bytes(sqlite3_stmt stm, int columnIndex)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_bytes(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_bytes(stm, columnIndex);
         }
 
-        int ISQLite3Provider.sqlite3_column_count(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_column_count(stm);
         }
 
-        int ISQLite3Provider.sqlite3_data_count(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_data_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_data_count(stm);
         }
@@ -1453,27 +1463,27 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
         }
 
-        int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_reset(stm);
         }
 
-        int ISQLite3Provider.sqlite3_clear_bindings(sqlite3_stmt stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_clear_bindings(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_clear_bindings(stm);
         }
 
-        int ISQLite3Provider.sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
         {
             return NativeMethods.sqlite3_stmt_status(stm, op, resetFlg);
         }
 
-        int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
             return NativeMethods.sqlite3_finalize(stm);
         }
 
-        int ISQLite3Provider.sqlite3_wal_autocheckpoint(sqlite3 db, int n)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
@@ -1494,7 +1504,7 @@ namespace SQLitePCL
             }
         }
 
-		int ISQLite3Provider.sqlite3_keyword_count()
+		<#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_keyword_count()
 		{
 			return NativeMethods.sqlite3_keyword_count();
 		}
@@ -1523,6 +1533,11 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
+    else if (KIND == "cil")
+    {
+		//write_cil_setup_stuff();
+		write_api_entries(KIND);
+    }
 #>
 
 <#
@@ -1531,7 +1546,10 @@ namespace SQLitePCL
 	}
 
 <#
-	if (KIND == "dynamic")
+	if (
+        (KIND == "dynamic")
+        //|| (KIND == "cil")
+        )
 	{
 #>
 	static class MyDelegateTypes
@@ -1549,6 +1567,7 @@ namespace SQLitePCL
 <#+
 	void write_dynamic_load_stuff()
 	{
+    // TODO this list of names should be generated
 	string[] funcs = new string[]
 	{
 		"sqlite3_close",
@@ -1735,6 +1754,17 @@ namespace SQLitePCL
 <#+
 	}
 	}
+	void write_cil_setup_stuff()
+	{
+#if not
+	foreach (var s in funcs)
+	{
+#>
+		public static MyDelegateTypes.<#= s #> <#= s #> = (MyDelegateTypes.<#= s #>) foo.<#= s #>;
+<#+
+	}
+#endif
+	}
 	void write_callback_delegates()
 	{
 #>
@@ -1782,6 +1812,29 @@ namespace SQLitePCL
 <#+
 	}
 
+    class Parm
+    {
+        public string typ { get; private set; }
+        public string nam { get; private set; }
+        public Parm(string t, string n)
+        {
+            typ = t;
+            nam = n;
+        }
+    }
+    class Function
+    {
+        public string ret { get; private set; }
+        public string nam { get; private set; }
+        public Parm[] parms { get; private set; }
+        public Function(string r, string n, Parm[] p)
+        {
+            ret = r;
+            nam = n;
+            parms = p;
+        }
+    }
+
 	void write_api_entries(string k)
 	{
 		string attr;
@@ -1799,65 +1852,192 @@ namespace SQLitePCL
 			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
 			front = "public static extern unsafe";
 		}
+		else if (k == "cil")
+		{
+			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
+			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
+			front = "public unsafe delegate";
+		}
 		else
 		{
 			throw new NotImplementedException();
 		}
+        void write_method_general(string str_attr, Function f)
+        {
+            if (k == "cil")
+            {
+                var a = new System.Collections.Generic.List<string>();
+                foreach (var p in f.parms)
+                {
+                    a.Add(p.typ);
+                }
+                a.Add(f.ret);
 #>
-		<#= attr #>
-		<#= front #> int sqlite3_close(IntPtr db);
+		public unsafe static delegate*<<#= string.Join(", ", a) #>> <#= f.nam #> = null;
 
-		<#= attr #>
-		<#= front #> int sqlite3_close_v2(IntPtr db);
+<#+
+            }
+            else
+            {
+                var a = new System.Collections.Generic.List<string>();
+                foreach (var p in f.parms)
+                {
+                    a.Add(p.typ + " " + p.nam);
+                }
+#>
+		<#= str_attr #>
+		<#= front #> <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a) #>);
 
-		<#= attr #>
-		<#= front #> int sqlite3_enable_shared_cache(int enable);
+<#+
+            }
+        }
+        void write_method(Function f)
+        {
+            write_method_general(attr, f);
+        }
+        void write_method_config(Function f)
+        {
+            write_method_general(attr_sqlite3_config, f);
+        }
 
-		<#= attr #>
-		<#= front #> void sqlite3_interrupt(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_finalize(IntPtr stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_reset(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_clear_bindings(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_database_name(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_decltype(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_name(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_origin_name(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_table_name(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_column_text(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_errmsg(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_db_readonly(sqlite3 db, byte* dbName);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_db_filename(sqlite3 db, byte* att);
-
+            write_method(new Function(
+                "int",
+                "sqlite3_close",
+                new Parm[] {
+                    new Parm("IntPtr", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_close_v2",
+                new Parm[] {
+                    new Parm("IntPtr", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_enable_shared_cache",
+                new Parm[] {
+                    new Parm("int", "enable"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_interrupt",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_finalize",
+                new Parm[] {
+                    new Parm("IntPtr", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_reset",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_clear_bindings",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_stmt_status",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stm"),
+                    new Parm("int", "op"),
+                    new Parm("int", "resetFlg"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_bind_parameter_name",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_database_name",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_decltype",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_name",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_origin_name",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_table_name",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_column_text",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_errmsg",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_db_readonly",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "dbName"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_db_filename",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "att"),
+                }
+                ));
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain);
 
@@ -1867,21 +2047,45 @@ namespace SQLitePCL
 		<#= attr #>
 		<#= front #> int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
 
-		<#= attr #>
-		<#= front #> int sqlite3_complete(byte* pSql);
-
-		<#= attr #>
-		<#= front #> int sqlite3_compileoption_used(byte* pSql);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_compileoption_get(int n);
-
+<#+
+        {
+            write_method(new Function(
+                "int",
+                "sqlite3_complete",
+                new Parm[] {
+                    new Parm("byte*", "pSql"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_compileoption_used",
+                new Parm[] {
+                    new Parm("byte*", "pSql"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_compileoption_get",
+                new Parm[] {
+                    new Parm("int", "n"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
 
-		<#= attr #>
-		<#= front #> byte* sqlite3_value_text(IntPtr p);
-
+<#+
+        {
+            write_method(new Function(
+                "byte*",
+                "sqlite3_value_text",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_enable_load_extension(
 		sqlite3 db, int enable);
@@ -1890,327 +2094,824 @@ namespace SQLitePCL
 		<#= front #> int sqlite3_load_extension(
 		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
-		<#= attr #>
-		<#= front #> int sqlite3_initialize();
-
-		<#= attr #>
-		<#= front #> int sqlite3_shutdown();
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_libversion();
-
-		<#= attr #>
-		<#= front #> int sqlite3_libversion_number();
-
-		<#= attr #>
-		<#= front #> int sqlite3_threadsafe();
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_sourceid();
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_malloc(int n);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_realloc(IntPtr p, int n);
-
-		<#= attr #>
-		<#= front #> void sqlite3_free(IntPtr p);
-
-		<#= attr #>
-		<#= front #> int sqlite3_stricmp(IntPtr p, IntPtr q);
-
-		<#= attr #>
-		<#= front #> int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
-
+<#+
+        {
+            write_method(new Function(
+                "int",
+                "sqlite3_initialize",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_shutdown",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_libversion",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_libversion_number",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_threadsafe",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_sourceid",
+                new Parm[] {
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_malloc",
+                new Parm[] {
+                    new Parm("int", "n"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_realloc",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                    new Parm("int", "n"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_free",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_stricmp",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                    new Parm("IntPtr", "q"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_strnicmp",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                    new Parm("IntPtr", "q"),
+                    new Parm("int", "n"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_open(byte* filename, out IntPtr db);
 
 		<#= attr #>
 		<#= front #> int sqlite3_open_v2(byte* filename, out IntPtr db, int flags, byte* vfs);
 
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_vfs_find(byte* vfs);
-
-		<#= attr #>
-		<#= front #> long sqlite3_last_insert_rowid(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_changes(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_total_changes(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> long sqlite3_memory_used();
-
+<#+
+        {
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_vfs_find",
+                new Parm[] {
+                    new Parm("byte*", "vfs"),
+                }
+                ));
+            write_method(new Function(
+                "long",
+                "sqlite3_last_insert_rowid",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_changes",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_total_changes",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "long",
+                "sqlite3_memory_used",
+                new Parm[] {
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> long sqlite3_memory_highwater(int resetFlag);
 		
 		<#= attr #>
 		<#= front #> int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
-		<#= attr #>
-		<#= front #> int sqlite3_busy_timeout(sqlite3 db, int ms);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte* val, int nSize, IntPtr nTransient);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_null(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte* val, int nlen, IntPtr pvReserved);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte* strName);
-
-		<#= attr #>
-		<#= front #> int sqlite3_column_count(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_data_count(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_step(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> byte* sqlite3_sql(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> double sqlite3_column_double(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> int sqlite3_column_int(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> long sqlite3_column_int64(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> int sqlite3_column_bytes(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> int sqlite3_column_type(sqlite3_stmt stmt, int index);
-
-		<#= attr #>
-		<#= front #> int sqlite3_aggregate_count(IntPtr context);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_value_blob(IntPtr p);
-
-		<#= attr #>
-		<#= front #> int sqlite3_value_bytes(IntPtr p);
-
-		<#= attr #>
-		<#= front #> double sqlite3_value_double(IntPtr p);
-
-		<#= attr #>
-		<#= front #> int sqlite3_value_int(IntPtr p);
-
-		<#= attr #>
-		<#= front #> long sqlite3_value_int64(IntPtr p);
-
-		<#= attr #>
-		<#= front #> int sqlite3_value_type(IntPtr p);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_user_data(IntPtr context);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_blob(IntPtr context, IntPtr val, int nSize, IntPtr pvReserved);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_double(IntPtr context, double val);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_error(IntPtr context, byte* strErr, int nLen);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_int(IntPtr context, int val);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_int64(IntPtr context, long val);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_null(IntPtr context);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_text(IntPtr context, byte* val, int nLen, IntPtr pvReserved);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_zeroblob(IntPtr context, int n);
-
+<#+
+        {
+            write_method(new Function(
+                "int",
+                "sqlite3_busy_timeout",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "ms"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_blob",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("byte*", "val"),
+                    new Parm("int", "nSize"),
+                    new Parm("IntPtr", "nTransient"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_zeroblob",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("int", "size"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_double",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("double", "val"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_int",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("int", "val"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_int64",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("long", "val"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_null",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_text",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                    new Parm("byte*", "val"),
+                    new Parm("int", "nlen"),
+                    new Parm("IntPtr", "pvReserved"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_parameter_count",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_bind_parameter_index",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("byte*", "strName"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_column_count",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_data_count",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_step",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "byte*",
+                "sqlite3_sql",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "double",
+                "sqlite3_column_double",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_column_int",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "long",
+                "sqlite3_column_int64",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_column_blob",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_column_bytes",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_column_type",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                    new Parm("int", "index"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_aggregate_count",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_value_blob",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_value_bytes",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "double",
+                "sqlite3_value_double",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_value_int",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "long",
+                "sqlite3_value_int64",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_value_type",
+                new Parm[] {
+                    new Parm("IntPtr", "p"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_user_data",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_blob",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("IntPtr", "val"),
+                    new Parm("int", "nSize"),
+                    new Parm("IntPtr", "pvReserved"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_double",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("double", "val"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_error",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("byte*", "strErr"),
+                    new Parm("int", "nLen"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_int",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("int", "val"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_int64",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("long", "val"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_null",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_text",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("byte*", "val"),
+                    new Parm("int", "nLen"),
+                    new Parm("IntPtr", "pvReserved"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_zeroblob",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("int", "n"),
+                }
+                ));
+        }
+#>
 		// TODO sqlite3_result_value 
 
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_toobig(IntPtr context);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_nomem(IntPtr context);
-
-		<#= attr #>
-		<#= front #> void sqlite3_result_error_code(IntPtr context, int code);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
-
 <#+
+        {
+            write_method(new Function(
+                "void",
+                "sqlite3_result_error_toobig",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_error_nomem",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                }
+                ));
+            write_method(new Function(
+                "void",
+                "sqlite3_result_error_code",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("int", "code"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_aggregate_context",
+                new Parm[] {
+                    new Parm("IntPtr", "context"),
+                    new Parm("int", "nBytes"),
+                }
+                ));
+        }
 	if (FEATURE_KEY == "true")
     {
+            write_method(new Function(
+                "int",
+                "sqlite3_key",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "key"),
+                    new Parm("int", "keylen"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_key_v2",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "dbname"),
+                    new Parm("byte*", "key"),
+                    new Parm("int", "keylen"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_rekey",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "key"),
+                    new Parm("int", "keylen"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_rekey_v2",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "dbname"),
+                    new Parm("byte*", "key"),
+                    new Parm("int", "keylen"),
+                }
+                ));
+    }
+    else
+    {
 #>
-		<#= attr #>
-		<#= front #> int sqlite3_key(sqlite3 db, byte* key, int keylen);
 
-		<#= attr #>
-		<#= front #> int sqlite3_key_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
-
-		<#= attr #>
-		<#= front #> int sqlite3_rekey(sqlite3 db, byte* key, int keylen);
-
-		<#= attr #>
-		<#= front #> int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 <#+
     }
 #>
-
 		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
 		// for all possible calls that we want to use.
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_none(int op);
-
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_int(int op, int val);
-
-		<#= attr_sqlite3_config #>
-		<#= front #> int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_db_handle(IntPtr stmt);
-
-		<#= attr #>
-		<#= front #> IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_isexplain(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_busy(sqlite3_stmt stmt);
-
-		<#= attr #>
-		<#= front #> int sqlite3_stmt_readonly(sqlite3_stmt stmt);
-
+<#+
+        {
+            write_method_config(new Function(
+                "int",
+                "sqlite3_config_none",
+                new Parm[] {
+                    new Parm("int", "op"),
+                }
+                ));
+            write_method_config(new Function(
+                "int",
+                "sqlite3_config_int",
+                new Parm[] {
+                    new Parm("int", "op"),
+                    new Parm("int", "val"),
+                }
+                ));
+            write_method_config(new Function(
+                "int",
+                "sqlite3_config_log",
+                new Parm[] {
+                    new Parm("int", "op"),
+                    new Parm("NativeMethods.callback_log", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_create_collation",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte[]", "strName"),
+                    new Parm("int", "nType"),
+                    new Parm("hook_handle", "pvUser"),
+                    new Parm("NativeMethods.callback_collation", "func"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_update_hook",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_update", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_commit_hook",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_commit", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_profile",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_profile", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_progress_handler",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "instructions"),
+                    new Parm("NativeMethods.callback_progress_handler", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_trace",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_trace", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_rollback_hook",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_rollback", "func"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_db_handle",
+                new Parm[] {
+                    new Parm("IntPtr", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "IntPtr",
+                "sqlite3_next_stmt",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("IntPtr", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_stmt_isexplain",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_stmt_busy",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_stmt_readonly",
+                new Parm[] {
+                    new Parm("sqlite3_stmt", "stmt"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
 
-		<#= attr #>
-		<#= front #> int sqlite3_get_autocommit(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_extended_result_codes(sqlite3 db, int onoff);
-
-		<#= attr #>
-		<#= front #> int sqlite3_errcode(sqlite3 db);
-
-		<#= attr #>
-		<#= front #> int sqlite3_extended_errcode(sqlite3 db);
-
+<#+
+        {
+            write_method(new Function(
+                "int",
+                "sqlite3_get_autocommit",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_extended_result_codes",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "onoff"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_errcode",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_extended_errcode",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> byte* sqlite3_errstr(int rc); /* 3.7.15+ */
 
 		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
 		// for all possible calls.  For now, we are only exposing a single string, and 
 		// depend on the caller to format the string.
-		<#= attr #>
-		<#= front #> void sqlite3_log(int iErrCode, byte* zFormat);
-
-		<#= attr #>
-		<#= front #> int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg);
-
-		<#= attr #>
-		<#= front #> sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte* zDestName, sqlite3 sourceDb, byte* zSourceName);
-
-		<#= attr #>
-		<#= front #> int sqlite3_backup_step(sqlite3_backup backup, int nPage);
-
-		<#= attr #>
-		<#= front #> int sqlite3_backup_remaining(sqlite3_backup backup);
-
-		<#= attr #>
-		<#= front #> int sqlite3_backup_pagecount(sqlite3_backup backup);
-
-		<#= attr #>
-		<#= front #> int sqlite3_backup_finish(IntPtr backup);
-
+<#+
+        {
+            write_method(new Function(
+                "void",
+                "sqlite3_log",
+                new Parm[] {
+                    new Parm("int", "iErrCode"),
+                    new Parm("byte*", "zFormat"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_file_control",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte[]", "zDbName"),
+                    new Parm("int", "op"),
+                    new Parm("IntPtr", "pArg"),
+                }
+                ));
+            write_method(new Function(
+                "sqlite3_backup",
+                "sqlite3_backup_init",
+                new Parm[] {
+                    new Parm("sqlite3", "destDb"),
+                    new Parm("byte*", "zDestName"),
+                    new Parm("sqlite3", "sourceDb"),
+                    new Parm("byte*", "zSourceName"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_backup_step",
+                new Parm[] {
+                    new Parm("sqlite3_backup", "backup"),
+                    new Parm("int", "nPage"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_backup_remaining",
+                new Parm[] {
+                    new Parm("sqlite3_backup", "backup"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_backup_pagecount",
+                new Parm[] {
+                    new Parm("sqlite3_backup", "backup"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_backup_finish",
+                new Parm[] {
+                    new Parm("IntPtr", "backup"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out sqlite3_blob blob);
 
-		<#= attr #>
-		<#= front #> int sqlite3_blob_write(sqlite3_blob blob, byte* b, int n, int offset);
-
-		<#= attr #>
-		<#= front #> int sqlite3_blob_read(sqlite3_blob blob, byte* b, int n, int offset);
-
-		<#= attr #>
-		<#= front #> int sqlite3_blob_bytes(sqlite3_blob blob);
-
-		<#= attr #>
-		<#= front #> int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
-
-		<#= attr #>
-		<#= front #> int sqlite3_blob_close(IntPtr blob);
-
-		<#= attr #>
-		<#= front #> int sqlite3_wal_autocheckpoint(sqlite3 db, int n);
-
-		<#= attr #>
-		<#= front #> int sqlite3_wal_checkpoint(sqlite3 db, byte* dbName);
-
+<#+
+        {
+            write_method(new Function(
+                "int",
+                "sqlite3_blob_write",
+                new Parm[] {
+                    new Parm("sqlite3_blob", "blob"),
+                    new Parm("byte*", "b"),
+                    new Parm("int", "n"),
+                    new Parm("int", "offset"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_blob_read",
+                new Parm[] {
+                    new Parm("sqlite3_blob", "blob"),
+                    new Parm("byte*", "b"),
+                    new Parm("int", "n"),
+                    new Parm("int", "offset"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_blob_bytes",
+                new Parm[] {
+                    new Parm("sqlite3_blob", "blob"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_blob_reopen",
+                new Parm[] {
+                    new Parm("sqlite3_blob", "blob"),
+                    new Parm("long", "rowid"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_blob_close",
+                new Parm[] {
+                    new Parm("IntPtr", "blob"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_wal_autocheckpoint",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "n"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_wal_checkpoint",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "dbName"),
+                }
+                ));
+        }
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed);
 
-		<#= attr #>
-		<#= front #> int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
-
 <#+
+            write_method(new Function(
+                "int",
+                "sqlite3_set_authorizer",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("NativeMethods.callback_authorizer", "cb"),
+                    new Parm("hook_handle", "pvUser"),
+                }
+                ));
 	if (
         (UWP == "true")
         || (KIND == "dynamic")
@@ -2223,12 +2924,29 @@ namespace SQLitePCL
     }
 #>
 
-		<#= attr #>
-		<#= front #> int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);
-
-		<#= attr #>
-		<#= front #> int sqlite3_keyword_count();
-
+<#+
+            write_method(new Function(
+                "int",
+                "sqlite3_create_function_v2",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte[]", "strName"),
+                    new Parm("int", "nArgs"),
+                    new Parm("int", "nType"),
+                    new Parm("hook_handle", "pvUser"),
+                    new Parm("NativeMethods.callback_scalar_function", "func"),
+                    new Parm("NativeMethods.callback_agg_function_step", "fstep"),
+                    new Parm("NativeMethods.callback_agg_function_final", "ffinal"),
+                    new Parm("NativeMethods.callback_destroy", "fdestroy"),
+                }
+                ));
+            write_method(new Function(
+                "int",
+                "sqlite3_keyword_count",
+                new Parm[] {
+                }
+                ));
+#>
 		<#= attr #>
 		<#= front #> int sqlite3_keyword_name(int i, out byte *name, out int length);
 <#+

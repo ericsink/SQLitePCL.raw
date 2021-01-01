@@ -41,6 +41,7 @@ let main argv =
         let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s -p:FEATURE_KEY=%s %s provider.tt" cs_path provider_basename conv kind uwp ftr_key dllimport_name_arg
         exec "t4" args dir_providers
 
+    gen_provider "cil" null "cil" "Cdecl" "cil" "false" "false"
     gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "false" "true"
     gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "false" "true"
     gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false" "false"
@@ -60,6 +61,7 @@ let main argv =
         "SQLitePCLRaw.nativelibrary" 
         "SQLitePCLRaw.provider.e_sqlite3.most" 
         "SQLitePCLRaw.provider.e_sqlite3.uwp" 
+        //"SQLitePCLRaw.provider.cil" 
         "SQLitePCLRaw.provider.e_sqlcipher.most" 
         "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlcipher.most" 
