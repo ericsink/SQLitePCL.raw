@@ -182,7 +182,9 @@ namespace SQLitePCL
             {
                 fixed (byte* p_sql = sql)
                 {
-                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, out errMsg);
+                    IntPtr tmp_errMsg;
+                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, &tmp_errMsg);
+                    errMsg = tmp_errMsg;
                 }
             }
 			h.Dispose();
@@ -1721,7 +1723,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_stmt_readonly(sqlite3_stmt stmt);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
+		public static extern unsafe int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, IntPtr* errMsg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_get_autocommit(sqlite3 db);

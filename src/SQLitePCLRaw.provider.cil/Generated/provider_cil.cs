@@ -161,7 +161,7 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
+        unsafe int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
             int rc;
 
@@ -182,7 +182,9 @@ namespace SQLitePCL
             {
                 fixed (byte* p_sql = sql)
                 {
-                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, out errMsg);
+                    IntPtr tmp_errMsg;
+                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, &tmp_errMsg);
+                    errMsg = tmp_errMsg;
                 }
             }
 			h.Dispose();
@@ -1619,8 +1621,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_stmt_readonly = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
+		public unsafe static delegate*<sqlite3, byte*, NativeMethods.callback_exec, hook_handle, IntPtr*, int> sqlite3_exec = null;
 
 		public unsafe static delegate*<sqlite3, int> sqlite3_get_autocommit = null;
 

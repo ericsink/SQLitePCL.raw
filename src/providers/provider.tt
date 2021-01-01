@@ -232,7 +232,7 @@ namespace SQLitePCL
         }
 		// TODO shouldn't there be a impl/bridge thing here?
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
+        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
             int rc;
 
@@ -253,7 +253,9 @@ namespace SQLitePCL
             {
                 fixed (byte* p_sql = sql)
                 {
-                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, out errMsg);
+                    IntPtr tmp_errMsg;
+                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, &tmp_errMsg);
+                    errMsg = tmp_errMsg;
                 }
             }
 			h.Dispose();
@@ -2780,13 +2782,17 @@ namespace SQLitePCL
                     new Parm("sqlite3_stmt", "stmt"),
                 }
                 ));
-        }
-#>
-		<#= attr #>
-		<#= front #> int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg);
-
-<#+
-        {
+            write_method(new Function(
+                "int",
+                "sqlite3_exec",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("byte*", "strSql"),
+                    new Parm("NativeMethods.callback_exec", "cb"),
+                    new Parm("hook_handle", "pvParam"),
+                    new Parm("IntPtr*", "errMsg"),
+                }
+                ));
             write_method(new Function(
                 "int",
                 "sqlite3_get_autocommit",
