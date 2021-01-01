@@ -69,7 +69,10 @@ namespace SQLitePCL
         {
             fixed (byte* p = filename)
             {
-                return NativeMethods.sqlite3_open(p, out db);
+                IntPtr tmp_db;
+                var rc = NativeMethods.sqlite3_open(p, &tmp_db);
+                db = tmp_db;
+                return rc;
             }
         }
 
@@ -77,7 +80,10 @@ namespace SQLitePCL
         {
             fixed (byte* p_filename = filename, p_vfs = vfs)
             {
-                return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
+                IntPtr tmp_db;
+                var rc = NativeMethods.sqlite3_open_v2(p_filename, &tmp_db, flags, p_vfs);
+                db = tmp_db;
+                return rc;
             }
         }
 
@@ -1870,10 +1876,10 @@ namespace SQLitePCL
 		public unsafe delegate int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_open(byte* filename, out IntPtr db);
+		public unsafe delegate int sqlite3_open(byte* filename, IntPtr* db);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_open_v2(byte* filename, out IntPtr db, int flags, byte* vfs);
+		public unsafe delegate int sqlite3_open_v2(byte* filename, IntPtr* db, int flags, byte* vfs);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate IntPtr sqlite3_vfs_find(byte* vfs);
