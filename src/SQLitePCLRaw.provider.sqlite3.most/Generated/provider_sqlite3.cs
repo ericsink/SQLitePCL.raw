@@ -248,7 +248,10 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, out stm, out var p_tail);
+                IntPtr tmp_stm;
+                byte* p_tail;
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, &tmp_stm, &p_tail);
+                stm = tmp_stm;
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -267,7 +270,10 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
+                IntPtr tmp_stm;
+                byte* p_tail;
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, &tmp_stm, &p_tail);
+                stm = tmp_stm;
                 // TODO we could skip the strlen by using the length we were given
                 tail = utf8z.FromPtr(p_tail);
                 return rc;
@@ -278,7 +284,10 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, out stm, out var p_tail);
+                IntPtr tmp_stm;
+                byte* p_tail;
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, &tmp_stm, &p_tail);
+                stm = tmp_stm;
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -297,7 +306,10 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
+                IntPtr tmp_stm;
+                byte* p_tail;
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, &tmp_stm, &p_tail);
+                stm = tmp_stm;
                 // TODO we could skip the strlen by using the length we were given
                 tail = utf8z.FromPtr(p_tail);
                 return rc;
@@ -1448,10 +1460,10 @@ namespace SQLitePCL
 		public static extern unsafe byte* sqlite3_db_filename(sqlite3 db, byte* att);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain);
+		public static extern unsafe int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, IntPtr* pstmt, byte** ptrRemain);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, out IntPtr stmt, out byte* ptrRemain);
+		public static extern unsafe int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, IntPtr* pstmt, byte** ptrRemain);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
