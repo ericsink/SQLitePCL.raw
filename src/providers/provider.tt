@@ -1885,25 +1885,21 @@ namespace SQLitePCL
 	void write_api_entries(string k)
 	{
 		string attr;
-		string front;
 		string attr_sqlite3_config;
 		if (k == "dynamic")
 		{
 			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-			front = "public unsafe delegate";
 		}
 		else if (k == "dllimport")
 		{
 			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
-			front = "public static extern unsafe";
 		}
 		else if (k == "cil")
 		{
 			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
 			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-			front = "public unsafe delegate";
 		}
 		else
 		{
@@ -1930,6 +1926,19 @@ namespace SQLitePCL
                 foreach (var p in f.parms)
                 {
                     a.Add(p.typ + " " + p.nam);
+                }
+                string front;
+                if (k == "dynamic")
+                {
+                    front = "public unsafe delegate";
+                }
+                else if (k == "dllimport")
+                {
+                    front = "public static extern unsafe";
+                }
+                else
+                {
+                    throw new NotImplementedException();
                 }
 #>
 		<#= str_attr #>
