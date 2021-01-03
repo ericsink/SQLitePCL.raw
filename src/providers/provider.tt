@@ -1884,28 +1884,7 @@ namespace SQLitePCL
 
 	void write_api_entries(string k)
 	{
-		string attr;
-		string attr_sqlite3_config;
-		if (k == "dynamic")
-		{
-			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
-			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-		}
-		else if (k == "dllimport")
-		{
-			attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
-			attr_sqlite3_config = "[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"sqlite3_config\", CallingConvention = CALLING_CONVENTION)]";
-		}
-		else if (k == "cil")
-		{
-			attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
-			attr_sqlite3_config = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"sqlite3_config\")]";
-		}
-		else
-		{
-			throw new NotImplementedException();
-		}
-        void write_method_general(string str_attr, Function f)
+        void write_method_general(string entry_point, Function f)
         {
             if (k == "cil")
             {
@@ -1915,6 +1894,7 @@ namespace SQLitePCL
                     a.Add(p.typ);
                 }
                 a.Add(f.ret);
+                // TODO deal with entry point here?
 #>
 		public unsafe static delegate*<<#= string.Join(", ", a) #>> <#= f.nam #> = null;
 
@@ -1928,20 +1908,37 @@ namespace SQLitePCL
                     a.Add(p.typ + " " + p.nam);
                 }
                 string front;
+                string attr;
                 if (k == "dynamic")
                 {
                     front = "public unsafe delegate";
+                    if (entry_point == null)
+                    {
+                        attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
+                    }
+                    else
+                    {
+                        attr = $"[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"{entry_point}\")]";
+                    }
                 }
                 else if (k == "dllimport")
                 {
                     front = "public static extern unsafe";
+                    if (entry_point == null)
+                    {
+                        attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
+                    }
+                    else
+                    {
+                        attr = $"[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"{entry_point}\", CallingConvention = CALLING_CONVENTION)]";
+                    }
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
 #>
-		<#= str_attr #>
+		<#= attr #>
 		<#= front #> <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a) #>);
 
 <#+
@@ -1949,11 +1946,11 @@ namespace SQLitePCL
         }
         void write_method(Function f)
         {
-            write_method_general(attr, f);
+            write_method_general(null, f);
         }
         void write_method_config(Function f)
         {
-            write_method_general(attr_sqlite3_config, f);
+            write_method_general("sqlite3_config", f);
         }
 
             write_method(new Function(
