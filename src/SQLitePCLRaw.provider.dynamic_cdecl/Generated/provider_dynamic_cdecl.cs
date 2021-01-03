@@ -1510,7 +1510,6 @@ namespace SQLitePCL
 			sqlite3_table_column_metadata = (MyDelegateTypes.sqlite3_table_column_metadata) Load(gf, typeof(MyDelegateTypes.sqlite3_table_column_metadata));
 			sqlite3_value_text = (MyDelegateTypes.sqlite3_value_text) Load(gf, typeof(MyDelegateTypes.sqlite3_value_text));
 			sqlite3_enable_load_extension = (MyDelegateTypes.sqlite3_enable_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_load_extension));
-			sqlite3_load_extension = (MyDelegateTypes.sqlite3_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_load_extension));
 			sqlite3_initialize = (MyDelegateTypes.sqlite3_initialize) Load(gf, typeof(MyDelegateTypes.sqlite3_initialize));
 			sqlite3_shutdown = (MyDelegateTypes.sqlite3_shutdown) Load(gf, typeof(MyDelegateTypes.sqlite3_shutdown));
 			sqlite3_libversion = (MyDelegateTypes.sqlite3_libversion) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion));
@@ -1646,7 +1645,6 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata;
 		public static MyDelegateTypes.sqlite3_value_text sqlite3_value_text;
 		public static MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension;
-		public static MyDelegateTypes.sqlite3_load_extension sqlite3_load_extension;
 		public static MyDelegateTypes.sqlite3_initialize sqlite3_initialize;
 		public static MyDelegateTypes.sqlite3_shutdown sqlite3_shutdown;
 		public static MyDelegateTypes.sqlite3_libversion sqlite3_libversion;
@@ -1879,10 +1877,6 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_enable_load_extension(sqlite3 db, int enable);
-
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_load_extension(
-		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_initialize();

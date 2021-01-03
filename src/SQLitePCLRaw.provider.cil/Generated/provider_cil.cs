@@ -1487,10 +1487,6 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<sqlite3, int, int> sqlite3_enable_load_extension = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_load_extension(
-		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
-
 		public unsafe static delegate*<int> sqlite3_initialize = null;
 
 		public unsafe static delegate*<int> sqlite3_shutdown = null;

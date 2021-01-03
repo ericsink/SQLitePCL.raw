@@ -1645,7 +1645,6 @@ namespace SQLitePCL
 		"sqlite3_table_column_metadata",
 		"sqlite3_value_text",
 		"sqlite3_enable_load_extension",
-		"sqlite3_load_extension",
 		"sqlite3_initialize",
 		"sqlite3_shutdown",
 		"sqlite3_libversion",
@@ -2170,12 +2169,6 @@ namespace SQLitePCL
                     new Parm("int", "enable"),
                 }
                 ));
-#>
-		<#= attr #>
-		<#= front #> int sqlite3_load_extension(
-		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
-
-<#+
             write_method(new Function(
                 "int",
                 "sqlite3_initialize",

@@ -1520,10 +1520,6 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_load_extension(
-		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
-
-		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_initialize();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
