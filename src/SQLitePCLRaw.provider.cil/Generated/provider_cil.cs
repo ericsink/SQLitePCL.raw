@@ -1033,7 +1033,12 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
-            return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
+            int tmp_current;
+            int tmp_highwater;
+            var rc = NativeMethods.sqlite3_status(op, &tmp_current, &tmp_highwater, resetFlag);
+            current = tmp_current;
+            highwater = tmp_highwater;
+            return rc;
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sourceid()
@@ -1507,8 +1512,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<int, long> sqlite3_memory_highwater = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
+		public unsafe static delegate*<int, int*, int*, int, int> sqlite3_status = null;
 
 		public unsafe static delegate*<sqlite3, int, int> sqlite3_busy_timeout = null;
 

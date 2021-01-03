@@ -1043,9 +1043,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
-        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        unsafe int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
-            return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
+            int tmp_current;
+            int tmp_highwater;
+            var rc = NativeMethods.sqlite3_status(op, &tmp_current, &tmp_highwater, resetFlag);
+            current = tmp_current;
+            highwater = tmp_highwater;
+            return rc;
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sourceid()
@@ -1567,7 +1572,7 @@ namespace SQLitePCL
 		public static extern unsafe long sqlite3_memory_highwater(int resetFlag);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
+		public static extern unsafe int sqlite3_status(int op, int* current, int* highest, int resetFlg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_busy_timeout(sqlite3 db, int ms);
