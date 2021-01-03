@@ -1418,7 +1418,12 @@ namespace SQLitePCL
         {
             fixed (byte* p_dbName = dbName)
             {
-                return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);
+                int tmp_logSize;
+                int tmp_framesCheckPointed;
+                var rc = NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, &tmp_logSize, &tmp_framesCheckPointed);
+                logSize = tmp_logSize;
+                framesCheckPointed = tmp_framesCheckPointed;
+                return rc;
             }
         }
 
@@ -1429,7 +1434,9 @@ namespace SQLitePCL
 
 		unsafe int ISQLite3Provider.sqlite3_keyword_name(int i, out string name)
 		{
-			var rc = NativeMethods.sqlite3_keyword_name(i, out var p_name, out var length);
+            byte* p_name;
+            int length;
+			var rc = NativeMethods.sqlite3_keyword_name(i, &p_name, &length);
 
 			// p_name is NOT null-terminated
 			name = Encoding.UTF8.GetString(p_name, length);
@@ -1833,7 +1840,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_wal_checkpoint(sqlite3 db, byte* dbName);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed);
+		public static extern unsafe int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, int* logSize, int* framesCheckPointed);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
@@ -1848,7 +1855,8 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_keyword_count();
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_keyword_name(int i, out byte *name, out int length);
+		public static extern unsafe int sqlite3_keyword_name(int i, byte** name, int* length);
+
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);

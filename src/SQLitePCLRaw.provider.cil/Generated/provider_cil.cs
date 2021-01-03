@@ -1403,7 +1403,12 @@ namespace SQLitePCL
         {
             fixed (byte* p_dbName = dbName)
             {
-                return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);
+                int tmp_logSize;
+                int tmp_framesCheckPointed;
+                var rc = NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, &tmp_logSize, &tmp_framesCheckPointed);
+                logSize = tmp_logSize;
+                framesCheckPointed = tmp_framesCheckPointed;
+                return rc;
             }
         }
 
@@ -1414,7 +1419,9 @@ namespace SQLitePCL
 
 		unsafe int ISQLite3Provider.sqlite3_keyword_name(int i, out string name)
 		{
-			var rc = NativeMethods.sqlite3_keyword_name(i, out var p_name, out var length);
+            byte* p_name;
+            int length;
+			var rc = NativeMethods.sqlite3_keyword_name(i, &p_name, &length);
 
 			// p_name is NOT null-terminated
 			name = Encoding.UTF8.GetString(p_name, length);
@@ -1682,8 +1689,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<sqlite3, byte*, int> sqlite3_wal_checkpoint = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed);
+		public unsafe static delegate*<sqlite3, byte*, int, int*, int*, int> sqlite3_wal_checkpoint_v2 = null;
 
 		public unsafe static delegate*<sqlite3, NativeMethods.callback_authorizer, hook_handle, int> sqlite3_set_authorizer = null;
 
@@ -1692,8 +1698,8 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<int> sqlite3_keyword_count = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_keyword_name(int i, out byte *name, out int length);
+		public unsafe static delegate*<int, byte**, int*, int> sqlite3_keyword_name = null;
+
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
