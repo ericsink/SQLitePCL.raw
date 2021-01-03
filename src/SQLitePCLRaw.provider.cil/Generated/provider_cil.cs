@@ -217,11 +217,19 @@ namespace SQLitePCL
         {
             fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
             {
+                byte* p_dataType;
+                byte* p_collSeq;
+                int tmp_notNull;
+                int tmp_primaryKey;
+                int tmp_autoInc;
                 var rc = NativeMethods.sqlite3_table_column_metadata(
                             db, p_dbName, p_tblName, p_colName, 
-                            out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
+                            &p_dataType, &p_collSeq, &tmp_notNull, &tmp_primaryKey, &tmp_autoInc);
                 dataType = utf8z.FromPtr(p_dataType);
                 collSeq = utf8z.FromPtr(p_collSeq);
+                notNull = tmp_notNull;
+                primaryKey = tmp_primaryKey;
+                autoInc = tmp_autoInc;
                 return rc;
             }
         }
@@ -1463,8 +1471,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<int, byte*> sqlite3_compileoption_get = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc);
+		public unsafe static delegate*<sqlite3, byte*, byte*, byte*, byte**, byte**, int*, int*, int*, int> sqlite3_table_column_metadata = null;
 
 		public unsafe static delegate*<IntPtr, byte*> sqlite3_value_text = null;
 
