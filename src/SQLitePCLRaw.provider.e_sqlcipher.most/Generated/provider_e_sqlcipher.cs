@@ -330,9 +330,14 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
+        unsafe int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
+            int tmp_current;
+            int tmp_highest;
+            var rc = NativeMethods.sqlite3_db_status(db, op, &tmp_current, &tmp_highest, resetFlg);
+            current = tmp_current;
+            highest = tmp_highest;
+            return rc;
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
@@ -1480,7 +1485,7 @@ namespace SQLitePCL
 		public static extern unsafe int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, IntPtr* pstmt, byte** ptrRemain);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
-		public static extern unsafe int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
+		public static extern unsafe int sqlite3_db_status(sqlite3 db, int op, int* current, int* highest, int resetFlg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_complete(byte* pSql);

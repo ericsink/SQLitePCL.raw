@@ -453,9 +453,14 @@ namespace SQLitePCL
             }
         }
 
-        int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
+        unsafe int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
+            int tmp_current;
+            int tmp_highest;
+            var rc = NativeMethods.sqlite3_db_status(db, op, &tmp_current, &tmp_highest, resetFlg);
+            current = tmp_current;
+            highest = tmp_highest;
+            return rc;
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
@@ -2080,11 +2085,17 @@ namespace SQLitePCL
                     new Parm("byte**", "ptrRemain"),
                 }
                 ));
-#>
-		<#= attr #>
-		<#= front #> int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg);
-
-<#+
+            write_method(new Function(
+                "int",
+                "sqlite3_db_status",
+                new Parm[] {
+                    new Parm("sqlite3", "db"),
+                    new Parm("int", "op"),
+                    new Parm("int*", "current"),
+                    new Parm("int*", "highest"),
+                    new Parm("int", "resetFlg"),
+                }
+                ));
         {
             write_method(new Function(
                 "int",
