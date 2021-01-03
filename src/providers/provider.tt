@@ -3008,11 +3008,14 @@ namespace SQLitePCL
         || (KIND == "dynamic")
         )
     {
-#>
-		<#= attr #>
-		<#= front #> int sqlite3_win32_set_directory8(uint directoryType, byte* directoryPath);
-
-<#+
+            write_method(new Function(
+                "int",
+                "sqlite3_win32_set_directory8",
+                new Parm[] {
+                    new Parm("uint", "directoryType"),
+                    new Parm("byte*", "directoryPath"),
+                }
+                ));
     }
 
             write_method(new Function(
