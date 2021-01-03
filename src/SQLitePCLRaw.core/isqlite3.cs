@@ -162,7 +162,7 @@ namespace SQLitePCL
         int sqlite3_backup_pagecount(sqlite3_backup backup);
         int sqlite3_backup_finish(IntPtr backup);
 
-        int sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out sqlite3_blob blob);
+        int sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out IntPtr blob);
         int sqlite3_blob_bytes(sqlite3_blob blob);
         int sqlite3_blob_reopen(sqlite3_blob blob, long rowid);
         int sqlite3_blob_write(sqlite3_blob blob, ReadOnlySpan<byte> b, int offset);

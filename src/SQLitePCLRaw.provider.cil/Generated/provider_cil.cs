@@ -346,11 +346,14 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out sqlite3_blob blob)
+        unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out IntPtr blob)
         {
             fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
             {
-                return NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, out blob);
+                IntPtr tmp_blob;
+                var rc = NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, &tmp_blob);
+                blob = tmp_blob;
+                return rc;
             }
         }
 
@@ -1672,8 +1675,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<IntPtr, int> sqlite3_backup_finish = null;
 
-		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out sqlite3_blob blob);
+		public unsafe static delegate*<sqlite3, byte*, byte*, byte*, long, int, IntPtr*, int> sqlite3_blob_open = null;
 
 		public unsafe static delegate*<sqlite3_blob, byte*, int, int, int> sqlite3_blob_write = null;
 

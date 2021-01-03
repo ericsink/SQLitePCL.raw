@@ -1247,7 +1247,9 @@ namespace SQLitePCL
 
         static public int sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
-            return Provider.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out blob);
+            var rc = Provider.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out var p);
+            blob = sqlite3_blob.From(p);
+            return rc;
         }
 
         static public int sqlite3_blob_open(sqlite3 db, string sdb, string table, string col, long rowid, int flags, out sqlite3_blob blob)

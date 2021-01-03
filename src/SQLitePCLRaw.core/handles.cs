@@ -129,6 +129,13 @@ namespace SQLitePCL
         {
         }
 
+        internal static sqlite3_blob From(IntPtr p)
+        {
+            var h = new sqlite3_blob();
+            h.SetHandle(p);
+            return h;
+        }
+
         public override bool IsInvalid => handle == IntPtr.Zero;
 
         protected override bool ReleaseHandle()
