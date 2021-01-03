@@ -1603,8 +1603,6 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<IntPtr, int, void> sqlite3_result_zeroblob = null;
 
-		// TODO sqlite3_result_value 
-
 		public unsafe static delegate*<IntPtr, void> sqlite3_result_error_toobig = null;
 
 		public unsafe static delegate*<IntPtr, void> sqlite3_result_error_nomem = null;
@@ -1613,9 +1611,6 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<IntPtr, int, IntPtr> sqlite3_aggregate_context = null;
 
-
-		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
-		// for all possible calls that we want to use.
 		public unsafe static delegate*<int, int> sqlite3_config_none = null;
 
 		public unsafe static delegate*<int, int, int> sqlite3_config_int = null;
@@ -1658,9 +1653,6 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<int, byte*> sqlite3_errstr = null;
 
-		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
-		// for all possible calls.  For now, we are only exposing a single string, and 
-		// depend on the caller to format the string.
 		public unsafe static delegate*<int, byte*, void> sqlite3_log = null;
 
 		public unsafe static delegate*<sqlite3, byte[], int, IntPtr, int> sqlite3_file_control = null;
@@ -1694,7 +1686,6 @@ namespace SQLitePCL
 		public unsafe static delegate*<sqlite3, byte*, int, int*, int*, int> sqlite3_wal_checkpoint_v2 = null;
 
 		public unsafe static delegate*<sqlite3, NativeMethods.callback_authorizer, hook_handle, int> sqlite3_set_authorizer = null;
-
 
 		public unsafe static delegate*<sqlite3, byte[], int, int, hook_handle, NativeMethods.callback_scalar_function, NativeMethods.callback_agg_function_step, NativeMethods.callback_agg_function_final, NativeMethods.callback_destroy, int> sqlite3_create_function_v2 = null;
 

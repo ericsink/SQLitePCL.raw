@@ -2052,8 +2052,6 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate void sqlite3_result_zeroblob(IntPtr context, int n);
 
-		// TODO sqlite3_result_value 
-
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate void sqlite3_result_error_toobig(IntPtr context);
 
@@ -2078,8 +2076,6 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 
-		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
-		// for all possible calls that we want to use.
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_config")]
 		public unsafe delegate int sqlite3_config_none(int op);
@@ -2146,9 +2142,6 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate byte* sqlite3_errstr(int rc);
 
-		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
-		// for all possible calls.  For now, we are only exposing a single string, and 
-		// depend on the caller to format the string.
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate void sqlite3_log(int iErrCode, byte* zFormat);
 

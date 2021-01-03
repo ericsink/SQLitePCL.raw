@@ -1703,8 +1703,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_result_zeroblob(IntPtr context, int n);
 
-		// TODO sqlite3_result_value 
-
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_result_error_toobig(IntPtr context);
 
@@ -1729,8 +1727,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 
-		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
-		// for all possible calls that we want to use.
 		[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_config_none(int op);
 
@@ -1794,9 +1790,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe byte* sqlite3_errstr(int rc);
 
-		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
-		// for all possible calls.  For now, we are only exposing a single string, and 
-		// depend on the caller to format the string.
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_log(int iErrCode, byte* zFormat);
 

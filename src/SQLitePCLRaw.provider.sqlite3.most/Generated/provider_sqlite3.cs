@@ -1688,8 +1688,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_result_zeroblob(IntPtr context, int n);
 
-		// TODO sqlite3_result_value 
-
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_result_error_toobig(IntPtr context);
 
@@ -1702,9 +1700,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
 
-
-		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
-		// for all possible calls that we want to use.
 		[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_config_none(int op);
 
@@ -1768,9 +1763,6 @@ namespace SQLitePCL
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe byte* sqlite3_errstr(int rc);
 
-		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
-		// for all possible calls.  For now, we are only exposing a single string, and 
-		// depend on the caller to format the string.
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe void sqlite3_log(int iErrCode, byte* zFormat);
 
@@ -1821,7 +1813,6 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser);
-
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy);

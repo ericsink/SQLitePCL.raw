@@ -2119,7 +2119,6 @@ namespace SQLitePCL
                     new Parm("int", "resetFlg"),
                 }
                 ));
-        {
             write_method(new Function(
                 "int",
                 "sqlite3_complete",
@@ -2171,14 +2170,12 @@ namespace SQLitePCL
                     new Parm("int", "enable"),
                 }
                 ));
-        }
 #>
 		<#= attr #>
 		<#= front #> int sqlite3_load_extension(
 		sqlite3 db, byte[] fileName, byte[] procName, ref IntPtr pError);
 
 <#+
-        {
             write_method(new Function(
                 "int",
                 "sqlite3_initialize",
@@ -2612,12 +2609,6 @@ namespace SQLitePCL
                     new Parm("int", "n"),
                 }
                 ));
-        }
-#>
-		// TODO sqlite3_result_value 
-
-<#+
-        {
             write_method(new Function(
                 "void",
                 "sqlite3_result_error_toobig",
@@ -2648,7 +2639,7 @@ namespace SQLitePCL
                     new Parm("int", "nBytes"),
                 }
                 ));
-        }
+
 	if (FEATURE_KEY == "true")
     {
             write_method(new Function(
@@ -2690,17 +2681,9 @@ namespace SQLitePCL
                 }
                 ));
     }
-    else
-    {
-#>
 
-<#+
-    }
-#>
-		// Since sqlite3_config() takes a variable argument list, we have to overload declarations
-		// for all possible calls that we want to use.
-<#+
-        {
+            // Since sqlite3_config() takes a variable argument list, we have to overload declarations
+            // for all possible calls that we want to use.
             write_method_config(new Function(
                 "int",
                 "sqlite3_config_none",
@@ -2874,13 +2857,10 @@ namespace SQLitePCL
                     new Parm("int", "rc"),
                 }
                 ));
-        }
-#>
-		// Since sqlite3_log() takes a variable argument list, we have to overload declarations
-		// for all possible calls.  For now, we are only exposing a single string, and 
-		// depend on the caller to format the string.
-<#+
-        {
+
+            // Since sqlite3_log() takes a variable argument list, we have to overload declarations
+            // for all possible calls.  For now, we are only exposing a single string, and 
+            // depend on the caller to format the string.
             write_method(new Function(
                 "void",
                 "sqlite3_log",
@@ -3020,7 +3000,6 @@ namespace SQLitePCL
                     new Parm("int*", "framesCheckPointed"),
                 }
                 ));
-        }
             write_method(new Function(
                 "int",
                 "sqlite3_set_authorizer",
@@ -3030,6 +3009,7 @@ namespace SQLitePCL
                     new Parm("hook_handle", "pvUser"),
                 }
                 ));
+
 	if (
         (UWP == "true")
         || (KIND == "dynamic")
@@ -3038,11 +3018,10 @@ namespace SQLitePCL
 #>
 		<#= attr #>
 		<#= front #> int sqlite3_win32_set_directory8(uint directoryType, byte* directoryPath);
-<#+
-    }
-#>
 
 <#+
+    }
+
             write_method(new Function(
                 "int",
                 "sqlite3_create_function_v2",
