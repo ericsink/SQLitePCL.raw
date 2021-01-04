@@ -2746,7 +2746,7 @@ namespace SQLitePCL
                 }
                 ));
             write_method(new Function(
-                "IntPtr",
+                "void",
                 "sqlite3_progress_handler",
                 new Parm[] {
                     new Parm("sqlite3", "db"),

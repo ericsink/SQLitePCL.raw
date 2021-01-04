@@ -1621,7 +1621,7 @@ namespace SQLitePCL
 
 		public unsafe static delegate*<sqlite3, NativeMethods.callback_profile, hook_handle, IntPtr> sqlite3_profile = null;
 
-		public unsafe static delegate*<sqlite3, int, NativeMethods.callback_progress_handler, hook_handle, IntPtr> sqlite3_progress_handler = null;
+		public unsafe static delegate*<sqlite3, int, NativeMethods.callback_progress_handler, hook_handle, void> sqlite3_progress_handler = null;
 
 		public unsafe static delegate*<sqlite3, NativeMethods.callback_trace, hook_handle, IntPtr> sqlite3_trace = null;
 
