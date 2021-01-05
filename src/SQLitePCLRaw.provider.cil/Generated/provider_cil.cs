@@ -1511,23 +1511,35 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain)
         {
-            var ret =
-            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, stmt, (IntPtr)ptrRemain);
-            return (int) ret;
+                IntPtr tmp_stmt;
+                    byte* tmp_ptrRemain;
+                var ret =
+            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (IntPtr) (&tmp_stmt), (IntPtr) (&tmp_ptrRemain));
+                stmt = tmp_stmt;
+                    ptrRemain = tmp_ptrRemain;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, out IntPtr stmt, out byte* ptrRemain)
         {
-            var ret =
-            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, stmt, (IntPtr)ptrRemain);
-            return (int) ret;
+                IntPtr tmp_stmt;
+                    byte* tmp_ptrRemain;
+                var ret =
+            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, (IntPtr) (&tmp_stmt), (IntPtr) (&tmp_ptrRemain));
+                stmt = tmp_stmt;
+                    ptrRemain = tmp_ptrRemain;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            var ret =
-            foo.sqlite3_db_status(db.DangerousGetHandle(), op, current, highest, resetFlg);
-            return (int) ret;
+                int tmp_current;
+                    int tmp_highest;
+                var ret =
+            foo.sqlite3_db_status(db.DangerousGetHandle(), op, (IntPtr) (&tmp_current), (IntPtr) (&tmp_highest), resetFlg);
+                current = tmp_current;
+                    highest = tmp_highest;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_complete(byte* pSql)
@@ -1553,9 +1565,19 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-            var ret =
-            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr)ptrDataType, (IntPtr)ptrCollSeq, notNull, primaryKey, autoInc);
-            return (int) ret;
+                byte* tmp_ptrDataType;
+                    byte* tmp_ptrCollSeq;
+                    int tmp_notNull;
+                    int tmp_primaryKey;
+                    int tmp_autoInc;
+                var ret =
+            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr) (&tmp_ptrDataType), (IntPtr) (&tmp_ptrCollSeq), (IntPtr) (&tmp_notNull), (IntPtr) (&tmp_primaryKey), (IntPtr) (&tmp_autoInc));
+                ptrDataType = tmp_ptrDataType;
+                    ptrCollSeq = tmp_ptrCollSeq;
+                    notNull = tmp_notNull;
+                    primaryKey = tmp_primaryKey;
+                    autoInc = tmp_autoInc;
+                return (int) ret;
         }
 
 		public unsafe static byte* sqlite3_value_text(IntPtr p)
@@ -1649,16 +1671,20 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_open(byte* filename, out IntPtr db)
         {
-            var ret =
-            foo.sqlite3_open((IntPtr)filename, db);
-            return (int) ret;
+                IntPtr tmp_db;
+                var ret =
+            foo.sqlite3_open((IntPtr)filename, (IntPtr) (&tmp_db));
+                db = tmp_db;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_open_v2(byte* filename, out IntPtr db, int flags, byte* vfs)
         {
-            var ret =
-            foo.sqlite3_open_v2((IntPtr)filename, db, flags, (IntPtr)vfs);
-            return (int) ret;
+                IntPtr tmp_db;
+                var ret =
+            foo.sqlite3_open_v2((IntPtr)filename, (IntPtr) (&tmp_db), flags, (IntPtr)vfs);
+                db = tmp_db;
+                return (int) ret;
         }
 
 		public unsafe static IntPtr sqlite3_vfs_find(byte* vfs)
@@ -1705,9 +1731,13 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
-            var ret =
-            foo.sqlite3_status(op, current, highwater, resetFlag);
-            return (int) ret;
+                int tmp_current;
+                    int tmp_highwater;
+                var ret =
+            foo.sqlite3_status(op, (IntPtr) (&tmp_current), (IntPtr) (&tmp_highwater), resetFlag);
+                current = tmp_current;
+                    highwater = tmp_highwater;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_busy_timeout(sqlite3 db, int ms)
@@ -1991,10 +2021,11 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func)
         {
-            var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
-            var ret =
+                var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                var ret =
             foo.sqlite3_create_collation(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nType, pvUser.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero);
-            return (int) ret;
+                // TODO unpin strName
+                return (int) ret;
         }
 
 		public unsafe static IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser)
@@ -2074,9 +2105,11 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg)
         {
-            var ret =
-            foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvParam.DangerousGetHandle(), errMsg);
-            return (int) ret;
+                IntPtr tmp_errMsg;
+                var ret =
+            foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvParam.DangerousGetHandle(), (IntPtr) (&tmp_errMsg));
+                errMsg = tmp_errMsg;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_get_autocommit(sqlite3 db)
@@ -2121,10 +2154,11 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg)
         {
-            var pinned_zDbName = System.Runtime.InteropServices.GCHandle.Alloc(zDbName, GCHandleType.Pinned);
-            var ret =
+                var pinned_zDbName = System.Runtime.InteropServices.GCHandle.Alloc(zDbName, GCHandleType.Pinned);
+                var ret =
             foo.sqlite3_file_control(db.DangerousGetHandle(), pinned_zDbName.AddrOfPinnedObject(), op, pArg);
-            return (int) ret;
+                // TODO unpin zDbName
+                return (int) ret;
         }
 
 		public unsafe static sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte* zDestName, sqlite3 sourceDb, byte* zSourceName)
@@ -2164,9 +2198,11 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob)
         {
-            var ret =
-            foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, blob);
-            return (int) ret;
+                IntPtr tmp_blob;
+                var ret =
+            foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, (IntPtr) (&tmp_blob));
+                blob = tmp_blob;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_write(sqlite3_blob blob, byte* b, int n, int offset)
@@ -2220,9 +2256,13 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-            var ret =
-            foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, logSize, framesCheckPointed);
-            return (int) ret;
+                int tmp_logSize;
+                    int tmp_framesCheckPointed;
+                var ret =
+            foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, (IntPtr) (&tmp_logSize), (IntPtr) (&tmp_framesCheckPointed));
+                logSize = tmp_logSize;
+                    framesCheckPointed = tmp_framesCheckPointed;
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser)
@@ -2234,10 +2274,11 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy)
         {
-            var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
-            var ret =
+                var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                var ret =
             foo.sqlite3_create_function_v2(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nArgs, nType, pvUser.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, (fstep != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(fstep) : IntPtr.Zero, (ffinal != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(ffinal) : IntPtr.Zero, (fdestroy != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(fdestroy) : IntPtr.Zero);
-            return (int) ret;
+                // TODO unpin strName
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_keyword_count()
@@ -2249,9 +2290,13 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_keyword_name(int i, out byte* name, out int length)
         {
-            var ret =
-            foo.sqlite3_keyword_name(i, (IntPtr)name, length);
-            return (int) ret;
+                byte* tmp_name;
+                    int tmp_length;
+                var ret =
+            foo.sqlite3_keyword_name(i, (IntPtr) (&tmp_name), (IntPtr) (&tmp_length));
+                name = tmp_name;
+                    length = tmp_length;
+                return (int) ret;
         }
 
 

@@ -61,7 +61,7 @@ let main argv =
         "SQLitePCLRaw.nativelibrary" 
         "SQLitePCLRaw.provider.e_sqlite3.most" 
         "SQLitePCLRaw.provider.e_sqlite3.uwp" 
-        //"SQLitePCLRaw.provider.cil" 
+        "SQLitePCLRaw.provider.cil" 
         "SQLitePCLRaw.provider.e_sqlcipher.most" 
         "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlcipher.most" 

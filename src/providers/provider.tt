@@ -1883,49 +1883,55 @@ namespace SQLitePCL
                     {
                         continue;
                     }
-                    switch (p.typ)
+                    if (p.byref != null)
                     {
-                        case "sqlite3":
-                        case "sqlite3_blob":
-                        case "sqlite3_stmt":
-                        case "sqlite3_backup":
-                        case "hook_handle":
-                            a_args.Add($"{p.nam}.DangerousGetHandle()");
-                            break;
-                        case "NativeMethods.callback_collation":
-                        case "NativeMethods.callback_commit":
-                        case "NativeMethods.callback_profile":
-                        case "NativeMethods.callback_update":
-                        case "NativeMethods.callback_progress_handler":
-                        case "NativeMethods.callback_trace":
-                        case "NativeMethods.callback_rollback":
-                        case "NativeMethods.callback_exec":
-                        case "NativeMethods.callback_scalar_function":
-                        case "NativeMethods.callback_agg_function_step":
-                        case "NativeMethods.callback_agg_function_final":
-                        case "NativeMethods.callback_destroy":
-                        case "NativeMethods.callback_authorizer":
-                            a_args.Add($"({p.nam} != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate({p.nam}) : IntPtr.Zero");
-                            break;
-                        case "byte**":
-                        case "byte*":
-                        case "int*":
-                        case "IntPtr*":
-                            a_args.Add($"(IntPtr){p.nam}");
-                            break;
-                        case "uint":
-                            a_args.Add($"(int){p.nam}");
-                            break;
-                        case "byte[]":
-                            a_args.Add($"pinned_{p.nam}.AddrOfPinnedObject()");
-                            break;
-                        default:
-                            a_args.Add(p.nam);
-                            break;
+                        a_args.Add($"(IntPtr) (&tmp_{p.nam})");
+                    }
+                    else
+                    {
+                        switch (p.typ)
+                        {
+                            case "sqlite3":
+                            case "sqlite3_blob":
+                            case "sqlite3_stmt":
+                            case "sqlite3_backup":
+                            case "hook_handle":
+                                a_args.Add($"{p.nam}.DangerousGetHandle()");
+                                break;
+                            case "NativeMethods.callback_collation":
+                            case "NativeMethods.callback_commit":
+                            case "NativeMethods.callback_profile":
+                            case "NativeMethods.callback_update":
+                            case "NativeMethods.callback_progress_handler":
+                            case "NativeMethods.callback_trace":
+                            case "NativeMethods.callback_rollback":
+                            case "NativeMethods.callback_exec":
+                            case "NativeMethods.callback_scalar_function":
+                            case "NativeMethods.callback_agg_function_step":
+                            case "NativeMethods.callback_agg_function_final":
+                            case "NativeMethods.callback_destroy":
+                            case "NativeMethods.callback_authorizer":
+                                a_args.Add($"({p.nam} != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate({p.nam}) : IntPtr.Zero");
+                                break;
+                            case "byte*":
+                                a_args.Add($"(IntPtr){p.nam}");
+                                break;
+                            case "uint":
+                                a_args.Add($"(int){p.nam}");
+                                break;
+                            case "byte[]":
+                                a_args.Add($"pinned_{p.nam}.AddrOfPinnedObject()");
+                                break;
+                            default:
+                                a_args.Add(p.nam);
+                                break;
+                        }
                     }
                 }
                 if (f.varargs)
                 {
+                    // TODO fix this to actually pass in the args
+                    // which cannot be byref, incidentally
                     a_args.Add("IntPtr.Zero");
                 }
 #>
@@ -1934,15 +1940,25 @@ namespace SQLitePCL
 <#+
             foreach (var p in f.parms)
             {
-                switch (p.typ)
+                if (p.byref != null)
                 {
-                    case "byte[]":
-#>
-            var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
-<#+
-                        break;
-                    default:
-                        break;
+                    // TODO if ref instead of out, need to assign from the ref param
+    #>
+                <#= p.typ #> tmp_<#= p.nam #>;
+    <#+
+                }
+                else
+                {
+                    switch (p.typ)
+                    {
+                        case "byte[]":
+    #>
+                var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
+    <#+
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             if (f.ret != "void")
@@ -1954,6 +1970,28 @@ namespace SQLitePCL
 #>
             foo.<#= (f.entry != null) ? f.entry : f.nam #>(<#= string.Join(", ", a_args) #>);
 <#+
+            foreach (var p in f.parms)
+            {
+                if (p.byref != null)
+                {
+    #>
+                <#= p.nam #> = tmp_<#= p.nam #>;
+    <#+
+                }
+                else
+                {
+                    switch (p.typ)
+                    {
+                        case "byte[]":
+    #>
+                // TODO unpin <#= p.nam #>
+    <#+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             switch (f.ret)
             {
                 case "void":
