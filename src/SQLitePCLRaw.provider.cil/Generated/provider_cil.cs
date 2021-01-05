@@ -1512,14 +1512,14 @@ namespace SQLitePCL
 		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain)
         {
             var ret =
-            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, stmt, ptrRemain);
+            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, stmt, (IntPtr)ptrRemain);
             return (int) ret;
         }
 
 		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, out IntPtr stmt, out byte* ptrRemain)
         {
             var ret =
-            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, stmt, ptrRemain);
+            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, stmt, (IntPtr)ptrRemain);
             return (int) ret;
         }
 
@@ -1554,7 +1554,7 @@ namespace SQLitePCL
 		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             var ret =
-            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, ptrDataType, ptrCollSeq, notNull, primaryKey, autoInc);
+            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr)ptrDataType, (IntPtr)ptrCollSeq, notNull, primaryKey, autoInc);
             return (int) ret;
         }
 
@@ -2250,7 +2250,7 @@ namespace SQLitePCL
 		public unsafe static int sqlite3_keyword_name(int i, out byte* name, out int length)
         {
             var ret =
-            foo.sqlite3_keyword_name(i, name, length);
+            foo.sqlite3_keyword_name(i, (IntPtr)name, length);
             return (int) ret;
         }
 

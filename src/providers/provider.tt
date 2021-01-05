@@ -1816,6 +1816,7 @@ namespace SQLitePCL
         public string typ { get; private set; }
         public string nam { get; private set; }
         public bool extra { get; private set; }
+        public string byref { get; private set; }
         public Parm(string t, string n)
         {
             typ = t;
@@ -1824,6 +1825,11 @@ namespace SQLitePCL
         public Parm SetExtra(bool b)
         {
             extra = b;
+            return this;
+        }
+        public Parm SetByRef(string s)
+        {
+            byref = s;
             return this;
         }
     }
@@ -1863,10 +1869,11 @@ namespace SQLitePCL
             if (k == "cil")
             {
                 var a_parms = new System.Collections.Generic.List<string>();
+                // TODO need tmp_ for byrefs
                 var a_args = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
-                    a_parms.Add(p.typ + " " + p.nam);
+                    a_parms.Add(((p.byref != null) ? p.byref + " " : "") + p.typ + " " + p.nam);
                     if (p.extra)
                     {
                         continue;
@@ -1967,7 +1974,7 @@ namespace SQLitePCL
                 var a = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
-                    a.Add(p.typ + " " + p.nam);
+                    a.Add(((p.byref != null) ? p.byref + " " : "") + p.typ + " " + p.nam);
                 }
                 string front;
                 string attr;
@@ -2151,8 +2158,8 @@ namespace SQLitePCL
                     new Parm("sqlite3", "db"),
                     new Parm("byte*", "pSql"),
                     new Parm("int", "nBytes"),
-                    new Parm("out IntPtr", "stmt"),
-                    new Parm("out byte*", "ptrRemain"),
+                    new Parm("IntPtr", "stmt").SetByRef("out"),
+                    new Parm("byte*", "ptrRemain").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -2163,8 +2170,8 @@ namespace SQLitePCL
                     new Parm("byte*", "pSql"),
                     new Parm("int", "nBytes"),
                     new Parm("uint", "flags"),
-                    new Parm("out IntPtr", "stmt"),
-                    new Parm("out byte*", "ptrRemain"),
+                    new Parm("IntPtr", "stmt").SetByRef("out"),
+                    new Parm("byte*", "ptrRemain").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -2173,8 +2180,8 @@ namespace SQLitePCL
                 new Parm[] {
                     new Parm("sqlite3", "db"),
                     new Parm("int", "op"),
-                    new Parm("out int", "current"),
-                    new Parm("out int", "highest"),
+                    new Parm("int", "current").SetByRef("out"),
+                    new Parm("int", "highest").SetByRef("out"),
                     new Parm("int", "resetFlg"),
                 }
                 ));
@@ -2207,11 +2214,11 @@ namespace SQLitePCL
                     new Parm("byte*", "dbName"),
                     new Parm("byte*", "tblName"),
                     new Parm("byte*", "colName"),
-                    new Parm("out byte*", "ptrDataType"),
-                    new Parm("out byte*", "ptrCollSeq"),
-                    new Parm("out int", "notNull"),
-                    new Parm("out int", "primaryKey"),
-                    new Parm("out int", "autoInc"),
+                    new Parm("byte*", "ptrDataType").SetByRef("out"),
+                    new Parm("byte*", "ptrCollSeq").SetByRef("out"),
+                    new Parm("int", "notNull").SetByRef("out"),
+                    new Parm("int", "primaryKey").SetByRef("out"),
+                    new Parm("int", "autoInc").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -2309,7 +2316,7 @@ namespace SQLitePCL
                 "sqlite3_open",
                 new Parm[] {
                     new Parm("byte*", "filename"),
-                    new Parm("out IntPtr", "db"),
+                    new Parm("IntPtr", "db").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -2317,7 +2324,7 @@ namespace SQLitePCL
                 "sqlite3_open_v2",
                 new Parm[] {
                     new Parm("byte*", "filename"),
-                    new Parm("out IntPtr", "db"),
+                    new Parm("IntPtr", "db").SetByRef("out"),
                     new Parm("int", "flags"),
                     new Parm("byte*", "vfs"),
                 }
@@ -2368,8 +2375,8 @@ namespace SQLitePCL
                 "sqlite3_status",
                 new Parm[] {
                     new Parm("int", "op"),
-                    new Parm("out int", "current"),
-                    new Parm("out int", "highwater"),
+                    new Parm("int", "current").SetByRef("out"),
+                    new Parm("int", "highwater").SetByRef("out"),
                     new Parm("int", "resetFlag"),
                 }
                 ));
@@ -2880,7 +2887,7 @@ namespace SQLitePCL
                     new Parm("byte*", "strSql"),
                     new Parm("NativeMethods.callback_exec", "cb"),
                     new Parm("hook_handle", "pvParam"),
-                    new Parm("out IntPtr", "errMsg"),
+                    new Parm("IntPtr", "errMsg").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -2993,7 +3000,7 @@ namespace SQLitePCL
                     new Parm("byte*", "col"),
                     new Parm("long", "rowid"),
                     new Parm("int", "flags"),
-                    new Parm("out IntPtr", "blob"),
+                    new Parm("IntPtr", "blob").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -3061,8 +3068,8 @@ namespace SQLitePCL
                     new Parm("sqlite3", "db"),
                     new Parm("byte*", "dbName"),
                     new Parm("int", "eMode"),
-                    new Parm("out int", "logSize"),
-                    new Parm("out int", "framesCheckPointed"),
+                    new Parm("int", "logSize").SetByRef("out"),
+                    new Parm("int", "framesCheckPointed").SetByRef("out"),
                 }
                 ));
             write_method(new Function(
@@ -3116,8 +3123,8 @@ namespace SQLitePCL
                 "sqlite3_keyword_name",
                 new Parm[] {
                     new Parm("int", "i"),
-                    new Parm("out byte*", "name"),
-                    new Parm("out int", "length"),
+                    new Parm("byte*", "name").SetByRef("out"),
+                    new Parm("int", "length").SetByRef("out"),
                 }
                 ));
 	}
