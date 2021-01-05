@@ -60,10 +60,7 @@ namespace SQLitePCL
         {
             fixed (byte* p = filename)
             {
-                IntPtr tmp_db;
-                var rc = NativeMethods.sqlite3_open(p, &tmp_db);
-                db = tmp_db;
-                return rc;
+                return NativeMethods.sqlite3_open(p, out db);
             }
         }
 
@@ -71,10 +68,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_filename = filename, p_vfs = vfs)
             {
-                IntPtr tmp_db;
-                var rc = NativeMethods.sqlite3_open_v2(p_filename, &tmp_db, flags, p_vfs);
-                db = tmp_db;
-                return rc;
+                return NativeMethods.sqlite3_open_v2(p_filename, out db, flags, p_vfs);
             }
         }
 
@@ -182,9 +176,7 @@ namespace SQLitePCL
             {
                 fixed (byte* p_sql = sql)
                 {
-                    IntPtr tmp_errMsg;
-                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, &tmp_errMsg);
-                    errMsg = tmp_errMsg;
+                    rc = NativeMethods.sqlite3_exec(db, p_sql, cb, h, out errMsg);
                 }
             }
 			h.Dispose();
@@ -217,19 +209,11 @@ namespace SQLitePCL
         {
             fixed (byte* p_dbName = dbName, p_tblName = tblName, p_colName = colName)
             {
-                byte* p_dataType;
-                byte* p_collSeq;
-                int tmp_notNull;
-                int tmp_primaryKey;
-                int tmp_autoInc;
                 var rc = NativeMethods.sqlite3_table_column_metadata(
                             db, p_dbName, p_tblName, p_colName, 
-                            &p_dataType, &p_collSeq, &tmp_notNull, &tmp_primaryKey, &tmp_autoInc);
+                            out var p_dataType, out var p_collSeq, out notNull, out primaryKey, out autoInc);
                 dataType = utf8z.FromPtr(p_dataType);
                 collSeq = utf8z.FromPtr(p_collSeq);
-                notNull = tmp_notNull;
-                primaryKey = tmp_primaryKey;
-                autoInc = tmp_autoInc;
                 return rc;
             }
         }
@@ -258,10 +242,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                IntPtr tmp_stm;
-                byte* p_tail;
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, &tmp_stm, &p_tail);
-                stm = tmp_stm;
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -280,10 +261,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                IntPtr tmp_stm;
-                byte* p_tail;
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, &tmp_stm, &p_tail);
-                stm = tmp_stm;
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
                 // TODO we could skip the strlen by using the length we were given
                 tail = utf8z.FromPtr(p_tail);
                 return rc;
@@ -294,10 +272,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                IntPtr tmp_stm;
-                byte* p_tail;
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, &tmp_stm, &p_tail);
-                stm = tmp_stm;
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
                 if (len_remain > 0)
@@ -316,24 +291,16 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                IntPtr tmp_stm;
-                byte* p_tail;
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, &tmp_stm, &p_tail);
-                stm = tmp_stm;
+                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
                 // TODO we could skip the strlen by using the length we were given
                 tail = utf8z.FromPtr(p_tail);
                 return rc;
             }
         }
 
-        unsafe int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
+        int ISQLite3Provider.sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-            int tmp_current;
-            int tmp_highest;
-            var rc = NativeMethods.sqlite3_db_status(db, op, &tmp_current, &tmp_highest, resetFlg);
-            current = tmp_current;
-            highest = tmp_highest;
-            return rc;
+            return NativeMethods.sqlite3_db_status(db, op, out current, out highest, resetFlg);
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sql(sqlite3_stmt stmt)
@@ -350,10 +317,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
             {
-                IntPtr tmp_blob;
-                var rc = NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, &tmp_blob);
-                blob = tmp_blob;
-                return rc;
+                return NativeMethods.sqlite3_blob_open(db, p_db, p_table, p_col, rowid, flags, out blob);
             }
         }
 
@@ -1042,14 +1006,9 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
-        unsafe int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
+        int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
-            int tmp_current;
-            int tmp_highwater;
-            var rc = NativeMethods.sqlite3_status(op, &tmp_current, &tmp_highwater, resetFlag);
-            current = tmp_current;
-            highwater = tmp_highwater;
-            return rc;
+            return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
         }
 
         unsafe utf8z ISQLite3Provider.sqlite3_sourceid()
@@ -1406,12 +1365,7 @@ namespace SQLitePCL
         {
             fixed (byte* p_dbName = dbName)
             {
-                int tmp_logSize;
-                int tmp_framesCheckPointed;
-                var rc = NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, &tmp_logSize, &tmp_framesCheckPointed);
-                logSize = tmp_logSize;
-                framesCheckPointed = tmp_framesCheckPointed;
-                return rc;
+                return NativeMethods.sqlite3_wal_checkpoint_v2(db, p_dbName, eMode, out logSize, out framesCheckPointed);
             }
         }
 
@@ -1422,9 +1376,7 @@ namespace SQLitePCL
 
 		unsafe int ISQLite3Provider.sqlite3_keyword_name(int i, out string name)
 		{
-            byte* p_name;
-            int length;
-			var rc = NativeMethods.sqlite3_keyword_name(i, &p_name, &length);
+			var rc = NativeMethods.sqlite3_keyword_name(i, out var p_name, out var length);
 
 			// p_name is NOT null-terminated
 			name = Encoding.UTF8.GetString(p_name, length);
@@ -1557,24 +1509,24 @@ namespace SQLitePCL
             return (byte*) ret;
         }
 
-		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, IntPtr* pstmt, byte** ptrRemain)
+		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain)
         {
             var ret =
-            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (IntPtr)pstmt, (IntPtr)ptrRemain);
+            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, stmt, ptrRemain);
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, IntPtr* pstmt, byte** ptrRemain)
+		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, out IntPtr stmt, out byte* ptrRemain)
         {
             var ret =
-            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, (IntPtr)pstmt, (IntPtr)ptrRemain);
+            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, stmt, ptrRemain);
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_db_status(sqlite3 db, int op, int* current, int* highest, int resetFlg)
+		public unsafe static int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
             var ret =
-            foo.sqlite3_db_status(db.DangerousGetHandle(), op, (IntPtr)current, (IntPtr)highest, resetFlg);
+            foo.sqlite3_db_status(db.DangerousGetHandle(), op, current, highest, resetFlg);
             return (int) ret;
         }
 
@@ -1599,10 +1551,10 @@ namespace SQLitePCL
             return (byte*) ret;
         }
 
-		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, byte** ptrDataType, byte** ptrCollSeq, int* notNull, int* primaryKey, int* autoInc)
+		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc)
         {
             var ret =
-            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr)ptrDataType, (IntPtr)ptrCollSeq, (IntPtr)notNull, (IntPtr)primaryKey, (IntPtr)autoInc);
+            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, ptrDataType, ptrCollSeq, notNull, primaryKey, autoInc);
             return (int) ret;
         }
 
@@ -1695,17 +1647,17 @@ namespace SQLitePCL
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_open(byte* filename, IntPtr* db)
+		public unsafe static int sqlite3_open(byte* filename, out IntPtr db)
         {
             var ret =
-            foo.sqlite3_open((IntPtr)filename, (IntPtr)db);
+            foo.sqlite3_open((IntPtr)filename, db);
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_open_v2(byte* filename, IntPtr* db, int flags, byte* vfs)
+		public unsafe static int sqlite3_open_v2(byte* filename, out IntPtr db, int flags, byte* vfs)
         {
             var ret =
-            foo.sqlite3_open_v2((IntPtr)filename, (IntPtr)db, flags, (IntPtr)vfs);
+            foo.sqlite3_open_v2((IntPtr)filename, db, flags, (IntPtr)vfs);
             return (int) ret;
         }
 
@@ -1751,10 +1703,10 @@ namespace SQLitePCL
             return (long) ret;
         }
 
-		public unsafe static int sqlite3_status(int op, int* current, int* highest, int resetFlg)
+		public unsafe static int sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
             var ret =
-            foo.sqlite3_status(op, (IntPtr)current, (IntPtr)highest, resetFlg);
+            foo.sqlite3_status(op, current, highwater, resetFlag);
             return (int) ret;
         }
 
@@ -2120,10 +2072,10 @@ namespace SQLitePCL
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, IntPtr* errMsg)
+		public unsafe static int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, out IntPtr errMsg)
         {
             var ret =
-            foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvParam.DangerousGetHandle(), (IntPtr)errMsg);
+            foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvParam.DangerousGetHandle(), errMsg);
             return (int) ret;
         }
 
@@ -2210,10 +2162,10 @@ namespace SQLitePCL
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, IntPtr* blob)
+		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob)
         {
             var ret =
-            foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, (IntPtr)blob);
+            foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, blob);
             return (int) ret;
         }
 
@@ -2266,10 +2218,10 @@ namespace SQLitePCL
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, int* logSize, int* framesCheckPointed)
+		public unsafe static int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
             var ret =
-            foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, (IntPtr)logSize, (IntPtr)framesCheckPointed);
+            foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, logSize, framesCheckPointed);
             return (int) ret;
         }
 
@@ -2295,10 +2247,10 @@ namespace SQLitePCL
             return (int) ret;
         }
 
-		public unsafe static int sqlite3_keyword_name(int i, byte** name, int* length)
+		public unsafe static int sqlite3_keyword_name(int i, out byte* name, out int length)
         {
             var ret =
-            foo.sqlite3_keyword_name(i, (IntPtr)name, (IntPtr)length);
+            foo.sqlite3_keyword_name(i, name, length);
             return (int) ret;
         }
 
