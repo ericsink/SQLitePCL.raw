@@ -1860,20 +1860,25 @@ namespace SQLitePCL
 
 	void write_api_entries(string k)
 	{
-        // TODO reconsider allowing out params at this layer.
-        // pinvoke marshal takes care of it.
-        // custom marshal for cil could do the same.
-        // would need Parm class to represent out/ref/etc.
+        System.Collections.Generic.List<string> get_parm_list(Function f)
+        {
+            var a_parms = new System.Collections.Generic.List<string>();
+            foreach (var p in f.parms)
+            {
+                a_parms.Add(((p.byref != null) ? p.byref + " " : "") + p.typ + " " + p.nam);
+            }
+            return a_parms;
+        }
+
         void write_method(Function f)
         {
             if (k == "cil")
             {
-                var a_parms = new System.Collections.Generic.List<string>();
+                var a_parms = get_parm_list(f);
                 // TODO need tmp_ for byrefs
                 var a_args = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
-                    a_parms.Add(((p.byref != null) ? p.byref + " " : "") + p.typ + " " + p.nam);
                     if (p.extra)
                     {
                         continue;
@@ -1971,11 +1976,8 @@ namespace SQLitePCL
             }
             else
             {
-                var a = new System.Collections.Generic.List<string>();
-                foreach (var p in f.parms)
-                {
-                    a.Add(((p.byref != null) ? p.byref + " " : "") + p.typ + " " + p.nam);
-                }
+                var a_parms = get_parm_list(f);
+
                 string front;
                 string attr;
                 if (k == "dynamic")
@@ -2008,7 +2010,7 @@ namespace SQLitePCL
                 }
 #>
 		<#= attr #>
-		<#= front #> <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a) #>);
+		<#= front #> <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a_parms) #>);
 
 <#+
             }
