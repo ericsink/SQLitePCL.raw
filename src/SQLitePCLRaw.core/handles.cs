@@ -35,6 +35,13 @@ namespace SQLitePCL
         {
         }
 
+        public static sqlite3_backup From(IntPtr p)
+        {
+            var h = new sqlite3_backup();
+            h.SetHandle(p);
+            return h;
+        }
+
         public override bool IsInvalid => handle == IntPtr.Zero;
 
         protected override bool ReleaseHandle()

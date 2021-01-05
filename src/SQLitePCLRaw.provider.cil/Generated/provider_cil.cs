@@ -1433,261 +1433,874 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-		public unsafe static delegate*<IntPtr, int> sqlite3_close = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_close_v2 = null;
-
-		public unsafe static delegate*<int, int> sqlite3_enable_shared_cache = null;
-
-		public unsafe static delegate*<sqlite3, void> sqlite3_interrupt = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_finalize = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_reset = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_clear_bindings = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int, int> sqlite3_stmt_status = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_bind_parameter_name = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_database_name = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_decltype = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_name = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_origin_name = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_table_name = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*> sqlite3_column_text = null;
-
-		public unsafe static delegate*<sqlite3, byte*> sqlite3_errmsg = null;
-
-		public unsafe static delegate*<sqlite3, byte*, int> sqlite3_db_readonly = null;
-
-		public unsafe static delegate*<sqlite3, byte*, byte*> sqlite3_db_filename = null;
-
-		public unsafe static delegate*<sqlite3, byte*, int, IntPtr*, byte**, int> sqlite3_prepare_v2 = null;
-
-		public unsafe static delegate*<sqlite3, byte*, int, uint, IntPtr*, byte**, int> sqlite3_prepare_v3 = null;
-
-		public unsafe static delegate*<sqlite3, int, int*, int*, int, int> sqlite3_db_status = null;
-
-		public unsafe static delegate*<byte*, int> sqlite3_complete = null;
-
-		public unsafe static delegate*<byte*, int> sqlite3_compileoption_used = null;
-
-		public unsafe static delegate*<int, byte*> sqlite3_compileoption_get = null;
-
-		public unsafe static delegate*<sqlite3, byte*, byte*, byte*, byte**, byte**, int*, int*, int*, int> sqlite3_table_column_metadata = null;
-
-		public unsafe static delegate*<IntPtr, byte*> sqlite3_value_text = null;
-
-		public unsafe static delegate*<sqlite3, int, int> sqlite3_enable_load_extension = null;
-
-		public unsafe static delegate*<int> sqlite3_initialize = null;
-
-		public unsafe static delegate*<int> sqlite3_shutdown = null;
-
-		public unsafe static delegate*<byte*> sqlite3_libversion = null;
-
-		public unsafe static delegate*<int> sqlite3_libversion_number = null;
-
-		public unsafe static delegate*<int> sqlite3_threadsafe = null;
-
-		public unsafe static delegate*<byte*> sqlite3_sourceid = null;
-
-		public unsafe static delegate*<int, IntPtr> sqlite3_malloc = null;
-
-		public unsafe static delegate*<IntPtr, int, IntPtr> sqlite3_realloc = null;
-
-		public unsafe static delegate*<IntPtr, void> sqlite3_free = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr, int> sqlite3_stricmp = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr, int, int> sqlite3_strnicmp = null;
-
-		public unsafe static delegate*<byte*, IntPtr*, int> sqlite3_open = null;
-
-		public unsafe static delegate*<byte*, IntPtr*, int, byte*, int> sqlite3_open_v2 = null;
-
-		public unsafe static delegate*<byte*, IntPtr> sqlite3_vfs_find = null;
-
-		public unsafe static delegate*<sqlite3, long> sqlite3_last_insert_rowid = null;
-
-		public unsafe static delegate*<sqlite3, int> sqlite3_changes = null;
-
-		public unsafe static delegate*<sqlite3, int> sqlite3_total_changes = null;
-
-		public unsafe static delegate*<long> sqlite3_memory_used = null;
-
-		public unsafe static delegate*<int, long> sqlite3_memory_highwater = null;
-
-		public unsafe static delegate*<int, int*, int*, int, int> sqlite3_status = null;
-
-		public unsafe static delegate*<sqlite3, int, int> sqlite3_busy_timeout = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*, int, IntPtr, int> sqlite3_bind_blob = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int, int> sqlite3_bind_zeroblob = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, double, int> sqlite3_bind_double = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int, int> sqlite3_bind_int = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, long, int> sqlite3_bind_int64 = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int> sqlite3_bind_null = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, byte*, int, IntPtr, int> sqlite3_bind_text = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_bind_parameter_count = null;
-
-		public unsafe static delegate*<sqlite3_stmt, byte*, int> sqlite3_bind_parameter_index = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_column_count = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_data_count = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_step = null;
-
-		public unsafe static delegate*<sqlite3_stmt, byte*> sqlite3_sql = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, double> sqlite3_column_double = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int> sqlite3_column_int = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, long> sqlite3_column_int64 = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, IntPtr> sqlite3_column_blob = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int> sqlite3_column_bytes = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int, int> sqlite3_column_type = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_aggregate_count = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr> sqlite3_value_blob = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_value_bytes = null;
-
-		public unsafe static delegate*<IntPtr, double> sqlite3_value_double = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_value_int = null;
-
-		public unsafe static delegate*<IntPtr, long> sqlite3_value_int64 = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_value_type = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr> sqlite3_user_data = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr, int, IntPtr, void> sqlite3_result_blob = null;
-
-		public unsafe static delegate*<IntPtr, double, void> sqlite3_result_double = null;
-
-		public unsafe static delegate*<IntPtr, byte*, int, void> sqlite3_result_error = null;
-
-		public unsafe static delegate*<IntPtr, int, void> sqlite3_result_int = null;
-
-		public unsafe static delegate*<IntPtr, long, void> sqlite3_result_int64 = null;
-
-		public unsafe static delegate*<IntPtr, void> sqlite3_result_null = null;
-
-		public unsafe static delegate*<IntPtr, byte*, int, IntPtr, void> sqlite3_result_text = null;
-
-		public unsafe static delegate*<IntPtr, int, void> sqlite3_result_zeroblob = null;
-
-		public unsafe static delegate*<IntPtr, void> sqlite3_result_error_toobig = null;
-
-		public unsafe static delegate*<IntPtr, void> sqlite3_result_error_nomem = null;
-
-		public unsafe static delegate*<IntPtr, int, void> sqlite3_result_error_code = null;
-
-		public unsafe static delegate*<IntPtr, int, IntPtr> sqlite3_aggregate_context = null;
-
-		public unsafe static delegate*<int, int> sqlite3_config_none = null;
-
-		public unsafe static delegate*<int, int, int> sqlite3_config_int = null;
-
-		public unsafe static delegate*<int, NativeMethods.callback_log, hook_handle, int> sqlite3_config_log = null;
-
-		public unsafe static delegate*<sqlite3, byte[], int, hook_handle, NativeMethods.callback_collation, int> sqlite3_create_collation = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_update, hook_handle, IntPtr> sqlite3_update_hook = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_commit, hook_handle, IntPtr> sqlite3_commit_hook = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_profile, hook_handle, IntPtr> sqlite3_profile = null;
-
-		public unsafe static delegate*<sqlite3, int, NativeMethods.callback_progress_handler, hook_handle, void> sqlite3_progress_handler = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_trace, hook_handle, IntPtr> sqlite3_trace = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_rollback, hook_handle, IntPtr> sqlite3_rollback_hook = null;
-
-		public unsafe static delegate*<IntPtr, IntPtr> sqlite3_db_handle = null;
-
-		public unsafe static delegate*<sqlite3, IntPtr, IntPtr> sqlite3_next_stmt = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_stmt_isexplain = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_stmt_busy = null;
-
-		public unsafe static delegate*<sqlite3_stmt, int> sqlite3_stmt_readonly = null;
-
-		public unsafe static delegate*<sqlite3, byte*, NativeMethods.callback_exec, hook_handle, IntPtr*, int> sqlite3_exec = null;
-
-		public unsafe static delegate*<sqlite3, int> sqlite3_get_autocommit = null;
-
-		public unsafe static delegate*<sqlite3, int, int> sqlite3_extended_result_codes = null;
-
-		public unsafe static delegate*<sqlite3, int> sqlite3_errcode = null;
-
-		public unsafe static delegate*<sqlite3, int> sqlite3_extended_errcode = null;
-
-		public unsafe static delegate*<int, byte*> sqlite3_errstr = null;
-
-		public unsafe static delegate*<int, byte*, void> sqlite3_log = null;
-
-		public unsafe static delegate*<sqlite3, byte[], int, IntPtr, int> sqlite3_file_control = null;
-
-		public unsafe static delegate*<sqlite3, byte*, sqlite3, byte*, sqlite3_backup> sqlite3_backup_init = null;
-
-		public unsafe static delegate*<sqlite3_backup, int, int> sqlite3_backup_step = null;
-
-		public unsafe static delegate*<sqlite3_backup, int> sqlite3_backup_remaining = null;
-
-		public unsafe static delegate*<sqlite3_backup, int> sqlite3_backup_pagecount = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_backup_finish = null;
-
-		public unsafe static delegate*<sqlite3, byte*, byte*, byte*, long, int, IntPtr*, int> sqlite3_blob_open = null;
-
-		public unsafe static delegate*<sqlite3_blob, byte*, int, int, int> sqlite3_blob_write = null;
-
-		public unsafe static delegate*<sqlite3_blob, byte*, int, int, int> sqlite3_blob_read = null;
-
-		public unsafe static delegate*<sqlite3_blob, int> sqlite3_blob_bytes = null;
-
-		public unsafe static delegate*<sqlite3_blob, long, int> sqlite3_blob_reopen = null;
-
-		public unsafe static delegate*<IntPtr, int> sqlite3_blob_close = null;
-
-		public unsafe static delegate*<sqlite3, int, int> sqlite3_wal_autocheckpoint = null;
-
-		public unsafe static delegate*<sqlite3, byte*, int> sqlite3_wal_checkpoint = null;
-
-		public unsafe static delegate*<sqlite3, byte*, int, int*, int*, int> sqlite3_wal_checkpoint_v2 = null;
-
-		public unsafe static delegate*<sqlite3, NativeMethods.callback_authorizer, hook_handle, int> sqlite3_set_authorizer = null;
-
-		public unsafe static delegate*<sqlite3, byte[], int, int, hook_handle, NativeMethods.callback_scalar_function, NativeMethods.callback_agg_function_step, NativeMethods.callback_agg_function_final, NativeMethods.callback_destroy, int> sqlite3_create_function_v2 = null;
-
-		public unsafe static delegate*<int> sqlite3_keyword_count = null;
-
-		public unsafe static delegate*<int, byte**, int*, int> sqlite3_keyword_name = null;
+		public unsafe static int sqlite3_close(IntPtr db)
+        {
+            var ret =
+            foo.sqlite3_close(db);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_close_v2(IntPtr db)
+        {
+            var ret =
+            foo.sqlite3_close_v2(db);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_enable_shared_cache(int enable)
+        {
+            var ret =
+            foo.sqlite3_enable_shared_cache(enable);
+            return (int) ret;
+        }
+
+		public unsafe static void sqlite3_interrupt(sqlite3 db)
+        {
+            foo.sqlite3_interrupt(db.DangerousGetHandle());
+        }
+
+		public unsafe static int sqlite3_finalize(IntPtr stmt)
+        {
+            var ret =
+            foo.sqlite3_finalize(stmt);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_reset(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_reset(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_clear_bindings(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_clear_bindings(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
+        {
+            var ret =
+            foo.sqlite3_stmt_status(stm.DangerousGetHandle(), op, resetFlg);
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_bind_parameter_name(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_database_name(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_database_name(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_decltype(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_decltype(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_name(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_name(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_origin_name(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_table_name(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_table_name(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_column_text(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_text(stmt.DangerousGetHandle(), index);
+            return (byte*) ret;
+        }
+
+		public unsafe static byte* sqlite3_errmsg(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_errmsg(db.DangerousGetHandle());
+            return (byte*) ret;
+        }
+
+		public unsafe static int sqlite3_db_readonly(sqlite3 db, byte* dbName)
+        {
+            var ret =
+            foo.sqlite3_db_readonly(db.DangerousGetHandle(), (IntPtr)dbName);
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_db_filename(sqlite3 db, byte* att)
+        {
+            var ret =
+            foo.sqlite3_db_filename(db.DangerousGetHandle(), (IntPtr)att);
+            return (byte*) ret;
+        }
+
+		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, IntPtr* pstmt, byte** ptrRemain)
+        {
+            var ret =
+            foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (IntPtr)pstmt, (IntPtr)ptrRemain);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, IntPtr* pstmt, byte** ptrRemain)
+        {
+            var ret =
+            foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, (IntPtr)pstmt, (IntPtr)ptrRemain);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_db_status(sqlite3 db, int op, int* current, int* highest, int resetFlg)
+        {
+            var ret =
+            foo.sqlite3_db_status(db.DangerousGetHandle(), op, (IntPtr)current, (IntPtr)highest, resetFlg);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_complete(byte* pSql)
+        {
+            var ret =
+            foo.sqlite3_complete((IntPtr)pSql);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_compileoption_used(byte* pSql)
+        {
+            var ret =
+            foo.sqlite3_compileoption_used((IntPtr)pSql);
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_compileoption_get(int n)
+        {
+            var ret =
+            foo.sqlite3_compileoption_get(n);
+            return (byte*) ret;
+        }
+
+		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, byte** ptrDataType, byte** ptrCollSeq, int* notNull, int* primaryKey, int* autoInc)
+        {
+            var ret =
+            foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr)ptrDataType, (IntPtr)ptrCollSeq, (IntPtr)notNull, (IntPtr)primaryKey, (IntPtr)autoInc);
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_value_text(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_text(p);
+            return (byte*) ret;
+        }
+
+		public unsafe static int sqlite3_enable_load_extension(sqlite3 db, int enable)
+        {
+            var ret =
+            foo.sqlite3_enable_load_extension(db.DangerousGetHandle(), enable);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_initialize()
+        {
+            var ret =
+            foo.sqlite3_initialize();
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_shutdown()
+        {
+            var ret =
+            foo.sqlite3_shutdown();
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_libversion()
+        {
+            var ret =
+            foo.sqlite3_libversion();
+            return (byte*) ret;
+        }
+
+		public unsafe static int sqlite3_libversion_number()
+        {
+            var ret =
+            foo.sqlite3_libversion_number();
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_threadsafe()
+        {
+            var ret =
+            foo.sqlite3_threadsafe();
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_sourceid()
+        {
+            var ret =
+            foo.sqlite3_sourceid();
+            return (byte*) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_malloc(int n)
+        {
+            var ret =
+            foo.sqlite3_malloc(n);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_realloc(IntPtr p, int n)
+        {
+            var ret =
+            foo.sqlite3_realloc(p, n);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static void sqlite3_free(IntPtr p)
+        {
+            foo.sqlite3_free(p);
+        }
+
+		public unsafe static int sqlite3_stricmp(IntPtr p, IntPtr q)
+        {
+            var ret =
+            foo.sqlite3_stricmp(p, q);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        {
+            var ret =
+            foo.sqlite3_strnicmp(p, q, n);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_open(byte* filename, IntPtr* db)
+        {
+            var ret =
+            foo.sqlite3_open((IntPtr)filename, (IntPtr)db);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_open_v2(byte* filename, IntPtr* db, int flags, byte* vfs)
+        {
+            var ret =
+            foo.sqlite3_open_v2((IntPtr)filename, (IntPtr)db, flags, (IntPtr)vfs);
+            return (int) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_vfs_find(byte* vfs)
+        {
+            var ret =
+            foo.sqlite3_vfs_find((IntPtr)vfs);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static long sqlite3_last_insert_rowid(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_last_insert_rowid(db.DangerousGetHandle());
+            return (long) ret;
+        }
+
+		public unsafe static int sqlite3_changes(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_changes(db.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_total_changes(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_total_changes(db.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static long sqlite3_memory_used()
+        {
+            var ret =
+            foo.sqlite3_memory_used();
+            return (long) ret;
+        }
+
+		public unsafe static long sqlite3_memory_highwater(int resetFlag)
+        {
+            var ret =
+            foo.sqlite3_memory_highwater(resetFlag);
+            return (long) ret;
+        }
+
+		public unsafe static int sqlite3_status(int op, int* current, int* highest, int resetFlg)
+        {
+            var ret =
+            foo.sqlite3_status(op, (IntPtr)current, (IntPtr)highest, resetFlg);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_busy_timeout(sqlite3 db, int ms)
+        {
+            var ret =
+            foo.sqlite3_busy_timeout(db.DangerousGetHandle(), ms);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte* val, int nSize, IntPtr nTransient)
+        {
+            var ret =
+            foo.sqlite3_bind_blob(stmt.DangerousGetHandle(), index, (IntPtr)val, nSize, nTransient);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size)
+        {
+            var ret =
+            foo.sqlite3_bind_zeroblob(stmt.DangerousGetHandle(), index, size);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)
+        {
+            var ret =
+            foo.sqlite3_bind_double(stmt.DangerousGetHandle(), index, val);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val)
+        {
+            var ret =
+            foo.sqlite3_bind_int(stmt.DangerousGetHandle(), index, val);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val)
+        {
+            var ret =
+            foo.sqlite3_bind_int64(stmt.DangerousGetHandle(), index, val);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_null(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_bind_null(stmt.DangerousGetHandle(), index);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte* val, int nlen, IntPtr pvReserved)
+        {
+            var ret =
+            foo.sqlite3_bind_text(stmt.DangerousGetHandle(), index, (IntPtr)val, nlen, pvReserved);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_bind_parameter_count(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte* strName)
+        {
+            var ret =
+            foo.sqlite3_bind_parameter_index(stmt.DangerousGetHandle(), (IntPtr)strName);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_column_count(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_column_count(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_data_count(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_data_count(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_step(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_step(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_sql(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_sql(stmt.DangerousGetHandle());
+            return (byte*) ret;
+        }
+
+		public unsafe static double sqlite3_column_double(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_double(stmt.DangerousGetHandle(), index);
+            return (double) ret;
+        }
+
+		public unsafe static int sqlite3_column_int(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_int(stmt.DangerousGetHandle(), index);
+            return (int) ret;
+        }
+
+		public unsafe static long sqlite3_column_int64(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_int64(stmt.DangerousGetHandle(), index);
+            return (long) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_blob(stmt.DangerousGetHandle(), index);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static int sqlite3_column_bytes(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_bytes(stmt.DangerousGetHandle(), index);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_column_type(sqlite3_stmt stmt, int index)
+        {
+            var ret =
+            foo.sqlite3_column_type(stmt.DangerousGetHandle(), index);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_aggregate_count(IntPtr context)
+        {
+            var ret =
+            foo.sqlite3_aggregate_count(context);
+            return (int) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_value_blob(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_blob(p);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static int sqlite3_value_bytes(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_bytes(p);
+            return (int) ret;
+        }
+
+		public unsafe static double sqlite3_value_double(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_double(p);
+            return (double) ret;
+        }
+
+		public unsafe static int sqlite3_value_int(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_int(p);
+            return (int) ret;
+        }
+
+		public unsafe static long sqlite3_value_int64(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_int64(p);
+            return (long) ret;
+        }
+
+		public unsafe static int sqlite3_value_type(IntPtr p)
+        {
+            var ret =
+            foo.sqlite3_value_type(p);
+            return (int) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_user_data(IntPtr context)
+        {
+            var ret =
+            foo.sqlite3_user_data(context);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static void sqlite3_result_blob(IntPtr context, IntPtr val, int nSize, IntPtr pvReserved)
+        {
+            foo.sqlite3_result_blob(context, val, nSize, pvReserved);
+        }
+
+		public unsafe static void sqlite3_result_double(IntPtr context, double val)
+        {
+            foo.sqlite3_result_double(context, val);
+        }
+
+		public unsafe static void sqlite3_result_error(IntPtr context, byte* strErr, int nLen)
+        {
+            foo.sqlite3_result_error(context, (IntPtr)strErr, nLen);
+        }
+
+		public unsafe static void sqlite3_result_int(IntPtr context, int val)
+        {
+            foo.sqlite3_result_int(context, val);
+        }
+
+		public unsafe static void sqlite3_result_int64(IntPtr context, long val)
+        {
+            foo.sqlite3_result_int64(context, val);
+        }
+
+		public unsafe static void sqlite3_result_null(IntPtr context)
+        {
+            foo.sqlite3_result_null(context);
+        }
+
+		public unsafe static void sqlite3_result_text(IntPtr context, byte* val, int nLen, IntPtr pvReserved)
+        {
+            foo.sqlite3_result_text(context, (IntPtr)val, nLen, pvReserved);
+        }
+
+		public unsafe static void sqlite3_result_zeroblob(IntPtr context, int n)
+        {
+            foo.sqlite3_result_zeroblob(context, n);
+        }
+
+		public unsafe static void sqlite3_result_error_toobig(IntPtr context)
+        {
+            foo.sqlite3_result_error_toobig(context);
+        }
+
+		public unsafe static void sqlite3_result_error_nomem(IntPtr context)
+        {
+            foo.sqlite3_result_error_nomem(context);
+        }
+
+		public unsafe static void sqlite3_result_error_code(IntPtr context, int code)
+        {
+            foo.sqlite3_result_error_code(context, code);
+        }
+
+		public unsafe static IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes)
+        {
+            var ret =
+            foo.sqlite3_aggregate_context(context, nBytes);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static int sqlite3_config_none(int op)
+        {
+            var ret =
+            foo.sqlite3_config(op, IntPtr.Zero);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_config_int(int op, int val)
+        {
+            var ret =
+            foo.sqlite3_config(op, IntPtr.Zero);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_config(op, IntPtr.Zero);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func)
+        {
+            var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+            var ret =
+            foo.sqlite3_create_collation(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nType, pvUser.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero);
+            return (int) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_update_hook(sqlite3 db, NativeMethods.callback_update func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_update_hook(db.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_commit_hook(sqlite3 db, NativeMethods.callback_commit func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_commit_hook(db.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_profile(sqlite3 db, NativeMethods.callback_profile func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_profile(db.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (IntPtr) ret;
+        }
+
+		public unsafe static void sqlite3_progress_handler(sqlite3 db, int instructions, NativeMethods.callback_progress_handler func, hook_handle pvUser)
+        {
+            foo.sqlite3_progress_handler(db.DangerousGetHandle(), instructions, (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+        }
+
+		public unsafe static IntPtr sqlite3_trace(sqlite3 db, NativeMethods.callback_trace func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_trace(db.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_rollback_hook(sqlite3 db, NativeMethods.callback_rollback func, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_rollback_hook(db.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_db_handle(IntPtr stmt)
+        {
+            var ret =
+            foo.sqlite3_db_handle(stmt);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
+        {
+            var ret =
+            foo.sqlite3_next_stmt(db.DangerousGetHandle(), stmt);
+            return (IntPtr) ret;
+        }
+
+		public unsafe static int sqlite3_stmt_isexplain(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_stmt_isexplain(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_stmt_busy(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_stmt_busy(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_stmt_readonly(sqlite3_stmt stmt)
+        {
+            var ret =
+            foo.sqlite3_stmt_readonly(stmt.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_exec(sqlite3 db, byte* strSql, NativeMethods.callback_exec cb, hook_handle pvParam, IntPtr* errMsg)
+        {
+            var ret =
+            foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvParam.DangerousGetHandle(), (IntPtr)errMsg);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_get_autocommit(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_get_autocommit(db.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_extended_result_codes(sqlite3 db, int onoff)
+        {
+            var ret =
+            foo.sqlite3_extended_result_codes(db.DangerousGetHandle(), onoff);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_errcode(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_errcode(db.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_extended_errcode(sqlite3 db)
+        {
+            var ret =
+            foo.sqlite3_extended_errcode(db.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static byte* sqlite3_errstr(int rc)
+        {
+            var ret =
+            foo.sqlite3_errstr(rc);
+            return (byte*) ret;
+        }
+
+		public unsafe static void sqlite3_log(int iErrCode, byte* zFormat)
+        {
+            foo.sqlite3_log(iErrCode, (IntPtr)zFormat, IntPtr.Zero);
+        }
+
+		public unsafe static int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg)
+        {
+            var pinned_zDbName = System.Runtime.InteropServices.GCHandle.Alloc(zDbName, GCHandleType.Pinned);
+            var ret =
+            foo.sqlite3_file_control(db.DangerousGetHandle(), pinned_zDbName.AddrOfPinnedObject(), op, pArg);
+            return (int) ret;
+        }
+
+		public unsafe static sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte* zDestName, sqlite3 sourceDb, byte* zSourceName)
+        {
+            var ret =
+            foo.sqlite3_backup_init(destDb.DangerousGetHandle(), (IntPtr)zDestName, sourceDb.DangerousGetHandle(), (IntPtr)zSourceName);
+            return sqlite3_backup.From(ret);
+        }
+
+		public unsafe static int sqlite3_backup_step(sqlite3_backup backup, int nPage)
+        {
+            var ret =
+            foo.sqlite3_backup_step(backup.DangerousGetHandle(), nPage);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_backup_remaining(sqlite3_backup backup)
+        {
+            var ret =
+            foo.sqlite3_backup_remaining(backup.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_backup_pagecount(sqlite3_backup backup)
+        {
+            var ret =
+            foo.sqlite3_backup_pagecount(backup.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_backup_finish(IntPtr backup)
+        {
+            var ret =
+            foo.sqlite3_backup_finish(backup);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, IntPtr* blob)
+        {
+            var ret =
+            foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, (IntPtr)blob);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_write(sqlite3_blob blob, byte* b, int n, int offset)
+        {
+            var ret =
+            foo.sqlite3_blob_write(blob.DangerousGetHandle(), (IntPtr)b, n, offset);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_read(sqlite3_blob blob, byte* b, int n, int offset)
+        {
+            var ret =
+            foo.sqlite3_blob_read(blob.DangerousGetHandle(), (IntPtr)b, n, offset);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_bytes(sqlite3_blob blob)
+        {
+            var ret =
+            foo.sqlite3_blob_bytes(blob.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
+        {
+            var ret =
+            foo.sqlite3_blob_reopen(blob.DangerousGetHandle(), rowid);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_blob_close(IntPtr blob)
+        {
+            var ret =
+            foo.sqlite3_blob_close(blob);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
+        {
+            var ret =
+            foo.sqlite3_wal_autocheckpoint(db.DangerousGetHandle(), n);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_wal_checkpoint(sqlite3 db, byte* dbName)
+        {
+            var ret =
+            foo.sqlite3_wal_checkpoint(db.DangerousGetHandle(), (IntPtr)dbName);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, int* logSize, int* framesCheckPointed)
+        {
+            var ret =
+            foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, (IntPtr)logSize, (IntPtr)framesCheckPointed);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_set_authorizer(sqlite3 db, NativeMethods.callback_authorizer cb, hook_handle pvUser)
+        {
+            var ret =
+            foo.sqlite3_set_authorizer(db.DangerousGetHandle(), (cb != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(cb) : IntPtr.Zero, pvUser.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, NativeMethods.callback_scalar_function func, NativeMethods.callback_agg_function_step fstep, NativeMethods.callback_agg_function_final ffinal, NativeMethods.callback_destroy fdestroy)
+        {
+            var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+            var ret =
+            foo.sqlite3_create_function_v2(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nArgs, nType, pvUser.DangerousGetHandle(), (func != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(func) : IntPtr.Zero, (fstep != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(fstep) : IntPtr.Zero, (ffinal != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(ffinal) : IntPtr.Zero, (fdestroy != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(fdestroy) : IntPtr.Zero);
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_keyword_count()
+        {
+            var ret =
+            foo.sqlite3_keyword_count();
+            return (int) ret;
+        }
+
+		public unsafe static int sqlite3_keyword_name(int i, byte** name, int* length)
+        {
+            var ret =
+            foo.sqlite3_keyword_name(i, (IntPtr)name, (IntPtr)length);
+            return (int) ret;
+        }
 
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]

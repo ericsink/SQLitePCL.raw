@@ -1863,10 +1863,16 @@ namespace SQLitePCL
     {
         public string typ { get; private set; }
         public string nam { get; private set; }
+        public bool extra { get; private set; }
         public Parm(string t, string n)
         {
             typ = t;
             nam = n;
+        }
+        public Parm SetExtra(bool b)
+        {
+            extra = b;
+            return this;
         }
     }
     class Function
@@ -1874,29 +1880,133 @@ namespace SQLitePCL
         public string ret { get; private set; }
         public string nam { get; private set; }
         public Parm[] parms { get; private set; }
+        public string entry { get; private set; }
+        public bool varargs { get; private set; }
         public Function(string r, string n, Parm[] p)
         {
             ret = r;
             nam = n;
             parms = p;
         }
+        public Function SetEntryPoint(string e)
+        {
+            entry = e;
+            return this;
+        }
+        public Function SetVarArgs(bool b)
+        {
+            varargs = b;
+            return this;
+        }
     }
 
 	void write_api_entries(string k)
 	{
-        void write_method_general(string entry_point, Function f)
+        // TODO reconsider allowing out params at this layer.
+        // pinvoke marshal takes care of it.
+        // custom marshal for cil could do the same.
+        // would need Parm class to represent out/ref/etc.
+        void write_method(Function f)
         {
             if (k == "cil")
             {
-                var a = new System.Collections.Generic.List<string>();
+                var a_parms = new System.Collections.Generic.List<string>();
+                var a_args = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
-                    a.Add(p.typ);
+                    a_parms.Add(p.typ + " " + p.nam);
+                    if (p.extra)
+                    {
+                        continue;
+                    }
+                    switch (p.typ)
+                    {
+                        case "sqlite3":
+                        case "sqlite3_blob":
+                        case "sqlite3_stmt":
+                        case "sqlite3_backup":
+                        case "hook_handle":
+                            a_args.Add($"{p.nam}.DangerousGetHandle()");
+                            break;
+                        case "NativeMethods.callback_collation":
+                        case "NativeMethods.callback_commit":
+                        case "NativeMethods.callback_profile":
+                        case "NativeMethods.callback_update":
+                        case "NativeMethods.callback_progress_handler":
+                        case "NativeMethods.callback_trace":
+                        case "NativeMethods.callback_rollback":
+                        case "NativeMethods.callback_exec":
+                        case "NativeMethods.callback_scalar_function":
+                        case "NativeMethods.callback_agg_function_step":
+                        case "NativeMethods.callback_agg_function_final":
+                        case "NativeMethods.callback_destroy":
+                        case "NativeMethods.callback_authorizer":
+                            a_args.Add($"({p.nam} != null) ? System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate({p.nam}) : IntPtr.Zero");
+                            break;
+                        case "byte**":
+                        case "byte*":
+                        case "int*":
+                        case "IntPtr*":
+                            a_args.Add($"(IntPtr){p.nam}");
+                            break;
+                        case "uint":
+                            a_args.Add($"(int){p.nam}");
+                            break;
+                        case "byte[]":
+                            a_args.Add($"pinned_{p.nam}.AddrOfPinnedObject()");
+                            break;
+                        default:
+                            a_args.Add(p.nam);
+                            break;
+                    }
                 }
-                a.Add(f.ret);
-                // TODO deal with entry point here?
+                if (f.varargs)
+                {
+                    a_args.Add("IntPtr.Zero");
+                }
 #>
-		public unsafe static delegate*<<#= string.Join(", ", a) #>> <#= f.nam #> = null;
+		public unsafe static <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a_parms) #>)
+        {
+<#+
+            foreach (var p in f.parms)
+            {
+                switch (p.typ)
+                {
+                    case "byte[]":
+#>
+            var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
+<#+
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (f.ret != "void")
+            {
+#>
+            var ret =
+<#+
+            }
+#>
+            foo.<#= (f.entry != null) ? f.entry : f.nam #>(<#= string.Join(", ", a_args) #>);
+<#+
+            switch (f.ret)
+            {
+                case "void":
+                    break;
+                case "sqlite3_backup":
+#>
+            return sqlite3_backup.From(ret);
+<#+
+                    break;
+                default:
+#>
+            return (<#= f.ret #>) ret;
+<#+
+                    break;
+            }
+#>
+        }
 
 <#+
             }
@@ -1912,25 +2022,25 @@ namespace SQLitePCL
                 if (k == "dynamic")
                 {
                     front = "public unsafe delegate";
-                    if (entry_point == null)
+                    if (f.entry == null)
                     {
                         attr = "[UnmanagedFunctionPointer(CALLING_CONVENTION)]";
                     }
                     else
                     {
-                        attr = $"[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"{entry_point}\")]";
+                        attr = $"[UnmanagedFunctionPointer(CALLING_CONVENTION)]\n\t\t[EntryPoint(\"{f.entry}\")]";
                     }
                 }
                 else if (k == "dllimport")
                 {
                     front = "public static extern unsafe";
-                    if (entry_point == null)
+                    if (f.entry == null)
                     {
                         attr = "[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]";
                     }
                     else
                     {
-                        attr = $"[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"{entry_point}\", CallingConvention = CALLING_CONVENTION)]";
+                        attr = $"[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = \"{f.entry}\", CallingConvention = CALLING_CONVENTION)]";
                     }
                 }
                 else
@@ -1943,14 +2053,6 @@ namespace SQLitePCL
 
 <#+
             }
-        }
-        void write_method(Function f)
-        {
-            write_method_general(null, f);
-        }
-        void write_method_config(Function f)
-        {
-            write_method_general("sqlite3_config", f);
         }
 
             write_method(new Function(
@@ -2683,30 +2785,39 @@ namespace SQLitePCL
 
             // Since sqlite3_config() takes a variable argument list, we have to overload declarations
             // for all possible calls that we want to use.
-            write_method_config(new Function(
+            write_method(new Function(
                 "int",
                 "sqlite3_config_none",
                 new Parm[] {
                     new Parm("int", "op"),
                 }
-                ));
-            write_method_config(new Function(
+                )
+                .SetEntryPoint("sqlite3_config")
+                .SetVarArgs(true)
+                );
+            write_method(new Function(
                 "int",
                 "sqlite3_config_int",
                 new Parm[] {
                     new Parm("int", "op"),
-                    new Parm("int", "val"),
+                    new Parm("int", "val").SetExtra(true),
                 }
-                ));
-            write_method_config(new Function(
+                )
+                .SetEntryPoint("sqlite3_config")
+                .SetVarArgs(true)
+                );
+            write_method(new Function(
                 "int",
                 "sqlite3_config_log",
                 new Parm[] {
                     new Parm("int", "op"),
-                    new Parm("NativeMethods.callback_log", "func"),
-                    new Parm("hook_handle", "pvUser"),
+                    new Parm("NativeMethods.callback_log", "func").SetExtra(true),
+                    new Parm("hook_handle", "pvUser").SetExtra(true),
                 }
-                ));
+                )
+                .SetEntryPoint("sqlite3_config")
+                .SetVarArgs(true)
+                );
             write_method(new Function(
                 "int",
                 "sqlite3_create_collation",
@@ -2861,13 +2972,16 @@ namespace SQLitePCL
             // for all possible calls.  For now, we are only exposing a single string, and 
             // depend on the caller to format the string.
             write_method(new Function(
+                // TODO need a way to mark this as vararg for cil
                 "void",
                 "sqlite3_log",
                 new Parm[] {
                     new Parm("int", "iErrCode"),
                     new Parm("byte*", "zFormat"),
                 }
-                ));
+                )
+                .SetVarArgs(true)
+                );
             write_method(new Function(
                 "int",
                 "sqlite3_file_control",
