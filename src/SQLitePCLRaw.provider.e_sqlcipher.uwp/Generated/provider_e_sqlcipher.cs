@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2019 SourceGear, LLC
+   Copyright 2014-2021 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -151,12 +151,12 @@ namespace SQLitePCL
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_exec))]
-        static int exec_hook_bridge(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
+        static int exec_hook_bridge_impl(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
         {
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
-		// TODO shouldn't there be a impl/bridge thing here?
+		// TODO shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
 
         int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
@@ -166,7 +166,7 @@ namespace SQLitePCL
 			exec_hook_info hi;
             if (func != null)
             {
-				cb = exec_hook_bridge;
+				cb = exec_hook_bridge_impl;
                 hi = new exec_hook_info(func, user_data);
             }
             else
@@ -531,7 +531,7 @@ namespace SQLitePCL
             return hi.call();
         }
 
-		readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl); 
+        readonly NativeMethods.callback_commit commit_hook_bridge = new NativeMethods.callback_commit(commit_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
 			var info = get_hooks(db);
@@ -572,7 +572,7 @@ namespace SQLitePCL
             hi.call_scalar(context, num_args, argsptr);
         }
 
-		readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl); 
+        readonly NativeMethods.callback_scalar_function scalar_function_hook_bridge = new NativeMethods.callback_scalar_function(scalar_function_hook_bridge_impl);
 
         int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
@@ -616,7 +616,7 @@ namespace SQLitePCL
             hi.call(rc, utf8z.FromIntPtr(s));
         }
 
-		readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl); 
+        readonly NativeMethods.callback_log log_hook_bridge = new NativeMethods.callback_log(log_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (disp_log_hook_handle != null)
@@ -658,7 +658,7 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_step))]
-        static void agg_function_hook_bridge_step_impl(IntPtr context, int num_args, IntPtr argsptr)
+        static void agg_function_step_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -669,7 +669,7 @@ namespace SQLitePCL
         }
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_agg_function_final))]
-        static void agg_function_hook_bridge_final_impl(IntPtr context)
+        static void agg_function_final_hook_bridge_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -679,8 +679,8 @@ namespace SQLitePCL
             hi.call_final(context, agg);
         }
 
-		NativeMethods.callback_agg_function_step agg_function_hook_bridge_step = new NativeMethods.callback_agg_function_step(agg_function_hook_bridge_step_impl); 
-		NativeMethods.callback_agg_function_final agg_function_hook_bridge_final = new NativeMethods.callback_agg_function_final(agg_function_hook_bridge_final_impl); 
+        readonly NativeMethods.callback_agg_function_step agg_function_step_hook_bridge = new NativeMethods.callback_agg_function_step(agg_function_step_hook_bridge_impl);
+        readonly NativeMethods.callback_agg_function_final agg_function_final_hook_bridge = new NativeMethods.callback_agg_function_final(agg_function_final_hook_bridge_impl);
 
         int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
@@ -698,8 +698,8 @@ namespace SQLitePCL
             if (func_step != null)
             {
                 // TODO both func_step and func_final must be non-null
-				cb_step = agg_function_hook_bridge_step;
-				cb_final = agg_function_hook_bridge_final;
+				cb_step = agg_function_step_hook_bridge;
+				cb_final = agg_function_final_hook_bridge;
                 hi = new function_hook_info(func_step, func_final, v);
             }
             else
@@ -736,7 +736,7 @@ namespace SQLitePCL
             return hi.call(s1, s2);
         }
 
-		readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl); 
+        readonly NativeMethods.callback_collation collation_hook_bridge = new NativeMethods.callback_collation(collation_hook_bridge_impl);
         int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
@@ -779,7 +779,7 @@ namespace SQLitePCL
             hi.call(typ, utf8z.FromIntPtr(db), utf8z.FromIntPtr(tbl), rowid);
         }
 
-		readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl); 
+        readonly NativeMethods.callback_update update_hook_bridge = new NativeMethods.callback_update(update_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
 			var info = get_hooks(db);
@@ -819,7 +819,7 @@ namespace SQLitePCL
             hi.call();
         }
 
-		readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl); 
+        readonly NativeMethods.callback_rollback rollback_hook_bridge = new NativeMethods.callback_rollback(rollback_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
 			var info = get_hooks(db);
@@ -859,7 +859,7 @@ namespace SQLitePCL
             hi.call(utf8z.FromIntPtr(s));
         }
 
-		readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl); 
+        readonly NativeMethods.callback_trace trace_hook_bridge = new NativeMethods.callback_trace(trace_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
 			var info = get_hooks(db);
@@ -899,7 +899,7 @@ namespace SQLitePCL
             hi.call(utf8z.FromIntPtr(s), elapsed);
         }
 
-		readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl); 
+        readonly NativeMethods.callback_profile profile_hook_bridge = new NativeMethods.callback_profile(profile_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
 			var info = get_hooks(db);
@@ -933,13 +933,13 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_progress_handler))]
-        static int progress_hook_bridge_impl(IntPtr p)
+        static int progress_handler_hook_bridge_impl(IntPtr p)
         {
             progress_hook_info hi = progress_hook_info.from_ptr(p);
             return hi.call();
         }
 
-        readonly NativeMethods.callback_progress_handler progress_hook_bridge = new NativeMethods.callback_progress_handler(progress_hook_bridge_impl);
+        readonly NativeMethods.callback_progress_handler progress_handler_hook_bridge = new NativeMethods.callback_progress_handler(progress_handler_hook_bridge_impl);
         void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
 			var info = get_hooks(db);
@@ -954,7 +954,7 @@ namespace SQLitePCL
 			progress_hook_info hi;
             if (func != null)
             {
-				cb = progress_hook_bridge;
+				cb = progress_handler_hook_bridge;
                 hi = new progress_hook_info(func, v);
             }
             else
@@ -1800,7 +1800,6 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_keyword_name(int i, out byte* name, out int length);
-
 
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
