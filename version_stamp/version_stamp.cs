@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2020 SourceGear, LLC
+   Copyright 2014-2021 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public static class gen
 
     private const string NUSPEC_RELEASE_NOTES = "TODO url";
 
-    const string COPYRIGHT = "Copyright 2014-2020 SourceGear, LLC";
+    const string COPYRIGHT = "Copyright 2014-2021 SourceGear, LLC";
     const string AUTHORS = "Eric Sink";
     const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
     const string PACKAGE_TAGS = "sqlite";
