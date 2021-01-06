@@ -156,7 +156,7 @@ namespace SQLitePCL
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
-		// TODO shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
+		// shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
 
         int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {

@@ -339,7 +339,7 @@ namespace SQLitePCL
             exec_hook_info hi = exec_hook_info.from_ptr(p);
             return hi.call(n, values_ptr, names_ptr);
         }
-		// TODO shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
+		// shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
 
         <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
@@ -3084,7 +3084,6 @@ namespace SQLitePCL
             // for all possible calls.  For now, we are only exposing a single string, and 
             // depend on the caller to format the string.
             write_method(new Function(
-                // TODO need a way to mark this as vararg for cil
                 "void",
                 "sqlite3_log",
                 new Parm[] {
