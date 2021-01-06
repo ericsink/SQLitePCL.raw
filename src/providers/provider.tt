@@ -1676,6 +1676,53 @@ namespace SQLitePCL
     }
 }
 <#+
+    class Parm
+    {
+        public string typ { get; private set; }
+        public string nam { get; private set; }
+        public bool extra { get; private set; }
+        public string byref { get; private set; }
+        public Parm(string t, string n)
+        {
+            typ = t;
+            nam = n;
+        }
+        public Parm SetExtra(bool b)
+        {
+            extra = b;
+            return this;
+        }
+        public Parm SetByRef(string s)
+        {
+            byref = s;
+            return this;
+        }
+    }
+    class Function
+    {
+        public string ret { get; private set; }
+        public string nam { get; private set; }
+        public Parm[] parms { get; private set; }
+        public string entry { get; private set; }
+        public bool varargs { get; private set; }
+        public Function(string r, string n, Parm[] p)
+        {
+            ret = r;
+            nam = n;
+            parms = p;
+        }
+        public Function SetEntryPoint(string e)
+        {
+            entry = e;
+            return this;
+        }
+        public Function SetVarArgs(bool b)
+        {
+            varargs = b;
+            return this;
+        }
+    }
+
 	void write_dynamic_load_stuff()
 	{
     // TODO this list of names should be generated
@@ -1910,53 +1957,6 @@ namespace SQLitePCL
 	public delegate int callback_exec(IntPtr db, int n, IntPtr values, IntPtr names);
 <#+
 	}
-
-    class Parm
-    {
-        public string typ { get; private set; }
-        public string nam { get; private set; }
-        public bool extra { get; private set; }
-        public string byref { get; private set; }
-        public Parm(string t, string n)
-        {
-            typ = t;
-            nam = n;
-        }
-        public Parm SetExtra(bool b)
-        {
-            extra = b;
-            return this;
-        }
-        public Parm SetByRef(string s)
-        {
-            byref = s;
-            return this;
-        }
-    }
-    class Function
-    {
-        public string ret { get; private set; }
-        public string nam { get; private set; }
-        public Parm[] parms { get; private set; }
-        public string entry { get; private set; }
-        public bool varargs { get; private set; }
-        public Function(string r, string n, Parm[] p)
-        {
-            ret = r;
-            nam = n;
-            parms = p;
-        }
-        public Function SetEntryPoint(string e)
-        {
-            entry = e;
-            return this;
-        }
-        public Function SetVarArgs(bool b)
-        {
-            varargs = b;
-            return this;
-        }
-    }
 
 	void write_api_entries(string k)
 	{
