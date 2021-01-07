@@ -1681,7 +1681,7 @@ namespace SQLitePCL
         public string typ { get; private set; }
         public string nam { get; private set; }
         public bool extra { get; private set; }
-        public string byref { get; private set; }
+        public bool isOut { get; private set; }
         public Parm(string t, string n)
         {
             typ = t;
@@ -1692,9 +1692,9 @@ namespace SQLitePCL
             extra = b;
             return this;
         }
-        public Parm SetByRef(string s)
+        public Parm SetIsOut(bool b)
         {
-            byref = s;
+            isOut = b;
             return this;
         }
     }
@@ -1874,8 +1874,8 @@ namespace SQLitePCL
                 new Parm("sqlite3", "db"),
                 new Parm("byte*", "pSql"),
                 new Parm("int", "nBytes"),
-                new Parm("IntPtr", "stmt").SetByRef("out"),
-                new Parm("byte*", "ptrRemain").SetByRef("out"),
+                new Parm("IntPtr", "stmt").SetIsOut(true),
+                new Parm("byte*", "ptrRemain").SetIsOut(true),
             }
             ),
         new Function(
@@ -1886,8 +1886,8 @@ namespace SQLitePCL
                 new Parm("byte*", "pSql"),
                 new Parm("int", "nBytes"),
                 new Parm("uint", "flags"),
-                new Parm("IntPtr", "stmt").SetByRef("out"),
-                new Parm("byte*", "ptrRemain").SetByRef("out"),
+                new Parm("IntPtr", "stmt").SetIsOut(true),
+                new Parm("byte*", "ptrRemain").SetIsOut(true),
             }
             ),
         new Function(
@@ -1896,8 +1896,8 @@ namespace SQLitePCL
             new Parm[] {
                 new Parm("sqlite3", "db"),
                 new Parm("int", "op"),
-                new Parm("int", "current").SetByRef("out"),
-                new Parm("int", "highest").SetByRef("out"),
+                new Parm("int", "current").SetIsOut(true),
+                new Parm("int", "highest").SetIsOut(true),
                 new Parm("int", "resetFlg"),
             }
             ),
@@ -1930,11 +1930,11 @@ namespace SQLitePCL
                 new Parm("byte*", "dbName"),
                 new Parm("byte*", "tblName"),
                 new Parm("byte*", "colName"),
-                new Parm("byte*", "ptrDataType").SetByRef("out"),
-                new Parm("byte*", "ptrCollSeq").SetByRef("out"),
-                new Parm("int", "notNull").SetByRef("out"),
-                new Parm("int", "primaryKey").SetByRef("out"),
-                new Parm("int", "autoInc").SetByRef("out"),
+                new Parm("byte*", "ptrDataType").SetIsOut(true),
+                new Parm("byte*", "ptrCollSeq").SetIsOut(true),
+                new Parm("int", "notNull").SetIsOut(true),
+                new Parm("int", "primaryKey").SetIsOut(true),
+                new Parm("int", "autoInc").SetIsOut(true),
             }
             ),
         new Function(
@@ -2032,7 +2032,7 @@ namespace SQLitePCL
             "sqlite3_open",
             new Parm[] {
                 new Parm("byte*", "filename"),
-                new Parm("IntPtr", "db").SetByRef("out"),
+                new Parm("IntPtr", "db").SetIsOut(true),
             }
             ),
         new Function(
@@ -2040,7 +2040,7 @@ namespace SQLitePCL
             "sqlite3_open_v2",
             new Parm[] {
                 new Parm("byte*", "filename"),
-                new Parm("IntPtr", "db").SetByRef("out"),
+                new Parm("IntPtr", "db").SetIsOut(true),
                 new Parm("int", "flags"),
                 new Parm("byte*", "vfs"),
             }
@@ -2091,8 +2091,8 @@ namespace SQLitePCL
             "sqlite3_status",
             new Parm[] {
                 new Parm("int", "op"),
-                new Parm("int", "current").SetByRef("out"),
-                new Parm("int", "highwater").SetByRef("out"),
+                new Parm("int", "current").SetIsOut(true),
+                new Parm("int", "highwater").SetIsOut(true),
                 new Parm("int", "resetFlag"),
             }
             ),
@@ -2606,7 +2606,7 @@ namespace SQLitePCL
                 new Parm("byte*", "strSql"),
                 new Parm("NativeMethods.callback_exec", "cb"),
                 new Parm("hook_handle", "pvParam"),
-                new Parm("IntPtr", "errMsg").SetByRef("out"),
+                new Parm("IntPtr", "errMsg").SetIsOut(true),
             }
             ),
         new Function(
@@ -2718,7 +2718,7 @@ namespace SQLitePCL
                 new Parm("byte*", "col"),
                 new Parm("long", "rowid"),
                 new Parm("int", "flags"),
-                new Parm("IntPtr", "blob").SetByRef("out"),
+                new Parm("IntPtr", "blob").SetIsOut(true),
             }
             ),
         new Function(
@@ -2786,8 +2786,8 @@ namespace SQLitePCL
                 new Parm("sqlite3", "db"),
                 new Parm("byte*", "dbName"),
                 new Parm("int", "eMode"),
-                new Parm("int", "logSize").SetByRef("out"),
-                new Parm("int", "framesCheckPointed").SetByRef("out"),
+                new Parm("int", "logSize").SetIsOut(true),
+                new Parm("int", "framesCheckPointed").SetIsOut(true),
             }
             ),
         new Function(
@@ -2834,8 +2834,8 @@ namespace SQLitePCL
             "sqlite3_keyword_name",
             new Parm[] {
                 new Parm("int", "i"),
-                new Parm("byte*", "name").SetByRef("out"),
-                new Parm("int", "length").SetByRef("out"),
+                new Parm("byte*", "name").SetIsOut(true),
+                new Parm("int", "length").SetIsOut(true),
             }
             ),
 
@@ -2974,7 +2974,7 @@ namespace SQLitePCL
                     }
                 }
 
-                a_parms.Add(((p.byref != null) ? p.byref + " " : "") + typ + " " + p.nam);
+                a_parms.Add((p.isOut ? "out " : "") + typ + " " + p.nam);
             }
             return a_parms;
         }
@@ -3020,7 +3020,7 @@ namespace SQLitePCL
                     {
                         continue;
                     }
-                    if (p.byref != null)
+                    if (p.isOut)
                     {
                         a_args.Add($"(IntPtr) (&tmp_{p.nam})");
                     }
@@ -3033,7 +3033,6 @@ namespace SQLitePCL
                             case "sqlite3_stmt":
                             case "sqlite3_backup":
                             case "hook_handle":
-                                // TODO do the add/remove ref properly
                                 a_args.Add($"{p.nam}.DangerousGetHandle()");
                                 break;
                             case "byte*":
@@ -3043,7 +3042,6 @@ namespace SQLitePCL
                                 a_args.Add($"(int){p.nam}");
                                 break;
                             case "byte[]":
-                                // TODO do the pin/unpin properly
                                 a_args.Add($"pinned_{p.nam}.AddrOfPinnedObject()");
                                 break;
                             default:
@@ -3110,9 +3108,8 @@ namespace SQLitePCL
             }
             foreach (var p in f.parms)
             {
-                if (p.byref != null)
+                if (p.isOut)
                 {
-                    // TODO if ref instead of out, need to assign from the ref param
     #>
                 <#= p.typ #> tmp_<#= p.nam #>;
     <#+
@@ -3153,7 +3150,7 @@ namespace SQLitePCL
 <#+
             foreach (var p in f.parms)
             {
-                if (p.byref != null)
+                if (p.isOut)
                 {
     #>
                 <#= p.nam #> = tmp_<#= p.nam #>;
