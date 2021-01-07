@@ -230,6 +230,12 @@ namespace SQLitePCL.Ugly
             raw.sqlite3_update_hook(db, f, v);
         }
 
+        public static void create_collation(this sqlite3 db, string name, object v, delegate_collation f)
+        {
+            int rc = raw.sqlite3_create_collation(db, name, v, f);
+            check_ok(rc);
+        }
+
         public static void create_collation(this sqlite3 db, string name, object v, strdelegate_collation f)
         {
             int rc = raw.sqlite3_create_collation(db, name, v, f);

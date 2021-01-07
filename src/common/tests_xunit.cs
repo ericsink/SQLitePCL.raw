@@ -211,7 +211,8 @@ namespace SQLitePCL.Tests
             using (var db = ugly.open(":memory:"))
             {
                 db.create_collation("MY_NOCASE", null, (v, s1, s2) => string.Compare(s1, s2, StringComparison.OrdinalIgnoreCase));
-                db.create_collation("MY_NOCASE", null, null);
+                delegate_collation none = null;
+                db.create_collation("MY_NOCASE", null, none);
 
                 var ex = Assert.Throws<ugly.sqlite3_exception>(
                     () => db.query_scalar<long>("SELECT 'Νικοσ' = 'ΝΙΚΟΣ' COLLATE MY_NOCASE;"));
@@ -2185,7 +2186,8 @@ namespace SQLitePCL.Tests
                     Assert.Equal("e", top);
                 }
 
-                db.create_collation("e2a", null, null);
+                delegate_collation none = null;
+                db.create_collation("e2a", null, none);
 
                 {
                     string top = db.query_scalar<string>("SELECT x FROM foo ORDER BY x ASC LIMIT 1;");
@@ -2323,6 +2325,24 @@ namespace SQLitePCL.Tests
                 res3 = db.query_scalar<string>("SELECT x FROM foo ORDER BY x COLLATE col");
             }
             Assert.Equal(res1, res3);
+        }
+
+        private static int my_collation_span(object v, ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2)
+        {
+            return - s1.SequenceCompareTo(s2);
+        }
+
+        [Fact]
+        public void test_collation_span()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                setup2(db);
+                db.create_collation("col", null, new delegate_collation(my_collation_span));
+                var a = db.query_one_column<string>("SELECT x FROM foo ORDER BY x COLLATE col").ToArray();
+                Assert.Equal(5, a.Length);
+                Assert.Equal("f", a[0]);
+            }
         }
 
     }
