@@ -1408,8 +1408,15 @@ namespace SQLitePCL
 
 		public unsafe static void sqlite3_interrupt(sqlite3 db)
         {
-            foo.sqlite3_interrupt(db.DangerousGetHandle());
-        }
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                foo.sqlite3_interrupt(db.DangerousGetHandle());
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+            }
 
 		public unsafe static int sqlite3_finalize(IntPtr stmt)
         {
@@ -1420,124 +1427,236 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_reset(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_reset(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_clear_bindings(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_clear_bindings(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
         {
-            var ret =
+                bool got_stm = false;
+                stm.DangerousAddRef(ref got_stm);
+                if (!got_stm) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_stmt_status(stm.DangerousGetHandle(), op, resetFlg);
-            return (int) ret;
+                if (got_stm)
+                {
+                    stm.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static byte* sqlite3_bind_parameter_name(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_parameter_name(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_database_name(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_database_name(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_decltype(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_decltype(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_name(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_name(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_origin_name(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_origin_name(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_table_name(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_table_name(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_column_text(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_text(stmt.DangerousGetHandle(), index);
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static byte* sqlite3_errmsg(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_errmsg(db.DangerousGetHandle());
-            return (byte*) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static int sqlite3_db_readonly(sqlite3 db, byte* dbName)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_db_readonly(db.DangerousGetHandle(), (IntPtr)dbName);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static byte* sqlite3_db_filename(sqlite3 db, byte* att)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_db_filename(db.DangerousGetHandle(), (IntPtr)att);
-            return (byte*) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static int sqlite3_prepare_v2(sqlite3 db, byte* pSql, int nBytes, out IntPtr stmt, out byte* ptrRemain)
         {
-                IntPtr tmp_stmt;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    IntPtr tmp_stmt;
                     byte* tmp_ptrRemain;
                 var ret =
             foo.sqlite3_prepare_v2(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (IntPtr) (&tmp_stmt), (IntPtr) (&tmp_ptrRemain));
-                stmt = tmp_stmt;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    stmt = tmp_stmt;
                     ptrRemain = tmp_ptrRemain;
                 return (int) ret;
         }
 
 		public unsafe static int sqlite3_prepare_v3(sqlite3 db, byte* pSql, int nBytes, uint flags, out IntPtr stmt, out byte* ptrRemain)
         {
-                IntPtr tmp_stmt;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    IntPtr tmp_stmt;
                     byte* tmp_ptrRemain;
                 var ret =
             foo.sqlite3_prepare_v3(db.DangerousGetHandle(), (IntPtr)pSql, nBytes, (int)flags, (IntPtr) (&tmp_stmt), (IntPtr) (&tmp_ptrRemain));
-                stmt = tmp_stmt;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    stmt = tmp_stmt;
                     ptrRemain = tmp_ptrRemain;
                 return (int) ret;
         }
 
 		public unsafe static int sqlite3_db_status(sqlite3 db, int op, out int current, out int highest, int resetFlg)
         {
-                int tmp_current;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    int tmp_current;
                     int tmp_highest;
                 var ret =
             foo.sqlite3_db_status(db.DangerousGetHandle(), op, (IntPtr) (&tmp_current), (IntPtr) (&tmp_highest), resetFlg);
-                current = tmp_current;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    current = tmp_current;
                     highest = tmp_highest;
                 return (int) ret;
         }
@@ -1565,14 +1684,21 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_table_column_metadata(sqlite3 db, byte* dbName, byte* tblName, byte* colName, out byte* ptrDataType, out byte* ptrCollSeq, out int notNull, out int primaryKey, out int autoInc)
         {
-                byte* tmp_ptrDataType;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    byte* tmp_ptrDataType;
                     byte* tmp_ptrCollSeq;
                     int tmp_notNull;
                     int tmp_primaryKey;
                     int tmp_autoInc;
                 var ret =
             foo.sqlite3_table_column_metadata(db.DangerousGetHandle(), (IntPtr)dbName, (IntPtr)tblName, (IntPtr)colName, (IntPtr) (&tmp_ptrDataType), (IntPtr) (&tmp_ptrCollSeq), (IntPtr) (&tmp_notNull), (IntPtr) (&tmp_primaryKey), (IntPtr) (&tmp_autoInc));
-                ptrDataType = tmp_ptrDataType;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    ptrDataType = tmp_ptrDataType;
                     ptrCollSeq = tmp_ptrCollSeq;
                     notNull = tmp_notNull;
                     primaryKey = tmp_primaryKey;
@@ -1589,9 +1715,16 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_enable_load_extension(sqlite3 db, int enable)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_enable_load_extension(db.DangerousGetHandle(), enable);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_initialize()
@@ -1696,23 +1829,44 @@ namespace SQLitePCL
 
 		public unsafe static long sqlite3_last_insert_rowid(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_last_insert_rowid(db.DangerousGetHandle());
-            return (long) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (long) ret;
         }
 
 		public unsafe static int sqlite3_changes(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_changes(db.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_total_changes(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_total_changes(db.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static long sqlite3_memory_used()
@@ -1742,142 +1896,282 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_busy_timeout(sqlite3 db, int ms)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_busy_timeout(db.DangerousGetHandle(), ms);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_blob(sqlite3_stmt stmt, int index, byte* val, int nSize, IntPtr nTransient)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_blob(stmt.DangerousGetHandle(), index, (IntPtr)val, nSize, nTransient);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_zeroblob(sqlite3_stmt stmt, int index, int size)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_zeroblob(stmt.DangerousGetHandle(), index, size);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_double(sqlite3_stmt stmt, int index, double val)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_double(stmt.DangerousGetHandle(), index, val);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_int(sqlite3_stmt stmt, int index, int val)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_int(stmt.DangerousGetHandle(), index, val);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_int64(stmt.DangerousGetHandle(), index, val);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_null(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_null(stmt.DangerousGetHandle(), index);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte* val, int nlen, IntPtr pvReserved)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_text(stmt.DangerousGetHandle(), index, (IntPtr)val, nlen, pvReserved);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_parameter_count(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_parameter_count(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_bind_parameter_index(sqlite3_stmt stmt, byte* strName)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_bind_parameter_index(stmt.DangerousGetHandle(), (IntPtr)strName);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_column_count(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_count(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_data_count(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_data_count(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_step(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_step(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static byte* sqlite3_sql(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_sql(stmt.DangerousGetHandle());
-            return (byte*) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (byte*) ret;
         }
 
 		public unsafe static double sqlite3_column_double(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_double(stmt.DangerousGetHandle(), index);
-            return (double) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (double) ret;
         }
 
 		public unsafe static int sqlite3_column_int(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_int(stmt.DangerousGetHandle(), index);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static long sqlite3_column_int64(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_int64(stmt.DangerousGetHandle(), index);
-            return (long) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (long) ret;
         }
 
 		public unsafe static IntPtr sqlite3_column_blob(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_blob(stmt.DangerousGetHandle(), index);
-            return (IntPtr) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static int sqlite3_column_bytes(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_bytes(stmt.DangerousGetHandle(), index);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_column_type(sqlite3_stmt stmt, int index)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_column_type(stmt.DangerousGetHandle(), index);
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_aggregate_count(IntPtr context)
@@ -2028,58 +2322,163 @@ namespace SQLitePCL
                     };
                 var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
                 IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
                 var ret =
             foo.sqlite3_config(op, p_extras);
-            return (int) ret;
+                if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, IntPtr func)
         {
-                var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
                 var ret =
             foo.sqlite3_create_collation(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nType, pvUser.DangerousGetHandle(), func);
-                // TODO unpin strName
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    pinned_strName.Free();
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
                 return (int) ret;
         }
 
 		public unsafe static IntPtr sqlite3_update_hook(sqlite3 db, IntPtr func, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_update_hook(db.DangerousGetHandle(), func, pvUser.DangerousGetHandle());
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static IntPtr sqlite3_commit_hook(sqlite3 db, IntPtr func, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_commit_hook(db.DangerousGetHandle(), func, pvUser.DangerousGetHandle());
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static IntPtr sqlite3_profile(sqlite3 db, IntPtr func, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_profile(db.DangerousGetHandle(), func, pvUser.DangerousGetHandle());
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static void sqlite3_progress_handler(sqlite3 db, int instructions, IntPtr func, hook_handle pvUser)
         {
-            foo.sqlite3_progress_handler(db.DangerousGetHandle(), instructions, func, pvUser.DangerousGetHandle());
-        }
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                foo.sqlite3_progress_handler(db.DangerousGetHandle(), instructions, func, pvUser.DangerousGetHandle());
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+            }
 
 		public unsafe static IntPtr sqlite3_trace(sqlite3 db, IntPtr func, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_trace(db.DangerousGetHandle(), func, pvUser.DangerousGetHandle());
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static IntPtr sqlite3_rollback_hook(sqlite3 db, IntPtr func, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_rollback_hook(db.DangerousGetHandle(), func, pvUser.DangerousGetHandle());
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static IntPtr sqlite3_db_handle(IntPtr stmt)
@@ -2091,67 +2490,137 @@ namespace SQLitePCL
 
 		public unsafe static IntPtr sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_next_stmt(db.DangerousGetHandle(), stmt);
-            return (IntPtr) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (IntPtr) ret;
         }
 
 		public unsafe static int sqlite3_stmt_isexplain(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_stmt_isexplain(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_stmt_busy(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_stmt_busy(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_stmt_readonly(sqlite3_stmt stmt)
         {
-            var ret =
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_stmt_readonly(stmt.DangerousGetHandle());
-            return (int) ret;
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_exec(sqlite3 db, byte* strSql, IntPtr cb, hook_handle pvParam, out IntPtr errMsg)
         {
-                IntPtr tmp_errMsg;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvParam = false;
+                pvParam.DangerousAddRef(ref got_pvParam);
+                if (!got_pvParam) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    IntPtr tmp_errMsg;
                 var ret =
             foo.sqlite3_exec(db.DangerousGetHandle(), (IntPtr)strSql, cb, pvParam.DangerousGetHandle(), (IntPtr) (&tmp_errMsg));
-                errMsg = tmp_errMsg;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvParam)
+                {
+                    pvParam.DangerousRelease();
+                }
+                    errMsg = tmp_errMsg;
                 return (int) ret;
         }
 
 		public unsafe static int sqlite3_get_autocommit(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_get_autocommit(db.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_extended_result_codes(db.DangerousGetHandle(), onoff);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_errcode(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_errcode(db.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_extended_errcode(sqlite3 db)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_extended_errcode(db.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static byte* sqlite3_errstr(int rc)
@@ -2169,39 +2638,81 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg)
         {
-                var pinned_zDbName = System.Runtime.InteropServices.GCHandle.Alloc(zDbName, GCHandleType.Pinned);
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    var pinned_zDbName = System.Runtime.InteropServices.GCHandle.Alloc(zDbName, GCHandleType.Pinned);
                 var ret =
             foo.sqlite3_file_control(db.DangerousGetHandle(), pinned_zDbName.AddrOfPinnedObject(), op, pArg);
-                // TODO unpin zDbName
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    pinned_zDbName.Free();
                 return (int) ret;
         }
 
 		public unsafe static sqlite3_backup sqlite3_backup_init(sqlite3 destDb, byte* zDestName, sqlite3 sourceDb, byte* zSourceName)
         {
-            var ret =
+                bool got_destDb = false;
+                destDb.DangerousAddRef(ref got_destDb);
+                if (!got_destDb) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_sourceDb = false;
+                sourceDb.DangerousAddRef(ref got_sourceDb);
+                if (!got_sourceDb) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_backup_init(destDb.DangerousGetHandle(), (IntPtr)zDestName, sourceDb.DangerousGetHandle(), (IntPtr)zSourceName);
-            return sqlite3_backup.From(ret);
+                if (got_destDb)
+                {
+                    destDb.DangerousRelease();
+                }
+                    if (got_sourceDb)
+                {
+                    sourceDb.DangerousRelease();
+                }
+                return sqlite3_backup.From(ret);
         }
 
 		public unsafe static int sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
-            var ret =
+                bool got_backup = false;
+                backup.DangerousAddRef(ref got_backup);
+                if (!got_backup) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_backup_step(backup.DangerousGetHandle(), nPage);
-            return (int) ret;
+                if (got_backup)
+                {
+                    backup.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_backup_remaining(sqlite3_backup backup)
         {
-            var ret =
+                bool got_backup = false;
+                backup.DangerousAddRef(ref got_backup);
+                if (!got_backup) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_backup_remaining(backup.DangerousGetHandle());
-            return (int) ret;
+                if (got_backup)
+                {
+                    backup.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_backup_pagecount(sqlite3_backup backup)
         {
-            var ret =
+                bool got_backup = false;
+                backup.DangerousAddRef(ref got_backup);
+                if (!got_backup) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_backup_pagecount(backup.DangerousGetHandle());
-            return (int) ret;
+                if (got_backup)
+                {
+                    backup.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_backup_finish(IntPtr backup)
@@ -2213,39 +2724,74 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob)
         {
-                IntPtr tmp_blob;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    IntPtr tmp_blob;
                 var ret =
             foo.sqlite3_blob_open(db.DangerousGetHandle(), (IntPtr)sdb, (IntPtr)table, (IntPtr)col, rowid, flags, (IntPtr) (&tmp_blob));
-                blob = tmp_blob;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    blob = tmp_blob;
                 return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_write(sqlite3_blob blob, byte* b, int n, int offset)
         {
-            var ret =
+                bool got_blob = false;
+                blob.DangerousAddRef(ref got_blob);
+                if (!got_blob) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_blob_write(blob.DangerousGetHandle(), (IntPtr)b, n, offset);
-            return (int) ret;
+                if (got_blob)
+                {
+                    blob.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_read(sqlite3_blob blob, byte* b, int n, int offset)
         {
-            var ret =
+                bool got_blob = false;
+                blob.DangerousAddRef(ref got_blob);
+                if (!got_blob) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_blob_read(blob.DangerousGetHandle(), (IntPtr)b, n, offset);
-            return (int) ret;
+                if (got_blob)
+                {
+                    blob.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_bytes(sqlite3_blob blob)
         {
-            var ret =
+                bool got_blob = false;
+                blob.DangerousAddRef(ref got_blob);
+                if (!got_blob) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_blob_bytes(blob.DangerousGetHandle());
-            return (int) ret;
+                if (got_blob)
+                {
+                    blob.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
         {
-            var ret =
+                bool got_blob = false;
+                blob.DangerousAddRef(ref got_blob);
+                if (!got_blob) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_blob_reopen(blob.DangerousGetHandle(), rowid);
-            return (int) ret;
+                if (got_blob)
+                {
+                    blob.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_blob_close(IntPtr blob)
@@ -2257,42 +2803,91 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_wal_autocheckpoint(db.DangerousGetHandle(), n);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_wal_checkpoint(sqlite3 db, byte* dbName)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_wal_checkpoint(db.DangerousGetHandle(), (IntPtr)dbName);
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_wal_checkpoint_v2(sqlite3 db, byte* dbName, int eMode, out int logSize, out int framesCheckPointed)
         {
-                int tmp_logSize;
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    int tmp_logSize;
                     int tmp_framesCheckPointed;
                 var ret =
             foo.sqlite3_wal_checkpoint_v2(db.DangerousGetHandle(), (IntPtr)dbName, eMode, (IntPtr) (&tmp_logSize), (IntPtr) (&tmp_framesCheckPointed));
-                logSize = tmp_logSize;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    logSize = tmp_logSize;
                     framesCheckPointed = tmp_framesCheckPointed;
                 return (int) ret;
         }
 
 		public unsafe static int sqlite3_set_authorizer(sqlite3 db, IntPtr cb, hook_handle pvUser)
         {
-            var ret =
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
             foo.sqlite3_set_authorizer(db.DangerousGetHandle(), cb, pvUser.DangerousGetHandle());
-            return (int) ret;
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
+                return (int) ret;
         }
 
 		public unsafe static int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, IntPtr func, IntPtr fstep, IntPtr ffinal, IntPtr fdestroy)
         {
-                var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    var pinned_strName = System.Runtime.InteropServices.GCHandle.Alloc(strName, GCHandleType.Pinned);
+                    bool got_pvUser = false;
+                pvUser.DangerousAddRef(ref got_pvUser);
+                if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
                 var ret =
             foo.sqlite3_create_function_v2(db.DangerousGetHandle(), pinned_strName.AddrOfPinnedObject(), nArgs, nType, pvUser.DangerousGetHandle(), func, fstep, ffinal, fdestroy);
-                // TODO unpin strName
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    pinned_strName.Free();
+                    if (got_pvUser)
+                {
+                    pvUser.DangerousRelease();
+                }
                 return (int) ret;
         }
 

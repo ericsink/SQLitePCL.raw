@@ -3121,8 +3121,18 @@ namespace SQLitePCL
                 {
                     switch (p.typ)
                     {
+                        case "sqlite3":
+                        case "sqlite3_blob":
+                        case "sqlite3_stmt":
+                        case "sqlite3_backup":
+                        case "hook_handle":
+    #>
+                bool got_<#= p.nam #> = false;
+                <#= p.nam #>.DangerousAddRef(ref got_<#= p.nam #>);
+                if (!got_<#= p.nam #>) throw new Exception("SafeHandle.DangerousAddRef failed");
+    <#+
+                            break;
                         case "byte[]":
-                        // TODO do this pin/unpin properly
     #>
                 var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
     <#+
@@ -3153,9 +3163,21 @@ namespace SQLitePCL
                 {
                     switch (p.typ)
                     {
+                        case "sqlite3":
+                        case "sqlite3_blob":
+                        case "sqlite3_stmt":
+                        case "sqlite3_backup":
+                        case "hook_handle":
+    #>
+                if (got_<#= p.nam #>)
+                {
+                    <#= p.nam #>.DangerousRelease();
+                }
+    <#+
+                            break;
                         case "byte[]":
     #>
-                // TODO unpin <#= p.nam #>
+                pinned_<#= p.nam #>.Free();
     <#+
                             break;
                         default:
