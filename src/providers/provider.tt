@@ -1680,17 +1680,11 @@ namespace SQLitePCL
     {
         public string typ { get; private set; }
         public string nam { get; private set; }
-        public bool extra { get; private set; }
         public bool isOut { get; private set; }
         public Parm(string t, string n)
         {
             typ = t;
             nam = n;
-        }
-        public Parm SetExtra(bool b)
-        {
-            extra = b;
-            return this;
         }
         public Parm SetIsOut(bool b)
         {
@@ -1703,6 +1697,7 @@ namespace SQLitePCL
         public string ret { get; private set; }
         public string nam { get; private set; }
         public Parm[] parms { get; private set; }
+        public Parm[] extra_parms { get; private set; }
         public string entry { get; private set; }
         public bool varargs { get; private set; }
         public string feature { get; private set; }
@@ -1712,9 +1707,25 @@ namespace SQLitePCL
             nam = n;
             parms = p;
         }
+        // TODO this should probably return IEnumerable<Parm> and use Concat/Append/whatever
+        public Parm[] GetAllParms()
+        {
+            var a = new System.Collections.Generic.List<Parm>();
+            a.AddRange(parms);
+            if (varargs && extra_parms != null)
+            {
+                a.AddRange(extra_parms);
+            }
+            return a.ToArray();
+        }
         public Function SetEntryPoint(string e)
         {
             entry = e;
+            return this;
+        }
+        public Function SetExtraParms(Parm[] a)
+        {
+            extra_parms = a;
             return this;
         }
         public Function SetVarArgs(bool b)
@@ -2478,8 +2489,12 @@ namespace SQLitePCL
             "sqlite3_config_int",
             new Parm[] {
                 new Parm("int", "op"),
-                new Parm("int", "val").SetExtra(true),
             }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("int", "val"),
+                }
             )
             .SetEntryPoint("sqlite3_config")
             .SetVarArgs(true)
@@ -2489,9 +2504,13 @@ namespace SQLitePCL
             "sqlite3_config_log",
             new Parm[] {
                 new Parm("int", "op"),
-                new Parm("NativeMethods.callback_log", "func").SetExtra(true),
-                new Parm("hook_handle", "pvUser").SetExtra(true),
             }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                new Parm("NativeMethods.callback_log", "func"),
+                new Parm("hook_handle", "pvUser"),
+                }
             )
             .SetEntryPoint("sqlite3_config")
             .SetVarArgs(true)
@@ -2945,8 +2964,7 @@ namespace SQLitePCL
 	{
         System.Collections.Generic.List<string> get_parm_list(Function f)
         {
-            var a_parms = new System.Collections.Generic.List<string>();
-            foreach (var p in f.parms)
+            string get_fixed_parm_type(Parm p)
             {
                 string typ = p.typ;
                 if (k == "cil")
@@ -2973,8 +2991,22 @@ namespace SQLitePCL
                             break;
                     }
                 }
-
+                return typ;
+            }
+            var a_parms = new System.Collections.Generic.List<string>();
+            foreach (var p in f.parms)
+            {
+                string typ = get_fixed_parm_type(p);
                 a_parms.Add((p.isOut ? "out " : "") + typ + " " + p.nam);
+            }
+            if (f.varargs && f.extra_parms != null)
+            {
+                foreach (var p in f.extra_parms)
+                {
+                    if (p.isOut) throw new Exception();
+                    string typ = get_fixed_parm_type(p);
+                    a_parms.Add(typ + " " + p.nam);
+                }
             }
             return a_parms;
         }
@@ -3016,10 +3048,6 @@ namespace SQLitePCL
                 var a_args = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
-                    if (p.extra)
-                    {
-                        continue;
-                    }
                     if (p.isOut)
                     {
                         a_args.Add($"(IntPtr) (&tmp_{p.nam})");
@@ -3060,15 +3088,7 @@ namespace SQLitePCL
 <#+
             if (f.varargs)
             {
-                var extras = new System.Collections.Generic.List<Parm>();
-                foreach (var p in f.parms)
-                {
-                    if (p.extra)
-                    {
-                        extras.Add(p);
-                    }
-                }
-                if (extras.Count == 0)
+                if (f.extra_parms == null)
                 {
     #>
                 IntPtr p_extras = IntPtr.Zero;
@@ -3079,9 +3099,9 @@ namespace SQLitePCL
                     // TODO it would be more efficient here to use a value type instead of a pinned array
     #>
                 var extras = new IntPtr[] {
-                    (IntPtr) (<#= extras.Count #>),
+                    (IntPtr) (<#= f.extra_parms.Length #>),
     <#+
-                    foreach (var p in extras)
+                    foreach (var p in f.extra_parms)
                     {
                         switch (p.typ)
                         {
@@ -3098,7 +3118,6 @@ namespace SQLitePCL
                                 break;
                         }
                     }
-                    // TODO do this pin/unpin properly
     #>
                 };
                 var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
@@ -3106,7 +3125,7 @@ namespace SQLitePCL
     <#+
                 }
             }
-            foreach (var p in f.parms)
+            foreach (var p in f.GetAllParms())
             {
                 if (p.isOut)
                 {
@@ -3148,7 +3167,13 @@ namespace SQLitePCL
 #>
             foo.<#= (f.entry != null) ? f.entry : f.nam #>(<#= string.Join(", ", a_args) #>);
 <#+
-            foreach (var p in f.parms)
+            if (f.varargs && f.extra_parms != null)
+            {
+#>
+            pinned_extras.Free();
+<#+
+            }
+            foreach (var p in f.GetAllParms())
             {
                 if (p.isOut)
                 {

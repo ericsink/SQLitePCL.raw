@@ -2310,6 +2310,7 @@ namespace SQLitePCL
                 IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
                 var ret =
             foo.sqlite3_config(op, p_extras);
+            pinned_extras.Free();
             return (int) ret;
         }
 
@@ -2327,6 +2328,7 @@ namespace SQLitePCL
                 if (!got_pvUser) throw new Exception("SafeHandle.DangerousAddRef failed");
                 var ret =
             foo.sqlite3_config(op, p_extras);
+            pinned_extras.Free();
                 if (got_pvUser)
                 {
                     pvUser.DangerousRelease();
