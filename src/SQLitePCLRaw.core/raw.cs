@@ -507,6 +507,12 @@ namespace SQLitePCL
             }
             return Provider.sqlite3_create_collation(db, p, v, cb);
         }
+        
+        static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
+        {
+            var p = name.to_utf8_with_z();
+            return Provider.sqlite3_create_collation(db, p, v, f);
+        }
 
         static public int sqlite3_create_function(sqlite3 db, string name, int nArg, int flags, object v, delegate_function_scalar func)
         {
