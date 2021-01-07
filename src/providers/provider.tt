@@ -1705,6 +1705,7 @@ namespace SQLitePCL
         public Parm[] parms { get; private set; }
         public string entry { get; private set; }
         public bool varargs { get; private set; }
+        public string feature { get; private set; }
         public Function(string r, string n, Parm[] p)
         {
             ret = r;
@@ -1721,7 +1722,1125 @@ namespace SQLitePCL
             varargs = b;
             return this;
         }
+        public Function SetFeature(string f)
+        {
+            feature = f;
+            return this;
+        }
     }
+
+    Function[] a_funcs = new Function[] {
+        new Function(
+            "int",
+            "sqlite3_close",
+            new Parm[] {
+                new Parm("IntPtr", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_close_v2",
+            new Parm[] {
+                new Parm("IntPtr", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_enable_shared_cache",
+            new Parm[] {
+                new Parm("int", "enable"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_interrupt",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_finalize",
+            new Parm[] {
+                new Parm("IntPtr", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_reset",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_clear_bindings",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_stmt_status",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stm"),
+                new Parm("int", "op"),
+                new Parm("int", "resetFlg"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_bind_parameter_name",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_database_name",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_decltype",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_name",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_origin_name",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_table_name",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_column_text",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_errmsg",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_db_readonly",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_db_filename",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "att"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_prepare_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "pSql"),
+                new Parm("int", "nBytes"),
+                new Parm("IntPtr", "stmt").SetByRef("out"),
+                new Parm("byte*", "ptrRemain").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_prepare_v3",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "pSql"),
+                new Parm("int", "nBytes"),
+                new Parm("uint", "flags"),
+                new Parm("IntPtr", "stmt").SetByRef("out"),
+                new Parm("byte*", "ptrRemain").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_db_status",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "op"),
+                new Parm("int", "current").SetByRef("out"),
+                new Parm("int", "highest").SetByRef("out"),
+                new Parm("int", "resetFlg"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_complete",
+            new Parm[] {
+                new Parm("byte*", "pSql"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_compileoption_used",
+            new Parm[] {
+                new Parm("byte*", "pSql"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_compileoption_get",
+            new Parm[] {
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_table_column_metadata",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+                new Parm("byte*", "tblName"),
+                new Parm("byte*", "colName"),
+                new Parm("byte*", "ptrDataType").SetByRef("out"),
+                new Parm("byte*", "ptrCollSeq").SetByRef("out"),
+                new Parm("int", "notNull").SetByRef("out"),
+                new Parm("int", "primaryKey").SetByRef("out"),
+                new Parm("int", "autoInc").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_value_text",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_enable_load_extension",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "enable"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_initialize",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_shutdown",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_libversion",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_libversion_number",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_threadsafe",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_sourceid",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_malloc",
+            new Parm[] {
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_realloc",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_free",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_stricmp",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+                new Parm("IntPtr", "q"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_strnicmp",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+                new Parm("IntPtr", "q"),
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_open",
+            new Parm[] {
+                new Parm("byte*", "filename"),
+                new Parm("IntPtr", "db").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_open_v2",
+            new Parm[] {
+                new Parm("byte*", "filename"),
+                new Parm("IntPtr", "db").SetByRef("out"),
+                new Parm("int", "flags"),
+                new Parm("byte*", "vfs"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_vfs_find",
+            new Parm[] {
+                new Parm("byte*", "vfs"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_last_insert_rowid",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_changes",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_total_changes",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_memory_used",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_memory_highwater",
+            new Parm[] {
+                new Parm("int", "resetFlag"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_status",
+            new Parm[] {
+                new Parm("int", "op"),
+                new Parm("int", "current").SetByRef("out"),
+                new Parm("int", "highwater").SetByRef("out"),
+                new Parm("int", "resetFlag"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_busy_timeout",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "ms"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_blob",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("byte*", "val"),
+                new Parm("int", "nSize"),
+                new Parm("IntPtr", "nTransient"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_zeroblob",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("int", "size"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_double",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("double", "val"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_int",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("int", "val"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_int64",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("long", "val"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_null",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_text",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("byte*", "val"),
+                new Parm("int", "nlen"),
+                new Parm("IntPtr", "pvReserved"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_parameter_count",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_parameter_index",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("byte*", "strName"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_column_count",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_data_count",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_step",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_sql",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "double",
+            "sqlite3_column_double",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_column_int",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_column_int64",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_column_blob",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_column_bytes",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_column_type",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_aggregate_count",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_value_blob",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_value_bytes",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "double",
+            "sqlite3_value_double",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_value_int",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_value_int64",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_value_type",
+            new Parm[] {
+                new Parm("IntPtr", "p"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_user_data",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_blob",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("IntPtr", "val"),
+                new Parm("int", "nSize"),
+                new Parm("IntPtr", "pvReserved"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_double",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("double", "val"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_error",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("byte*", "strErr"),
+                new Parm("int", "nLen"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_int",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("int", "val"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_int64",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("long", "val"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_null",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_text",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("byte*", "val"),
+                new Parm("int", "nLen"),
+                new Parm("IntPtr", "pvReserved"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_zeroblob",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_error_toobig",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_error_nomem",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_result_error_code",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("int", "code"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_aggregate_context",
+            new Parm[] {
+                new Parm("IntPtr", "context"),
+                new Parm("int", "nBytes"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_key",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "key"),
+                new Parm("int", "keylen"),
+            }
+            )
+            .SetFeature("key")
+            ,
+        new Function(
+            "int",
+            "sqlite3_key_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbname"),
+                new Parm("byte*", "key"),
+                new Parm("int", "keylen"),
+            }
+            )
+            .SetFeature("key")
+            ,
+        new Function(
+            "int",
+            "sqlite3_rekey",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "key"),
+                new Parm("int", "keylen"),
+            }
+            )
+            .SetFeature("key")
+            ,
+        new Function(
+            "int",
+            "sqlite3_rekey_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbname"),
+                new Parm("byte*", "key"),
+                new Parm("int", "keylen"),
+            }
+            )
+            .SetFeature("key")
+            ,
+        // Since sqlite3_config() takes a variable argument list, we have to overload declarations
+        // for all possible calls that we want to use.
+        new Function(
+            "int",
+            "sqlite3_config_none",
+            new Parm[] {
+                new Parm("int", "op"),
+            }
+            )
+            .SetEntryPoint("sqlite3_config")
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_config_int",
+            new Parm[] {
+                new Parm("int", "op"),
+                new Parm("int", "val").SetExtra(true),
+            }
+            )
+            .SetEntryPoint("sqlite3_config")
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_config_log",
+            new Parm[] {
+                new Parm("int", "op"),
+                new Parm("NativeMethods.callback_log", "func").SetExtra(true),
+                new Parm("hook_handle", "pvUser").SetExtra(true),
+            }
+            )
+            .SetEntryPoint("sqlite3_config")
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_create_collation",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte[]", "strName"),
+                new Parm("int", "nType"),
+                new Parm("hook_handle", "pvUser"),
+                new Parm("NativeMethods.callback_collation", "func"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_update_hook",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_update", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_commit_hook",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_commit", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_profile",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_profile", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_progress_handler",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "instructions"),
+                new Parm("NativeMethods.callback_progress_handler", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_trace",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_trace", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_rollback_hook",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_rollback", "func"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_db_handle",
+            new Parm[] {
+                new Parm("IntPtr", "stmt"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_next_stmt",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("IntPtr", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_stmt_isexplain",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_stmt_busy",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_stmt_readonly",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_exec",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "strSql"),
+                new Parm("NativeMethods.callback_exec", "cb"),
+                new Parm("hook_handle", "pvParam"),
+                new Parm("IntPtr", "errMsg").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_get_autocommit",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_extended_result_codes",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "onoff"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_errcode",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_extended_errcode",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+            }
+            ),
+        new Function(
+            "byte*",
+            "sqlite3_errstr",
+            new Parm[] {
+                new Parm("int", "rc"),
+            }
+            ),
+
+        // Since sqlite3_log() takes a variable argument list, we have to overload declarations
+        // for all possible calls.  For now, we are only exposing a single string, and 
+        // depend on the caller to format the string.
+        new Function(
+            "void",
+            "sqlite3_log",
+            new Parm[] {
+                new Parm("int", "iErrCode"),
+                new Parm("byte*", "zFormat"),
+            }
+            )
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_file_control",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte[]", "zDbName"),
+                new Parm("int", "op"),
+                new Parm("IntPtr", "pArg"),
+            }
+            ),
+        new Function(
+            "sqlite3_backup",
+            "sqlite3_backup_init",
+            new Parm[] {
+                new Parm("sqlite3", "destDb"),
+                new Parm("byte*", "zDestName"),
+                new Parm("sqlite3", "sourceDb"),
+                new Parm("byte*", "zSourceName"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_backup_step",
+            new Parm[] {
+                new Parm("sqlite3_backup", "backup"),
+                new Parm("int", "nPage"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_backup_remaining",
+            new Parm[] {
+                new Parm("sqlite3_backup", "backup"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_backup_pagecount",
+            new Parm[] {
+                new Parm("sqlite3_backup", "backup"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_backup_finish",
+            new Parm[] {
+                new Parm("IntPtr", "backup"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_open",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "sdb"),
+                new Parm("byte*", "table"),
+                new Parm("byte*", "col"),
+                new Parm("long", "rowid"),
+                new Parm("int", "flags"),
+                new Parm("IntPtr", "blob").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_write",
+            new Parm[] {
+                new Parm("sqlite3_blob", "blob"),
+                new Parm("byte*", "b"),
+                new Parm("int", "n"),
+                new Parm("int", "offset"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_read",
+            new Parm[] {
+                new Parm("sqlite3_blob", "blob"),
+                new Parm("byte*", "b"),
+                new Parm("int", "n"),
+                new Parm("int", "offset"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_bytes",
+            new Parm[] {
+                new Parm("sqlite3_blob", "blob"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_reopen",
+            new Parm[] {
+                new Parm("sqlite3_blob", "blob"),
+                new Parm("long", "rowid"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_blob_close",
+            new Parm[] {
+                new Parm("IntPtr", "blob"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_wal_autocheckpoint",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_wal_checkpoint",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_wal_checkpoint_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+                new Parm("int", "eMode"),
+                new Parm("int", "logSize").SetByRef("out"),
+                new Parm("int", "framesCheckPointed").SetByRef("out"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_set_authorizer",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("NativeMethods.callback_authorizer", "cb"),
+                new Parm("hook_handle", "pvUser"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_win32_set_directory8",
+            new Parm[] {
+                new Parm("uint", "directoryType"),
+                new Parm("byte*", "directoryPath"),
+            })
+            .SetFeature("win32")
+            ,
+        new Function(
+            "int",
+            "sqlite3_create_function_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte[]", "strName"),
+                new Parm("int", "nArgs"),
+                new Parm("int", "nType"),
+                new Parm("hook_handle", "pvUser"),
+                new Parm("NativeMethods.callback_scalar_function", "func"),
+                new Parm("NativeMethods.callback_agg_function_step", "fstep"),
+                new Parm("NativeMethods.callback_agg_function_final", "ffinal"),
+                new Parm("NativeMethods.callback_destroy", "fdestroy"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_keyword_count",
+            new Parm[] {
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_keyword_name",
+            new Parm[] {
+                new Parm("int", "i"),
+                new Parm("byte*", "name").SetByRef("out"),
+                new Parm("int", "length").SetByRef("out"),
+            }
+            ),
+
+
+        };
 
 	void write_dynamic_load_stuff()
 	{
@@ -1998,6 +3117,35 @@ namespace SQLitePCL
 
         void write_method(Function f)
         {
+            if (f.feature == null)
+            {
+                // fine
+            }
+            else if (f.feature == "key")
+            {
+                if (FEATURE_KEY != "true")
+                {
+                    return;
+                }
+            }
+            else if (f.feature == "win32")
+            {
+                if (
+                    (UWP == "true")
+                    || (KIND == "dynamic")
+                    )
+                {
+                    // fine
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
             if (k == "cil")
             {
                 var a_parms = get_parm_list(f);
@@ -2167,1117 +3315,9 @@ namespace SQLitePCL
             }
         }
 
-            write_method(new Function(
-                "int",
-                "sqlite3_close",
-                new Parm[] {
-                    new Parm("IntPtr", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_close_v2",
-                new Parm[] {
-                    new Parm("IntPtr", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_enable_shared_cache",
-                new Parm[] {
-                    new Parm("int", "enable"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_interrupt",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_finalize",
-                new Parm[] {
-                    new Parm("IntPtr", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_reset",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_clear_bindings",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_stmt_status",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stm"),
-                    new Parm("int", "op"),
-                    new Parm("int", "resetFlg"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_bind_parameter_name",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_database_name",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_decltype",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_name",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_origin_name",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_table_name",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_column_text",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_errmsg",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_db_readonly",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbName"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_db_filename",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "att"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_prepare_v2",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "pSql"),
-                    new Parm("int", "nBytes"),
-                    new Parm("IntPtr", "stmt").SetByRef("out"),
-                    new Parm("byte*", "ptrRemain").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_prepare_v3",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "pSql"),
-                    new Parm("int", "nBytes"),
-                    new Parm("uint", "flags"),
-                    new Parm("IntPtr", "stmt").SetByRef("out"),
-                    new Parm("byte*", "ptrRemain").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_db_status",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "op"),
-                    new Parm("int", "current").SetByRef("out"),
-                    new Parm("int", "highest").SetByRef("out"),
-                    new Parm("int", "resetFlg"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_complete",
-                new Parm[] {
-                    new Parm("byte*", "pSql"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_compileoption_used",
-                new Parm[] {
-                    new Parm("byte*", "pSql"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_compileoption_get",
-                new Parm[] {
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_table_column_metadata",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbName"),
-                    new Parm("byte*", "tblName"),
-                    new Parm("byte*", "colName"),
-                    new Parm("byte*", "ptrDataType").SetByRef("out"),
-                    new Parm("byte*", "ptrCollSeq").SetByRef("out"),
-                    new Parm("int", "notNull").SetByRef("out"),
-                    new Parm("int", "primaryKey").SetByRef("out"),
-                    new Parm("int", "autoInc").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_value_text",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_enable_load_extension",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "enable"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_initialize",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_shutdown",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_libversion",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_libversion_number",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_threadsafe",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_sourceid",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_malloc",
-                new Parm[] {
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_realloc",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_free",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_stricmp",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                    new Parm("IntPtr", "q"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_strnicmp",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                    new Parm("IntPtr", "q"),
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_open",
-                new Parm[] {
-                    new Parm("byte*", "filename"),
-                    new Parm("IntPtr", "db").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_open_v2",
-                new Parm[] {
-                    new Parm("byte*", "filename"),
-                    new Parm("IntPtr", "db").SetByRef("out"),
-                    new Parm("int", "flags"),
-                    new Parm("byte*", "vfs"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_vfs_find",
-                new Parm[] {
-                    new Parm("byte*", "vfs"),
-                }
-                ));
-            write_method(new Function(
-                "long",
-                "sqlite3_last_insert_rowid",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_changes",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_total_changes",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "long",
-                "sqlite3_memory_used",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "long",
-                "sqlite3_memory_highwater",
-                new Parm[] {
-                    new Parm("int", "resetFlag"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_status",
-                new Parm[] {
-                    new Parm("int", "op"),
-                    new Parm("int", "current").SetByRef("out"),
-                    new Parm("int", "highwater").SetByRef("out"),
-                    new Parm("int", "resetFlag"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_busy_timeout",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "ms"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_blob",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("byte*", "val"),
-                    new Parm("int", "nSize"),
-                    new Parm("IntPtr", "nTransient"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_zeroblob",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("int", "size"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_double",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("double", "val"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_int",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("int", "val"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_int64",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("long", "val"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_null",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_text",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                    new Parm("byte*", "val"),
-                    new Parm("int", "nlen"),
-                    new Parm("IntPtr", "pvReserved"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_parameter_count",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_bind_parameter_index",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("byte*", "strName"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_column_count",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_data_count",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_step",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_sql",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "double",
-                "sqlite3_column_double",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_column_int",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "long",
-                "sqlite3_column_int64",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_column_blob",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_column_bytes",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_column_type",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                    new Parm("int", "index"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_aggregate_count",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_value_blob",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_value_bytes",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "double",
-                "sqlite3_value_double",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_value_int",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "long",
-                "sqlite3_value_int64",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_value_type",
-                new Parm[] {
-                    new Parm("IntPtr", "p"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_user_data",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_blob",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("IntPtr", "val"),
-                    new Parm("int", "nSize"),
-                    new Parm("IntPtr", "pvReserved"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_double",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("double", "val"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_error",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("byte*", "strErr"),
-                    new Parm("int", "nLen"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_int",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("int", "val"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_int64",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("long", "val"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_null",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_text",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("byte*", "val"),
-                    new Parm("int", "nLen"),
-                    new Parm("IntPtr", "pvReserved"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_zeroblob",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_error_toobig",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_error_nomem",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_result_error_code",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("int", "code"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_aggregate_context",
-                new Parm[] {
-                    new Parm("IntPtr", "context"),
-                    new Parm("int", "nBytes"),
-                }
-                ));
-
-	if (FEATURE_KEY == "true")
-    {
-            write_method(new Function(
-                "int",
-                "sqlite3_key",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "key"),
-                    new Parm("int", "keylen"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_key_v2",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbname"),
-                    new Parm("byte*", "key"),
-                    new Parm("int", "keylen"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_rekey",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "key"),
-                    new Parm("int", "keylen"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_rekey_v2",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbname"),
-                    new Parm("byte*", "key"),
-                    new Parm("int", "keylen"),
-                }
-                ));
-    }
-
-            // Since sqlite3_config() takes a variable argument list, we have to overload declarations
-            // for all possible calls that we want to use.
-            write_method(new Function(
-                "int",
-                "sqlite3_config_none",
-                new Parm[] {
-                    new Parm("int", "op"),
-                }
-                )
-                .SetEntryPoint("sqlite3_config")
-                .SetVarArgs(true)
-                );
-            write_method(new Function(
-                "int",
-                "sqlite3_config_int",
-                new Parm[] {
-                    new Parm("int", "op"),
-                    new Parm("int", "val").SetExtra(true),
-                }
-                )
-                .SetEntryPoint("sqlite3_config")
-                .SetVarArgs(true)
-                );
-            write_method(new Function(
-                "int",
-                "sqlite3_config_log",
-                new Parm[] {
-                    new Parm("int", "op"),
-                    new Parm("NativeMethods.callback_log", "func").SetExtra(true),
-                    new Parm("hook_handle", "pvUser").SetExtra(true),
-                }
-                )
-                .SetEntryPoint("sqlite3_config")
-                .SetVarArgs(true)
-                );
-            write_method(new Function(
-                "int",
-                "sqlite3_create_collation",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte[]", "strName"),
-                    new Parm("int", "nType"),
-                    new Parm("hook_handle", "pvUser"),
-                    new Parm("NativeMethods.callback_collation", "func"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_update_hook",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_update", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_commit_hook",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_commit", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_profile",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_profile", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "void",
-                "sqlite3_progress_handler",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "instructions"),
-                    new Parm("NativeMethods.callback_progress_handler", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_trace",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_trace", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_rollback_hook",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_rollback", "func"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_db_handle",
-                new Parm[] {
-                    new Parm("IntPtr", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "IntPtr",
-                "sqlite3_next_stmt",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("IntPtr", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_stmt_isexplain",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_stmt_busy",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_stmt_readonly",
-                new Parm[] {
-                    new Parm("sqlite3_stmt", "stmt"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_exec",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "strSql"),
-                    new Parm("NativeMethods.callback_exec", "cb"),
-                    new Parm("hook_handle", "pvParam"),
-                    new Parm("IntPtr", "errMsg").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_get_autocommit",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_extended_result_codes",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "onoff"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_errcode",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_extended_errcode",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                }
-                ));
-            write_method(new Function(
-                "byte*",
-                "sqlite3_errstr",
-                new Parm[] {
-                    new Parm("int", "rc"),
-                }
-                ));
-
-            // Since sqlite3_log() takes a variable argument list, we have to overload declarations
-            // for all possible calls.  For now, we are only exposing a single string, and 
-            // depend on the caller to format the string.
-            write_method(new Function(
-                "void",
-                "sqlite3_log",
-                new Parm[] {
-                    new Parm("int", "iErrCode"),
-                    new Parm("byte*", "zFormat"),
-                }
-                )
-                .SetVarArgs(true)
-                );
-            write_method(new Function(
-                "int",
-                "sqlite3_file_control",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte[]", "zDbName"),
-                    new Parm("int", "op"),
-                    new Parm("IntPtr", "pArg"),
-                }
-                ));
-            write_method(new Function(
-                "sqlite3_backup",
-                "sqlite3_backup_init",
-                new Parm[] {
-                    new Parm("sqlite3", "destDb"),
-                    new Parm("byte*", "zDestName"),
-                    new Parm("sqlite3", "sourceDb"),
-                    new Parm("byte*", "zSourceName"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_backup_step",
-                new Parm[] {
-                    new Parm("sqlite3_backup", "backup"),
-                    new Parm("int", "nPage"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_backup_remaining",
-                new Parm[] {
-                    new Parm("sqlite3_backup", "backup"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_backup_pagecount",
-                new Parm[] {
-                    new Parm("sqlite3_backup", "backup"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_backup_finish",
-                new Parm[] {
-                    new Parm("IntPtr", "backup"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_open",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "sdb"),
-                    new Parm("byte*", "table"),
-                    new Parm("byte*", "col"),
-                    new Parm("long", "rowid"),
-                    new Parm("int", "flags"),
-                    new Parm("IntPtr", "blob").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_write",
-                new Parm[] {
-                    new Parm("sqlite3_blob", "blob"),
-                    new Parm("byte*", "b"),
-                    new Parm("int", "n"),
-                    new Parm("int", "offset"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_read",
-                new Parm[] {
-                    new Parm("sqlite3_blob", "blob"),
-                    new Parm("byte*", "b"),
-                    new Parm("int", "n"),
-                    new Parm("int", "offset"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_bytes",
-                new Parm[] {
-                    new Parm("sqlite3_blob", "blob"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_reopen",
-                new Parm[] {
-                    new Parm("sqlite3_blob", "blob"),
-                    new Parm("long", "rowid"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_blob_close",
-                new Parm[] {
-                    new Parm("IntPtr", "blob"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_wal_autocheckpoint",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("int", "n"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_wal_checkpoint",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbName"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_wal_checkpoint_v2",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte*", "dbName"),
-                    new Parm("int", "eMode"),
-                    new Parm("int", "logSize").SetByRef("out"),
-                    new Parm("int", "framesCheckPointed").SetByRef("out"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_set_authorizer",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("NativeMethods.callback_authorizer", "cb"),
-                    new Parm("hook_handle", "pvUser"),
-                }
-                ));
-
-	if (
-        (UWP == "true")
-        || (KIND == "dynamic")
-        )
-    {
-            write_method(new Function(
-                "int",
-                "sqlite3_win32_set_directory8",
-                new Parm[] {
-                    new Parm("uint", "directoryType"),
-                    new Parm("byte*", "directoryPath"),
-                }
-                ));
-    }
-
-            write_method(new Function(
-                "int",
-                "sqlite3_create_function_v2",
-                new Parm[] {
-                    new Parm("sqlite3", "db"),
-                    new Parm("byte[]", "strName"),
-                    new Parm("int", "nArgs"),
-                    new Parm("int", "nType"),
-                    new Parm("hook_handle", "pvUser"),
-                    new Parm("NativeMethods.callback_scalar_function", "func"),
-                    new Parm("NativeMethods.callback_agg_function_step", "fstep"),
-                    new Parm("NativeMethods.callback_agg_function_final", "ffinal"),
-                    new Parm("NativeMethods.callback_destroy", "fdestroy"),
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_keyword_count",
-                new Parm[] {
-                }
-                ));
-            write_method(new Function(
-                "int",
-                "sqlite3_keyword_name",
-                new Parm[] {
-                    new Parm("int", "i"),
-                    new Parm("byte*", "name").SetByRef("out"),
-                    new Parm("int", "length").SetByRef("out"),
-                }
-                ));
+            foreach (var f in a_funcs)
+            {
+                write_method(f);
+            }
 	}
 #>
