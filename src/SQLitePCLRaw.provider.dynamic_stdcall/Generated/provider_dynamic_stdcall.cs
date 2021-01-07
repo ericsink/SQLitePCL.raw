@@ -1529,7 +1529,6 @@ namespace SQLitePCL
 			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
 			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
 			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
-			sqlite3_create_function_v2 = (MyDelegateTypes.sqlite3_create_function_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_create_function_v2));
 			sqlite3_create_collation = (MyDelegateTypes.sqlite3_create_collation) Load(gf, typeof(MyDelegateTypes.sqlite3_create_collation));
 			sqlite3_update_hook = (MyDelegateTypes.sqlite3_update_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_update_hook));
 			sqlite3_commit_hook = (MyDelegateTypes.sqlite3_commit_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_commit_hook));
@@ -1566,6 +1565,7 @@ namespace SQLitePCL
 			sqlite3_wal_checkpoint_v2 = (MyDelegateTypes.sqlite3_wal_checkpoint_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_wal_checkpoint_v2));
 			sqlite3_set_authorizer = (MyDelegateTypes.sqlite3_set_authorizer) Load(gf, typeof(MyDelegateTypes.sqlite3_set_authorizer));
 			sqlite3_win32_set_directory8 = (MyDelegateTypes.sqlite3_win32_set_directory8) Load(gf, typeof(MyDelegateTypes.sqlite3_win32_set_directory8));
+			sqlite3_create_function_v2 = (MyDelegateTypes.sqlite3_create_function_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_create_function_v2));
 			sqlite3_keyword_count = (MyDelegateTypes.sqlite3_keyword_count) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_count));
 			sqlite3_keyword_name = (MyDelegateTypes.sqlite3_keyword_name) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_name));
 		}
@@ -1664,7 +1664,6 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_config_none sqlite3_config_none;
 		public static MyDelegateTypes.sqlite3_config_int sqlite3_config_int;
 		public static MyDelegateTypes.sqlite3_config_log sqlite3_config_log;
-		public static MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2;
 		public static MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation;
 		public static MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook;
 		public static MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook;
@@ -1701,6 +1700,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_wal_checkpoint_v2 sqlite3_wal_checkpoint_v2;
 		public static MyDelegateTypes.sqlite3_set_authorizer sqlite3_set_authorizer;
 		public static MyDelegateTypes.sqlite3_win32_set_directory8 sqlite3_win32_set_directory8;
+		public static MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2;
 		public static MyDelegateTypes.sqlite3_keyword_count sqlite3_keyword_count;
 		public static MyDelegateTypes.sqlite3_keyword_name sqlite3_keyword_name;
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]

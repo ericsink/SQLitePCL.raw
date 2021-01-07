@@ -3013,8 +3013,9 @@ namespace SQLitePCL
 		static public void Setup(IGetFunctionPointer gf)
 		{
 <#+
-	foreach (var s in funcs)
+	foreach (var f in a_funcs)
 	{
+        var s = f.nam;
 #>
 			<#= s #> = (MyDelegateTypes.<#= s #>) Load(gf, typeof(MyDelegateTypes.<#= s #>));
 <#+
@@ -3023,8 +3024,9 @@ namespace SQLitePCL
 		}
 
 <#+
-	foreach (var s in funcs)
+	foreach (var f in a_funcs)
 	{
+        var s = f.nam;
 #>
 		public static MyDelegateTypes.<#= s #> <#= s #>;
 <#+
