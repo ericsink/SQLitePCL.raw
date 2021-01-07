@@ -3013,7 +3013,6 @@ namespace SQLitePCL
             if (k == "cil")
             {
                 var a_parms = get_parm_list(f);
-                // TODO need tmp_ for byrefs
                 var a_args = new System.Collections.Generic.List<string>();
                 foreach (var p in f.parms)
                 {
@@ -3055,14 +3054,60 @@ namespace SQLitePCL
                 }
                 if (f.varargs)
                 {
-                    // TODO fix this to actually pass in the args
-                    // which cannot be byref, incidentally
-                    a_args.Add("IntPtr.Zero");
+                    a_args.Add("p_extras");
                 }
 #>
 		public unsafe static <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a_parms) #>)
         {
 <#+
+            if (f.varargs)
+            {
+                var extras = new System.Collections.Generic.List<Parm>();
+                foreach (var p in f.parms)
+                {
+                    if (p.extra)
+                    {
+                        extras.Add(p);
+                    }
+                }
+                if (extras.Count == 0)
+                {
+    #>
+                IntPtr p_extras = IntPtr.Zero;
+    <#+
+                }
+                else
+                {
+                    // TODO it would be more efficient here to use a value type instead of a pinned array
+    #>
+                var extras = new IntPtr[] {
+                    (IntPtr) (<#= extras.Count #>),
+    <#+
+                    foreach (var p in extras)
+                    {
+                        switch (p.typ)
+                        {
+                            case "hook_handle":
+                                // TODO do the add/remove ref properly
+    #>
+                    (IntPtr) <#= p.nam #>.DangerousGetHandle(),
+    <#+
+                                break;
+                            default:
+    #>
+                    (IntPtr) <#= p.nam #>,
+    <#+
+                                break;
+                        }
+                    }
+                    // TODO do this pin/unpin properly
+    #>
+                };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+    <#+
+                }
+            }
             foreach (var p in f.parms)
             {
                 if (p.byref != null)
@@ -3077,6 +3122,7 @@ namespace SQLitePCL
                     switch (p.typ)
                     {
                         case "byte[]":
+                        // TODO do this pin/unpin properly
     #>
                 var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
     <#+

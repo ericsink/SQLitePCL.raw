@@ -2000,22 +2000,36 @@ namespace SQLitePCL
 
 		public unsafe static int sqlite3_config_none(int op)
         {
-            var ret =
-            foo.sqlite3_config(op, IntPtr.Zero);
+                IntPtr p_extras = IntPtr.Zero;
+                var ret =
+            foo.sqlite3_config(op, p_extras);
             return (int) ret;
         }
 
 		public unsafe static int sqlite3_config_int(int op, int val)
         {
-            var ret =
-            foo.sqlite3_config(op, IntPtr.Zero);
+                var extras = new IntPtr[] {
+                    (IntPtr) (1),
+                        (IntPtr) val,
+                    };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                var ret =
+            foo.sqlite3_config(op, p_extras);
             return (int) ret;
         }
 
 		public unsafe static int sqlite3_config_log(int op, IntPtr func, hook_handle pvUser)
         {
-            var ret =
-            foo.sqlite3_config(op, IntPtr.Zero);
+                var extras = new IntPtr[] {
+                    (IntPtr) (2),
+                        (IntPtr) func,
+                        (IntPtr) pvUser.DangerousGetHandle(),
+                    };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                var ret =
+            foo.sqlite3_config(op, p_extras);
             return (int) ret;
         }
 
@@ -2149,7 +2163,8 @@ namespace SQLitePCL
 
 		public unsafe static void sqlite3_log(int iErrCode, byte* zFormat)
         {
-            foo.sqlite3_log(iErrCode, (IntPtr)zFormat, IntPtr.Zero);
+                IntPtr p_extras = IntPtr.Zero;
+                foo.sqlite3_log(iErrCode, (IntPtr)zFormat, p_extras);
         }
 
 		public unsafe static int sqlite3_file_control(sqlite3 db, byte[] zDbName, int op, IntPtr pArg)
