@@ -6,15 +6,8 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_sqlite3.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_sqlite3.snk</AssemblyOriginatorKeyFile> <!-- TODO -->
   </PropertyGroup>
-
-<!--
-<Target Name="autogen" BeforeTargets="BeforeBuild">
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_cdecl.cs -p:CONV=Cdecl provider.tt"/>
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_stdcall.cs -p:CONV=StdCall provider.tt"/>
-</Target>
--->
 
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />

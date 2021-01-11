@@ -38,6 +38,7 @@ public static class gen
         NET461,
         XAMARIN_MAC,
         NETCOREAPP31,
+        NET50,
     }
 
     enum LibSuffix
@@ -113,6 +114,7 @@ public static class gen
             case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
             case TFM.NET461: return "net461";
             case TFM.NETCOREAPP31: return "netcoreapp3.1";
+            case TFM.NET50: return "net5.0";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
         }
@@ -601,6 +603,7 @@ public static class gen
         WINSQLITE3,
         DYNAMIC_CDECL,
         DYNAMIC_STDCALL,
+        CIL,
     }
 
     static string AsString(this WhichProvider e)
@@ -615,6 +618,7 @@ public static class gen
             case WhichProvider.WINSQLITE3: return "winsqlite3";
             case WhichProvider.DYNAMIC_CDECL: return "dynamic_cdecl";
             case WhichProvider.DYNAMIC_STDCALL: return "dynamic_stdcall";
+            case WhichProvider.CIL: return "cil";
             default:
                 throw new NotImplementedException(string.Format("WhichProvider.AsString for {0}", e));
         }
@@ -678,6 +682,80 @@ public static class gen
                     f
                     );
 #endif
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_bundle_cil(string dir_src)
+    {
+        string id = string.Format("{0}.bundle_cil", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses CIL.");
+
+            f.WriteStartElement("dependencies");
+            write_bundle_dependency_group(f, WhichProvider.CIL, WhichLib.NONE, TFM.NET50);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_batteries(
+                    "cil",
+                    TFM.NET50,
+                    f
+                    );
+
+            write_nuspec_file_entry(
+                Path.Combine(
+                    "$src_path$",
+                    "SQLitePCLRaw.provider.cil",
+                    "sqlite3.dll"
+                    ),
+                string.Format("lib\\{0}\\", TFM.NET50.AsString()),
+                f
+                );
+
+            write_nuspec_file_entry(
+                Path.Combine(
+                    "$src_path$",
+                    "SQLitePCLRaw.provider.cil",
+                    "sgwin32.dll"
+                    ),
+                string.Format("lib\\{0}\\", TFM.NET50.AsString()),
+                f
+                );
+
+            write_nuspec_file_entry(
+                Path.Combine(
+                    "$src_path$",
+                    "SQLitePCLRaw.provider.cil",
+                    "sgucrt.dll"
+                    ),
+                string.Format("lib\\{0}\\", TFM.NET50.AsString()),
+                f
+                );
 
             f.WriteEndElement(); // files
 
@@ -1445,6 +1523,7 @@ public static class gen
         gen_nuspec_bundle_winsqlite3(dir_src);
         gen_nuspec_bundle_e_sqlcipher(dir_src);
         gen_nuspec_bundle_zetetic(dir_src);
+        gen_nuspec_bundle_cil(dir_src);
     }
 }
 

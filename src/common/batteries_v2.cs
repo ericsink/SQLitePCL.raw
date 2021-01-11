@@ -97,6 +97,8 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
 #elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
+#elif PROVIDER_cil
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cil());
 #elif PROVIDER_dynamic
 
 #if PROVIDER_NAME_e_sqlite3

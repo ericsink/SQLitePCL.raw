@@ -61,7 +61,6 @@ let main argv =
         "SQLitePCLRaw.nativelibrary" 
         "SQLitePCLRaw.provider.e_sqlite3.most" 
         "SQLitePCLRaw.provider.e_sqlite3.uwp" 
-        "SQLitePCLRaw.provider.cil" 
         "SQLitePCLRaw.provider.e_sqlcipher.most" 
         "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlcipher.most" 
@@ -75,6 +74,7 @@ let main argv =
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
+        "SQLitePCLRaw.provider.cil" 
         "SQLitePCLRaw.provider.dynamic_cdecl" 
         "SQLitePCLRaw.provider.dynamic_stdcall" 
         "SQLitePCLRaw.provider.internal" 
@@ -85,6 +85,7 @@ let main argv =
         exec "dotnet" "pack -c Release" (Path.Combine(top, "src", s))
 
     let batteries_dirs = [
+        "cil"
         "e_sqlite3.dllimport"
         "e_sqlite3.dynamic"
         "e_sqlcipher.dllimport"
@@ -150,6 +151,7 @@ let main argv =
         "bundle_zetetic"
         "bundle_winsqlite3"
         "bundle_sqlite3"
+        "bundle_cil"
         ]
     for s in nuspecs do
         let name = sprintf "SQLitePCLRaw.%s" s
@@ -160,6 +162,8 @@ let main argv =
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "fsmoke"))
+
+    exec "dotnet" (sprintf "run --framework=%s" "net5.0") (Path.Combine(top, "test_nupkgs", "cil", "fake_xunit"))
 
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "e_sqlite3", "real_xunit"))
     exec "dotnet" "test" (Path.Combine(top, "test_nupkgs", "winsqlite3", "real_xunit"))
