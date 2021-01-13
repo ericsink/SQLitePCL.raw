@@ -38,7 +38,7 @@ namespace SQLitePCL
 
         string ISQLite3Provider.GetNativeLibraryName()
         {
-            return "(cil)";
+            return "e_sqlite3";
         }
 
         unsafe bool my_streq(IntPtr p, IntPtr q, int len)
