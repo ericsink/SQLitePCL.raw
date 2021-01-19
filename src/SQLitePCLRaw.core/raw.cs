@@ -508,7 +508,15 @@ namespace SQLitePCL
             return Provider.sqlite3_create_collation(db, p, v, cb);
         }
         
-        static public int sqlite3_create_collation(sqlite3 db, string name, object v, delegate_collation f)
+        // note the extra underscore in the name of the following function.
+        // this function is not in sqlite.
+        // it is being added for SQLitePCLRaw 2.0.5.
+        // but making this an overload for sqlite3_create_collation() would break existing code
+        // because a null value becomes an ambiguous call.
+        // so we give it a gratuitously different name, but we don't want it to look
+        // like (or possibly in the future clash with) the name of an actual function
+        // in sqlite itself.  thus the extra underscore.
+        static public int sqlite3__create_collation_utf8(sqlite3 db, string name, object v, delegate_collation f)
         {
             var p = name.to_utf8_with_z();
             return Provider.sqlite3_create_collation(db, p, v, f);
