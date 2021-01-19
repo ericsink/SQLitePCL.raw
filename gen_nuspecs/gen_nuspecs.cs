@@ -711,7 +711,7 @@ public static class gen
 
             f.WriteStartElement("metadata");
             write_nuspec_common_metadata(id, f);
-            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: .no SQLite library included, uses CIL.");
+            f.WriteElementString("description", "This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: instead of a 'native' SQLite library, use SQLite compiled as a pure .NET assembly.  EXPERIMENTAL, not ready for production use.");
 
             f.WriteStartElement("dependencies");
             write_bundle_dependency_group(f, WhichProvider.CIL, WhichLib.NONE, TFM.NET50);
