@@ -1809,7 +1809,7 @@ namespace SQLitePCL.Tests
                 db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 2, 44, null);
                 db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 3, null, 1.414);
                 db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 4, 0, null);
-                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 5, new DateTime(1968, 3, 15), null);
+                db.exec("INSERT INTO foo (id,n,r) VALUES (?,?,?)", 5, new DateTime(1968, 3, 15, 0, 0, 0, DateTimeKind.Utc), null);
                 using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=1;"))
                 {
                     stmt.step();
@@ -1903,6 +1903,12 @@ namespace SQLitePCL.Tests
                         Assert.Equal(1968, v.Year);
                         Assert.Equal(3, v.Month);
                         Assert.Equal(15, v.Day);
+                        Assert.Equal(0, v.Hour);
+                        Assert.Equal(0, v.Minute);
+                        Assert.Equal(0, v.Second);
+                        Assert.Equal(0, v.Millisecond);
+                        // Can't use Assert.Equal on a DateTimeKind enum because fake_xunit's Assert.Equal<T> has a constraint on "T : class" that xunit doesn't have
+                        Assert.Equal((int)DateTimeKind.Utc, (int)v.Kind);
                     }
                 }
                 using (sqlite3_stmt stmt = db.prepare("SELECT n,r FROM foo WHERE id=5;"))
