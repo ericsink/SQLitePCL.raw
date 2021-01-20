@@ -26,6 +26,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace SQLitePCL
@@ -79,10 +80,12 @@ namespace SQLitePCL
 
         public static IntPtr Load(string libraryName, System.Reflection.Assembly assy, int flags)
         {
-            var h = MyLoad(libraryName, assy, flags, s => { });
+            var logWriter = new StringWriter();
+            logWriter.WriteLine($"Library {libraryName} not found");
+            var h = MyLoad(libraryName, assy, flags, s => logWriter.WriteLine(s));
             if (h == IntPtr.Zero)
             {
-                throw new Exception($"Library {libraryName} not found");
+                throw new Exception(logWriter.ToString());
             }
             return h;
         }
@@ -388,10 +391,10 @@ namespace SQLitePCL
             var suffix = WhichLibSuffix();
             log($"suffix: {suffix}");
             var a = MakePossibilitiesFor(basename, assy, flags, suffix);
-            log("possibilities:");
-            foreach (var s in a)
+            log($"possibilities ({a.Count}):");
+            foreach (var (s, i) in a.Select((s, i) => (s, i)))
             {
-                log($"    {s}");
+                log($"    {i+1}) {s}");
             }
             if (Search(a, plat, log, out var lib, out var h))
             {
