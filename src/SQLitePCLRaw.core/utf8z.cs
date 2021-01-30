@@ -17,12 +17,16 @@
 namespace SQLitePCL
 {
     using System;
-    using System.Runtime.InteropServices;
     using System.Text;
-    using System.Collections.Generic;
 
     // TODO consider Length property, which returns sp.Length - 1, but what about null
     // TODO consider way to get span, not included the zero terminator, but what about null
+
+    /// <summary>
+    /// A raw string representation suitable for passing into many core SQLite apis. These will normally be pointers to
+    /// utf8 encoded bytes, with a trailing <c>\0</c> terminator.  <see langword="null"/> strings can be represented as
+    /// well as empty strings.
+    /// </summary>
     public readonly ref struct utf8z
     {
         // this span will contain a zero terminator byte
@@ -43,17 +47,28 @@ namespace SQLitePCL
             sp = a;
         }
 
-        // TODO we could consider making this public
-        static utf8z FromSpan(ReadOnlySpan<byte> a)
+        /// <summary>
+        /// Creates a new instance of <see cref="utf8z"/> which directly points at the memory pointed to by <paramref
+        /// name="span"/>. The span must contain a valid <see cref="Encoding.UTF8"/> encoded block of memory that
+        /// terminates with a <c>\0</c> byte.  The span passed in must include the <c>\0</c> terminator.
+        /// <para/>
+        /// Both <see langword="null"/> and empty strings can be created here.  To create a <see langword="null"/> string,
+        /// pass in an empty <see cref="ReadOnlySpan{T}"/>.  To create an empty string, pass in a span with length 1, that
+        /// only contains a <c>\0</c>
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <c>span.Length > 0</c> and <c>span[^1]</c> is not <c>\0</c>.
+        /// </exception>
+        public static utf8z FromSpan(ReadOnlySpan<byte> span)
         {
             if (
-                (a.Length > 0)
-                && (a[a.Length - 1] != 0)
+                (span.Length > 0)
+                && (span[span.Length - 1] != 0)
                 )
             {
                 throw new ArgumentException("zero terminator required");
             }
-            return new utf8z(a);
+            return new utf8z(span);
         }
 
         public static utf8z FromString(string s)
@@ -84,6 +99,11 @@ namespace SQLitePCL
             return new ReadOnlySpan<byte>(p, len + 1);
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="utf8z"/> which directly points at the memory pointed to by <paramref
+        /// name="p"/>. The pointer must either be <see langword="null"/> or point to a valid <see
+        /// cref="Encoding.UTF8"/> encoded block of memory that terminates with a <c>\0</c> byte.
+        /// </summary>
         unsafe public static utf8z FromPtr(byte* p)
         {
             if (p == null)
@@ -97,6 +117,21 @@ namespace SQLitePCL
         }
 
         // TODO maybe remove this and just use FromSpan?
+
+        /// <summary>
+        /// Creates a new instance of <see cref="utf8z"/> which directly points at the memory pointed to by <paramref
+        /// name="p"/> with length <paramref name="len"/>. The pointer must be to a valid <see cref="Encoding.UTF8"/>
+        /// encoded block of memory that terminates with a <c>\0</c> byte.  The <paramref name="len"/> value refers to
+        /// the number of bytes in the utf8 encoded value <em>not</em> including the <c>\0</c> byte terminator.
+        /// <para/>
+        /// <paramref name="p"/> can be <see langword="null"/>, in which case <paramref name="len"/> is ignored
+        /// and a new <see cref="utf8z"/> instance is created that represents <see langword="null"/>.  Note that this
+        /// different from a pointer to a single <c>\0</c> byte and a length of one.  That would represent an empty <see
+        /// cref="utf8z"/> string.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <paramref name="p"/> is not <see langword="null"/> and <c>p[len]</c> is not <c>\0</c>.
+        /// </exception>
         unsafe public static utf8z FromPtrLen(byte* p, int len)
         {
             if (p == null)
