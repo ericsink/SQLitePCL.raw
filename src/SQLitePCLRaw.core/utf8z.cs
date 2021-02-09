@@ -183,7 +183,7 @@ namespace SQLitePCL
         /// int)"/>.  Note that for <see cref="FromPtrLen(byte*, int)"/> the length provided should not include the
         /// trailing <c>\0</c> terminator.
         /// </summary>
-        public static byte[] GetNullTerminatedUTF8Bytes(string value)
+        public static byte[] GetZeroTerminatedUTF8Bytes(string value)
         {
             return util.to_utf8_with_z(value);
         }

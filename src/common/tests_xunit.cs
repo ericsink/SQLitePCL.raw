@@ -56,6 +56,15 @@ namespace SQLitePCL.Tests
     public class test_cases
     {
         [Fact]
+        public void test_GetZeroTerminatedUTF8Bytes()
+        {
+            const string s = "hello";
+            var ba = utf8z.GetZeroTerminatedUTF8Bytes("hello");
+            Assert.Equal(s.Length + 1, ba.Length);
+            Assert.Equal(0, ba[s.Length]);
+        }
+
+        [Fact]
         public void test_call_sqlite3_enable_load_extension()
         {
             using (sqlite3 db = ugly.open(":memory:"))
