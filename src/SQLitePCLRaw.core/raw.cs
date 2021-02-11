@@ -28,6 +28,7 @@ namespace SQLitePCL
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     public delegate int strdelegate_collation(object user_data, string s1, string s2);
     public delegate void strdelegate_update(object user_data, int type, string database, string table, long rowid);
@@ -1124,6 +1125,29 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
+            if (val != null)
+            {
+                // stackalloc the conversion to bytes for small strings to help avoid unnecessary GC
+                // pressure. This is ultimately safe as we pass the SQLITE_TRANSIENT
+                // (https://www.sqlite.org/c3ref/c_static.html) flag to sqlite, which causes them to
+                // create their own copy.
+                var utf8ByteCount = Encoding.UTF8.GetByteCount(val);
+                if (utf8ByteCount <= 512)
+                {
+                    Span<byte> bytes = stackalloc byte[utf8ByteCount];
+                    unsafe
+                    {
+                        fixed (char* charsPtr = val)
+                        fixed (byte* bytesPtr = bytes)
+                        {
+                            Encoding.UTF8.GetBytes(charsPtr, val.Length, bytesPtr, utf8ByteCount);
+                        }
+                    }
+
+                    return sqlite3_bind_text(stmt, index, bytes);
+                }
+            }
+
             return sqlite3_bind_text(stmt, index, val.to_utf8z());
         }
 
