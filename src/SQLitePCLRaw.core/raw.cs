@@ -1132,7 +1132,7 @@ namespace SQLitePCL
                 // (https://www.sqlite.org/c3ref/c_static.html) flag to sqlite, which causes them to
                 // create their own copy.
                 var utf8ByteCount = Encoding.UTF8.GetByteCount(val);
-                if (utf8ByteCount <= 512)
+                if ((utf8ByteCount <= 512) && (utf8ByteCount > 0))
                 {
                     Span<byte> bytes = stackalloc byte[utf8ByteCount];
                     unsafe
