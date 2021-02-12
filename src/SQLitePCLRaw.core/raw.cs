@@ -1125,14 +1125,18 @@ namespace SQLitePCL
 
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, string val)
         {
-            if (val != null)
+            const int OptimizedLengthThreshold = 512;
+
+            // stackalloc the conversion to bytes for small strings to help avoid unnecessary GC pressure. This is
+            // ultimately safe as we pass the SQLITE_TRANSIENT (https://www.sqlite.org/c3ref/c_static.html) flag to
+            // sqlite, which causes them to create their own copy.
+
+            // Don't bother doing the linear GetByteCount check for strings that are certainly too large to fit within
+            // our byte count threshold.
+            if (val != null && val.Length <= OptimizedLengthThreshold)
             {
-                // stackalloc the conversion to bytes for small strings to help avoid unnecessary GC
-                // pressure. This is ultimately safe as we pass the SQLITE_TRANSIENT
-                // (https://www.sqlite.org/c3ref/c_static.html) flag to sqlite, which causes them to
-                // create their own copy.
                 var utf8ByteCount = Encoding.UTF8.GetByteCount(val);
-                if ((utf8ByteCount <= 512) && (utf8ByteCount > 0))
+                if ((utf8ByteCount <= OptimizedLengthThreshold) && (utf8ByteCount > 0))
                 {
                     Span<byte> bytes = stackalloc byte[utf8ByteCount];
                     unsafe
@@ -1381,4 +1385,3 @@ namespace SQLitePCL
 		}
     }
 }
-
