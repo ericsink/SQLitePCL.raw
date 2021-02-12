@@ -1136,7 +1136,7 @@ namespace SQLitePCL
             if (val != null && val.Length <= OptimizedLengthThreshold)
             {
                 var utf8ByteCount = Encoding.UTF8.GetByteCount(val);
-                if ((utf8ByteCount <= 512) && (utf8ByteCount > 0))
+                if ((utf8ByteCount <= OptimizedLengthThreshold) && (utf8ByteCount > 0))
                 {
                     Span<byte> bytes = stackalloc byte[utf8ByteCount];
                     unsafe
@@ -1385,4 +1385,3 @@ namespace SQLitePCL
 		}
     }
 }
-
