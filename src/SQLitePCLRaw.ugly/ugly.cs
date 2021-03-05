@@ -592,6 +592,12 @@ namespace SQLitePCL.Ugly
             check_ok(rc);
         }
 
+        public static void bind_text16(this sqlite3_stmt stmt, int index, ReadOnlySpan<char> s)
+        {
+            int rc = raw.sqlite3_bind_text16(stmt, index, s);
+            check_ok(rc);
+        }
+
         public static void bind_text(this sqlite3_stmt stmt, int index, utf8z s)
         {
             int rc = raw.sqlite3_bind_text(stmt, index, s);

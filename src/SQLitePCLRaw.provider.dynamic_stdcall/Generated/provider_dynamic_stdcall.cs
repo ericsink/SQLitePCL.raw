@@ -1182,6 +1182,15 @@ namespace SQLitePCL
             }
         }
 
+        unsafe int ISQLite3Provider.sqlite3_bind_text16(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<char> t)
+        {
+            fixed (char* p_t = t)
+            {
+                // mul span length times 2 to get num bytes, which is what sqlite wants
+                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+            }
+        }
+
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, utf8z t)
         {
             fixed (byte* p_t = t)
@@ -1490,6 +1499,7 @@ namespace SQLitePCL
 			sqlite3_bind_int64 = (MyDelegateTypes.sqlite3_bind_int64) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_int64));
 			sqlite3_bind_null = (MyDelegateTypes.sqlite3_bind_null) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_null));
 			sqlite3_bind_text = (MyDelegateTypes.sqlite3_bind_text) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_text));
+			sqlite3_bind_text16 = (MyDelegateTypes.sqlite3_bind_text16) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_text16));
 			sqlite3_bind_parameter_count = (MyDelegateTypes.sqlite3_bind_parameter_count) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_count));
 			sqlite3_bind_parameter_index = (MyDelegateTypes.sqlite3_bind_parameter_index) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_parameter_index));
 			sqlite3_column_count = (MyDelegateTypes.sqlite3_column_count) Load(gf, typeof(MyDelegateTypes.sqlite3_column_count));
@@ -1625,6 +1635,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_bind_int64 sqlite3_bind_int64;
 		public static MyDelegateTypes.sqlite3_bind_null sqlite3_bind_null;
 		public static MyDelegateTypes.sqlite3_bind_text sqlite3_bind_text;
+		public static MyDelegateTypes.sqlite3_bind_text16 sqlite3_bind_text16;
 		public static MyDelegateTypes.sqlite3_bind_parameter_count sqlite3_bind_parameter_count;
 		public static MyDelegateTypes.sqlite3_bind_parameter_index sqlite3_bind_parameter_index;
 		public static MyDelegateTypes.sqlite3_column_count sqlite3_column_count;
@@ -1912,6 +1923,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_bind_text(sqlite3_stmt stmt, int index, byte* val, int nlen, IntPtr pvReserved);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_bind_text16(sqlite3_stmt stmt, int index, char* val, int nlen, IntPtr pvReserved);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_bind_parameter_count(sqlite3_stmt stmt);

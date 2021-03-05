@@ -137,6 +137,7 @@ namespace SQLitePCL
         int sqlite3_bind_int64(sqlite3_stmt stmt, int index, long val);
         int sqlite3_bind_null(sqlite3_stmt stmt, int index);
         int sqlite3_bind_text(sqlite3_stmt stmt, int index, ReadOnlySpan<byte> text);
+        int sqlite3_bind_text16(sqlite3_stmt stmt, int index, ReadOnlySpan<char> text);
         int sqlite3_bind_text(sqlite3_stmt stmt, int index, utf8z text);
         int sqlite3_bind_parameter_count(sqlite3_stmt stmt);
         int sqlite3_bind_parameter_index(sqlite3_stmt stmt, utf8z strName);

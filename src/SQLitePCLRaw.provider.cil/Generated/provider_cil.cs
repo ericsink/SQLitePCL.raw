@@ -1161,6 +1161,15 @@ namespace SQLitePCL
             }
         }
 
+        unsafe int ISQLite3Provider.sqlite3_bind_text16(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<char> t)
+        {
+            fixed (char* p_t = t)
+            {
+                // mul span length times 2 to get num bytes, which is what sqlite wants
+                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+            }
+        }
+
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, utf8z t)
         {
             fixed (byte* p_t = t)
@@ -1999,6 +2008,20 @@ namespace SQLitePCL
                 if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
                 var ret =
             foo.sqlite3_bind_text(stmt.DangerousGetHandle(), index, (IntPtr)val, nlen, pvReserved);
+                if (got_stmt)
+                {
+                    stmt.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_bind_text16(sqlite3_stmt stmt, int index, char* val, int nlen, IntPtr pvReserved)
+        {
+                bool got_stmt = false;
+                stmt.DangerousAddRef(ref got_stmt);
+                if (!got_stmt) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_bind_text16(stmt.DangerousGetHandle(), index, (IntPtr)val, nlen, pvReserved);
                 if (got_stmt)
                 {
                     stmt.DangerousRelease();

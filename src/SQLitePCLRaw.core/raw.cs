@@ -1118,6 +1118,11 @@ namespace SQLitePCL
             return Provider.sqlite3_bind_text(stmt, index, val);
         }
 
+        static public int sqlite3_bind_text16(sqlite3_stmt stmt, int index, ReadOnlySpan<char> val)
+        {
+            return Provider.sqlite3_bind_text16(stmt, index, val);
+        }
+
         static public int sqlite3_bind_text(sqlite3_stmt stmt, int index, utf8z val)
         {
             return Provider.sqlite3_bind_text(stmt, index, val);

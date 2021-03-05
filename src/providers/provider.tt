@@ -1411,6 +1411,15 @@ namespace SQLitePCL
             }
         }
 
+        unsafe int ISQLite3Provider.sqlite3_bind_text16(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<char> t)
+        {
+            fixed (char* p_t = t)
+            {
+                // mul span length times 2 to get num bytes, which is what sqlite wants
+                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+            }
+        }
+
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, utf8z t)
         {
             fixed (byte* p_t = t)
@@ -2177,6 +2186,17 @@ namespace SQLitePCL
                 new Parm("sqlite3_stmt", "stmt"),
                 new Parm("int", "index"),
                 new Parm("byte*", "val"),
+                new Parm("int", "nlen"),
+                new Parm("IntPtr", "pvReserved"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_bind_text16",
+            new Parm[] {
+                new Parm("sqlite3_stmt", "stmt"),
+                new Parm("int", "index"),
+                new Parm("char*", "val"),
                 new Parm("int", "nlen"),
                 new Parm("IntPtr", "pvReserved"),
             }
@@ -3064,6 +3084,7 @@ namespace SQLitePCL
                                 a_args.Add($"{p.nam}.DangerousGetHandle()");
                                 break;
                             case "byte*":
+                            case "char*":
                                 a_args.Add($"(IntPtr){p.nam}");
                                 break;
                             case "uint":

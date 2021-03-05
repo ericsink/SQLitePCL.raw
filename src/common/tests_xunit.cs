@@ -1581,6 +1581,29 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_bind_text16()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                const string s = "hello world";
+                var span_all = s.AsSpan();
+                using (sqlite3_stmt stmt = db.prepare("INSERT INTO foo (x) VALUES (?)"))
+                {
+                    var slice = span_all.Slice(0, 5);
+                    stmt.bind_text16(1, slice);
+                    stmt.step();
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT x FROM foo"))
+                {
+                    stmt.step_row();
+                    var s2 = stmt.column_text(0);
+                    Assert.Equal("hello", s2);
+                }
+            }
+        }
+
+        [Fact]
         public void test_explicit_prepare()
         {
             using (sqlite3 db = ugly.open(":memory:"))
