@@ -1292,6 +1292,39 @@ namespace SQLitePCL
             return Provider.sqlite3_backup_finish(p);
         }
 
+        static public int sqlite3_snapshot_get(sqlite3 db, string schema, out sqlite3_snapshot snap)
+        {
+            var rc = Provider.sqlite3_snapshot_get(db, schema.to_utf8z(), out var p);
+            snap = sqlite3_snapshot.From(p);
+            return rc;
+        }
+
+        static public int sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            return Provider.sqlite3_snapshot_cmp(p1, p2);
+        }
+
+        static public int sqlite3_snapshot_open(sqlite3 db, string schema, sqlite3_snapshot snap)
+        {
+            return Provider.sqlite3_snapshot_open(db, schema.to_utf8z(), snap);
+        }
+
+        static public int sqlite3_snapshot_recover(sqlite3 db, string name)
+        {
+            return Provider.sqlite3_snapshot_recover(db, name.to_utf8z());
+        }
+
+        static public void sqlite3_snapshot_free(sqlite3_snapshot snap)
+        {
+            snap.manual_close();
+        }
+
+        // this is called by the SafeHandle
+        static internal void internal_sqlite3_snapshot_free(IntPtr p)
+        {
+            Provider.sqlite3_snapshot_free(p);
+        }
+
         static public int sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
             var rc = Provider.sqlite3_blob_open(db, db_utf8, table_utf8, col_utf8, rowid, flags, out var p);

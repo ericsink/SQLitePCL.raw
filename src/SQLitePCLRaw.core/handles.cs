@@ -162,6 +162,36 @@ namespace SQLitePCL
         }
     }
 
+    public class sqlite3_snapshot : SafeHandle
+    {
+        sqlite3_snapshot() : base(IntPtr.Zero, true)
+        {
+        }
+
+        internal static sqlite3_snapshot From(IntPtr p)
+        {
+            var h = new sqlite3_snapshot();
+            h.SetHandle(p);
+            return h;
+        }
+
+        public override bool IsInvalid => handle == IntPtr.Zero;
+
+        protected override bool ReleaseHandle()
+        {
+            raw.internal_sqlite3_snapshot_free(handle);
+            return true;
+        }
+
+        public void manual_close()
+        {
+            raw.internal_sqlite3_snapshot_free(handle);
+            // TODO review.  should handle always be nulled here?
+            // TODO maybe called SetHandleAsInvalid instead?
+            handle = IntPtr.Zero;
+        }
+    }
+
     public class sqlite3_stmt : SafeHandle
     {
         private sqlite3 _db;

@@ -373,6 +373,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_snapshot_get(sqlite3 db, utf8z schema, out IntPtr snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_get(db, p_schema, out snap);
+            }
+        }
+
+        int ISQLite3Provider.sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            return NativeMethods.sqlite3_snapshot_cmp(p1, p2);
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_open(sqlite3 db, utf8z schema, sqlite3_snapshot snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_open(db, p_schema, snap);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_recover(sqlite3 db, utf8z name)
+        {
+            fixed (byte* p_name = name)
+            {
+                return NativeMethods.sqlite3_snapshot_recover(db, p_name);
+            }
+        }
+
+        void ISQLite3Provider.sqlite3_snapshot_free(IntPtr snap)
+        {
+            NativeMethods.sqlite3_snapshot_free(snap);
+        }
+
         unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, utf8z destName, sqlite3 sourceDb, utf8z sourceName)
         {
             fixed (byte* p_destName = destName, p_sourceName = sourceName)
@@ -1564,6 +1598,11 @@ namespace SQLitePCL
 			sqlite3_backup_remaining = (MyDelegateTypes.sqlite3_backup_remaining) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_remaining));
 			sqlite3_backup_pagecount = (MyDelegateTypes.sqlite3_backup_pagecount) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_pagecount));
 			sqlite3_backup_finish = (MyDelegateTypes.sqlite3_backup_finish) Load(gf, typeof(MyDelegateTypes.sqlite3_backup_finish));
+			sqlite3_snapshot_get = (MyDelegateTypes.sqlite3_snapshot_get) Load(gf, typeof(MyDelegateTypes.sqlite3_snapshot_get));
+			sqlite3_snapshot_open = (MyDelegateTypes.sqlite3_snapshot_open) Load(gf, typeof(MyDelegateTypes.sqlite3_snapshot_open));
+			sqlite3_snapshot_recover = (MyDelegateTypes.sqlite3_snapshot_recover) Load(gf, typeof(MyDelegateTypes.sqlite3_snapshot_recover));
+			sqlite3_snapshot_cmp = (MyDelegateTypes.sqlite3_snapshot_cmp) Load(gf, typeof(MyDelegateTypes.sqlite3_snapshot_cmp));
+			sqlite3_snapshot_free = (MyDelegateTypes.sqlite3_snapshot_free) Load(gf, typeof(MyDelegateTypes.sqlite3_snapshot_free));
 			sqlite3_blob_open = (MyDelegateTypes.sqlite3_blob_open) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_open));
 			sqlite3_blob_write = (MyDelegateTypes.sqlite3_blob_write) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_write));
 			sqlite3_blob_read = (MyDelegateTypes.sqlite3_blob_read) Load(gf, typeof(MyDelegateTypes.sqlite3_blob_read));
@@ -1700,6 +1739,11 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_backup_remaining sqlite3_backup_remaining;
 		public static MyDelegateTypes.sqlite3_backup_pagecount sqlite3_backup_pagecount;
 		public static MyDelegateTypes.sqlite3_backup_finish sqlite3_backup_finish;
+		public static MyDelegateTypes.sqlite3_snapshot_get sqlite3_snapshot_get;
+		public static MyDelegateTypes.sqlite3_snapshot_open sqlite3_snapshot_open;
+		public static MyDelegateTypes.sqlite3_snapshot_recover sqlite3_snapshot_recover;
+		public static MyDelegateTypes.sqlite3_snapshot_cmp sqlite3_snapshot_cmp;
+		public static MyDelegateTypes.sqlite3_snapshot_free sqlite3_snapshot_free;
 		public static MyDelegateTypes.sqlite3_blob_open sqlite3_blob_open;
 		public static MyDelegateTypes.sqlite3_blob_write sqlite3_blob_write;
 		public static MyDelegateTypes.sqlite3_blob_read sqlite3_blob_read;
@@ -2121,6 +2165,21 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_backup_finish(IntPtr backup);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_snapshot_get(sqlite3 db, byte* schema, out IntPtr snap);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_snapshot_open(sqlite3 db, byte* schema, sqlite3_snapshot snap);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_snapshot_recover(sqlite3 db, byte* name);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate void sqlite3_snapshot_free(IntPtr snap);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob);

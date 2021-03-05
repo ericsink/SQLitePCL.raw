@@ -352,6 +352,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_snapshot_get(sqlite3 db, utf8z schema, out IntPtr snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_get(db, p_schema, out snap);
+            }
+        }
+
+        int ISQLite3Provider.sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            return NativeMethods.sqlite3_snapshot_cmp(p1, p2);
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_open(sqlite3 db, utf8z schema, sqlite3_snapshot snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_open(db, p_schema, snap);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_recover(sqlite3 db, utf8z name)
+        {
+            fixed (byte* p_name = name)
+            {
+                return NativeMethods.sqlite3_snapshot_recover(db, p_name);
+            }
+        }
+
+        void ISQLite3Provider.sqlite3_snapshot_free(IntPtr snap)
+        {
+            NativeMethods.sqlite3_snapshot_free(snap);
+        }
+
         unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, utf8z destName, sqlite3 sourceDb, utf8z sourceName)
         {
             fixed (byte* p_destName = destName, p_sourceName = sourceName)
@@ -2745,6 +2779,62 @@ namespace SQLitePCL
             var ret =
             foo.sqlite3_backup_finish(backup);
             return (int) ret;
+        }
+
+		public unsafe static int sqlite3_snapshot_get(sqlite3 db, byte* schema, out IntPtr snap)
+        {
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                    IntPtr tmp_snap;
+                var ret =
+            foo.sqlite3_snapshot_get(db.DangerousGetHandle(), (IntPtr)schema, (IntPtr) (&tmp_snap));
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                    snap = tmp_snap;
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_snapshot_open(sqlite3 db, byte* schema, sqlite3_snapshot snap)
+        {
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_snapshot_open(db.DangerousGetHandle(), (IntPtr)schema, snap.DangerousGetHandle());
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_snapshot_recover(sqlite3 db, byte* name)
+        {
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_snapshot_recover(db.DangerousGetHandle(), (IntPtr)name);
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            var ret =
+            foo.sqlite3_snapshot_cmp(p1.DangerousGetHandle(), p2.DangerousGetHandle());
+            return (int) ret;
+        }
+
+		public unsafe static void sqlite3_snapshot_free(IntPtr snap)
+        {
+            foo.sqlite3_snapshot_free(snap);
         }
 
 		public unsafe static int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob)

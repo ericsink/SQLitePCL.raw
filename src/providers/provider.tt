@@ -602,6 +602,40 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_blob_close(blob);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_snapshot_get(sqlite3 db, utf8z schema, out IntPtr snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_get(db, p_schema, out snap);
+            }
+        }
+
+        int ISQLite3Provider.sqlite3_snapshot_cmp(sqlite3_snapshot p1, sqlite3_snapshot p2)
+        {
+            return NativeMethods.sqlite3_snapshot_cmp(p1, p2);
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_open(sqlite3 db, utf8z schema, sqlite3_snapshot snap)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_snapshot_open(db, p_schema, snap);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_snapshot_recover(sqlite3 db, utf8z name)
+        {
+            fixed (byte* p_name = name)
+            {
+                return NativeMethods.sqlite3_snapshot_recover(db, p_name);
+            }
+        }
+
+        void ISQLite3Provider.sqlite3_snapshot_free(IntPtr snap)
+        {
+            NativeMethods.sqlite3_snapshot_free(snap);
+        }
+
         unsafe sqlite3_backup ISQLite3Provider.sqlite3_backup_init(sqlite3 destDb, utf8z destName, sqlite3 sourceDb, utf8z sourceName)
         {
             fixed (byte* p_destName = destName, p_sourceName = sourceName)
@@ -2749,6 +2783,47 @@ namespace SQLitePCL
             ),
         new Function(
             "int",
+            "sqlite3_snapshot_get",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "schema"),
+                new Parm("IntPtr", "snap").SetIsOut(true),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_snapshot_open",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "schema"),
+                new Parm("sqlite3_snapshot", "snap"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_snapshot_recover",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "name"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_snapshot_cmp",
+            new Parm[] {
+                new Parm("sqlite3_snapshot", "p1"),
+                new Parm("sqlite3_snapshot", "p2"),
+            }
+            ),
+        new Function(
+            "void",
+            "sqlite3_snapshot_free",
+            new Parm[] {
+                new Parm("IntPtr", "snap"),
+            }
+            ),
+        new Function(
+            "int",
             "sqlite3_blob_open",
             new Parm[] {
                 new Parm("sqlite3", "db"),
@@ -3078,6 +3153,7 @@ namespace SQLitePCL
                         {
                             case "sqlite3":
                             case "sqlite3_blob":
+                            case "sqlite3_snapshot":
                             case "sqlite3_stmt":
                             case "sqlite3_backup":
                             case "hook_handle":
