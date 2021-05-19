@@ -33,7 +33,6 @@
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\linux-musl-x64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\alpine-x64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\mips64\libe_sqlite3.so" target="runtimes\linux-mips64\native\libe_sqlite3.so" />
-    <file src=".\SQLitePCLRaw.lib.e_sqlite3.targets" target="build\net461" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="empty\" target="lib\net461" />
     <!--empty directory in lib to avoid nuget adding a reference-->

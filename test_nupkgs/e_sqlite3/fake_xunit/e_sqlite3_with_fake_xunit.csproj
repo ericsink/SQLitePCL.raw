@@ -3,6 +3,10 @@
     <TargetFrameworks>netcoreapp2.1;net461;netcoreapp3.1</TargetFrameworks>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+      <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />

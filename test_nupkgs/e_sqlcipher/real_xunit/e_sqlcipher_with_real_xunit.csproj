@@ -2,6 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net461;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+      <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
     <PackageReference Include="xunit" Version="$(depversion_xunit)" />

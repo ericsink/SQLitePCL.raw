@@ -33,7 +33,6 @@
     <file src="$cb_bin_path$\e_sqlcipher\linux\musl-x64\libe_sqlcipher.so" target="runtimes\linux-musl-x64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\musl-x64\libe_sqlcipher.so" target="runtimes\alpine-x64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\mips64\libe_sqlcipher.so" target="runtimes\linux-mips64\native\libe_sqlcipher.so" />
-    <file src=".\SQLitePCLRaw.lib.e_sqlcipher.targets" target="build\net461" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="empty\" target="lib\net461" />
     <!--empty directory in lib to avoid nuget adding a reference-->
