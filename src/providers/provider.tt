@@ -768,12 +768,17 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
         {
-            return NativeMethods.sqlite3_db_config_int_outint(db, op, val, out result);
+            int out_result = 0;
+            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+
+            result = out_result;
+
+            return native_result;
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+        <#= KIND=="cil"?"unsafe ":"" #> int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
         {
             return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
         }
@@ -2633,8 +2638,12 @@ namespace SQLitePCL
             new Parm[] {
                 new Parm("sqlite3", "db"),
                 new Parm("int", "op"),
-                new Parm("byte*", "val"),
             }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("byte*", "val"),
+                }
             )
             .SetEntryPoint("sqlite3_db_config")
             .SetVarArgs(true)
@@ -2645,9 +2654,13 @@ namespace SQLitePCL
             new Parm[] {
                 new Parm("sqlite3", "db"),
                 new Parm("int", "op"),
-                new Parm("int", "val"),
-                new Parm("int", "result").SetIsOut(true),
             }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("int", "val"),
+                    new Parm("int*", "result"),
+                }
             )
             .SetEntryPoint("sqlite3_db_config")
             .SetVarArgs(true)
@@ -2658,10 +2671,14 @@ namespace SQLitePCL
             new Parm[] {
                 new Parm("sqlite3", "db"),
                 new Parm("int", "op"),
-                new Parm("IntPtr", "ptr"),
-                new Parm("int", "int0"),
-                new Parm("int", "int1"),
             }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("IntPtr", "ptr"),
+                    new Parm("int", "int0"),
+                    new Parm("int", "int1"),
+                }
             )
             .SetEntryPoint("sqlite3_db_config")
             .SetVarArgs(true)
