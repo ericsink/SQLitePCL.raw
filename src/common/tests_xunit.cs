@@ -75,6 +75,23 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_call_sqlite3_limit()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var query = raw.sqlite3_limit(db, raw.SQLITE_LIMIT_LENGTH, -1);
+                Assert.True(query >= 0);
+
+                const int limit = 10240;
+                var current = raw.sqlite3_limit(db, raw.SQLITE_LIMIT_LENGTH, limit);
+                Assert.Equal(query, current);
+
+                query = raw.sqlite3_limit(db, raw.SQLITE_LIMIT_LENGTH, -1);
+                Assert.Equal(limit, query);
+            }
+        }
+
+        [Fact]
         public void test_authorizer_with_unregister()
         {
             using (sqlite3 db = ugly.open(":memory:"))
@@ -771,12 +788,44 @@ namespace SQLitePCL.Tests
         {
             long memory_used = raw.sqlite3_memory_used();
             long memory_highwater = raw.sqlite3_memory_highwater(0);
-#if not
+        #if not
             // these asserts fail on the iOS builtin sqlite.  not sure
             // why.  not sure the asserts are worth doing anyway.
             Assert.True(memory_used > 0);
             Assert.True(memory_highwater >= memory_used);
-#endif
+        #endif
+        }
+
+        [Fact]
+        public void test_sqlite3_soft_heap_limit64()
+        {
+            var query = raw.sqlite3_soft_heap_limit64(-1);
+            Assert.True(query >= 0);
+
+            var limit = query + 10L * 1024 * 1024;
+            var current = raw.sqlite3_soft_heap_limit64(limit);
+            Assert.Equal(query, current);
+
+            query = raw.sqlite3_soft_heap_limit64(-1);
+            Assert.Equal(limit, query);
+        }
+
+        [Fact]
+        public void sqlite3_hard_heap_limit64()
+        {
+            var version = raw.sqlite3_libversion_number();
+
+            if (version < 3031001) return; // Added in 3.31.1: https://sqlite.org/releaselog/3_31_1.html
+
+            var query = raw.sqlite3_hard_heap_limit64(-1);
+            Assert.True(query >= 0);
+
+            var limit = query + 10L * 1024 * 1024;
+            var current = raw.sqlite3_hard_heap_limit64(limit);
+            Assert.Equal(query, current);
+
+            query = raw.sqlite3_hard_heap_limit64(-1);
+            Assert.Equal(limit, query);
         }
 
         [Fact]
@@ -1346,7 +1395,7 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_create_table_explicit_close_v2()
         {
-#if not
+        #if not
             // maybe we should just let this fail so we can
             // see the differences between running against the built-in
             // sqlite vs a recent version?
@@ -1354,7 +1403,7 @@ namespace SQLitePCL.Tests
             {
                 return;
             }
-#endif
+        #endif
             sqlite3 db = ugly.open(":memory:");
             db.exec("CREATE TABLE foo (x int);");
             db.close_v2();
@@ -1486,7 +1535,7 @@ namespace SQLitePCL.Tests
 
                     Assert.Equal(0, stmt.stmt_isexplain());
                 }
-                
+
                 sql = "EXPLAIN SELECT x FROM foo";
                 using (sqlite3_stmt stmt = db.prepare(sql))
                 {
@@ -1494,7 +1543,7 @@ namespace SQLitePCL.Tests
 
                     Assert.Equal(1, stmt.stmt_isexplain());
                 }
-                
+
                 sql = "EXPLAIN QUERY PLAN SELECT x FROM foo";
                 using (sqlite3_stmt stmt = db.prepare(sql))
                 {
@@ -1645,12 +1694,12 @@ namespace SQLitePCL.Tests
                 db.exec("CREATE TABLE foo (x int, v int, t text, d real, b blob, q blob);");
                 byte[] blob = db.query_scalar<byte[]>("SELECT randomblob(5);");
                 db.exec("INSERT INTO foo (x,v,t,d,b,q) VALUES (?,?,?,?,?,?)", 32, 44, "hello", 3.14, blob, null);
-#if not
+        #if not
                 // maybe we should just let this fail so we can
                 // see the differences between running against the built-in
                 // sqlite vs a recent version?
                 if (1 == raw.sqlite3_compileoption_used("ENABLE_COLUMN_METADATA"))
-#endif
+        #endif
                 {
                     using (sqlite3_stmt stmt = db.prepare("SELECT x AS mario FROM foo;"))
                     {
@@ -1696,7 +1745,7 @@ namespace SQLitePCL.Tests
                 Assert.Equal(2, logSize);
                 Assert.Equal(2, framesCheckPointed);
 
-                // Set autocheckpoint to 1 so that regardless of the number of 
+                // Set autocheckpoint to 1 so that regardless of the number of
                 // commits, explicit checkpoints only checkpoint the last update.
                 db.wal_autocheckpoint(1);
 
@@ -2759,7 +2808,7 @@ namespace SQLitePCL.Tests
     [Order(0)]
     public class class_test_sqlite3_config
     {
-        // this test class is special.  
+        // this test class is special.
         // it needs to run first, before anything else.
         // it is marked with attributes so that fake_xunit
         // will find it and run it, but real xunit will ignore it.
@@ -2837,6 +2886,45 @@ namespace SQLitePCL.Tests
         }
 
 
+    }
+
+    [Collection("Init")]
+    public class class_test_sqlite3_db_config
+    {
+        [Fact]
+        public void test_call_sqlite3_db_config_3()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var rc = raw.sqlite3_db_config(db, raw.SQLITE_DBCONFIG_MAINDBNAME, utf8z.FromString("new_main"));
+
+                Assert.Equal(raw.SQLITE_OK, rc);
+            }
+        }
+
+        [Fact]
+        public void test_call_sqlite3_db_config_4()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                int disabled = 0;
+                var rc = raw.sqlite3_db_config(db, raw.SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE, 1, out disabled);
+
+                Assert.Equal(1, disabled);
+                Assert.Equal(raw.SQLITE_OK, rc);
+            }
+        }
+
+        [Fact]
+        public void test_call_sqlite3_db_config_5()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var rc = raw.sqlite3_db_config(db, raw.SQLITE_DBCONFIG_LOOKASIDE, IntPtr.Zero, 256, 16);
+
+                Assert.Equal(raw.SQLITE_OK, rc);
+            }
+        }
     }
 
     [Collection("Init")]

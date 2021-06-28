@@ -510,6 +510,34 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, utf8z val)
+        {
+            fixed (byte* p_val = val)
+            {
+                return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
+        {
+            int out_result = 0;
+            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+
+            result = out_result;
+
+            return native_result;
+        }
+
+        unsafe  int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+        {
+            return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
+        }
+
+        int ISQLite3Provider.sqlite3_limit(sqlite3 db, int id, int newVal)
+        {
+            return NativeMethods.sqlite3_limit(db, id, newVal);
+        }
+
         unsafe int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
@@ -1038,6 +1066,16 @@ namespace SQLitePCL
         unsafe long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
         {
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
+        }
+
+        long ISQLite3Provider.sqlite3_soft_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_soft_heap_limit64(n);
+        }
+        
+        long ISQLite3Provider.sqlite3_hard_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_hard_heap_limit64(n);
         }
 
         int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
@@ -1770,6 +1808,20 @@ namespace SQLitePCL
                 return (int) ret;
         }
 
+		public unsafe static int sqlite3_limit(sqlite3 db, int id, int newVal)
+        {
+                bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_limit(db.DangerousGetHandle(), id, newVal);
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
 		public unsafe static int sqlite3_initialize()
         {
             var ret =
@@ -1923,6 +1975,20 @@ namespace SQLitePCL
         {
             var ret =
             foo.sqlite3_memory_highwater(resetFlag);
+            return (long) ret;
+        }
+
+		public unsafe static long sqlite3_soft_heap_limit64(long n)
+        {
+            var ret =
+            foo.sqlite3_soft_heap_limit64(n);
+            return (long) ret;
+        }
+
+		public unsafe static long sqlite3_hard_heap_limit64(long n)
+        {
+            var ret =
+            foo.sqlite3_hard_heap_limit64(n);
             return (long) ret;
         }
 
@@ -2389,6 +2455,72 @@ namespace SQLitePCL
                 if (got_pvUser)
                 {
                     pvUser.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_db_config_charptr(sqlite3 db, int op, byte* val)
+        {
+                var extras = new IntPtr[] {
+                    (IntPtr) (1),
+                        (IntPtr) val,
+                    };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                    bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_db_config(db.DangerousGetHandle(), op, p_extras);
+            pinned_extras.Free();
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_db_config_int_outint(sqlite3 db, int op, int val, int* result)
+        {
+                var extras = new IntPtr[] {
+                    (IntPtr) (2),
+                        (IntPtr) val,
+                        (IntPtr) result,
+                    };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                    bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_db_config(db.DangerousGetHandle(), op, p_extras);
+            pinned_extras.Free();
+                if (got_db)
+                {
+                    db.DangerousRelease();
+                }
+                return (int) ret;
+        }
+
+		public unsafe static int sqlite3_db_config_intptr_int_int(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+        {
+                var extras = new IntPtr[] {
+                    (IntPtr) (3),
+                        (IntPtr) ptr,
+                        (IntPtr) int0,
+                        (IntPtr) int1,
+                    };
+                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
+                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
+                    bool got_db = false;
+                db.DangerousAddRef(ref got_db);
+                if (!got_db) throw new Exception("SafeHandle.DangerousAddRef failed");
+                var ret =
+            foo.sqlite3_db_config(db.DangerousGetHandle(), op, p_extras);
+            pinned_extras.Free();
+                if (got_db)
+                {
+                    db.DangerousRelease();
                 }
                 return (int) ret;
         }
