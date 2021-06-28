@@ -760,6 +760,34 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, utf8z val)
+        {
+            fixed (byte* p_val = val)
+            {
+                return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
+        {
+            int out_result = 0;
+            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+
+            result = out_result;
+
+            return native_result;
+        }
+
+        <#= KIND=="cil"?"unsafe ":"" #> int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+        {
+            return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
+        }
+
+        int ISQLite3Provider.sqlite3_limit(sqlite3 db, int id, int newVal)
+        {
+            return NativeMethods.sqlite3_limit(db, id, newVal);
+        }
+
         <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
@@ -1288,6 +1316,16 @@ namespace SQLitePCL
         <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
         {
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
+        }
+
+        long ISQLite3Provider.sqlite3_soft_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_soft_heap_limit64(n);
+        }
+        
+        long ISQLite3Provider.sqlite3_hard_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_hard_heap_limit64(n);
         }
 
         int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
@@ -2008,6 +2046,15 @@ namespace SQLitePCL
             ),
         new Function(
             "int",
+            "sqlite3_limit",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "id"),
+                new Parm("int", "newVal"),
+            }
+            ),
+        new Function(
+            "int",
             "sqlite3_initialize",
             new Parm[] {
             }
@@ -2138,6 +2185,20 @@ namespace SQLitePCL
             "sqlite3_memory_highwater",
             new Parm[] {
                 new Parm("int", "resetFlag"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_soft_heap_limit64",
+            new Parm[] {
+                new Parm("long", "n"),
+            }
+            ),
+        new Function(
+            "long",
+            "sqlite3_hard_heap_limit64",
+            new Parm[] {
+                new Parm("long", "n"),
             }
             ),
         new Function(
@@ -2567,6 +2628,59 @@ namespace SQLitePCL
                 }
             )
             .SetEntryPoint("sqlite3_config")
+            .SetVarArgs(true)
+            ,
+        // Since sqlite3_db_config() takes a variable argument list, we have to overload declarations
+        // for all possible calls that we want to use.
+        new Function(
+            "int",
+            "sqlite3_db_config_charptr",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "op"),
+            }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("byte*", "val"),
+                }
+            )
+            .SetEntryPoint("sqlite3_db_config")
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_db_config_int_outint",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "op"),
+            }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("int", "val"),
+                    new Parm("int*", "result"),
+                }
+            )
+            .SetEntryPoint("sqlite3_db_config")
+            .SetVarArgs(true)
+            ,
+        new Function(
+            "int",
+            "sqlite3_db_config_intptr_int_int",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("int", "op"),
+            }
+            )
+            .SetExtraParms(
+                new Parm[] {
+                    new Parm("IntPtr", "ptr"),
+                    new Parm("int", "int0"),
+                    new Parm("int", "int1"),
+                }
+            )
+            .SetEntryPoint("sqlite3_db_config")
             .SetVarArgs(true)
             ,
         new Function(

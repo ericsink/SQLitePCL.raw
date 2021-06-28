@@ -100,6 +100,8 @@ namespace SQLitePCL
         utf8z sqlite3_sourceid();
         long sqlite3_memory_used();
         long sqlite3_memory_highwater(int resetFlag);
+        long sqlite3_soft_heap_limit64(long n);
+        long sqlite3_hard_heap_limit64(long n);
         int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
 
         int sqlite3_db_readonly(sqlite3 db, utf8z dbName);
@@ -253,9 +255,16 @@ namespace SQLitePCL
         int sqlite3_initialize();
         int sqlite3_shutdown();
 
+        int sqlite3_limit(sqlite3 db, int id, int newVal);
+
         // sqlite3_config() takes a variable argument list
         int sqlite3_config(int op);
         int sqlite3_config(int op, int val);
+
+        // sqlite3_db_config() takes a variable argument list
+        int sqlite3_db_config(sqlite3 db, int op, utf8z val);
+        int sqlite3_db_config(sqlite3 db, int op, int val, out int result);
+        int sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1);
 
         int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
