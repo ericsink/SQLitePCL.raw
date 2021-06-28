@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#define NETCOREAPP3_NATIVELIBRARY
+//#define NETCOREAPP3_NATIVELIBRARY
 //#define WINSQLITE3_DYNAMIC
 #define SQLITE3_DYNAMIC
 

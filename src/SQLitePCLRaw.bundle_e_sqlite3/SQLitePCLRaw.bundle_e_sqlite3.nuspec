@@ -40,19 +40,12 @@
         <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" />
         <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
       </group>
-      <group targetFramework="netcoreapp3.1">
-        <dependency id="SQLitePCLRaw.core" version="$version$" />
-        <dependency id="SQLitePCLRaw.provider.dynamic_cdecl" version="$version$" />
-        <dependency id="SQLitePCLRaw.lib.e_sqlite3" version="$version$" />
-      </group>
     </dependencies>
   </metadata>
   <files>
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.internal.ios\bin\Release\Xamarin.iOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.iOS10\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.internal.tvos\bin\Release\Xamarin.tvOS10\SQLitePCLRaw.batteries_v2.dll" target="lib\Xamarin.tvOS10\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\net461\" />
-    <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dynamic\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netcoreapp3.1\" />
-    <file src="$src_path$\SQLitePCLRaw.nativelibrary\bin\Release\netcoreapp3.1\SQLitePCLRaw.nativelibrary.dll" target="lib\netcoreapp3.1\" />
     <file src="$src_path$\SQLitePCLRaw.batteries_v2.e_sqlite3.dllimport\bin\Release\netstandard2.0\SQLitePCLRaw.batteries_v2.dll" target="lib\netstandard2.0\" />
   </files>
 </package>
