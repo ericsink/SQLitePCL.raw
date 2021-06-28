@@ -531,6 +531,34 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, utf8z val)
+        {
+            fixed (byte* p_val = val)
+            {
+                return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
+        {
+            int out_result = 0;
+            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+
+            result = out_result;
+
+            return native_result;
+        }
+
+         int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+        {
+            return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
+        }
+
+        int ISQLite3Provider.sqlite3_limit(sqlite3 db, int id, int newVal)
+        {
+            return NativeMethods.sqlite3_limit(db, id, newVal);
+        }
+
         int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
@@ -1061,6 +1089,16 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
 
+        long ISQLite3Provider.sqlite3_soft_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_soft_heap_limit64(n);
+        }
+        
+        long ISQLite3Provider.sqlite3_hard_heap_limit64(long n)
+        {
+            return NativeMethods.sqlite3_hard_heap_limit64(n);
+        }
+
         int ISQLite3Provider.sqlite3_status(int op, out int current, out int highwater, int resetFlag)
         {
             return NativeMethods.sqlite3_status(op, out current, out highwater, resetFlag);
@@ -1505,6 +1543,7 @@ namespace SQLitePCL
 			sqlite3_table_column_metadata = (MyDelegateTypes.sqlite3_table_column_metadata) Load(gf, typeof(MyDelegateTypes.sqlite3_table_column_metadata));
 			sqlite3_value_text = (MyDelegateTypes.sqlite3_value_text) Load(gf, typeof(MyDelegateTypes.sqlite3_value_text));
 			sqlite3_enable_load_extension = (MyDelegateTypes.sqlite3_enable_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_load_extension));
+			sqlite3_limit = (MyDelegateTypes.sqlite3_limit) Load(gf, typeof(MyDelegateTypes.sqlite3_limit));
 			sqlite3_initialize = (MyDelegateTypes.sqlite3_initialize) Load(gf, typeof(MyDelegateTypes.sqlite3_initialize));
 			sqlite3_shutdown = (MyDelegateTypes.sqlite3_shutdown) Load(gf, typeof(MyDelegateTypes.sqlite3_shutdown));
 			sqlite3_libversion = (MyDelegateTypes.sqlite3_libversion) Load(gf, typeof(MyDelegateTypes.sqlite3_libversion));
@@ -1524,6 +1563,8 @@ namespace SQLitePCL
 			sqlite3_total_changes = (MyDelegateTypes.sqlite3_total_changes) Load(gf, typeof(MyDelegateTypes.sqlite3_total_changes));
 			sqlite3_memory_used = (MyDelegateTypes.sqlite3_memory_used) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_used));
 			sqlite3_memory_highwater = (MyDelegateTypes.sqlite3_memory_highwater) Load(gf, typeof(MyDelegateTypes.sqlite3_memory_highwater));
+			sqlite3_soft_heap_limit64 = (MyDelegateTypes.sqlite3_soft_heap_limit64) Load(gf, typeof(MyDelegateTypes.sqlite3_soft_heap_limit64));
+			sqlite3_hard_heap_limit64 = (MyDelegateTypes.sqlite3_hard_heap_limit64) Load(gf, typeof(MyDelegateTypes.sqlite3_hard_heap_limit64));
 			sqlite3_status = (MyDelegateTypes.sqlite3_status) Load(gf, typeof(MyDelegateTypes.sqlite3_status));
 			sqlite3_busy_timeout = (MyDelegateTypes.sqlite3_busy_timeout) Load(gf, typeof(MyDelegateTypes.sqlite3_busy_timeout));
 			sqlite3_bind_blob = (MyDelegateTypes.sqlite3_bind_blob) Load(gf, typeof(MyDelegateTypes.sqlite3_bind_blob));
@@ -1573,6 +1614,9 @@ namespace SQLitePCL
 			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
 			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
 			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
+			sqlite3_db_config_charptr = (MyDelegateTypes.sqlite3_db_config_charptr) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_charptr));
+			sqlite3_db_config_int_outint = (MyDelegateTypes.sqlite3_db_config_int_outint) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_int_outint));
+			sqlite3_db_config_intptr_int_int = (MyDelegateTypes.sqlite3_db_config_intptr_int_int) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_intptr_int_int));
 			sqlite3_create_collation = (MyDelegateTypes.sqlite3_create_collation) Load(gf, typeof(MyDelegateTypes.sqlite3_create_collation));
 			sqlite3_update_hook = (MyDelegateTypes.sqlite3_update_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_update_hook));
 			sqlite3_commit_hook = (MyDelegateTypes.sqlite3_commit_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_commit_hook));
@@ -1646,6 +1690,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata;
 		public static MyDelegateTypes.sqlite3_value_text sqlite3_value_text;
 		public static MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension;
+		public static MyDelegateTypes.sqlite3_limit sqlite3_limit;
 		public static MyDelegateTypes.sqlite3_initialize sqlite3_initialize;
 		public static MyDelegateTypes.sqlite3_shutdown sqlite3_shutdown;
 		public static MyDelegateTypes.sqlite3_libversion sqlite3_libversion;
@@ -1665,6 +1710,8 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_total_changes sqlite3_total_changes;
 		public static MyDelegateTypes.sqlite3_memory_used sqlite3_memory_used;
 		public static MyDelegateTypes.sqlite3_memory_highwater sqlite3_memory_highwater;
+		public static MyDelegateTypes.sqlite3_soft_heap_limit64 sqlite3_soft_heap_limit64;
+		public static MyDelegateTypes.sqlite3_hard_heap_limit64 sqlite3_hard_heap_limit64;
 		public static MyDelegateTypes.sqlite3_status sqlite3_status;
 		public static MyDelegateTypes.sqlite3_busy_timeout sqlite3_busy_timeout;
 		public static MyDelegateTypes.sqlite3_bind_blob sqlite3_bind_blob;
@@ -1714,6 +1761,9 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_config_none sqlite3_config_none;
 		public static MyDelegateTypes.sqlite3_config_int sqlite3_config_int;
 		public static MyDelegateTypes.sqlite3_config_log sqlite3_config_log;
+		public static MyDelegateTypes.sqlite3_db_config_charptr sqlite3_db_config_charptr;
+		public static MyDelegateTypes.sqlite3_db_config_int_outint sqlite3_db_config_int_outint;
+		public static MyDelegateTypes.sqlite3_db_config_intptr_int_int sqlite3_db_config_intptr_int_int;
 		public static MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation;
 		public static MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook;
 		public static MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook;
@@ -1885,6 +1935,9 @@ namespace SQLitePCL
 		public unsafe delegate int sqlite3_enable_load_extension(sqlite3 db, int enable);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_limit(sqlite3 db, int id, int newVal);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_initialize();
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
@@ -1940,6 +1993,12 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate long sqlite3_memory_highwater(int resetFlag);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate long sqlite3_soft_heap_limit64(long n);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate long sqlite3_hard_heap_limit64(long n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_status(int op, out int current, out int highwater, int resetFlag);
@@ -2090,6 +2149,18 @@ namespace SQLitePCL
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_config")]
 		public unsafe delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_charptr(sqlite3 db, int op, byte* val);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_int_outint(sqlite3 db, int op, int val, int* result);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_intptr_int_int(sqlite3 db, int op, IntPtr ptr, int int0, int int1);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
