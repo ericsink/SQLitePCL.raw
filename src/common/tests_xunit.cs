@@ -676,6 +676,10 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_keywords()
         {
+            var version = raw.sqlite3_libversion_number();
+
+            if (version < 3024000) return; // Added in 3.24.0: https://sqlite.org/releaselog/3_24_0.html
+
             var n = SQLitePCL.raw.sqlite3_keyword_count();
             Assert.True(n > 0);
             for (var i=0; i<n; i++)
@@ -1524,6 +1528,10 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_stmt_isexplain()
         {
+            var version = raw.sqlite3_libversion_number();
+
+            if (version < 3028000) return; // Added in 3.28.0: https://sqlite.org/releaselog/3_28_0.html
+
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.exec("CREATE TABLE foo (x int);");
