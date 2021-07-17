@@ -9,7 +9,11 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
@@ -33,6 +37,7 @@ jobs:
       with:
         dotnet-version: 2.1.x
     - name: Add msbuild to PATH
+      if: startsWith(matrix.os, 'windows')
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Install T4
       run: dotnet tool install --global dotnet-t4
