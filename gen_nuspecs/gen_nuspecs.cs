@@ -257,7 +257,7 @@ public static class gen
         f.WriteComment("empty directory in lib to avoid nuget adding a reference");
 
         f.WriteStartElement("file");
-        f.WriteAttributeString("src", "empty\\");
+        f.WriteAttributeString("src", "empty/");
         f.WriteAttributeString("target", string.Format("lib\\{0}", tfm.AsString()));
         f.WriteEndElement(); // file
     }
@@ -318,12 +318,13 @@ public static class gen
     }
 
     static string make_cb_path_mac(
-        WhichLib lib
+        WhichLib lib,
+        string cpu
         )
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
-        return Path.Combine("$cb_bin_path$", dir_name, "mac", lib_name);
+        return Path.Combine("$cb_bin_path$", dir_name, "mac", cpu, lib_name);
     }
 
     static void write_nuspec_file_entry_native_linux(
@@ -344,13 +345,15 @@ public static class gen
 
     static void write_nuspec_file_entry_native_mac(
         WhichLib lib,
+        string cpu_in_cb,
+        string rid,
         XmlWriter f
         )
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
         write_nuspec_file_entry_native(
-            make_cb_path_mac(lib),
-            "osx-x64",
+            make_cb_path_mac(lib, cpu_in_cb),
+            rid,
             filename,
             f
             );
@@ -408,7 +411,8 @@ public static class gen
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
 
-        write_nuspec_file_entry_native_mac(lib, f);
+        write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
+        write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
 
         write_nuspec_file_entry_native_linux(lib, "x64", "linux-x64", f);
         write_nuspec_file_entry_native_linux(lib, "x86", "linux-x86", f);
