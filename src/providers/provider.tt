@@ -81,15 +81,6 @@ namespace SQLitePCL
         }
 <#
     }
-    else if (KIND == "cil")
-    {
-#>
-        string ISQLite3Provider.GetNativeLibraryName()
-        {
-            return "e_sqlite3";
-        }
-<#
-    }
 #>
 
         <#= KIND=="cil"?"unsafe ":"" #>bool my_streq(IntPtr p, IntPtr q, int len)
