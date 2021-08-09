@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using SQLitePCL;
 using SQLitePCL.Ugly;
@@ -67,10 +68,13 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_call_sqlite3_enable_load_extension()
         {
-            using (sqlite3 db = ugly.open(":memory:"))
+            if (0 == raw.sqlite3_compileoption_used("SQLITE_OMIT_LOAD_EXTENSION"))
             {
-                var rc = raw.sqlite3_enable_load_extension(db, 0);
-                Assert.Equal(raw.SQLITE_OK, rc);
+                using (sqlite3 db = ugly.open(":memory:"))
+                {
+                    var rc = raw.sqlite3_enable_load_extension(db, 0);
+                    Assert.Equal(raw.SQLITE_OK, rc);
+                }
             }
         }
 
@@ -676,6 +680,10 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_keywords()
         {
+            var version = raw.sqlite3_libversion_number();
+
+            if (version < 3024000) return; // Added in 3.24.0: https://sqlite.org/releaselog/3_24_0.html
+
             var n = SQLitePCL.raw.sqlite3_keyword_count();
             Assert.True(n > 0);
             for (var i=0; i<n; i++)
@@ -777,10 +785,17 @@ namespace SQLitePCL.Tests
         public void test_enable_shared_cache()
         {
             int result = raw.sqlite3_enable_shared_cache(1);
-            Assert.Equal(raw.SQLITE_OK, result);
+            // https://www.sqlite.org/c3ref/enable_shared_cache.html
+            // Note: This method is disabled on MacOS X 10.7 and iOS version 5.0 and will always
+            // return SQLITE_MISUSE. On those systems, shared cache mode should be enabled
+            // per-database connection via sqlite3_open_v2() with SQLITE_OPEN_SHAREDCACHE.
+            if (result != raw.SQLITE_MISUSE)
+            {
+                Assert.Equal(raw.SQLITE_OK, result);
 
-            result = raw.sqlite3_enable_shared_cache(0);
-            Assert.Equal(raw.SQLITE_OK, result);
+                result = raw.sqlite3_enable_shared_cache(0);
+                Assert.Equal(raw.SQLITE_OK, result);
+            }
         }
 
         [Fact]
@@ -811,11 +826,14 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
-        public void sqlite3_hard_heap_limit64()
+        public void test_sqlite3_hard_heap_limit64()
         {
             var version = raw.sqlite3_libversion_number();
-
             if (version < 3031001) return; // Added in 3.31.1: https://sqlite.org/releaselog/3_31_1.html
+
+            // Skip failing test on macOS system provided libsqlite3.dylib
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && raw.GetNativeLibraryName() == "sqlite3")
+                return;
 
             var query = raw.sqlite3_hard_heap_limit64(-1);
             Assert.True(query >= 0);
@@ -831,11 +849,17 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_sqlite3_status()
         {
+            // Skip failing test on macOS system provided libsqlite3.dylib
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && raw.GetNativeLibraryName() == "sqlite3")
+                return;
+
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 int current;
                 int highwater;
-                ugly.sqlite3_status(raw.SQLITE_STATUS_MEMORY_USED, out current, out highwater, 0);
+
+                var rc = raw.sqlite3_status(raw.SQLITE_STATUS_MEMORY_USED, out current, out highwater, 0);
+                Assert.Equal(raw.SQLITE_OK, rc);
 
                 Assert.True(current > 0);
                 Assert.True(highwater > 0);
@@ -1524,6 +1548,10 @@ namespace SQLitePCL.Tests
         [Fact]
         public void test_stmt_isexplain()
         {
+            var version = raw.sqlite3_libversion_number();
+
+            if (version < 3028000) return; // Added in 3.28.0: https://sqlite.org/releaselog/3_28_0.html
+
             using (sqlite3 db = ugly.open(":memory:"))
             {
                 db.exec("CREATE TABLE foo (x int);");
@@ -2817,6 +2845,10 @@ namespace SQLitePCL.Tests
         [Order(0)]
         public void test_log()
         {
+            // Skip failing test on macOS system provided libsqlite3.dylib
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && raw.GetNativeLibraryName() == "sqlite3")
+                return;
+
             var msgs = new List<string>();
             var rc = raw.sqlite3_config_log(
                 (v, errcode, msg) => msgs.Add(msg),
