@@ -29,7 +29,7 @@ let main argv =
     exec "dotnet" "restore" dir_providers
 
     // TODO the arg list for this function has become ridiculous
-    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind uwp ftr_key =
+    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind tfm ftr_key =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (provider_basename.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
@@ -38,23 +38,23 @@ let main argv =
             then "" 
             else sprintf "-p:NAME_FOR_DLLIMPORT=%s" dllimport_name
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:UWP=%s -p:FEATURE_KEY=%s %s provider.tt" cs_path provider_basename conv kind uwp ftr_key dllimport_name_arg
+        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:TFM=%s -p:FEATURE_KEY=%s %s provider.tt" cs_path provider_basename conv kind tfm ftr_key dllimport_name_arg
         exec "t4" args dir_providers
 
-    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "false" "true"
-    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "false" "true"
-    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "false" "false"
-    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "false" "true"
-    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "false" "true"
-    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "false" "false"
-    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "false" "true"
+    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "netstandard2.0" "true"
+    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "netstandard2.0" "true"
+    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
+    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
+    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "netstandard2.0" "true"
 
-    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "true" "false"
+    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "uap10.0" "false" // TODO why was uwp here?
 
-    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "true" "false"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "true" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "true" "true"
-    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "true" "false"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 

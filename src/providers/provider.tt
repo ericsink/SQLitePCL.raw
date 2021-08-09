@@ -4,7 +4,7 @@
 <#@ parameter name='CONV' #>
 <#@ parameter name='KIND' #>
 <#@ parameter name='NAME_FOR_DLLIMPORT' #>
-<#@ parameter name='UWP' #>
+<#@ parameter name='TFM' #>
 <#@ parameter name='FEATURE_KEY' #>
 /*
    Copyright 2014-2021 SourceGear, LLC
@@ -106,7 +106,7 @@ namespace SQLitePCL
         {
 <#
 	if (
-        (UWP == "true")
+        (TFM == "uap10.0")
         || (KIND == "dynamic")
         )
     {
@@ -3235,7 +3235,7 @@ namespace SQLitePCL
             else if (f.feature == "win32")
             {
                 if (
-                    (UWP == "true")
+                    (TFM == "uap10.0")
                     || (KIND == "dynamic")
                     )
                 {
