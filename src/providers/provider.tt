@@ -490,6 +490,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
+            // TODO #430 happens here
             fixed (byte* p_sql = sql)
             {
                 var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, out stm, out var p_tail);

@@ -800,6 +800,7 @@ namespace SQLitePCL
 
         static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
         {
+            // #430 happens here
             int rc = Provider.sqlite3_prepare_v2(db, sql, out var p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
