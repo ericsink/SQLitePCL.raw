@@ -19,6 +19,7 @@
     </dependencies>
   </metadata>
   <files>
+    <file src="$src_path$\SQLitePCLRaw.provider.sqlite3.net5.0\bin\Release\net5.0\SQLitePCLRaw.provider.sqlite3.dll" target="lib\net5.0\" />
     <file src="$src_path$\SQLitePCLRaw.provider.sqlite3.most\bin\Release\netstandard2.0\SQLitePCLRaw.provider.sqlite3.dll" target="lib\netstandard2.0\" />
     <file src="$src_path$\SQLitePCLRaw.provider.sqlite3.uwp\bin\Release\netstandard2.0\SQLitePCLRaw.provider.sqlite3.dll" target="lib\uap10.0\" />
   </files>

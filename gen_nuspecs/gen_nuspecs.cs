@@ -1059,6 +1059,13 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlite3.net5.0",
+                    "SQLitePCLRaw.provider.e_sqlite3",
+                    tfm_build: TFM.NET50,
+                    tfm_dest: TFM.NET50,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.provider.e_sqlite3.most",
                     "SQLitePCLRaw.provider.e_sqlite3",
                     tfm_build: TFM.NETSTANDARD20,
@@ -1112,6 +1119,13 @@ public static class gen
             f.WriteStartElement("files");
 
             write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlcipher.net5.0",
+                    "SQLitePCLRaw.provider.e_sqlcipher",
+                    tfm_build: TFM.NET50,
+                    tfm_dest: TFM.NET50,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.provider.e_sqlcipher.most",
                     "SQLitePCLRaw.provider.e_sqlcipher",
                     tfm_build: TFM.NETSTANDARD20,
@@ -1121,6 +1135,66 @@ public static class gen
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.provider.e_sqlcipher.uwp",
                     "SQLitePCLRaw.provider.e_sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.UWP,
+                    f
+                    );
+
+            f.WriteEndElement(); // files
+
+            f.WriteEndElement(); // package
+
+            f.WriteEndDocument();
+        }
+    }
+
+    private static void gen_nuspec_provider_sqlite3(string dir_src)
+    {
+        string id = string.Format("{0}.provider.sqlite3", gen.ROOT_NAME);
+
+        var settings = XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(dir_proj);
+        gen_dummy_csproj(dir_proj, id);
+
+        using (XmlWriter f = XmlWriter.Create(Path.Combine(dir_proj, string.Format("{0}.nuspec", id)), settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("package", "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd");
+
+            f.WriteStartElement("metadata");
+            write_nuspec_common_metadata(id, f);
+            f.WriteElementString("description", "SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'sqlite3' to reference the 'system' SQLite.");
+
+            f.WriteStartElement("dependencies");
+            add_dep_core(f);
+            f.WriteEndElement(); // dependencies
+
+            f.WriteEndElement(); // metadata
+
+            f.WriteStartElement("files");
+
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlite3.net5.0",
+                    "SQLitePCLRaw.provider.sqlite3",
+                    tfm_build: TFM.NET50,
+                    tfm_dest: TFM.NET50,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlite3.most",
+                    "SQLitePCLRaw.provider.sqlite3",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlite3.uwp",
+                    "SQLitePCLRaw.provider.sqlite3",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.UWP,
                     f
@@ -1164,6 +1238,13 @@ public static class gen
 
             f.WriteStartElement("files");
 
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlcipher.net5.0",
+                    "SQLitePCLRaw.provider.sqlcipher",
+                    tfm_build: TFM.NET50,
+                    tfm_dest: TFM.NET50,
+                    f
+                    );
             write_nuspec_file_entry_lib_mt(
                     "SQLitePCLRaw.provider.sqlcipher.most",
                     "SQLitePCLRaw.provider.sqlcipher",
@@ -1525,6 +1606,7 @@ public static class gen
 
         gen_nuspec_provider_e_sqlite3(dir_src);
         gen_nuspec_provider_e_sqlcipher(dir_src);
+        gen_nuspec_provider_sqlite3(dir_src);
         gen_nuspec_provider_sqlcipher(dir_src);
 
         gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.GREEN);

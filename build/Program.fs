@@ -43,10 +43,17 @@ let main argv =
 
     gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "netstandard2.0" "true"
     gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "netstandard2.0" "true"
+
     gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
     gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
     gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
     gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
+
+    gen_provider "e_sqlite3.net5.0" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+    gen_provider "e_sqlcipher.net5.0" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "sqlcipher.net5.0" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "sqlite3.net5.0" "sqlite3" "sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+
     gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "netstandard2.0" "true"
 
     gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "uap10.0" "false" // TODO why was uwp here?
@@ -58,13 +65,20 @@ let main argv =
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
+
         "SQLitePCLRaw.provider.e_sqlite3.most" 
-        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
         "SQLitePCLRaw.provider.e_sqlcipher.most" 
-        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlcipher.most" 
-        "SQLitePCLRaw.provider.sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlite3.most" 
+
+        "SQLitePCLRaw.provider.e_sqlite3.net5.0" 
+        "SQLitePCLRaw.provider.e_sqlcipher.net5.0" 
+        "SQLitePCLRaw.provider.sqlcipher.net5.0" 
+        "SQLitePCLRaw.provider.sqlite3.net5.0" 
+
+        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
+        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
+        "SQLitePCLRaw.provider.sqlcipher.uwp" 
         "SQLitePCLRaw.provider.sqlite3.uwp" 
     ]
     for s in just_build_dirs do

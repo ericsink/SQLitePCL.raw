@@ -220,9 +220,10 @@ namespace SQLitePCL
 <#
     string get_monopinvokecallback_attr(string cb)
     {
-        if (KIND == "cil")
+        if (TFM == "net5.0")
         {
-            return "";
+            return $"[MonoPInvokeCallback (typeof(NativeMethods.callback_{cb}))] // TODO UnmanagedCallersOnly";
+            // TODO return $"[UnmanagedCallersOnly]";
         }
         else
         {
