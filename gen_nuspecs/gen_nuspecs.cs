@@ -499,7 +499,6 @@ public static class gen
 
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v142", f);
 
-#if not
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(dir_proj, tname);
             var relpath_targets = Path.Combine(".", tname);
@@ -509,7 +508,6 @@ public static class gen
                 string.Format("build\\{0}", TFM.NET461.AsString()),
                 f
                 );
-#endif
 
             // TODO need a comment here to explain these
             write_empty(f, TFM.NET461);
@@ -565,7 +563,6 @@ public static class gen
 
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLCIPHER, "v142", f);
 
-#if not
             var tname = string.Format("{0}.targets", id);
             var path_targets = Path.Combine(dir_proj, tname);
             var relpath_targets = Path.Combine(".", tname);
@@ -575,7 +572,6 @@ public static class gen
                 string.Format("build\\{0}", TFM.NET461.AsString()),
                 f
                 );
-#endif
 
             // TODO need a comment here to explain these
             write_empty(f, TFM.NET461);
@@ -1486,19 +1482,19 @@ public static class gen
             f.WriteAttributeString("ToolsVersion", "4.0");
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Windows_NT' ");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Windows_NT' ");
             write_nuget_target_item("win-x86", lib, f);
             write_nuget_target_item("win-x64", lib, f);
             write_nuget_target_item("win-arm", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
             write_nuget_target_item("osx-x64", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
-            f.WriteAttributeString("Condition", " '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Unix' AND !Exists('/Library/Frameworks') ");
             write_nuget_target_item("linux-x86", lib, f);
             write_nuget_target_item("linux-x64", lib, f);
             write_nuget_target_item("linux-arm", lib, f);
