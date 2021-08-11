@@ -257,16 +257,12 @@ namespace SQLitePCL
         {
             fixed (byte* p_sql = sql)
             {
-                Console.WriteLine($"prepare: <{Encoding.UTF8.GetString(p_sql, sql.Length)}>");
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
+                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, sql.Length, out stm, out var p_tail);
                 var len_consumed = (int) (p_tail - p_sql);
                 int len_remain = sql.Length - len_consumed;
-                Console.WriteLine($"    len_consumed: {len_consumed}   len_remain: {len_remain}");
                 if (len_remain > 0)
                 {
-                    Console.WriteLine($"    remain: <{Encoding.UTF8.GetString(p_sql + len_consumed, len_remain)}>");
-                    //tail = sql.Slice(len_consumed, len_remain);
-                    tail = ReadOnlySpan<byte>.Empty;
+                    tail = sql.Slice(len_consumed, len_remain);
                 }
                 else
                 {
