@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0-preview.6.21352.1" />
     <PackageReference Include="sqlitepclraw.bundle_e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
 
 </Project>
