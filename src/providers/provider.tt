@@ -83,7 +83,7 @@ namespace SQLitePCL
     }
 #>
 
-        <#= KIND=="cil"?"unsafe ":"" #>bool my_streq(IntPtr p, IntPtr q, int len)
+        bool my_streq(IntPtr p, IntPtr q, int len)
         {
             return 0 == NativeMethods.sqlite3_strnicmp(p, q, len);
         }
@@ -171,39 +171,39 @@ namespace SQLitePCL
             }
 		}
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
+        int ISQLite3Provider.sqlite3_close_v2(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close_v2(db);
 			return rc;
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_close(IntPtr db)
+        int ISQLite3Provider.sqlite3_close(IntPtr db)
         {
             var rc = NativeMethods.sqlite3_close(db);
 			return rc;
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_free(IntPtr p)
+        void ISQLite3Provider.sqlite3_free(IntPtr p)
         {
             NativeMethods.sqlite3_free(p);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
+        int ISQLite3Provider.sqlite3_stricmp(IntPtr p, IntPtr q)
         {
             return NativeMethods.sqlite3_stricmp(p, q);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
+        int ISQLite3Provider.sqlite3_strnicmp(IntPtr p, IntPtr q, int n)
         {
             return NativeMethods.sqlite3_strnicmp(p, q, n);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
+        int ISQLite3Provider.sqlite3_enable_shared_cache(int enable)
         {
             return NativeMethods.sqlite3_enable_shared_cache(enable);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_interrupt(sqlite3 db)
+        void ISQLite3Provider.sqlite3_interrupt(sqlite3 db)
         {
             NativeMethods.sqlite3_interrupt(db);
         }
@@ -224,14 +224,7 @@ namespace SQLitePCL
 
     string get_cb_delegate_field(string cb)
     {
-        if (KIND == "cil")
-        {
-            return "";
-        }
-        else
-        {
-            return $"readonly NativeMethods.callback_{cb} {cb}_hook_bridge = new NativeMethods.callback_{cb}({cb}_hook_bridge_impl);";
-        }
+        return $"readonly NativeMethods.callback_{cb} {cb}_hook_bridge = new NativeMethods.callback_{cb}({cb}_hook_bridge_impl);";
     }
 
     string get_cb_type(string cb)
@@ -332,7 +325,7 @@ namespace SQLitePCL
         }
 		// shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
+        int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
             int rc;
 
@@ -549,7 +542,7 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_sql(stmt));
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
+        IntPtr ISQLite3Provider.sqlite3_db_handle(IntPtr stmt)
         {
             return NativeMethods.sqlite3_db_handle(stmt);
         }
@@ -562,12 +555,12 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
+        int ISQLite3Provider.sqlite3_blob_bytes(sqlite3_blob blob)
         {
             return NativeMethods.sqlite3_blob_bytes(blob);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
+        int ISQLite3Provider.sqlite3_blob_reopen(sqlite3_blob blob, long rowid)
         {
             return NativeMethods.sqlite3_blob_reopen(blob, rowid);
         }
@@ -588,7 +581,7 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
+        int ISQLite3Provider.sqlite3_blob_close(IntPtr blob)
         {
             return NativeMethods.sqlite3_blob_close(blob);
         }
@@ -635,47 +628,47 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
+        int ISQLite3Provider.sqlite3_backup_step(sqlite3_backup backup, int nPage)
         {
             return NativeMethods.sqlite3_backup_step(backup, nPage);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_remaining(sqlite3_backup backup)
+        int ISQLite3Provider.sqlite3_backup_remaining(sqlite3_backup backup)
         {
             return NativeMethods.sqlite3_backup_remaining(backup);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_pagecount(sqlite3_backup backup)
+        int ISQLite3Provider.sqlite3_backup_pagecount(sqlite3_backup backup)
         {
             return NativeMethods.sqlite3_backup_pagecount(backup);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
+        int ISQLite3Provider.sqlite3_backup_finish(IntPtr backup)
         {
             return NativeMethods.sqlite3_backup_finish(backup);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
+        IntPtr ISQLite3Provider.sqlite3_next_stmt(sqlite3 db, IntPtr stmt)
         {
             return NativeMethods.sqlite3_next_stmt(db, stmt);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
+        long ISQLite3Provider.sqlite3_last_insert_rowid(sqlite3 db)
         {
             return NativeMethods.sqlite3_last_insert_rowid(db);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_changes(sqlite3 db)
+        int ISQLite3Provider.sqlite3_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_changes(db);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_total_changes(sqlite3 db)
+        int ISQLite3Provider.sqlite3_total_changes(sqlite3 db)
         {
             return NativeMethods.sqlite3_total_changes(db);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_extended_result_codes(sqlite3 db, int onoff)
+        int ISQLite3Provider.sqlite3_extended_result_codes(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_extended_result_codes(db, onoff);
         }
@@ -685,22 +678,22 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_errstr(rc));
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
+        int ISQLite3Provider.sqlite3_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_errcode(db);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_extended_errcode(sqlite3 db)
+        int ISQLite3Provider.sqlite3_extended_errcode(sqlite3 db)
         {
             return NativeMethods.sqlite3_extended_errcode(db);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_busy_timeout(sqlite3 db, int ms)
+        int ISQLite3Provider.sqlite3_busy_timeout(sqlite3 db, int ms)
         {
             return NativeMethods.sqlite3_busy_timeout(db, ms);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_get_autocommit(sqlite3 db)
+        int ISQLite3Provider.sqlite3_get_autocommit(sqlite3 db)
         {
             return NativeMethods.sqlite3_get_autocommit(db);
         }
@@ -731,22 +724,22 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_libversion());
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_libversion_number()
+        int ISQLite3Provider.sqlite3_libversion_number()
         {
             return NativeMethods.sqlite3_libversion_number();
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_threadsafe()
+        int ISQLite3Provider.sqlite3_threadsafe()
         {
             return NativeMethods.sqlite3_threadsafe();
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config(int op)
+        int ISQLite3Provider.sqlite3_config(int op)
         {
             return NativeMethods.sqlite3_config_none(op);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config(int op, int val)
+        int ISQLite3Provider.sqlite3_config(int op, int val)
         {
             return NativeMethods.sqlite3_config_int(op, val);
         }
@@ -769,7 +762,7 @@ namespace SQLitePCL
             return native_result;
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #> int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
+         int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
         {
             return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
         }
@@ -779,17 +772,17 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_limit(db, id, newVal);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_initialize()
+        int ISQLite3Provider.sqlite3_initialize()
         {
             return NativeMethods.sqlite3_initialize();
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_shutdown()
+        int ISQLite3Provider.sqlite3_shutdown()
         {
             return NativeMethods.sqlite3_shutdown();
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_enable_load_extension(sqlite3 db, int onoff)
+        int ISQLite3Provider.sqlite3_enable_load_extension(sqlite3 db, int onoff)
         {
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
@@ -820,7 +813,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("commit") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
+        void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
 			var info = get_hooks(db);
             if (info.commit != null)
@@ -853,7 +846,7 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         <#= get_monopinvokecallback_attr("scalar_function") #>
-        <#= KIND=="cil"?"unsafe ":"" #>static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
+        static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = NativeMethods.sqlite3_user_data(context);
             function_hook_info hi = function_hook_info.from_ptr(p);
@@ -862,7 +855,7 @@ namespace SQLitePCL
 
         <#= get_cb_delegate_field("scalar_function") #>
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
 			var info = get_hooks(db);
             if (info.RemoveScalarFunction(name, nargs))
@@ -905,7 +898,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("log") #>
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (disp_log_hook_handle != null)
             {
@@ -946,7 +939,7 @@ namespace SQLitePCL
         // implementation in pinvoke/SQLite3Provider.cs
 
         <#= get_monopinvokecallback_attr("agg_function_step") #>
-        <#= KIND=="cil"?"unsafe ":"" #>static void agg_function_step_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
+        static void agg_function_step_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -957,7 +950,7 @@ namespace SQLitePCL
         }
 
         <#= get_monopinvokecallback_attr("agg_function_final") #>
-        <#= KIND=="cil"?"unsafe ":"" #>static void agg_function_final_hook_bridge_impl(IntPtr context)
+        static void agg_function_final_hook_bridge_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
             // TODO error check agg nomem
@@ -970,7 +963,7 @@ namespace SQLitePCL
         <#= get_cb_delegate_field("agg_function_step") #>
         <#= get_cb_delegate_field("agg_function_final") #>
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
 			var info = get_hooks(db);
             if (info.RemoveAggFunction(name, nargs))
@@ -1025,7 +1018,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("collation") #>
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
+        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
             if (info.RemoveCollation(name))
@@ -1068,7 +1061,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("update") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
+        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
 			var info = get_hooks(db);
             if (info.update != null)
@@ -1108,7 +1101,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("rollback") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
+        void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
 			var info = get_hooks(db);
             if (info.rollback != null)
@@ -1148,7 +1141,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("trace") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
+        void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
 			var info = get_hooks(db);
             if (info.trace != null)
@@ -1188,7 +1181,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("profile") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
+        void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
 			var info = get_hooks(db);
             if (info.profile != null)
@@ -1228,7 +1221,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("progress_handler") #>
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
+        void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
 			var info = get_hooks(db);
             if (info.progress != null)
@@ -1270,7 +1263,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("authorizer") #>
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
+        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
 			var info = get_hooks(db);
             if (info.authorizer != null)
@@ -1299,12 +1292,12 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_memory_used()
+        long ISQLite3Provider.sqlite3_memory_used()
         {
             return NativeMethods.sqlite3_memory_used();
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
+        long ISQLite3Provider.sqlite3_memory_highwater(int resetFlag)
         {
             return NativeMethods.sqlite3_memory_highwater(resetFlag);
         }
@@ -1329,22 +1322,22 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_sourceid());
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
+        void ISQLite3Provider.sqlite3_result_int64(IntPtr ctx, long val)
         {
             NativeMethods.sqlite3_result_int64(ctx, val);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_int(IntPtr ctx, int val)
+        void ISQLite3Provider.sqlite3_result_int(IntPtr ctx, int val)
         {
             NativeMethods.sqlite3_result_int(ctx, val);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_double(IntPtr ctx, double val)
+        void ISQLite3Provider.sqlite3_result_double(IntPtr ctx, double val)
         {
             NativeMethods.sqlite3_result_double(ctx, val);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_null(IntPtr stm)
+        void ISQLite3Provider.sqlite3_result_null(IntPtr stm)
         {
             NativeMethods.sqlite3_result_null(stm);
         }
@@ -1389,29 +1382,29 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
+        void ISQLite3Provider.sqlite3_result_zeroblob(IntPtr ctx, int n)
         {
             NativeMethods.sqlite3_result_zeroblob(ctx, n);
         }
 
         // TODO sqlite3_result_value
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
+        void ISQLite3Provider.sqlite3_result_error_toobig(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_toobig(ctx);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
+        void ISQLite3Provider.sqlite3_result_error_nomem(IntPtr ctx)
         {
             NativeMethods.sqlite3_result_error_nomem(ctx);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
+        void ISQLite3Provider.sqlite3_result_error_code(IntPtr ctx, int code)
         {
             NativeMethods.sqlite3_result_error_code(ctx, code);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_blob(IntPtr p)
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_value_blob(IntPtr p)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_value_blob(p);
             if (blobPointer == IntPtr.Zero)
@@ -1426,27 +1419,27 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_bytes(IntPtr p)
         {
             return NativeMethods.sqlite3_value_bytes(p);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>double ISQLite3Provider.sqlite3_value_double(IntPtr p)
+        double ISQLite3Provider.sqlite3_value_double(IntPtr p)
         {
             return NativeMethods.sqlite3_value_double(p);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_int(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_int(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int(p);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_value_int64(IntPtr p)
+        long ISQLite3Provider.sqlite3_value_int64(IntPtr p)
         {
             return NativeMethods.sqlite3_value_int64(p);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_value_type(IntPtr p)
+        int ISQLite3Provider.sqlite3_value_type(IntPtr p)
         {
             return NativeMethods.sqlite3_value_type(p);
         }
@@ -1456,12 +1449,12 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_value_text(p));
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
+        int ISQLite3Provider.sqlite3_bind_int(sqlite3_stmt stm, int paramIndex, int val)
         {
             return NativeMethods.sqlite3_bind_int(stm, paramIndex, val);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_int64(sqlite3_stmt stm, int paramIndex, long val)
+        int ISQLite3Provider.sqlite3_bind_int64(sqlite3_stmt stm, int paramIndex, long val)
         {
             return NativeMethods.sqlite3_bind_int64(stm, paramIndex, val);
         }
@@ -1491,7 +1484,7 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
+        int ISQLite3Provider.sqlite3_bind_double(sqlite3_stmt stm, int paramIndex, double val)
         {
             return NativeMethods.sqlite3_bind_double(stm, paramIndex, val);
         }
@@ -1520,17 +1513,17 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
+        int ISQLite3Provider.sqlite3_bind_zeroblob(sqlite3_stmt stm, int paramIndex, int size)
         {
             return NativeMethods.sqlite3_bind_zeroblob(stm, paramIndex, size);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_null(sqlite3_stmt stm, int paramIndex)
+        int ISQLite3Provider.sqlite3_bind_null(sqlite3_stmt stm, int paramIndex)
         {
             return NativeMethods.sqlite3_bind_null(stm, paramIndex);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_bind_parameter_count(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_bind_parameter_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_bind_parameter_count(stm);
         }
@@ -1548,32 +1541,32 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_step(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_step(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_step(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_stmt_isexplain(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_isexplain(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_stmt_busy(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_busy(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_readonly(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_stmt_readonly(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_stmt_readonly(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_int(sqlite3_stmt stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_int(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int(stm, columnIndex);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>long ISQLite3Provider.sqlite3_column_int64(sqlite3_stmt stm, int columnIndex)
+        long ISQLite3Provider.sqlite3_column_int64(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_int64(stm, columnIndex);
         }
@@ -1590,12 +1583,12 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_column_decltype(stm, columnIndex));
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
+        double ISQLite3Provider.sqlite3_column_double(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_double(stm, columnIndex);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex)
+        ReadOnlySpan<byte> ISQLite3Provider.sqlite3_column_blob(sqlite3_stmt stm, int columnIndex)
         {
             IntPtr blobPointer = NativeMethods.sqlite3_column_blob(stm, columnIndex);
             if (blobPointer == IntPtr.Zero)
@@ -1610,22 +1603,22 @@ namespace SQLitePCL
             }
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_type(sqlite3_stmt stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_type(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_type(stm, columnIndex);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_bytes(sqlite3_stmt stm, int columnIndex)
+        int ISQLite3Provider.sqlite3_column_bytes(sqlite3_stmt stm, int columnIndex)
         {
             return NativeMethods.sqlite3_column_bytes(stm, columnIndex);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_column_count(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_column_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_column_count(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_data_count(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_data_count(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_data_count(stm);
         }
@@ -1650,27 +1643,27 @@ namespace SQLitePCL
             return utf8z.FromPtr(NativeMethods.sqlite3_column_database_name(stm, columnIndex));
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_reset(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_reset(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_clear_bindings(sqlite3_stmt stm)
+        int ISQLite3Provider.sqlite3_clear_bindings(sqlite3_stmt stm)
         {
             return NativeMethods.sqlite3_clear_bindings(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
+        int ISQLite3Provider.sqlite3_stmt_status(sqlite3_stmt stm, int op, int resetFlg)
         {
             return NativeMethods.sqlite3_stmt_status(stm, op, resetFlg);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
+        int ISQLite3Provider.sqlite3_finalize(IntPtr stm)
         {
             return NativeMethods.sqlite3_finalize(stm);
         }
 
-        <#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_wal_autocheckpoint(sqlite3 db, int n)
+        int ISQLite3Provider.sqlite3_wal_autocheckpoint(sqlite3 db, int n)
         {
             return NativeMethods.sqlite3_wal_autocheckpoint(db, n);
         }
@@ -1691,7 +1684,7 @@ namespace SQLitePCL
             }
         }
 
-		<#= KIND=="cil"?"unsafe ":"" #>int ISQLite3Provider.sqlite3_keyword_count()
+		int ISQLite3Provider.sqlite3_keyword_count()
 		{
 			return NativeMethods.sqlite3_keyword_count();
 		}
@@ -1720,14 +1713,7 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
-    else if (KIND == "cil")
-    {
-		write_api_entries(KIND);
-    }
-    if (KIND != "cil")
-    {
-        write_callback_delegates();
-    }
+    write_callback_delegates();
 #>
 	}
 
@@ -3167,30 +3153,6 @@ namespace SQLitePCL
             string get_fixed_parm_type(Parm p)
             {
                 string typ = p.typ;
-                if (k == "cil")
-                {
-                    switch (typ)
-                    {
-                        case "NativeMethods.callback_commit":
-                        case "NativeMethods.callback_log":
-                        case "NativeMethods.callback_collation":
-                        case "NativeMethods.callback_profile":
-                        case "NativeMethods.callback_update":
-                        case "NativeMethods.callback_progress_handler":
-                        case "NativeMethods.callback_trace":
-                        case "NativeMethods.callback_rollback":
-                        case "NativeMethods.callback_exec":
-                        case "NativeMethods.callback_scalar_function":
-                        case "NativeMethods.callback_agg_function_step":
-                        case "NativeMethods.callback_agg_function_final":
-                        case "NativeMethods.callback_destroy":
-                        case "NativeMethods.callback_authorizer":
-                            typ = "IntPtr";
-                            break;
-                        default:
-                            break;
-                    }
-                }
                 return typ;
             }
             var a_parms = new System.Collections.Generic.List<string>();
@@ -3242,194 +3204,6 @@ namespace SQLitePCL
             {
                 throw new NotImplementedException();
             }
-            if (k == "cil")
-            {
-                var a_parms = get_parm_list(f);
-                var a_args = new System.Collections.Generic.List<string>();
-                foreach (var p in f.parms)
-                {
-                    if (p.isOut)
-                    {
-                        a_args.Add($"(IntPtr) (&tmp_{p.nam})");
-                    }
-                    else
-                    {
-                        switch (p.typ)
-                        {
-                            case "sqlite3":
-                            case "sqlite3_blob":
-                            case "sqlite3_snapshot":
-                            case "sqlite3_stmt":
-                            case "sqlite3_backup":
-                            case "hook_handle":
-                                a_args.Add($"{p.nam}.DangerousGetHandle()");
-                                break;
-                            case "byte*":
-                            case "char*":
-                                a_args.Add($"(IntPtr){p.nam}");
-                                break;
-                            case "uint":
-                                a_args.Add($"(int){p.nam}");
-                                break;
-                            case "byte[]":
-                                a_args.Add($"pinned_{p.nam}.AddrOfPinnedObject()");
-                                break;
-                            default:
-                                a_args.Add(p.nam);
-                                break;
-                        }
-                    }
-                }
-                if (f.varargs)
-                {
-                    a_args.Add("p_extras");
-                }
-#>
-		public unsafe static <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a_parms) #>)
-        {
-<#+
-            if (f.varargs)
-            {
-                if (f.extra_parms == null)
-                {
-    #>
-                IntPtr p_extras = IntPtr.Zero;
-    <#+
-                }
-                else
-                {
-                    // TODO it would be more efficient here to use a value type instead of a pinned array
-    #>
-                var extras = new IntPtr[] {
-                    (IntPtr) (<#= f.extra_parms.Length #>),
-    <#+
-                    foreach (var p in f.extra_parms)
-                    {
-                        switch (p.typ)
-                        {
-                            case "hook_handle":
-                                // TODO do the add/remove ref properly
-    #>
-                    (IntPtr) <#= p.nam #>.DangerousGetHandle(),
-    <#+
-                                break;
-                            default:
-    #>
-                    (IntPtr) <#= p.nam #>,
-    <#+
-                                break;
-                        }
-                    }
-    #>
-                };
-                var pinned_extras = System.Runtime.InteropServices.GCHandle.Alloc(extras, GCHandleType.Pinned);
-                IntPtr p_extras = pinned_extras.AddrOfPinnedObject();
-    <#+
-                }
-            }
-            foreach (var p in f.GetAllParms())
-            {
-                if (p.isOut)
-                {
-    #>
-                <#= p.typ #> tmp_<#= p.nam #>;
-    <#+
-                }
-                else
-                {
-                    switch (p.typ)
-                    {
-                        case "sqlite3":
-                        case "sqlite3_blob":
-                        case "sqlite3_stmt":
-                        case "sqlite3_backup":
-                        case "hook_handle":
-    #>
-                bool got_<#= p.nam #> = false;
-                <#= p.nam #>.DangerousAddRef(ref got_<#= p.nam #>);
-                if (!got_<#= p.nam #>) throw new Exception("SafeHandle.DangerousAddRef failed");
-    <#+
-                            break;
-                        case "byte[]":
-    #>
-                var pinned_<#= p.nam #> = System.Runtime.InteropServices.GCHandle.Alloc(<#= p.nam #>, GCHandleType.Pinned);
-    <#+
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            if (f.ret != "void")
-            {
-#>
-            var ret =
-<#+
-            }
-#>
-            foo.<#= (f.entry != null) ? f.entry : f.nam #>(<#= string.Join(", ", a_args) #>);
-<#+
-            if (f.varargs && f.extra_parms != null)
-            {
-#>
-            pinned_extras.Free();
-<#+
-            }
-            foreach (var p in f.GetAllParms())
-            {
-                if (p.isOut)
-                {
-    #>
-                <#= p.nam #> = tmp_<#= p.nam #>;
-    <#+
-                }
-                else
-                {
-                    switch (p.typ)
-                    {
-                        case "sqlite3":
-                        case "sqlite3_blob":
-                        case "sqlite3_stmt":
-                        case "sqlite3_backup":
-                        case "hook_handle":
-    #>
-                if (got_<#= p.nam #>)
-                {
-                    <#= p.nam #>.DangerousRelease();
-                }
-    <#+
-                            break;
-                        case "byte[]":
-    #>
-                pinned_<#= p.nam #>.Free();
-    <#+
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            switch (f.ret)
-            {
-                case "void":
-                    break;
-                case "sqlite3_backup":
-#>
-            return sqlite3_backup.From(ret);
-<#+
-                    break;
-                default:
-#>
-            return (<#= f.ret #>) ret;
-<#+
-                    break;
-            }
-#>
-        }
-
-<#+
-            }
-            else
             {
                 var a_parms = get_parm_list(f);
 
