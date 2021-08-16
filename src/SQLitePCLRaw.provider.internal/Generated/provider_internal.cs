@@ -269,17 +269,6 @@ namespace SQLitePCL
             }
         }
 
-        unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, utf8z sql, out IntPtr stm, out utf8z tail)
-        {
-            fixed (byte* p_sql = sql)
-            {
-                var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
-                // TODO we could skip the strlen by using the length we were given
-                tail = utf8z.FromPtr(p_tail);
-                return rc;
-            }
-        }
-
         unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stm, out ReadOnlySpan<byte> tail)
         {
             fixed (byte* p_sql = sql)
@@ -295,17 +284,6 @@ namespace SQLitePCL
                 {
                     tail = ReadOnlySpan<byte>.Empty;
                 }
-                return rc;
-            }
-        }
-
-        unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, utf8z sql, uint flags, out IntPtr stm, out utf8z tail)
-        {
-            fixed (byte* p_sql = sql)
-            {
-                var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
-                // TODO we could skip the strlen by using the length we were given
-                tail = utf8z.FromPtr(p_tail);
                 return rc;
             }
         }

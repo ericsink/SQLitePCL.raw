@@ -786,28 +786,17 @@ namespace SQLitePCL
             return rc;
         }
 
-        static public int sqlite3_prepare_v2(sqlite3 db, utf8z sql, out sqlite3_stmt stmt)
-        {
-            int rc = Provider.sqlite3_prepare_v2(db, sql, out var p, out var sp_tail);
-            stmt = sqlite3_stmt.From(p, db);
-            return rc;
-        }
-
         static public int sqlite3_prepare_v2(sqlite3 db, string sql, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v2(db, sql.to_utf8z(), out stmt);
+            var ba = sql.to_utf8_with_z();
+            var sp = new ReadOnlySpan<byte>(ba);
+            int rc = sqlite3_prepare_v2(db, sp, out stmt, out var sp_tail);
+            return rc;
         }
 
         static public int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
         {
             // #430 happens here
-            int rc = Provider.sqlite3_prepare_v2(db, sql, out var p, out tail);
-            stmt = sqlite3_stmt.From(p, db);
-            return rc;
-        }
-
-        static public int sqlite3_prepare_v2(sqlite3 db, utf8z sql, out sqlite3_stmt stmt, out utf8z tail)
-        {
             int rc = Provider.sqlite3_prepare_v2(db, sql, out var p, out tail);
             stmt = sqlite3_stmt.From(p, db);
             return rc;
@@ -829,16 +818,12 @@ namespace SQLitePCL
             return rc;
         }
 
-        static public int sqlite3_prepare_v3(sqlite3 db, utf8z sql, uint flags, out sqlite3_stmt stmt)
-        {
-            int rc = Provider.sqlite3_prepare_v3(db, sql, flags, out var p, out var sp_tail);
-            stmt = sqlite3_stmt.From(p, db);
-            return rc;
-        }
-
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt)
         {
-            return sqlite3_prepare_v3(db, sql.to_utf8z(), flags, out stmt);
+            var ba = sql.to_utf8_with_z();
+            var sp = new ReadOnlySpan<byte>(ba);
+            int rc = sqlite3_prepare_v3(db, sp, flags, out stmt, out var sp_tail);
+            return rc;
         }
 
         static public int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out sqlite3_stmt stmt, out ReadOnlySpan<byte> tail)
@@ -848,17 +833,12 @@ namespace SQLitePCL
             return rc;
         }
 
-        static public int sqlite3_prepare_v3(sqlite3 db, utf8z sql, uint flags, out sqlite3_stmt stmt, out utf8z tail)
-        {
-            int rc = Provider.sqlite3_prepare_v3(db, sql, flags, out var p, out tail);
-            stmt = sqlite3_stmt.From(p, db);
-            return rc;
-        }
-
         static public int sqlite3_prepare_v3(sqlite3 db, string sql, uint flags, out sqlite3_stmt stmt, out string tail)
         {
-            int rc = sqlite3_prepare_v3(db, sql.to_utf8z(), flags, out stmt, out var sp_tail);
-            tail = sp_tail.utf8_to_string();
+            var ba = sql.to_utf8_with_z();
+            var sp = new ReadOnlySpan<byte>(ba);
+            int rc = sqlite3_prepare_v3(db, sp, flags, out stmt, out var sp_tail);
+            tail = utf8_span_to_string(sp_tail.Slice(0, sp_tail.Length - 1));
             return rc;
         }
 
