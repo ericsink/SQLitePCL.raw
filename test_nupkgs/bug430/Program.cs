@@ -1,53 +1,53 @@
 ﻿
 using System;
-using System.Text;
-using SQLitePCL;
-using SQLitePCL.Ugly;
+using System.Data;
+using Microsoft.Data.Sqlite;
 
 namespace ConsoleApp1
 {
     class Program
     {
-        public static byte[] to_utf8(string s)
-        {
-            var ba = new byte[Encoding.UTF8.GetByteCount(s)];
-            Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
-            return ba;
-        }
-
         static void Main(string[] args)
         {
-            SQLitePCL.Batteries.Init();
-
-            using (var db = ugly.open("tracker.db"))
+            using (var connection =
+                new SqliteConnection(
+                    @"Data Source=tracker.db"))
             {
-                var ba = to_utf8("SELECT Id, Url, Parent, IsDirectory, IdentifierTag, ContentTag FROM FileTracker WHERE Url=?1;");
+                connection.Open();
+
                 while (true)
                 {
-                    db.exec("BEGIN TRANSACTION");
-                    ReadOnlySpan<byte> sql = ba.AsSpan();
-                    var rc = raw.sqlite3_prepare_v2(db, sql, out var stmt, out var tail);
-                    // TODO check rc
-                    stmt.bind(1, "file://local/");
-                    stmt.step();
+                    using (connection.BeginTransaction())
+                    {
+                        var queryCommand = connection.CreateCommand();
+                        queryCommand.CommandText = $@"
+                        SELECT Id, Url, Parent, IsDirectory, IdentifierTag, ContentTag FROM FileTracker WHERE Url=?1;";
+                        queryCommand.Parameters.Add(new SqliteParameter("?1", "file://local/"));
 
-                    var result = HandleReaderSingleDataRow(stmt);
+                        var reader = queryCommand.ExecuteReader();
 
-                    Console.WriteLine(result?.Id + "");
-                    db.exec("ROLLBACK");
+                        var result = HandleReaderSingleDataRow(reader);
+
+                        Console.WriteLine(result?.Id + "");
+                    }
                 }
             }
         }
 
-        private static DataRow HandleReaderSingleDataRow(sqlite3_stmt reader)
+        private static DataRow HandleReaderSingleDataRow(IDataReader reader)
         {
+            if (!reader.Read())
+            {
+                return null;
+            }
+
             return new DataRow(
-                reader.column_int64(0),
-                null,
-                reader.column_int64(2) as long?,
-                reader.column_int(3) != 0,
-                null,
-                null);
+                reader.GetInt64(0),
+                reader.GetString(1),
+                reader.GetValue(2) as long?,
+                reader.GetBoolean(3),
+                reader.GetValue(4) as string,
+                reader.GetValue(5) as string);
         }
 
         public record DataRow(long Id, string Url, long? Parent, bool IsDirectory, string IdentifierTag,
