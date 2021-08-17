@@ -280,6 +280,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, utf8z sql, out IntPtr stm, out utf8z tail)
         {
+// TODO obsolete.  just throw?
             fixed (byte* p_sql = sql)
             {
                 var rc = NativeMethods.sqlite3_prepare_v2(db, p_sql, -1, out stm, out var p_tail);
@@ -310,6 +311,7 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v3(sqlite3 db, utf8z sql, uint flags, out IntPtr stm, out utf8z tail)
         {
+// TODO obsolete.  just throw?
             fixed (byte* p_sql = sql)
             {
                 var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, -1, flags, out stm, out var p_tail);
@@ -334,7 +336,7 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_db_handle(stmt);
         }
 
-        unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out IntPtr blob)
+        unsafe int ISQLite3Provider.sqlite3_blob_open(sqlite3 db, utf8z db_utf8, utf8z table_utf8, utf8z col_utf8, long rowid, int flags, out sqlite3_blob blob)
         {
             fixed (byte* p_db = db_utf8, p_table = table_utf8, p_col = col_utf8)
             {
@@ -2253,7 +2255,7 @@ namespace SQLitePCL
 		public unsafe delegate void sqlite3_snapshot_free(IntPtr snap);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
-		public unsafe delegate int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out IntPtr blob);
+		public unsafe delegate int sqlite3_blob_open(sqlite3 db, byte* sdb, byte* table, byte* col, long rowid, int flags, out sqlite3_blob blob);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_blob_write(sqlite3_blob blob, byte* b, int n, int offset);
