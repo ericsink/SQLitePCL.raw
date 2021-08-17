@@ -120,6 +120,8 @@ namespace SQLitePCL
 
         int sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stmt, out ReadOnlySpan<byte> remain);
         int sqlite3_prepare_v3(sqlite3 db, ReadOnlySpan<byte> sql, uint flags, out IntPtr stmt, out ReadOnlySpan<byte> remain);
+        int sqlite3_prepare_v2(sqlite3 db, utf8z sql, out IntPtr stmt, out utf8z remain);
+        int sqlite3_prepare_v3(sqlite3 db, utf8z sql, uint flags, out IntPtr stmt, out utf8z remain);
         int sqlite3_step(sqlite3_stmt stmt);
         int sqlite3_finalize(IntPtr stmt);
         int sqlite3_reset(sqlite3_stmt stmt);
