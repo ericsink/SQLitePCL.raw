@@ -167,7 +167,9 @@ let main argv =
     for s in nuspecs do
         let name = sprintf "SQLitePCLRaw.%s" s
         let dir_proj = Path.Combine(top, "src", name)
-        Directory.CreateDirectory(Path.Combine(dir_proj, "empty")) |> ignore
+        let path_empty = Path.Combine(dir_proj, "_._")
+        if not (File.Exists(path_empty)) then
+            File.WriteAllText(path_empty, "")
         exec "dotnet" "pack" dir_proj
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))

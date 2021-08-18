@@ -257,8 +257,8 @@ public static class gen
         f.WriteComment("empty directory in lib to avoid nuget adding a reference");
 
         f.WriteStartElement("file");
-        f.WriteAttributeString("src", "empty/");
-        f.WriteAttributeString("target", string.Format("lib\\{0}", tfm.AsString()));
+        f.WriteAttributeString("src", "_._");
+        f.WriteAttributeString("target", string.Format("lib/{0}/_._", tfm.AsString()));
         f.WriteEndElement(); // file
     }
 

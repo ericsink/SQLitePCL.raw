@@ -37,8 +37,8 @@
     <file src="$cb_bin_path$\e_sqlite3\linux\s390x\libe_sqlite3.so" target="runtimes\linux-s390x\native\libe_sqlite3.so" />
     <file src=".\SQLitePCLRaw.lib.e_sqlite3.targets" target="build\net461" />
     <!--empty directory in lib to avoid nuget adding a reference-->
-    <file src="empty/" target="lib\net461" />
+    <file src="_._" target="lib/net461/_._" />
     <!--empty directory in lib to avoid nuget adding a reference-->
-    <file src="empty/" target="lib\netstandard2.0" />
+    <file src="_._" target="lib/netstandard2.0/_._" />
   </files>
 </package>
