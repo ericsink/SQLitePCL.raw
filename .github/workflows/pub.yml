@@ -43,6 +43,6 @@ jobs:
         dotnet run
     - name: Push
       run: 
-        cd SQLitePCL.raw/nupkgs
         dotnet nuget push *.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+      working-directory: SQLitePCL.raw/nupkgs
 
