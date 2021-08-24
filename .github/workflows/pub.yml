@@ -1,8 +1,6 @@
 name: pub
 
-on:
-  push:
-    branches: [ release ]
+on: workflow_dispatch
 
 jobs:
   build:
