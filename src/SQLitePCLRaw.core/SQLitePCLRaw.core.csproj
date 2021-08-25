@@ -13,7 +13,7 @@
     <ItemGroup>
         <!-- https://docs.microsoft.com/en-us/dotnet/core/deploying/trimming-options -->
         <EmbeddedResource Include="LinkerDefinition.xml">
-            <LogicalName>LLink.Descriptors.xml</LogicalName>
+            <LogicalName>ILLink.Descriptors.xml</LogicalName>
         </EmbeddedResource>
     </ItemGroup>
 
