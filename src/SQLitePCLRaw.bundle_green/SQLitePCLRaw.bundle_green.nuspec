@@ -12,7 +12,6 @@
     <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
-    <releaseNotes>$releaseNotes$</releaseNotes>
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: iOS=system SQLite, others=e_sqlite3 included.  Note that this bundle is identical to bundle_e_sqlite3, except on iOS where it uses the system SQLite library instead of e_sqlite3.  In other words, when you use this bundle in a cross-platform app, your app is not using the same SQLite build configuration on all platforms.</description>
     <dependencies>
       <group targetFramework="Xamarin.iOS10">

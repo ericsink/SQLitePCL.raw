@@ -12,7 +12,6 @@
     <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
-    <releaseNotes>$releaseNotes$</releaseNotes>
     <description>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlcipher', the unofficial SQLCipher builds provided with SQLitePCLRaw.</description>
     <dependencies>
       <dependency id="SQLitePCLRaw.core" version="$version$" />

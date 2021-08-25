@@ -12,7 +12,6 @@
     <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" />
     <summary>$summary$</summary>
     <tags>sqlite;xamarin</tags>
-    <releaseNotes>$releaseNotes$</releaseNotes>
     <description>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: unofficial open source sqlcipher builds included.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.</description>
     <dependencies>
       <group targetFramework="Xamarin.iOS10">

@@ -94,7 +94,6 @@ public static class gen
             f.WriteElementString("PackageLicenseExpression", "Apache-2.0");
             f.WriteElementString("PackageRequireLicenseAcceptance", "false");
             f.WriteElementString("PackageTags", PACKAGE_TAGS);
-            f.WriteElementString("PackageReleaseNotes", "https://ericsink.com/SQLitePCLRaw_releases.html");
             f.WriteElementString("RepositoryUrl", "https://github.com/ericsink/SQLitePCL.raw");
             f.WriteElementString("RepositoryType", "git");
             f.WriteElementString("PackageOutputPath", string.Format("$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '{0}'))", nupkgs_dir_name));
