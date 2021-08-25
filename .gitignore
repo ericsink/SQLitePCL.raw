@@ -15,4 +15,5 @@ project.lock.json
 /Tests/packages
 /nupkgs
 /gen_nuspecs.exe
+**/_._
 
