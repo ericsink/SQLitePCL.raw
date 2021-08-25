@@ -15,7 +15,7 @@
 */
 //#define NETCOREAPP3_NATIVELIBRARY
 //#define WINSQLITE3_DYNAMIC
-#define SQLITE3_DYNAMIC
+//#define SQLITE3_DYNAMIC
 
 using System;
 using System.Collections.Generic;
