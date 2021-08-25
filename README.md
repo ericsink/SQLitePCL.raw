@@ -16,9 +16,10 @@ As of version 2.0, SQLitePCLRaw requires NetStandard2.0:
 - Xamarin.Android
 - Xamarin.iOS
 - UWP
-- .NET 4.6.1 or higher
+- .NET Framework 4.6.1 or higher, preferably 4.7.2
 - Linux with Mono
 - MacOS with Mono
+- .NET Core 3.1, .NET 5.x and up, etc
 - NetStandard 2.0
 
 # How the packaging works
@@ -233,6 +234,12 @@ own P/Invoke and COM and marshaling and stuff.
 Building on this library instead allows folks to focus more on the upper layer and its
 goal of providing a pleasant, easy-to-use API for app developers.
 
+## How does this compare to Microsoft.Data.Sqlite?
+
+[Microsoft.Data.Sqlite](https://github.com/aspnet/Microsoft.Data.Sqlite) is an 
+ADO.NET-style SQLite wrapper which is part of Entity Framework Core.  It uses
+SQLitePCLRaw.
+
 ## How does this compare to sqlite-net?
 
 [sqlite-net](https://github.com/praeclarum/sqlite-net) is a very popular SQLite wrapper by Frank Krueger (@praeclarum).
@@ -243,28 +250,13 @@ The `sqlite-net-pcl` package uses SQLitePCLRaw:
 
 [https://www.nuget.org/packages/sqlite-net-pcl/](https://www.nuget.org/packages/sqlite-net-pcl/)
 
-When people ask me to recommend a friendlier SQLite wrapper, sqlite-net is the
-one that I usually recommend.
-
 ## How does this compare to System.Data.SQLite?
 
 [System.Data.SQLite](http://system.data.sqlite.org) is an ADO.NET-style SQLite wrapper developed by the
 core SQLite team.  It is very full-featured, supporting LINQ and Entity Framework.  And for obvious reasons, 
 it does a fantastic job of the SQLite side of things.  But it is not at all mobile-friendly.
 
-## How does this compare to Mono.Data.Sqlite?
-
-Mono.Data.Sqlite is an ADO.NET-style SQLite wrapper which is built into Mono and the Xamarin
-platform.  It shares a common ancestry with System.Data.SQLite, as both began as forks from
-the same code.
-
-## How does this compare to Microsoft.Data.Sqlite?
-
-[Microsoft.Data.Sqlite](https://github.com/aspnet/Microsoft.Data.Sqlite) is an 
-ADO.NET-style SQLite wrapper which is part of Entity Framework Core.  It uses
-SQLitePCLRaw.
-
-## What is this called SQLitePCLRaw?
+## Why is this called SQLitePCLRaw?
 
 [SQLitePCL](https://sqlitepcl.codeplex.com/) was a SQLite Portable Class Library released on Codeplex by MS Open Tech.
 
