@@ -1,0 +1,6 @@
+<linker>
+    <assembly fullname="SQLitePCLRaw.core">
+        <type fullname="SQLitePCL.MonoPInvokeCallbackAttribute"/>
+    </assembly>
+</linker>
+
