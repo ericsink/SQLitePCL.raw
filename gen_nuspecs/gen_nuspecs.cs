@@ -34,6 +34,7 @@ public static class gen
         TVOS,
         ANDROID,
         UWP,
+        WIN10,
         NETSTANDARD20,
         NET461,
         XAMARIN_MAC,
@@ -110,6 +111,7 @@ public static class gen
             case TFM.TVOS: return "Xamarin.tvOS10";
             case TFM.ANDROID: return "MonoAndroid80";
             case TFM.UWP: return "uap10.0";
+            case TFM.WIN10: return "net6.0-windows10";
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
             case TFM.NET461: return "net461";
@@ -395,6 +397,25 @@ public static class gen
             );
     }
 
+    static void write_nuspec_file_entry_native_win10(
+        WhichLib lib,
+        string toolset,
+        string flavor,
+        string cpu,
+        string rid,
+        XmlWriter f
+        )
+    {
+        var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
+        write_nuspec_file_entry_nativeassets(
+            make_cb_path_win(lib, toolset, flavor, cpu),
+            rid,
+            TFM.WIN10,
+            filename,
+            f
+            );
+    }
+
     static void write_nuspec_file_entries_from_cb(
         WhichLib lib,
         string win_toolset,
@@ -405,10 +426,16 @@ public static class gen
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "x64", "win-x64", f);
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm", "win-arm", f);
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm64", "win-arm64", f);
+
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
+
+        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
+        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
+        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
+        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
 
         write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
         write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
@@ -1003,6 +1030,13 @@ public static class gen
                     tfm_dest: TFM.UWP,
                     f
                     );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlite3.uwp",
+                    "SQLitePCLRaw.provider.e_sqlite3",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.WIN10,
+                    f
+                    );
 
             f.WriteEndElement(); // files
 
@@ -1061,6 +1095,13 @@ public static class gen
                     "SQLitePCLRaw.provider.e_sqlcipher",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.UWP,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.e_sqlcipher.uwp",
+                    "SQLitePCLRaw.provider.e_sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.WIN10,
                     f
                     );
 
@@ -1123,6 +1164,13 @@ public static class gen
                     tfm_dest: TFM.UWP,
                     f
                     );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlite3.uwp",
+                    "SQLitePCLRaw.provider.sqlite3",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.WIN10,
+                    f
+                    );
 
             f.WriteEndElement(); // files
 
@@ -1181,6 +1229,13 @@ public static class gen
                     "SQLitePCLRaw.provider.sqlcipher",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.UWP,
+                    f
+                    );
+            write_nuspec_file_entry_lib_mt(
+                    "SQLitePCLRaw.provider.sqlcipher.uwp",
+                    "SQLitePCLRaw.provider.sqlcipher",
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.WIN10,
                     f
                     );
 
