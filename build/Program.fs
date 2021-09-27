@@ -188,6 +188,7 @@ let main argv =
     let fake_xunit_tfms = [
         yield "netcoreapp2.1"
         yield "netcoreapp3.1"
+        yield "net6.0"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net461"
         ]
 

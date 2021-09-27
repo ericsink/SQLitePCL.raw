@@ -21,5 +21,6 @@
     <file src="$src_path$\SQLitePCLRaw.provider.e_sqlcipher.net5.0\bin\Release\net5.0\SQLitePCLRaw.provider.e_sqlcipher.dll" target="lib\net5.0\" />
     <file src="$src_path$\SQLitePCLRaw.provider.e_sqlcipher.most\bin\Release\netstandard2.0\SQLitePCLRaw.provider.e_sqlcipher.dll" target="lib\netstandard2.0\" />
     <file src="$src_path$\SQLitePCLRaw.provider.e_sqlcipher.uwp\bin\Release\netstandard2.0\SQLitePCLRaw.provider.e_sqlcipher.dll" target="lib\uap10.0\" />
+    <file src="$src_path$\SQLitePCLRaw.provider.e_sqlcipher.uwp\bin\Release\netstandard2.0\SQLitePCLRaw.provider.e_sqlcipher.dll" target="lib\net6.0-windows10\" />
   </files>
 </package>
