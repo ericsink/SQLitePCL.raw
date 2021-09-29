@@ -364,6 +364,12 @@ namespace SQLitePCL
                 a.Add(Path.Combine(dir, arch, libname));
             }
 
+            if ((flags & WHERE_ADJACENT) != 0)
+            {
+                var dir = System.IO.Path.GetDirectoryName(assy.Location);
+                a.Add(Path.Combine(dir, libname));
+            }
+
             return a;
         }
 
