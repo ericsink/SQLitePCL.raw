@@ -36,6 +36,8 @@
     <file src="$cb_bin_path$\e_sqlite3\linux\arm64\libe_sqlite3.so" target="runtimes\linux-arm64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\linux-musl-x64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\alpine-x64\native\libe_sqlite3.so" />
+    <file src="$cb_bin_path$\e_sqlite3\linux\musl-armhf\libe_sqlite3.so" target="runtimes\linux-musl-arm\native\libe_sqlite3.so" />
+    <file src="$cb_bin_path$\e_sqlite3\linux\musl-armhf\libe_sqlite3.so" target="runtimes\alpine-arm\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\mips64\libe_sqlite3.so" target="runtimes\linux-mips64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\s390x\libe_sqlite3.so" target="runtimes\linux-s390x\native\libe_sqlite3.so" />
     <file src=".\SQLitePCLRaw.lib.e_sqlite3.targets" target="build\net461" />
