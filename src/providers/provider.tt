@@ -61,7 +61,9 @@ namespace SQLitePCL
 	if (KIND != "cil")
 	{
 #>
-		static readonly bool IsArm64cc = RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
+		static readonly bool IsArm64cc =
+            RuntimeInformation.ProcessArchitecture == Architecture.Arm64 &&
+            (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")));
 <#
 	}
 #>
