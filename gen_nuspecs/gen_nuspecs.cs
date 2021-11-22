@@ -536,7 +536,7 @@ public static class gen
             gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
             write_nuspec_file_entry(
                 relpath_targets,
-                string.Format("build\\{0}", TFM.NET461.AsString()),
+                string.Format("buildTransitive\\{0}", TFM.NET461.AsString()),
                 f
                 );
 
@@ -600,7 +600,7 @@ public static class gen
             gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
             write_nuspec_file_entry(
                 relpath_targets,
-                string.Format("build\\{0}", TFM.NET461.AsString()),
+                string.Format("buildTransitive\\{0}", TFM.NET461.AsString()),
                 f
                 );
 
