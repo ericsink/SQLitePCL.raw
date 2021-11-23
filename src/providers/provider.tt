@@ -57,6 +57,17 @@ namespace SQLitePCL
 		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
 
 <#
+	if (KIND != "cil")
+	{
+#>
+		static readonly bool IsArm64cc =
+			RuntimeInformation.ProcessArchitecture == Architecture.Arm64 &&
+			(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")));
+<#
+	}
+#>
+
+<#
 	if (KIND == "dynamic")
 	{
 #>
@@ -743,6 +754,16 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_config(int op, int val)
         {
+<#
+	if (KIND != "cil")
+	{
+#>
+            if (IsArm64cc)
+                return NativeMethods.sqlite3_config_int_arm64cc(op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val);
+
+<#
+	}
+#>
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
@@ -750,6 +771,16 @@ namespace SQLitePCL
         {
             fixed (byte* p_val = val)
             {
+<#
+	if (KIND != "cil")
+	{
+#>
+                if (IsArm64cc)
+                    return NativeMethods.sqlite3_db_config_charptr_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, p_val);
+
+<#
+	}
+#>
                 return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
             }
         }
@@ -757,7 +788,19 @@ namespace SQLitePCL
         unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
         {
             int out_result = 0;
-            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+            int native_result;
+
+<#
+	if (KIND != "cil")
+	{
+#>
+            if (IsArm64cc)
+                native_result = NativeMethods.sqlite3_db_config_int_outint_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val, &out_result);
+            else
+<#
+	}
+#>
+                native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
 
             result = out_result;
 
@@ -766,6 +809,16 @@ namespace SQLitePCL
 
          int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
         {
+<#
+	if (KIND != "cil")
+	{
+#>
+            if (IsArm64cc)
+                return NativeMethods.sqlite3_db_config_intptr_int_int_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, ptr, int0, int1);
+
+<#
+	}
+#>
             return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
         }
 
@@ -923,8 +976,16 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
 			disp_log_hook_handle = h; // TODO if valid
-			var rc = NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, <#= get_cb_arg("cb") #>, h);
-			return rc;
+<#
+	if (KIND != "cil")
+	{
+#>
+			if (IsArm64cc)
+				return NativeMethods.sqlite3_config_log_arm64cc(raw.SQLITE_CONFIG_LOG, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, <#= get_cb_arg("cb") #>, h);
+<#
+    }
+#>
+			return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, <#= get_cb_arg("cb") #>, h);
         }
 
         unsafe void ISQLite3Provider.sqlite3_log(int errcode, utf8z s)
@@ -3088,6 +3149,12 @@ namespace SQLitePCL
 #>
 			<#= s #> = (MyDelegateTypes.<#= s #>) Load(gf, typeof(MyDelegateTypes.<#= s #>));
 <#+
+        if (f.varargs && f.extra_parms != null)
+        {
+#>
+			<#= s #>_arm64cc = (MyDelegateTypes.<#= s #>_arm64cc) Load(gf, typeof(MyDelegateTypes.<#= s #>_arm64cc));
+<#+
+        }
 	}
 #>
 		}
@@ -3099,6 +3166,12 @@ namespace SQLitePCL
 #>
 		public static MyDelegateTypes.<#= s #> <#= s #>;
 <#+
+        if (f.varargs && f.extra_parms != null)
+        {
+#>
+		public static MyDelegateTypes.<#= s #>_arm64cc <#= s #>_arm64cc;
+<#+
+        }
 	}
 	}
 	void write_callback_delegates()
@@ -3150,7 +3223,7 @@ namespace SQLitePCL
 
 	void write_api_entries(string k)
 	{
-        System.Collections.Generic.List<string> get_parm_list(Function f)
+        System.Collections.Generic.List<string> get_parm_list(Function f, bool arm64cc = false)
         {
             string get_fixed_parm_type(Parm p)
             {
@@ -3165,6 +3238,13 @@ namespace SQLitePCL
             }
             if (f.varargs && f.extra_parms != null)
             {
+                if (arm64cc)
+                {
+                    for (int i = a_parms.Count; i < 8; i++)
+                    {
+                        a_parms.Add("IntPtr dummy" + i);
+                    }
+                }
                 foreach (var p in f.extra_parms)
                 {
                     if (p.isOut) throw new Exception();
@@ -3239,11 +3319,20 @@ namespace SQLitePCL
                 {
                     throw new NotImplementedException();
                 }
+
 #>
 		<#= attr #>
 		<#= front #> <#= f.ret #> <#= f.nam #>(<#= string.Join(", ", a_parms) #>);
 
 <#+
+                if (f.varargs && f.extra_parms != null)
+                {
+#>
+		<#= attr #>
+		<#= front #> <#= f.ret #> <#= f.nam #>_arm64cc(<#= string.Join(", ", get_parm_list(f, arm64cc: true)) #>);
+
+<#+
+                }
             }
         }
 
