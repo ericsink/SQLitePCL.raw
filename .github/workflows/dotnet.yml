@@ -43,10 +43,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Setup .NET 2.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.1.x
     - name: Add msbuild to PATH
       if: startsWith(matrix.os, 'windows')
       uses: microsoft/setup-msbuild@v1.0.2
