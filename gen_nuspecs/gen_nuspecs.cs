@@ -13,9 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-//#define NETCOREAPP3_NATIVELIBRARY
-//#define WINSQLITE3_DYNAMIC
-//#define SQLITE3_DYNAMIC
 
 using System;
 using System.Collections.Generic;
@@ -677,40 +674,20 @@ public static class gen
 
             f.WriteStartElement("dependencies");
 
-#if WINSQLITE3_DYNAMIC 
-            // use dynamic provider
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_STDCALL, WhichLib.NONE, TFM.NETSTANDARD20);
-#else
             // use dllimport provider
             write_bundle_dependency_group(f, WhichProvider.WINSQLITE3, WhichLib.NONE, TFM.NETSTANDARD20);
-#endif
             f.WriteEndElement(); // dependencies
 
             f.WriteEndElement(); // metadata
 
             f.WriteStartElement("files");
 
-#if WINSQLITE3_DYNAMIC
-            // use dynamic provider
-            write_nuspec_file_entry_lib_batteries(
-                    "winsqlite3.dynamic",
-                    TFM.NETSTANDARD20,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NETSTANDARD20,
-                    f
-                    );
-#else
             // use dllimport provider
             write_nuspec_file_entry_lib_batteries(
                     "winsqlite3.dllimport",
                     TFM.NETSTANDARD20,
                     f
                     );
-#endif
 
             f.WriteEndElement(); // files
 
@@ -832,9 +809,6 @@ public static class gen
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
-#if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NETCOREAPP31);
-#endif
 
             f.WriteEndElement(); // dependencies
 
@@ -860,21 +834,6 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
-
-#if NETCOREAPP3_NATIVELIBRARY
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlcipher.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETCOREAPP31,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-#endif
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlcipher.dllimport",
@@ -917,9 +876,6 @@ public static class gen
             write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
-#if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.NETCOREAPP31);
-#endif
 
             f.WriteEndElement(); // dependencies
 
@@ -945,21 +901,6 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
-
-#if NETCOREAPP3_NATIVELIBRARY
-            write_nuspec_file_entry_lib_batteries(
-                    "sqlcipher.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETCOREAPP31,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-#endif
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlcipher.dllimport",
@@ -1300,17 +1241,9 @@ public static class gen
                     write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.TVOS);
                     break;
                 case WhichBasicBundle.GREEN:
-#if SQLITE3_DYNAMIC
-                    write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.IOS);
-#else
                     write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
-#endif
 #if notyet
-#if SQLITE3_DYNAMIC
-                    write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.TVOS);
-#else
                     write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.TVOS);
-#endif
 #endif
                     break;
                 default: 
@@ -1320,9 +1253,6 @@ public static class gen
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
-#if NETCOREAPP3_NATIVELIBRARY
-            write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NETCOREAPP31);
-#endif
             f.WriteEndElement(); // dependencies
 
             f.WriteEndElement(); // metadata
@@ -1345,34 +1275,6 @@ public static class gen
                             );
                     break;
                 case WhichBasicBundle.GREEN:
-#if SQLITE3_DYNAMIC
-                    write_nuspec_file_entry_lib_batteries(
-                            "sqlite3.dynamic",
-                            tfm_build: TFM.NETSTANDARD20,
-                            tfm_dest: TFM.IOS,
-                            f
-                            );
-                    write_nuspec_file_entry_lib_mt(
-                            "SQLitePCLRaw.nativelibrary",
-                            tfm_build: TFM.NETSTANDARD20,
-                            tfm_dest: TFM.IOS,
-                            f
-                            );
-#if notyet
-                    write_nuspec_file_entry_lib_batteries(
-                            "sqlite3.dynamic",
-                            tfm_build: TFM.NETSTANDARD20,
-                            tfm_dest: TFM.TVOS,
-                            f
-                            );
-                    write_nuspec_file_entry_lib_mt(
-                            "SQLitePCLRaw.nativelibrary",
-                            tfm_build: TFM.NETSTANDARD20,
-                            tfm_dest: TFM.TVOS,
-                            f
-                            );
-#endif
-#else
                     write_nuspec_file_entry_lib_batteries(
                             "sqlite3.dllimport",
                             tfm_build: TFM.NETSTANDARD20,
@@ -1386,7 +1288,6 @@ public static class gen
                             tfm_dest: TFM.TVOS,
                             f
                             );
-#endif
 #endif
 
                     break;
@@ -1406,21 +1307,6 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
-
-#if NETCOREAPP3_NATIVELIBRARY
-            write_nuspec_file_entry_lib_batteries(
-                    "e_sqlite3.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETCOREAPP31,
-                    tfm_dest: TFM.NETCOREAPP31,
-                    f
-                    );
-#endif
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dllimport",
