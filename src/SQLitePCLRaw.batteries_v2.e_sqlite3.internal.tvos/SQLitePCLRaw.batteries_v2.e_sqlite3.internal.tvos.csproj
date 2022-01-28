@@ -1,6 +1,6 @@
 <Project Sdk="Xamarin.Legacy.Sdk">
   <PropertyGroup>
-	<TargetFrameworks>net6-tvos</TargetFrameworks>
+	<TargetFrameworks>net6-tvos10</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
