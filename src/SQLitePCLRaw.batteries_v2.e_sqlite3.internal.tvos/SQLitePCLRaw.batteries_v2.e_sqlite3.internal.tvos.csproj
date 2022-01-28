@@ -1,6 +1,6 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Xamarin.Legacy.Sdk">
   <PropertyGroup>
-	<TargetFrameworks>xamarin.tvos10</TargetFrameworks>
+	<TargetFrameworks>net6-tvos</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>

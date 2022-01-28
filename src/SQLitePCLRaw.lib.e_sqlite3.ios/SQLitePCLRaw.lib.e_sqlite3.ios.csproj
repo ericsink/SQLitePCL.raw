@@ -1,6 +1,6 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Xamarin.Legacy.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>xamarin.ios10</TargetFrameworks>
+		<TargetFrameworks>net6-ios;xamarin.ios10</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
