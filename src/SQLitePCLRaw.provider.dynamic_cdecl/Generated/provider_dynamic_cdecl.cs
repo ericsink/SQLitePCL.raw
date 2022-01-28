@@ -36,6 +36,10 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 
+		static readonly bool IsArm64cc =
+			RuntimeInformation.ProcessArchitecture == Architecture.Arm64 &&
+			(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")));
+
         private static string _native_library_name;
 		public static void Setup(string name, IGetFunctionPointer gf)
 		{
@@ -530,6 +534,9 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_config(int op, int val)
         {
+            if (IsArm64cc)
+                return NativeMethods.sqlite3_config_int_arm64cc(op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val);
+
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
@@ -537,6 +544,9 @@ namespace SQLitePCL
         {
             fixed (byte* p_val = val)
             {
+                if (IsArm64cc)
+                    return NativeMethods.sqlite3_db_config_charptr_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, p_val);
+
                 return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
             }
         }
@@ -544,7 +554,12 @@ namespace SQLitePCL
         unsafe int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, int val, out int result)
         {
             int out_result = 0;
-            int native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
+            int native_result;
+
+            if (IsArm64cc)
+                native_result = NativeMethods.sqlite3_db_config_int_outint_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val, &out_result);
+            else
+                native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
 
             result = out_result;
 
@@ -553,6 +568,9 @@ namespace SQLitePCL
 
          int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
         {
+            if (IsArm64cc)
+                return NativeMethods.sqlite3_db_config_intptr_int_int_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, ptr, int0, int1);
+
             return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
         }
 
@@ -710,8 +728,9 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
 			disp_log_hook_handle = h; // TODO if valid
-			var rc = NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, cb, h);
-			return rc;
+			if (IsArm64cc)
+				return NativeMethods.sqlite3_config_log_arm64cc(raw.SQLITE_CONFIG_LOG, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, cb, h);
+			return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, cb, h);
         }
 
         unsafe void ISQLite3Provider.sqlite3_log(int errcode, utf8z s)
@@ -1615,10 +1634,15 @@ namespace SQLitePCL
 			sqlite3_rekey_v2 = (MyDelegateTypes.sqlite3_rekey_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_rekey_v2));
 			sqlite3_config_none = (MyDelegateTypes.sqlite3_config_none) Load(gf, typeof(MyDelegateTypes.sqlite3_config_none));
 			sqlite3_config_int = (MyDelegateTypes.sqlite3_config_int) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int));
+			sqlite3_config_int_arm64cc = (MyDelegateTypes.sqlite3_config_int_arm64cc) Load(gf, typeof(MyDelegateTypes.sqlite3_config_int_arm64cc));
 			sqlite3_config_log = (MyDelegateTypes.sqlite3_config_log) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log));
+			sqlite3_config_log_arm64cc = (MyDelegateTypes.sqlite3_config_log_arm64cc) Load(gf, typeof(MyDelegateTypes.sqlite3_config_log_arm64cc));
 			sqlite3_db_config_charptr = (MyDelegateTypes.sqlite3_db_config_charptr) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_charptr));
+			sqlite3_db_config_charptr_arm64cc = (MyDelegateTypes.sqlite3_db_config_charptr_arm64cc) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_charptr_arm64cc));
 			sqlite3_db_config_int_outint = (MyDelegateTypes.sqlite3_db_config_int_outint) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_int_outint));
+			sqlite3_db_config_int_outint_arm64cc = (MyDelegateTypes.sqlite3_db_config_int_outint_arm64cc) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_int_outint_arm64cc));
 			sqlite3_db_config_intptr_int_int = (MyDelegateTypes.sqlite3_db_config_intptr_int_int) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_intptr_int_int));
+			sqlite3_db_config_intptr_int_int_arm64cc = (MyDelegateTypes.sqlite3_db_config_intptr_int_int_arm64cc) Load(gf, typeof(MyDelegateTypes.sqlite3_db_config_intptr_int_int_arm64cc));
 			sqlite3_create_collation = (MyDelegateTypes.sqlite3_create_collation) Load(gf, typeof(MyDelegateTypes.sqlite3_create_collation));
 			sqlite3_update_hook = (MyDelegateTypes.sqlite3_update_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_update_hook));
 			sqlite3_commit_hook = (MyDelegateTypes.sqlite3_commit_hook) Load(gf, typeof(MyDelegateTypes.sqlite3_commit_hook));
@@ -1762,10 +1786,15 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_rekey_v2 sqlite3_rekey_v2;
 		public static MyDelegateTypes.sqlite3_config_none sqlite3_config_none;
 		public static MyDelegateTypes.sqlite3_config_int sqlite3_config_int;
+		public static MyDelegateTypes.sqlite3_config_int_arm64cc sqlite3_config_int_arm64cc;
 		public static MyDelegateTypes.sqlite3_config_log sqlite3_config_log;
+		public static MyDelegateTypes.sqlite3_config_log_arm64cc sqlite3_config_log_arm64cc;
 		public static MyDelegateTypes.sqlite3_db_config_charptr sqlite3_db_config_charptr;
+		public static MyDelegateTypes.sqlite3_db_config_charptr_arm64cc sqlite3_db_config_charptr_arm64cc;
 		public static MyDelegateTypes.sqlite3_db_config_int_outint sqlite3_db_config_int_outint;
+		public static MyDelegateTypes.sqlite3_db_config_int_outint_arm64cc sqlite3_db_config_int_outint_arm64cc;
 		public static MyDelegateTypes.sqlite3_db_config_intptr_int_int sqlite3_db_config_intptr_int_int;
+		public static MyDelegateTypes.sqlite3_db_config_intptr_int_int_arm64cc sqlite3_db_config_intptr_int_int_arm64cc;
 		public static MyDelegateTypes.sqlite3_create_collation sqlite3_create_collation;
 		public static MyDelegateTypes.sqlite3_update_hook sqlite3_update_hook;
 		public static MyDelegateTypes.sqlite3_commit_hook sqlite3_commit_hook;
@@ -2150,7 +2179,15 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_config")]
+		public unsafe delegate int sqlite3_config_int_arm64cc(int op, IntPtr dummy1, IntPtr dummy2, IntPtr dummy3, IntPtr dummy4, IntPtr dummy5, IntPtr dummy6, IntPtr dummy7, int val);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_config")]
 		public unsafe delegate int sqlite3_config_log(int op, NativeMethods.callback_log func, hook_handle pvUser);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_config")]
+		public unsafe delegate int sqlite3_config_log_arm64cc(int op, IntPtr dummy1, IntPtr dummy2, IntPtr dummy3, IntPtr dummy4, IntPtr dummy5, IntPtr dummy6, IntPtr dummy7, NativeMethods.callback_log func, hook_handle pvUser);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_db_config")]
@@ -2158,11 +2195,23 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_charptr_arm64cc(sqlite3 db, int op, IntPtr dummy2, IntPtr dummy3, IntPtr dummy4, IntPtr dummy5, IntPtr dummy6, IntPtr dummy7, byte* val);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
 		public unsafe delegate int sqlite3_db_config_int_outint(sqlite3 db, int op, int val, int* result);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_int_outint_arm64cc(sqlite3 db, int op, IntPtr dummy2, IntPtr dummy3, IntPtr dummy4, IntPtr dummy5, IntPtr dummy6, IntPtr dummy7, int val, int* result);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
 		public unsafe delegate int sqlite3_db_config_intptr_int_int(sqlite3 db, int op, IntPtr ptr, int int0, int int1);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		[EntryPoint("sqlite3_db_config")]
+		public unsafe delegate int sqlite3_db_config_intptr_int_int_arm64cc(sqlite3 db, int op, IntPtr dummy2, IntPtr dummy3, IntPtr dummy4, IntPtr dummy5, IntPtr dummy6, IntPtr dummy7, IntPtr ptr, int int0, int int1);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_create_collation(sqlite3 db, byte[] strName, int nType, hook_handle pvUser, NativeMethods.callback_collation func);
