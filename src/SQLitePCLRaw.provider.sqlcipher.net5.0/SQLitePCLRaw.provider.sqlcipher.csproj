@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.internal.snk</AssemblyOriginatorKeyFile>
-    <PackageDescription>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of '__Internal', which is the mechanism used for pinvoke with a static library on iOS.</PackageDescription>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.sqlcipher.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 <!--
@@ -22,7 +21,7 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\provider_internal.cs" />
+    <Compile Include="Generated\provider_sqlcipher.cs" />
 </ItemGroup>
 
 </Project>

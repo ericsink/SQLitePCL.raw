@@ -22,7 +22,7 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\netstandard2.0\provider_dynamic_cdecl.cs" />
+    <Compile Include="Generated\provider_dynamic_cdecl.cs" />
 </ItemGroup>
 
 </Project>

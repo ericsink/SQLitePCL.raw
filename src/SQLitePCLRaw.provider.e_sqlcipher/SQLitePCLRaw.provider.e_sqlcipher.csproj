@@ -1,28 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<!--Automatically generated-->
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;uap10.0</TargetFrameworks>
-    <LangVersion>$(ProviderLangVersion)</LangVersion>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_sqlcipher.snk</AssemblyOriginatorKeyFile>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>SQLitePCLRaw.provider.e_sqlcipher.nuspec</NuspecFile>
+    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description)</NuspecProperties>
   </PropertyGroup>
-
-<ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
-</ItemGroup>
-
-<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <Compile Include="Generated\netstandard2.0\provider_e_sqlcipher.cs" />
-</ItemGroup>
-
-<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <Compile Include="Generated\net5.0\provider_e_sqlcipher.cs" />
-</ItemGroup>
-
-<ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-    <Compile Include="Generated\uap10.0\provider_e_sqlcipher.cs" />
-</ItemGroup>
-
 </Project>

@@ -33,9 +33,7 @@ let main argv =
     let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind tfm ftr_key =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (provider_basename.ToLower())
-        let dir_cs = Path.Combine(top, "src", dir_name, "Generated", tfm)
-        Directory.CreateDirectory(dir_cs) |> ignore
-        let cs_path = Path.Combine(dir_cs, cs_name)
+        let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
         let dllimport_name_arg = 
             if kind = "dynamic" 
             then "" 
@@ -47,21 +45,21 @@ let main argv =
     gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "netstandard2.0" "true"
     gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "netstandard2.0" "true"
 
-    gen_provider "e_sqlite3" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-    gen_provider "e_sqlite3" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "net5.0" "false"
-    gen_provider "e_sqlite3" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
+    gen_provider "e_sqlite3.net5.0" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
 
-    gen_provider "e_sqlcipher" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "e_sqlcipher" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
-    gen_provider "e_sqlcipher" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
+    gen_provider "e_sqlcipher.net5.0" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
 
-    gen_provider "sqlcipher" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "sqlcipher" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
-    gen_provider "sqlcipher" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
+    gen_provider "sqlcipher.net5.0" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
 
-    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "net5.0" "false"
-    gen_provider "sqlite3" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
+    gen_provider "sqlite3.net5.0" "sqlite3" "sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
 
     gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "netstandard2.0" "true"
 
@@ -69,6 +67,21 @@ let main argv =
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
+
+        "SQLitePCLRaw.provider.e_sqlite3.most" 
+        "SQLitePCLRaw.provider.e_sqlcipher.most" 
+        "SQLitePCLRaw.provider.sqlcipher.most" 
+        "SQLitePCLRaw.provider.sqlite3.most" 
+
+        "SQLitePCLRaw.provider.e_sqlite3.net5.0" 
+        "SQLitePCLRaw.provider.e_sqlcipher.net5.0" 
+        "SQLitePCLRaw.provider.sqlcipher.net5.0" 
+        "SQLitePCLRaw.provider.sqlite3.net5.0" 
+
+        "SQLitePCLRaw.provider.e_sqlite3.uwp" 
+        "SQLitePCLRaw.provider.e_sqlcipher.uwp" 
+        "SQLitePCLRaw.provider.sqlcipher.uwp" 
+        "SQLitePCLRaw.provider.sqlite3.uwp" 
     ]
     for s in just_build_dirs do
         exec "dotnet" "build -c Release" (Path.Combine(top, "src", s))
@@ -81,10 +94,6 @@ let main argv =
         "SQLitePCLRaw.provider.internal" 
         // "SQLitePCLRaw.provider.sqlite3" 
         "SQLitePCLRaw.provider.winsqlite3" 
-        "SQLitePCLRaw.provider.e_sqlite3" 
-        "SQLitePCLRaw.provider.e_sqlcipher" 
-        "SQLitePCLRaw.provider.sqlite3" 
-        "SQLitePCLRaw.provider.sqlcipher" 
     ]
     for s in pack_dirs do
         exec "dotnet" "pack -c Release" (Path.Combine(top, "src", s))
@@ -147,10 +156,10 @@ let main argv =
     let nuspecs = [
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
-        //"provider.e_sqlite3"
-        //"provider.e_sqlcipher"
-        //"provider.sqlcipher"
-        //"provider.sqlite3"
+        "provider.e_sqlite3"
+        "provider.e_sqlcipher"
+        "provider.sqlcipher"
+        "provider.sqlite3"
         "bundle_green"
         "bundle_e_sqlite3"
         "bundle_e_sqlcipher"
