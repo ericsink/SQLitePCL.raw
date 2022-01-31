@@ -22,7 +22,7 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\provider_internal.cs" />
+    <Compile Include="Generated\netstandard2.0\provider_internal.cs" />
 </ItemGroup>
 
 </Project>

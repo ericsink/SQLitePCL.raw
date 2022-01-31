@@ -1464,10 +1464,12 @@ public static class gen
         gen_nuspec_lib_e_sqlite3(dir_src);
         gen_nuspec_lib_e_sqlcipher(dir_src);
 
+#if not
         gen_nuspec_provider_e_sqlite3(dir_src);
         gen_nuspec_provider_e_sqlcipher(dir_src);
         gen_nuspec_provider_sqlite3(dir_src);
         gen_nuspec_provider_sqlcipher(dir_src);
+#endif
 
         gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.GREEN);
         gen_nuspec_bundle_e_sqlite3_or_green(dir_src, WhichBasicBundle.E_SQLITE3);

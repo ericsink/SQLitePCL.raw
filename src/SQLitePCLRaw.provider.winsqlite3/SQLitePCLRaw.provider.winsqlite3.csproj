@@ -22,7 +22,8 @@
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="Generated\provider_winsqlite3.cs" />
+    <!-- TODO should be netstandard? -->
+    <Compile Include="Generated\uap10.0\provider_winsqlite3.cs" />
 </ItemGroup>
 
 </Project>
