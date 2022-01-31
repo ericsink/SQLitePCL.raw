@@ -179,8 +179,6 @@ let main argv =
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "fsmoke"))
 
-    //exec "dotnet" (sprintf "run --framework=%s" "net5.0") (Path.Combine(top, "test_nupkgs", "cil", "fake_xunit"))
-
     let real_xunit_dirs = [
         yield "e_sqlite3"
         yield "e_sqlcipher"

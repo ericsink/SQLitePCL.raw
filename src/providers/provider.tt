@@ -57,16 +57,9 @@ namespace SQLitePCL
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.<#= CONV #>;
 
-<#
-	if (KIND != "cil")
-	{
-#>
 		static readonly bool IsArm64cc =
 			RuntimeInformation.ProcessArchitecture == Architecture.Arm64 &&
 			(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Create("IOS")));
-<#
-	}
-#>
 
 <#
 	if (KIND == "dynamic")
@@ -238,92 +231,27 @@ namespace SQLitePCL
 
     string get_cb_type(string cb)
     {
-        if (KIND == "cil")
-        {
-            switch (cb)
-            {
-                case "exec":
-                    return "delegate* <IntPtr, int, IntPtr, IntPtr, int>";
-                case "commit":
-                    return "delegate* <IntPtr, int>";
-                case "scalar_function":
-                    return "delegate* <IntPtr, int, IntPtr, void>";
-                case "agg_function_step":
-                    return "delegate* <IntPtr, int, IntPtr, void>";
-                case "agg_function_final":
-                    return "delegate* <IntPtr, void>";
-                case "log":
-                    return "delegate* <IntPtr, int, IntPtr, void>";
-                case "collation":
-                    return "delegate* <IntPtr, int, IntPtr, int, IntPtr, int>";
-                case "rollback":
-                    return "delegate* <IntPtr, void>";
-                case "update":
-                    return "delegate* <IntPtr, int, IntPtr, IntPtr, Int64, void>";
-                case "trace":
-                    return "delegate* <IntPtr, IntPtr, void>";
-                case "profile":
-                    return "delegate* <IntPtr, IntPtr, long, void>";
-                case "progress_handler":
-                    return "delegate* <IntPtr, int>";
-                case "authorizer":
-                    return "delegate* <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-        else
-        {
-            return $"NativeMethods.callback_{cb}";
-        }
+        return $"NativeMethods.callback_{cb}";
     }
 
     string get_cb_val_field(string cb)
     {
-        if (KIND == "cil")
-        {
-            return $"&{cb}_hook_bridge_impl";
-        }
-        else
-        {
-            return $"{cb}_hook_bridge";
-        }
+        return $"{cb}_hook_bridge";
     }
 
     string get_cb_val_nofield(string cb)
     {
-        if (KIND == "cil")
-        {
-            return $"&{cb}_hook_bridge_impl";
-        }
-        else
-        {
-            return $"{cb}_hook_bridge_impl";
-        }
+        return $"{cb}_hook_bridge_impl";
     }
 
     string get_cb_arg(string cb)
     {
-        if (KIND == "cil")
-        {
-            return $"(IntPtr) {cb}";
-        }
-        else
-        {
-            return cb;
-        }
+        return cb;
     }
 
     string get_cb_null()
     {
-        if (KIND == "cil")
-        {
-            return "IntPtr.Zero";
-        }
-        else
-        {
-            return "null";
-        }
+        return "null";
     }
 #>
         <#= get_monopinvokecallback_attr("exec") #>
@@ -752,16 +680,9 @@ namespace SQLitePCL
 
         int ISQLite3Provider.sqlite3_config(int op, int val)
         {
-<#
-	if (KIND != "cil")
-	{
-#>
             if (IsArm64cc)
                 return NativeMethods.sqlite3_config_int_arm64cc(op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val);
 
-<#
-	}
-#>
             return NativeMethods.sqlite3_config_int(op, val);
         }
 
@@ -769,16 +690,9 @@ namespace SQLitePCL
         {
             fixed (byte* p_val = val)
             {
-<#
-	if (KIND != "cil")
-	{
-#>
                 if (IsArm64cc)
                     return NativeMethods.sqlite3_db_config_charptr_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, p_val);
 
-<#
-	}
-#>
                 return NativeMethods.sqlite3_db_config_charptr(db, op, p_val);
             }
         }
@@ -788,16 +702,9 @@ namespace SQLitePCL
             int out_result = 0;
             int native_result;
 
-<#
-	if (KIND != "cil")
-	{
-#>
             if (IsArm64cc)
                 native_result = NativeMethods.sqlite3_db_config_int_outint_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, val, &out_result);
             else
-<#
-	}
-#>
                 native_result = NativeMethods.sqlite3_db_config_int_outint(db, op, val, &out_result);
 
             result = out_result;
@@ -807,16 +714,9 @@ namespace SQLitePCL
 
          int ISQLite3Provider.sqlite3_db_config(sqlite3 db, int op, IntPtr ptr, int int0, int int1)
         {
-<#
-	if (KIND != "cil")
-	{
-#>
             if (IsArm64cc)
                 return NativeMethods.sqlite3_db_config_intptr_int_int_arm64cc(db, op, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, ptr, int0, int1);
 
-<#
-	}
-#>
             return NativeMethods.sqlite3_db_config_intptr_int_int(db, op, ptr, int0, int1);
         }
 
@@ -974,15 +874,8 @@ namespace SQLitePCL
             }
 			var h = new hook_handle(hi);
 			disp_log_hook_handle = h; // TODO if valid
-<#
-	if (KIND != "cil")
-	{
-#>
 			if (IsArm64cc)
 				return NativeMethods.sqlite3_config_log_arm64cc(raw.SQLITE_CONFIG_LOG, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, <#= get_cb_arg("cb") #>, h);
-<#
-    }
-#>
 			return NativeMethods.sqlite3_config_log(raw.SQLITE_CONFIG_LOG, <#= get_cb_arg("cb") #>, h);
         }
 
