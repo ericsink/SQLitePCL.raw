@@ -1743,7 +1743,7 @@ namespace SQLitePCL.Tests
                         Assert.Equal("foo", stmt.column_table_name(0));
                         Assert.Equal("x", stmt.column_origin_name(0));
                         Assert.Equal("mario", stmt.column_name(0));
-                        Assert.Equal("int", stmt.column_decltype(0));
+                        Assert.Equal("int", stmt.column_decltype(0).ToLower());
                     }
                 }
             }
@@ -2053,14 +2053,14 @@ namespace SQLitePCL.Tests
                 int autoInc;
 
                 raw.sqlite3_table_column_metadata(db, "main", "foo", "x", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
-                Assert.Equal("int", dataType);
+                Assert.Equal("int", dataType.ToLower());
                 Assert.Equal("BINARY", collSeq);
                 Assert.True(notNull > 0);
                 Assert.Equal(0, primaryKey);
                 Assert.Equal(0, autoInc);
 
                 raw.sqlite3_table_column_metadata(db, "main", "foo", "rowid", out dataType, out collSeq, out notNull, out primaryKey, out autoInc);
-                Assert.Equal("integer", dataType);
+                Assert.Equal("integer", dataType.ToLower());
                 Assert.Equal("BINARY", collSeq);
                 Assert.Equal(0, notNull);
                 Assert.True(primaryKey > 0);

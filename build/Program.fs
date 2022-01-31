@@ -46,23 +46,24 @@ let main argv =
     gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "netstandard2.0" "true"
 
     gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-
     gen_provider "e_sqlite3.net5.0" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
     gen_provider "e_sqlcipher.net5.0" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
     gen_provider "sqlcipher.net5.0" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+
+    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
     gen_provider "sqlite3.net5.0" "sqlite3" "sqlite3" "Cdecl" "dllimport" "net5.0" "false"
+    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
 
     gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "netstandard2.0" "true"
 
     gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "uap10.0" "false" // TODO why was uwp here?
-
-    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
-    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
