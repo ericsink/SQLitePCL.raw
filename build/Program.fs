@@ -30,40 +30,40 @@ let main argv =
     exec "dotnet" "restore" dir_providers
 
     // TODO the arg list for this function has become ridiculous
-    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind tfm ftr_key =
+    let gen_provider dir_basename (dllimport_name:string) (provider_basename:string) conv kind ftr_win32dir ftr_net5min ftr_key =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" dir_basename
         let cs_name = sprintf "provider_%s.cs" (provider_basename.ToLower())
         let cs_path = Path.Combine(top, "src", dir_name, "Generated", cs_name)
         let dllimport_name_arg = 
             if kind = "dynamic" 
             then "" 
-            else sprintf "-p:NAME_FOR_DLLIMPORT=%s" dllimport_name
+            else $"-p:NAME_FOR_DLLIMPORT=%s{dllimport_name}"
         // TODO want to change this to the local tool
-        let args = sprintf "-o %s -p:NAME=%s -p:CONV=%s -p:KIND=%s -p:TFM=%s -p:FEATURE_KEY=%s %s provider.tt" cs_path provider_basename conv kind tfm ftr_key dllimport_name_arg
+        let args = $"-o %s{cs_path} -p:NAME=%s{provider_basename} -p:CONV=%s{conv} -p:KIND=%s{kind} -p:FEATURE_NET5MIN=%s{ftr_net5min} -p:FEATURE_WIN32DIR=%s{ftr_win32dir} -p:FEATURE_KEY=%s{ftr_key} %s{dllimport_name_arg} provider.tt"
         exec "t4" args dir_providers
 
-    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "netstandard2.0" "true"
-    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "netstandard2.0" "true"
+    gen_provider "dynamic_cdecl" null "dynamic_cdecl" "Cdecl" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
+    gen_provider "dynamic_stdcall" null "dynamic_stdcall" "StdCall" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
 
-    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-    gen_provider "e_sqlite3.net5.0" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "net5.0" "false"
-    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+    gen_provider "e_sqlite3.most" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/false" "FEATURE_KEY/false"
+    gen_provider "e_sqlite3.net5.0" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/true" "FEATURE_KEY/false"
+    gen_provider "e_sqlite3.uwp" "e_sqlite3" "e_sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/false"
 
-    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "e_sqlcipher.net5.0" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
-    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "e_sqlcipher.most" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
+    gen_provider "e_sqlcipher.net5.0" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/true" "FEATURE_KEY/true"
+    gen_provider "e_sqlcipher.uwp" "e_sqlcipher" "e_sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
 
-    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "netstandard2.0" "true"
-    gen_provider "sqlcipher.net5.0" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "net5.0" "true"
-    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "uap10.0" "true"
+    gen_provider "sqlcipher.most" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
+    gen_provider "sqlcipher.net5.0" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/true" "FEATURE_KEY/true"
+    gen_provider "sqlcipher.uwp" "sqlcipher" "sqlcipher" "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
 
-    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "netstandard2.0" "false"
-    gen_provider "sqlite3.net5.0" "sqlite3" "sqlite3" "Cdecl" "dllimport" "net5.0" "false"
-    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "uap10.0" "false"
+    gen_provider "sqlite3.most" "sqlite3" "sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/false" "FEATURE_KEY/false"
+    gen_provider "sqlite3.net5.0" "sqlite3" "sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/true" "FEATURE_KEY/false"
+    gen_provider "sqlite3.uwp" "sqlite3" "sqlite3" "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/false"
 
-    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "netstandard2.0" "true"
+    gen_provider "internal" "__Internal" "internal" "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_NET5MIN/false" "FEATURE_KEY/true"
 
-    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "uap10.0" "false" // TODO why was uwp here?
+    gen_provider "winsqlite3" "winsqlite3" "winsqlite3" "StdCall" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_NET5MIN/false" "FEATURE_KEY/false"
 
     let just_build_dirs = [
         "SQLitePCLRaw.nativelibrary" 
