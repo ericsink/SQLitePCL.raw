@@ -1,10 +1,29 @@
-﻿<!--Automatically generated-->
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <NoBuild>true</NoBuild>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>SQLitePCLRaw.provider.sqlcipher.nuspec</NuspecFile>
-    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description)</NuspecProperties>
+    <TargetFrameworks>netstandard2.0;net5.0;net5.0-windows</TargetFrameworks>
+    <LangVersion>$(ProviderLangVersion)</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.sqlcipher.snk</AssemblyOriginatorKeyFile>
+    <PackageDescription>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'sqlcipher', and is intended for use with official SQLCipher builds from Zetetic.</PackageDescription>
   </PropertyGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Include="Generated\provider_sqlcipher_most.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <Compile Include="Generated\provider_sqlcipher_net5min.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <Compile Include="Generated\provider_sqlcipher_win.cs" />
+</ItemGroup>
+
 </Project>
