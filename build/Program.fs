@@ -19,7 +19,8 @@ let main argv =
 
     exec "dotnet" "run .." (Path.Combine(top, "version_stamp"))
 
-    exec "dotnet" "run .." (Path.Combine(top, "gen_nuspecs"))
+    exec "dotnet" "run .." (Path.Combine(top, "gen_lib_nuspecs"))
+    exec "dotnet" "run .." (Path.Combine(top, "gen_bundle_nuspecs"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
     Directory.CreateDirectory(dir_nupkgs) |> ignore
