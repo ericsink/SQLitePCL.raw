@@ -22,15 +22,6 @@ using System.Xml;
 
 public static class gen
 {
-    private static void write_nuspec_file_entry_lib(string src, TFM tfm, XmlWriter f)
-    {
-        common.write_nuspec_file_entry(
-            src,
-            string.Format("lib\\{0}\\", tfm.AsString()),
-            f
-            );
-    }
-
     static string make_mt_path(
         string dir_name,
         string assembly_name,
