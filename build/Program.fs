@@ -31,6 +31,7 @@ let main argv =
     exec "dotnet" "restore" dir_providers
 
     // TODO the arg list for this function has become ridiculous
+    // TODO the net5min feature should probably be called function pointers, or similar
     let gen_provider provider_basename (dllimport_name:string) (subname : string option) conv kind ftr_win32dir ftr_net5min ftr_key =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" provider_basename
         let cs_name = 

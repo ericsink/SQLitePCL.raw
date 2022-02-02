@@ -89,7 +89,7 @@ public static class gen
             f.WriteElementString("AssemblyVersion", ASSEMBLY_VERSION);
             f.WriteElementString("FileVersion", ASSEMBLY_VERSION);
             f.WriteElementString("Description", SUMMARY);
-            f.WriteElementString("ProviderLangVersion", "7.3");
+            f.WriteElementString("ProviderLangVersion", "10.0");
             f.WriteElementString("GenerateAssemblyProductAttribute", "false");
             f.WriteElementString("PackageLicenseExpression", "Apache-2.0");
             f.WriteElementString("PackageRequireLicenseAcceptance", "false");

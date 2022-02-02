@@ -211,12 +211,17 @@ namespace SQLitePCL
         }
 
 <#
+    // TODO FEATURE_NET5MIN should be called FEATURE_FUNCPTRS, or similar
+    // it switches from using 
+    // UnmanagedFunctionPointerAttribute with a delegate and MonoPInvokeCallback
+    // to
+    // UnmanagedCallersOnly and C# 9.3 function pointers, requiring .NET 5
+    bool USE_FUNCPTRS = (FEATURE_NET5MIN == "FEATURE_NET5MIN/true");
     string get_monopinvokecallback_attr(string cb)
     {
         if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
         {
-            return $"[MonoPInvokeCallback (typeof(NativeMethods.callback_{cb}))] // TODO UnmanagedCallersOnly";
-            // TODO return $"[UnmanagedCallersOnly]";
+            return "[UnmanagedCallersOnly]";
         }
         else
         {
@@ -226,32 +231,104 @@ namespace SQLitePCL
 
     string get_cb_delegate_field(string cb)
     {
-        return $"readonly NativeMethods.callback_{cb} {cb}_hook_bridge = new NativeMethods.callback_{cb}({cb}_hook_bridge_impl);";
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            return "";
+        }
+        else
+        {
+            return $"readonly NativeMethods.callback_{cb} {cb}_hook_bridge = new NativeMethods.callback_{cb}({cb}_hook_bridge_impl);";
+        }
     }
 
     string get_cb_type(string cb)
     {
-        return $"NativeMethods.callback_{cb}";
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            switch (cb)
+            {
+                case "exec":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, int>";
+                case "commit":
+                    return "delegate* unmanaged <IntPtr, int>";
+                case "scalar_function":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                case "agg_function_step":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                case "agg_function_final":
+                    return "delegate* unmanaged <IntPtr, void>";
+                case "log":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                case "collation":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, int, IntPtr, int>";
+                case "rollback":
+                    return "delegate* unmanaged <IntPtr, void>";
+                case "update":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, Int64, void>";
+                case "trace":
+                    return "delegate* unmanaged <IntPtr, IntPtr, void>";
+                case "profile":
+                    return "delegate* unmanaged <IntPtr, IntPtr, long, void>";
+                case "progress_handler":
+                    return "delegate* unmanaged <IntPtr, int>";
+                case "authorizer":
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        else
+        {
+            return $"NativeMethods.callback_{cb}";
+        }
     }
 
     string get_cb_val_field(string cb)
     {
-        return $"{cb}_hook_bridge";
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            return $"&{cb}_hook_bridge_impl";
+        }
+        else
+        {
+            return $"{cb}_hook_bridge";
+        }
     }
 
     string get_cb_val_nofield(string cb)
     {
-        return $"{cb}_hook_bridge_impl";
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            return $"&{cb}_hook_bridge_impl";
+        }
+        else
+        {
+            return $"{cb}_hook_bridge_impl";
+        }
     }
 
     string get_cb_arg(string cb)
     {
-        return cb;
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            return $"(IntPtr) {cb}";
+        }
+        else
+        {
+            return cb;
+        }
     }
 
     string get_cb_null()
     {
-        return "null";
+        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        {
+            return "IntPtr.Zero";
+        }
+        else
+        {
+            return "null";
+        }
     }
 #>
         <#= get_monopinvokecallback_attr("exec") #>
@@ -262,7 +339,7 @@ namespace SQLitePCL
         }
 		// shouldn't there be a impl/bridge thing here?  no, because this callback is not stored so it doesn't need further GC protection
 
-        int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_exec(sqlite3 db, utf8z sql, delegate_exec func, object user_data, out IntPtr errMsg)
         {
             int rc;
 
@@ -766,7 +843,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("commit") #>
-        void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_commit_hook(sqlite3 db, delegate_commit func, object v)
         {
 			var info = get_hooks(db);
             if (info.commit != null)
@@ -808,7 +885,7 @@ namespace SQLitePCL
 
         <#= get_cb_delegate_field("scalar_function") #>
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_scalar func)
         {
 			var info = get_hooks(db);
             if (info.RemoveScalarFunction(name, nargs))
@@ -851,7 +928,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("log") #>
-        int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_config_log(delegate_log func, object v)
         {
             if (disp_log_hook_handle != null)
             {
@@ -917,7 +994,7 @@ namespace SQLitePCL
         <#= get_cb_delegate_field("agg_function_step") #>
         <#= get_cb_delegate_field("agg_function_final") #>
 
-        int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_function(sqlite3 db, byte[] name, int nargs, int flags, object v, delegate_function_aggregate_step func_step, delegate_function_aggregate_final func_final)
         {
 			var info = get_hooks(db);
             if (info.RemoveAggFunction(name, nargs))
@@ -972,7 +1049,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("collation") #>
-        int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_create_collation(sqlite3 db, byte[] name, object v, delegate_collation func)
         {
 			var info = get_hooks(db);
             if (info.RemoveCollation(name))
@@ -1015,7 +1092,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("update") #>
-        void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_update_hook(sqlite3 db, delegate_update func, object v)
         {
 			var info = get_hooks(db);
             if (info.update != null)
@@ -1055,7 +1132,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("rollback") #>
-        void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_rollback_hook(sqlite3 db, delegate_rollback func, object v)
         {
 			var info = get_hooks(db);
             if (info.rollback != null)
@@ -1095,7 +1172,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("trace") #>
-        void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_trace(sqlite3 db, delegate_trace func, object v)
         {
 			var info = get_hooks(db);
             if (info.trace != null)
@@ -1135,7 +1212,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("profile") #>
-        void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_profile(sqlite3 db, delegate_profile func, object v)
         {
 			var info = get_hooks(db);
             if (info.profile != null)
@@ -1175,7 +1252,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("progress_handler") #>
-        void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>void ISQLite3Provider.sqlite3_progress_handler(sqlite3 db, int instructions, delegate_progress func, object v)
         {
 			var info = get_hooks(db);
             if (info.progress != null)
@@ -1217,7 +1294,7 @@ namespace SQLitePCL
         }
 
         <#= get_cb_delegate_field("authorizer") #>
-        int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
+        <#= USE_FUNCPTRS?"unsafe ":"" #>int ISQLite3Provider.sqlite3_set_authorizer(sqlite3 db, delegate_authorizer func, object v)
         {
 			var info = get_hooks(db);
             if (info.authorizer != null)
@@ -1667,7 +1744,13 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
-    write_callback_delegates();
+    if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+    {
+    }
+    else
+    {
+        write_callback_delegates();
+    }
 #>
 	}
 
@@ -3119,6 +3202,32 @@ namespace SQLitePCL
             string get_fixed_parm_type(Parm p)
             {
                 string typ = p.typ;
+                if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+                {
+                    switch (typ)
+                    {
+                        case "NativeMethods.callback_commit":
+                        case "NativeMethods.callback_log":
+                        case "NativeMethods.callback_collation":
+                        case "NativeMethods.callback_profile":
+                        case "NativeMethods.callback_update":
+                        case "NativeMethods.callback_progress_handler":
+                        case "NativeMethods.callback_trace":
+                        case "NativeMethods.callback_rollback":
+                        case "NativeMethods.callback_exec":
+                        case "NativeMethods.callback_scalar_function":
+                        case "NativeMethods.callback_agg_function_step":
+                        case "NativeMethods.callback_agg_function_final":
+                        case "NativeMethods.callback_destroy":
+                        case "NativeMethods.callback_authorizer":
+                            // TODO wouldn't it be better to have the actual
+                            // function pointer type for each case here?
+                            typ = "IntPtr";
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 return typ;
             }
             var a_parms = new System.Collections.Generic.List<string>();
