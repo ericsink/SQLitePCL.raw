@@ -5,7 +5,7 @@
 <#@ parameter name='KIND' #>
 <#@ parameter name='NAME_FOR_DLLIMPORT' #>
 <#@ parameter name='FEATURE_WIN32DIR' #>
-<#@ parameter name='FEATURE_NET5MIN' #>
+<#@ parameter name='FEATURE_FUNCPTRS' #>
 <#@ parameter name='FEATURE_KEY' #>
 /*
    Copyright 2014-2021 SourceGear, LLC
@@ -211,15 +211,14 @@ namespace SQLitePCL
         }
 
 <#
-    // TODO FEATURE_NET5MIN should be called FEATURE_FUNCPTRS, or similar
-    // it switches from using 
+    // FEATURE_FUNCPTRS switches from using 
     // UnmanagedFunctionPointerAttribute with a delegate and MonoPInvokeCallback
     // to
-    // UnmanagedCallersOnly and C# 9.3 function pointers, requiring .NET 5
-    bool USE_FUNCPTRS = (FEATURE_NET5MIN == "FEATURE_NET5MIN/true");
+    // UnmanagedCallersOnly and C# 9.3 function pointers, requiring .NET 5 min
+    bool USE_FUNCPTRS = (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true");
     string get_monopinvokecallback_attr(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return "[UnmanagedCallersOnly]";
         }
@@ -231,7 +230,7 @@ namespace SQLitePCL
 
     string get_cb_delegate_field(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return "";
         }
@@ -243,7 +242,7 @@ namespace SQLitePCL
 
     string get_cb_type(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             switch (cb)
             {
@@ -285,7 +284,7 @@ namespace SQLitePCL
 
     string get_cb_val_field(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return $"&{cb}_hook_bridge_impl";
         }
@@ -297,7 +296,7 @@ namespace SQLitePCL
 
     string get_cb_val_nofield(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return $"&{cb}_hook_bridge_impl";
         }
@@ -309,7 +308,7 @@ namespace SQLitePCL
 
     string get_cb_arg(string cb)
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return $"(IntPtr) {cb}";
         }
@@ -321,7 +320,7 @@ namespace SQLitePCL
 
     string get_cb_null()
     {
-        if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
             return "IntPtr.Zero";
         }
@@ -1744,7 +1743,7 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
-    if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+    if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
     {
     }
     else
@@ -3202,7 +3201,7 @@ namespace SQLitePCL
             string get_fixed_parm_type(Parm p)
             {
                 string typ = p.typ;
-                if (FEATURE_NET5MIN == "FEATURE_NET5MIN/true")
+                if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
                 {
                     switch (typ)
                     {
