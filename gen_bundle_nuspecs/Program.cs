@@ -82,33 +82,6 @@ public static class gen
         return make_mt_path(name, name, tfm);
     }
 
-    private static void write_nuspec_file_entry_lib_mt(string name, TFM tfm, XmlWriter f)
-    {
-        common.write_nuspec_file_entry(
-            make_mt_path(name, tfm),
-            string.Format("lib\\{0}\\", tfm.AsString()),
-            f
-            );
-    }
-
-    private static void write_nuspec_file_entry_lib_mt(string name, TFM tfm_build, TFM tfm_dest, XmlWriter f)
-    {
-        common.write_nuspec_file_entry(
-            make_mt_path(name, tfm_build),
-            string.Format("lib\\{0}\\", tfm_dest.AsString()),
-            f
-            );
-    }
-
-    private static void write_nuspec_file_entry_lib_mt(string dir_name, string assembly_name, TFM tfm_build, TFM tfm_dest, XmlWriter f)
-    {
-        common.write_nuspec_file_entry(
-            make_mt_path(dir_name, assembly_name, tfm_build),
-            string.Format("lib\\{0}\\", tfm_dest.AsString()),
-            f
-            );
-    }
-
     private static void write_nuspec_file_entry_lib_batteries(string basename, TFM tfm_build, TFM tfm_dest, XmlWriter f)
     {
         common.write_nuspec_file_entry(
@@ -309,12 +282,6 @@ public static class gen
                     tfm_dest: TFM.NET461,
                     f
                     );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NET461,
-                    f
-                    );
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlcipher.dllimport",
@@ -374,12 +341,6 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlcipher.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NET461,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f
@@ -515,12 +476,6 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dynamic",
-                    tfm_build: TFM.NETSTANDARD20,
-                    tfm_dest: TFM.NET461,
-                    f
-                    );
-            write_nuspec_file_entry_lib_mt(
-                    "SQLitePCLRaw.nativelibrary",
                     tfm_build: TFM.NETSTANDARD20,
                     tfm_dest: TFM.NET461,
                     f

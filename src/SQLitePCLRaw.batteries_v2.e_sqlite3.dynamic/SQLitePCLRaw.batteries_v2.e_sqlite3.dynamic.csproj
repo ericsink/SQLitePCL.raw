@@ -11,11 +11,12 @@
 
 <ItemGroup>
     <Compile Include="..\..\src\common\batteries_v2.cs" />
+    <Compile Include="..\..\src\common\nativelibrary_defines.cs" />
+    <Compile Include="..\..\src\common\nativelibrary_for_netstandard2.cs" />
 </ItemGroup>
 
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
-	<ProjectReference Include="..\SQLitePCLRaw.nativelibrary\SQLitePCLRaw.nativelibrary.csproj" />
 </ItemGroup>
 
 </Project>

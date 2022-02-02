@@ -28,12 +28,6 @@ let main argv =
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
-    let just_build_dirs = [
-        "SQLitePCLRaw.nativelibrary" 
-    ]
-    for s in just_build_dirs do
-        exec "dotnet" "build -c Release" (Path.Combine(top, "src", s))
-
     let pack_dirs = [
         "SQLitePCLRaw.core"
         "SQLitePCLRaw.ugly" 
