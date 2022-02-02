@@ -19,7 +19,7 @@
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <Compile Include="Generated\provider_sqlcipher_net5min.cs" />
+    <Compile Include="Generated\provider_sqlcipher_funcptrs.cs" />
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">

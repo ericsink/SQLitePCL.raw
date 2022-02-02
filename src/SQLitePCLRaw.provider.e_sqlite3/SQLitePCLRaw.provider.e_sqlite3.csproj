@@ -19,7 +19,7 @@
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <Compile Include="Generated\provider_e_sqlite3_net5min.cs" />
+    <Compile Include="Generated\provider_e_sqlite3_funcptrs.cs" />
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
