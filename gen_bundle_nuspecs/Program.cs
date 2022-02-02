@@ -39,7 +39,7 @@ public static class gen
     {
         switch (tfm)
         {
-            case TFM.ANDROID:
+            case TFM.XAMARIN_ANDROID:
                 return Path.Combine(
                     "$src_path$",
                     dir_name,
@@ -233,22 +233,13 @@ public static class gen
 
         if (what == WhichLib.E_SQLITE3)
         {
-            string id;
-            switch (tfm)
+            var id = tfm.GetOS() switch
             {
-                case TFM.IOS:
-                    id = string.Format("{0}.lib.e_sqlite3.ios", common.ROOT_NAME);
-                    break;
-                case TFM.TVOS:
-                    id = string.Format("{0}.lib.e_sqlite3.tvos", common.ROOT_NAME);
-                    break;
-                case TFM.ANDROID:
-                    id = string.Format("{0}.lib.e_sqlite3.android", common.ROOT_NAME);
-                    break;
-                default:
-                    id = string.Format("{0}.lib.e_sqlite3", common.ROOT_NAME);
-                    break;
-            }
+                XamarinOS.IOS => string.Format("{0}.lib.e_sqlite3.ios", common.ROOT_NAME),
+                XamarinOS.TVOS => string.Format("{0}.lib.e_sqlite3.tvos", common.ROOT_NAME),
+                XamarinOS.ANDROID => string.Format("{0}.lib.e_sqlite3.android", common.ROOT_NAME),
+                XamarinOS.NONE => string.Format("{0}.lib.e_sqlite3", common.ROOT_NAME),
+            };
             f.WriteStartElement("dependency");
             f.WriteAttributeString("id", id);
             f.WriteAttributeString("version", "$version$");
@@ -256,22 +247,13 @@ public static class gen
         }
         else if (what == WhichLib.E_SQLCIPHER)
         {
-            string id;
-            switch (tfm)
+            var id = tfm.GetOS() switch
             {
-                case TFM.IOS:
-                    id = string.Format("{0}.lib.e_sqlcipher.ios", common.ROOT_NAME);
-                    break;
-                case TFM.TVOS:
-                    id = string.Format("{0}.lib.e_sqlcipher.tvos", common.ROOT_NAME);
-                    break;
-                case TFM.ANDROID:
-                    id = string.Format("{0}.lib.e_sqlcipher.android", common.ROOT_NAME);
-                    break;
-                default:
-                    id = string.Format("{0}.lib.e_sqlcipher", common.ROOT_NAME);
-                    break;
-            }
+                XamarinOS.IOS => string.Format("{0}.lib.e_sqlcipher.ios", common.ROOT_NAME),
+                XamarinOS.TVOS => string.Format("{0}.lib.e_sqlcipher.tvos", common.ROOT_NAME),
+                XamarinOS.ANDROID => string.Format("{0}.lib.e_sqlcipher.android", common.ROOT_NAME),
+                XamarinOS.NONE => string.Format("{0}.lib.e_sqlcipher", common.ROOT_NAME),
+            };
             f.WriteStartElement("dependency");
             f.WriteAttributeString("id", id);
             f.WriteAttributeString("version", "$version$");
@@ -312,8 +294,8 @@ public static class gen
 
             f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.IOS);
-            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.ANDROID);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLCIPHER, TFM.XAMARIN_IOS);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.XAMARIN_ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLCIPHER, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLCIPHER, WhichLib.E_SQLCIPHER, TFM.NETSTANDARD20);
 
@@ -325,7 +307,7 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlcipher.internal.ios",
-                    TFM.IOS,
+                    TFM.XAMARIN_IOS,
                     f
                     );
 
@@ -380,7 +362,7 @@ public static class gen
 
             f.WriteStartElement("dependencies");
 
-            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.IOS);
+            write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.NONE, TFM.XAMARIN_IOS);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.NONE, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.SQLCIPHER, WhichLib.NONE, TFM.NETSTANDARD20);
 
@@ -392,7 +374,7 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlcipher.internal.ios",
-                    TFM.IOS,
+                    TFM.XAMARIN_IOS,
                     f
                     );
 
@@ -476,11 +458,11 @@ public static class gen
             switch (bund)
             {
                 case WhichBasicBundle.E_SQLITE3:
-                    write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.IOS);
+                    write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.XAMARIN_IOS);
                     write_bundle_dependency_group(f, WhichProvider.INTERNAL, WhichLib.E_SQLITE3, TFM.TVOS);
                     break;
                 case WhichBasicBundle.GREEN:
-                    write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.IOS);
+                    write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.XAMARIN_IOS);
 #if notyet
                     write_bundle_dependency_group(f, WhichProvider.SQLITE3, WhichLib.NONE, TFM.TVOS);
 #endif
@@ -489,7 +471,7 @@ public static class gen
                     throw new NotImplementedException();
             }
 
-            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.ANDROID);
+            write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.XAMARIN_ANDROID);
             write_bundle_dependency_group(f, WhichProvider.DYNAMIC_CDECL, WhichLib.E_SQLITE3, TFM.NET461);
             write_bundle_dependency_group(f, WhichProvider.E_SQLITE3, WhichLib.E_SQLITE3, TFM.NETSTANDARD20);
             f.WriteEndElement(); // dependencies
@@ -503,7 +485,7 @@ public static class gen
                 case WhichBasicBundle.E_SQLITE3:
                     write_nuspec_file_entry_lib_batteries(
                             "e_sqlite3.internal.ios",
-                            TFM.IOS,
+                            TFM.XAMARIN_IOS,
                             f
                             );
 
@@ -517,7 +499,7 @@ public static class gen
                     write_nuspec_file_entry_lib_batteries(
                             "sqlite3.dllimport",
                             tfm_build: TFM.NETSTANDARD20,
-                            tfm_dest: TFM.IOS,
+                            tfm_dest: TFM.XAMARIN_IOS,
                             f
                             );
 #if notyet
