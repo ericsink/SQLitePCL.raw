@@ -118,16 +118,6 @@ public static class gen
             );
     }
 
-    private static void write_nuspec_file_entry_lib_batteries(string basename, TFM tfm_both, XmlWriter f)
-    {
-        write_nuspec_file_entry_lib_batteries(
-            basename,
-            tfm_build: tfm_both,
-            tfm_dest: tfm_both,
-            f
-            );
-    }
-
     enum WhichProvider
     {
         E_SQLITE3,
@@ -192,7 +182,8 @@ public static class gen
             // use dllimport provider
             write_nuspec_file_entry_lib_batteries(
                     "winsqlite3.dllimport",
-                    TFM.NETSTANDARD20,
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
                     f
                     );
 
@@ -307,7 +298,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlcipher.internal.ios",
-                    TFM.XAMARIN_IOS,
+                    tfm_build: TFM.XAMARIN_IOS,
+                    tfm_dest: TFM.XAMARIN_IOS,
                     f
                     );
 
@@ -326,7 +318,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlcipher.dllimport",
-                    TFM.NETSTANDARD20,
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
                     f
                     );
 
@@ -374,7 +367,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlcipher.internal.ios",
-                    TFM.XAMARIN_IOS,
+                    tfm_build: TFM.XAMARIN_IOS,
+                    tfm_dest: TFM.XAMARIN_IOS,
                     f
                     );
 
@@ -393,7 +387,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlcipher.dllimport",
-                    TFM.NETSTANDARD20,
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
                     f
                     );
 
@@ -485,13 +480,15 @@ public static class gen
                 case WhichBasicBundle.E_SQLITE3:
                     write_nuspec_file_entry_lib_batteries(
                             "e_sqlite3.internal.ios",
-                            TFM.XAMARIN_IOS,
+                            tfm_build: TFM.XAMARIN_IOS,
+                            tfm_dest: TFM.XAMARIN_IOS,
                             f
                             );
 
                     write_nuspec_file_entry_lib_batteries(
                             "e_sqlite3.internal.tvos",
-                            TFM.TVOS,
+                            tfm_build: TFM.TVOS,
+                            tfm_dest: TFM.TVOS,
                             f
                             );
                     break;
@@ -531,7 +528,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "e_sqlite3.dllimport",
-                    TFM.NETSTANDARD20,
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
                     f
                     );
 
@@ -579,7 +577,8 @@ public static class gen
 
             write_nuspec_file_entry_lib_batteries(
                     "sqlite3.dllimport",
-                    TFM.NETSTANDARD20,
+                    tfm_build: TFM.NETSTANDARD20,
+                    tfm_dest: TFM.NETSTANDARD20,
                     f
                     );
 

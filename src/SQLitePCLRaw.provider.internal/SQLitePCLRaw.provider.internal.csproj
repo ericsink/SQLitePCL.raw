@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -10,19 +10,17 @@
     <PackageDescription>SQLitePCL.raw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of '__Internal', which is the mechanism used for pinvoke with a static library on iOS.</PackageDescription>
   </PropertyGroup>
 
-<!--
-<Target Name="autogen" BeforeTargets="BeforeBuild">
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_cdecl.cs -p:CONV=Cdecl provider.tt"/>
-<Exec WorkingDirectory="$(ProjectDir)" Command="t4 -o gen_provider_stdcall.cs -p:CONV=StdCall provider.tt"/>
-</Target>
--->
-
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
 </ItemGroup>
 
-<ItemGroup>
-    <Compile Include="Generated\provider_internal.cs" />
+<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Include="Generated\provider_internal_legacy.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Compile Include="Generated\provider_internal_funcptrs.cs" />
 </ItemGroup>
 
 </Project>
+

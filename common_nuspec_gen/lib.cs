@@ -67,7 +67,7 @@ public static class common
             case TFM.NETCOREAPP31: return XamarinOS.NONE;
             case TFM.NET50: return XamarinOS.NONE;
             default:
-                throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
+                throw new NotImplementedException(string.Format("TFM.GetOS for {0}", e));
         }
     }
 
@@ -77,10 +77,10 @@ public static class common
         {
             case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
             case TFM.XAMARIN_IOS: return "Xamarin.iOS10";
-            case TFM.NET6_IOS: return "net6.0-ios";
+            case TFM.NET6_IOS: return "net6.0-ios"; // TODO needs platform version
             case TFM.TVOS: return "net6.0-tvos10";
             case TFM.XAMARIN_ANDROID: return "MonoAndroid80";
-            case TFM.NET6_ANDROID: return "net6.0-android";
+            case TFM.NET6_ANDROID: return "net6.0-android"; // TODO needs platform version
             case TFM.UWP: return "uap10.0";
             case TFM.WIN10: return "net6.0-windows10";
             case TFM.NETSTANDARD20: return "netstandard2.0";
