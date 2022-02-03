@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2019 SourceGear, LLC
+   Copyright 2014-2022 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,71 +23,25 @@ using System.Xml;
 public enum TFM
 {
     NONE,
-    XAMARIN_IOS,
-    NET6_IOS,
-    TVOS,
-    XAMARIN_ANDROID,
-    NET6_ANDROID,
     UWP,
     WIN10,
     NETSTANDARD20,
     NET461,
-    XAMARIN_MAC,
-    NETCOREAPP31,
-    NET50,
-}
-
-public enum XamarinOS
-{
-    IOS,
-    TVOS,
-    ANDROID,
-    NONE
 }
 
 public static class common
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
-    public static XamarinOS GetOS(this TFM e)
-    {
-        switch (e)
-        {
-            case TFM.NONE: return XamarinOS.NONE;
-            case TFM.XAMARIN_IOS: return XamarinOS.IOS;
-            case TFM.NET6_IOS: return XamarinOS.IOS;
-            case TFM.TVOS: return XamarinOS.TVOS;
-            case TFM.XAMARIN_ANDROID: return XamarinOS.ANDROID;
-            case TFM.NET6_ANDROID: return XamarinOS.ANDROID;
-            case TFM.UWP: return XamarinOS.NONE;
-            case TFM.WIN10: return XamarinOS.NONE;
-            case TFM.NETSTANDARD20: return XamarinOS.NONE;
-            case TFM.XAMARIN_MAC: return XamarinOS.NONE;
-            case TFM.NET461: return XamarinOS.NONE;
-            case TFM.NETCOREAPP31: return XamarinOS.NONE;
-            case TFM.NET50: return XamarinOS.NONE;
-            default:
-                throw new NotImplementedException(string.Format("TFM.GetOS for {0}", e));
-        }
-    }
-
     public static string AsString(this TFM e)
     {
         switch (e)
         {
             case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
-            case TFM.XAMARIN_IOS: return "Xamarin.iOS10";
-            case TFM.NET6_IOS: return "net6.0-ios"; // TODO needs platform version
-            case TFM.TVOS: return "net6.0-tvos10";
-            case TFM.XAMARIN_ANDROID: return "MonoAndroid80";
-            case TFM.NET6_ANDROID: return "net6.0-android"; // TODO needs platform version
             case TFM.UWP: return "uap10.0";
             case TFM.WIN10: return "net6.0-windows10";
             case TFM.NETSTANDARD20: return "netstandard2.0";
-            case TFM.XAMARIN_MAC: return "Xamarin.Mac20";
             case TFM.NET461: return "net461";
-            case TFM.NETCOREAPP31: return "netcoreapp3.1";
-            case TFM.NET50: return "net5.0";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
         }
@@ -109,14 +63,6 @@ public static class common
         f.WriteAttributeString("src", "_._");
         f.WriteAttributeString("target", string.Format("lib/{0}/_._", tfm.AsString()));
         f.WriteEndElement(); // file
-    }
-
-    public static void add_dep_core(XmlWriter f)
-    {
-        f.WriteStartElement("dependency");
-        f.WriteAttributeString("id", string.Format("{0}.core", ROOT_NAME));
-        f.WriteAttributeString("version", "$version$");
-        f.WriteEndElement(); // dependency
     }
 
     const string PACKAGE_TAGS = "sqlite;xamarin";
