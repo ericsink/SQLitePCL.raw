@@ -13,7 +13,8 @@ project.lock.json
 *.nuget.props
 *.nuget.targets
 /Tests/packages
-/nupkgs
+/nupkgs/*.nupkg
+/nupkgs/push.bat
 /gen_nuspecs.exe
 **/_._
 
