@@ -57,7 +57,10 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_win32_set_directory(int typ, utf8z path)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = path)
+            {
+                return NativeMethods.sqlite3_win32_set_directory8((uint) typ, p);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_open(utf8z filename, out IntPtr db)
@@ -1914,6 +1917,9 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_set_authorizer(sqlite3 db, IntPtr cb, hook_handle pvUser);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_win32_set_directory8(uint directoryType, byte* directoryPath);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_create_function_v2(sqlite3 db, byte[] strName, int nArgs, int nType, hook_handle pvUser, IntPtr func, IntPtr fstep, IntPtr ffinal, IntPtr fdestroy);

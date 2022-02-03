@@ -49,23 +49,18 @@ let main argv =
 
     let subname_most = "most"
     let subname_funcptrs = "funcptrs"
-    let subname_win = "win"
 
-    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
-    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
-    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
+    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
+    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
 
-    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
-    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
+    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
+    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
 
-    gen_provider "sqlcipher" "sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "sqlcipher" "sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
-    gen_provider "sqlcipher" "sqlcipher" (Some subname_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
+    gen_provider "sqlcipher" "sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
+    gen_provider "sqlcipher" "sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
 
-    gen_provider "sqlite3" "sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
-    gen_provider "sqlite3" "sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
-    gen_provider "sqlite3" "sqlite3" (Some subname_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
+    gen_provider "sqlite3" "sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
+    gen_provider "sqlite3" "sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
 
     0 // return an integer exit code
 

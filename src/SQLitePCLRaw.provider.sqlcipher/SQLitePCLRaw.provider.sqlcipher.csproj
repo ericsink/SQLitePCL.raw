@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -18,12 +18,8 @@
     <Compile Include="Generated\provider_sqlcipher_most.cs" />
 </ItemGroup>
 
-<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <Compile Include="Generated\provider_sqlcipher_funcptrs.cs" />
-</ItemGroup>
-
-<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
-    <Compile Include="Generated\provider_sqlcipher_win.cs" />
 </ItemGroup>
 
 </Project>
