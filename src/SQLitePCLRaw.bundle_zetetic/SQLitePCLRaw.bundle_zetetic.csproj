@@ -1,10 +1,22 @@
-﻿<!--Automatically generated-->
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Xamarin.Legacy.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <NoBuild>true</NoBuild>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>SQLitePCLRaw.bundle_zetetic.nuspec</NuspecFile>
-    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description)</NuspecProperties>
+    <TargetFrameworks>netstandard2.0;xamarin.ios10;net461</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+	<PackageId>SQLitePCLRaw.bundle_zetetic</PackageId>
+	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: reference the official SQLCipher builds from Zetetic, which are not included in this package</PackageDescription>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\common\batteries_v2.cs" />
+  </ItemGroup>
+
+  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\sqlcipher_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == 'xamarin.ios10' " Project="..\msbuild_bundle_fragments\e_sqlcipher_ios.xml" />
+  <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dynamic.xml" />
+
 </Project>
+

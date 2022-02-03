@@ -1,10 +1,20 @@
-﻿<!--Automatically generated-->
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Xamarin.Legacy.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <NoBuild>true</NoBuild>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <NuspecFile>SQLitePCLRaw.bundle_sqlite3.nuspec</NuspecFile>
-    <NuspecProperties>version=$(version);src_path=$(src_path);cb_bin_path=$(cb_bin_path);authors=$(Authors);copyright=$(Copyright);summary=$(Description)</NuspecProperties>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+	<PackageId>SQLitePCLRaw.bundle_sqlite3</PackageId>
+	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: always just DLLImport(sqlite3), aka, the 'system SQLite'</PackageDescription>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\common\batteries_v2.cs" />
+  </ItemGroup>
+
+  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+
 </Project>
+

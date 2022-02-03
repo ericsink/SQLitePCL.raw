@@ -1,0 +1,12 @@
+﻿<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_sqlite3</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.sqlite3\SQLitePCLRaw.provider.sqlite3.csproj" />
+  </ItemGroup>
+
+</Project>
+

@@ -1,0 +1,12 @@
+﻿<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_sqlcipher</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.sqlcipher\SQLitePCLRaw.provider.sqlcipher.csproj" />
+  </ItemGroup>
+
+</Project>
+

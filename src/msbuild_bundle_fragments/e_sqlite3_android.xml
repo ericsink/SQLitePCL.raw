@@ -1,0 +1,13 @@
+
+<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_e_sqlite3</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.lib.e_sqlite3.android\SQLitePCLRaw.lib.e_sqlite3.android.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlite3\SQLitePCLRaw.provider.e_sqlite3.csproj" />
+  </ItemGroup>
+
+</Project>

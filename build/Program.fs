@@ -20,7 +20,6 @@ let main argv =
     exec "dotnet" "run .." (Path.Combine(top, "version_stamp"))
 
     exec "dotnet" "run .." (Path.Combine(top, "gen_lib_nuspecs"))
-    exec "dotnet" "run .." (Path.Combine(top, "gen_bundle_nuspecs"))
     exec "dotnet" "run" (Path.Combine(top, "gen_providers"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
@@ -28,64 +27,46 @@ let main argv =
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
-    let pack_dirs = [
-        "SQLitePCLRaw.core"
-        "SQLitePCLRaw.ugly" 
-        "SQLitePCLRaw.provider.dynamic_cdecl" 
-        "SQLitePCLRaw.provider.dynamic_stdcall" 
-        "SQLitePCLRaw.provider.internal" 
-        "SQLitePCLRaw.provider.winsqlite3" 
-        "SQLitePCLRaw.provider.e_sqlite3" 
-        "SQLitePCLRaw.provider.e_sqlcipher" 
-        "SQLitePCLRaw.provider.sqlite3" 
-        "SQLitePCLRaw.provider.sqlcipher" 
+    let nuspec_dirs = [
+        "lib.e_sqlite3"
+        "lib.e_sqlcipher"
     ]
-    for s in pack_dirs do
-        exec "dotnet" "pack -c Release" (Path.Combine(top, "src", s))
 
-    let batteries_dirs = [
-        "e_sqlite3.dllimport"
-        "e_sqlite3.dynamic"
-        "e_sqlcipher.dllimport"
-        "e_sqlcipher.dynamic"
-        "sqlite3.dllimport"
-        "sqlite3.dynamic"
-        "sqlcipher.dynamic"
-        "sqlcipher.dllimport"
-        "winsqlite3.dllimport"
-        "winsqlite3.dynamic"
-        ]
-    for s in batteries_dirs do
-        let dir_name = sprintf "SQLitePCLRaw.batteries_v2.%s" s
-        exec "dotnet" "build -c Release" (Path.Combine(top, "src", dir_name))
+    for s in nuspec_dirs do
+        let name = sprintf "SQLitePCLRaw.%s" s
+        let dir_proj = Path.Combine(top, "src", name)
+        let path_empty = Path.Combine(dir_proj, "_._")
+        if not (File.Exists(path_empty)) then
+            File.WriteAllText(path_empty, "")
 
-    let msbuild_dirs = [
-        "lib.sqlcipher.ios.placeholder"
-        "batteries_v2.e_sqlite3.internal.ios"
-        "batteries_v2.e_sqlite3.internal.tvos"
-        "batteries_v2.e_sqlcipher.internal.ios"
-        "batteries_v2.sqlcipher.internal.ios"
-        ]
-    for s in msbuild_dirs do
-        let dir_name = sprintf "SQLitePCLRaw.%s" s
-        let dir = (Path.Combine(top, "src", dir_name))
-        //exec "dotnet" "restore" dir
-        //exec "msbuild" "/p:Configuration=Release" dir
-        exec "dotnet" "build -c Release" dir
-
-    let msbuild_pack_dirs = [
+    let pack_dirs = [
+        "core"
+        "ugly" 
+        "provider.dynamic_cdecl" 
+        "provider.dynamic_stdcall" 
+        "provider.internal" 
+        "provider.winsqlite3" 
+        "provider.e_sqlite3" 
+        "provider.e_sqlcipher" 
+        "provider.sqlite3" 
+        "provider.sqlcipher" 
         "lib.e_sqlite3.android"
         "lib.e_sqlite3.ios"
         "lib.e_sqlite3.tvos"
         "lib.e_sqlcipher.android"
         "lib.e_sqlcipher.ios"
-        ]
-    for s in msbuild_pack_dirs do
+        "lib.e_sqlite3"
+        "lib.e_sqlcipher"
+        "bundle_green"
+        "bundle_e_sqlite3"
+        "bundle_e_sqlcipher"
+        "bundle_zetetic"
+        "bundle_winsqlite3"
+        "bundle_sqlite3"
+    ]
+    for s in pack_dirs do
         let dir_name = sprintf "SQLitePCLRaw.%s" s
-        let dir = (Path.Combine(top, "src", dir_name))
-        //exec "dotnet" "restore" dir
-        //exec "msbuild" "/p:Configuration=Release /t:pack" dir
-        exec "dotnet" "pack -c Release" dir
+        exec "dotnet" "pack -c Release" (Path.Combine(top, "src", dir_name))
 
     let get_build_prop p =
         let path_xml = Path.Combine(top, "Directory.Build.props")
@@ -97,24 +78,6 @@ let main argv =
     let version = get_build_prop "Version"
 
     printfn "%s" version
-
-    let nuspecs = [
-        "lib.e_sqlite3"
-        "lib.e_sqlcipher"
-        "bundle_green"
-        "bundle_e_sqlite3"
-        "bundle_e_sqlcipher"
-        "bundle_zetetic"
-        "bundle_winsqlite3"
-        "bundle_sqlite3"
-        ]
-    for s in nuspecs do
-        let name = sprintf "SQLitePCLRaw.%s" s
-        let dir_proj = Path.Combine(top, "src", name)
-        let path_empty = Path.Combine(dir_proj, "_._")
-        if not (File.Exists(path_empty)) then
-            File.WriteAllText(path_empty, "")
-        exec "dotnet" "pack" dir_proj
 
     exec "dotnet" "run" (Path.Combine(top, "test_nupkgs", "smoke"))
 

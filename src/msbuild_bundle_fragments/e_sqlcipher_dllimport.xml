@@ -1,0 +1,13 @@
+﻿<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_e_sqlcipher</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlcipher" Version="$(version)" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlcipher\SQLitePCLRaw.provider.e_sqlcipher.csproj" />
+  </ItemGroup>
+
+</Project>
+

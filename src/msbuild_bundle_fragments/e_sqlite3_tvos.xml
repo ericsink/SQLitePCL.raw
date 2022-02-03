@@ -1,0 +1,13 @@
+
+<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_internal;EMBEDDED_INIT</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.lib.e_sqlite3.tvos\SQLitePCLRaw.lib.e_sqlite3.tvos.csproj" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.internal\SQLitePCLRaw.provider.internal.csproj" />
+  </ItemGroup>
+
+</Project>
