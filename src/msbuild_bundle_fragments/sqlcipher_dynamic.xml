@@ -1,0 +1,17 @@
+﻿<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_dynamic;PROVIDER_dynamic_cdecl;PROVIDER_NAME_sqlcipher</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.dynamic_cdecl\SQLitePCLRaw.provider.dynamic_cdecl.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\common\nativelibrary_defines.cs" />
+    <Compile Include="..\..\src\common\nativelibrary_for_netstandard2.cs" />
+  </ItemGroup>
+
+</Project>
+
