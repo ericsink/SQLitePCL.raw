@@ -14,9 +14,18 @@ namespace App19
         static int Main()
         {
             SQLitePCL.Batteries_V2.Init();
-            SQLitePCL.raw.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
-            SQLitePCL.raw.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
-            var rc = Xunit.Run.AllTestsInCurrentAssembly();
+            int rc;
+            rc = SQLitePCL.raw.sqlite3_win32_set_directory(/*data directory type*/1, Windows.Storage.ApplicationData.Current.LocalFolder.Path);
+            if (rc != SQLitePCL.raw.SQLITE_OK)
+            {
+                throw new Exception($"ERROR on SET_DIRECTORY 1: {rc}");
+            }
+            rc = SQLitePCL.raw.sqlite3_win32_set_directory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+            if (rc != SQLitePCL.raw.SQLITE_OK)
+            {
+                throw new Exception($"ERROR on SET_DIRECTORY 2: {rc}");
+            }
+            Xunit.Run.AllTestsInCurrentAssembly();
             Console.ReadLine();
             return rc;
         }
