@@ -38,7 +38,9 @@
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\alpine-x64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\mips64\libe_sqlite3.so" target="runtimes\linux-mips64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\s390x\libe_sqlite3.so" target="runtimes\linux-s390x\native\libe_sqlite3.so" />
-    <file src=".\SQLitePCLRaw.lib.e_sqlite3.targets" target="buildTransitive\net461" />
+    <file src="$cb_bin_path$\e_sqlite3\wasm\e_sqlite3.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlite3.a" />
+    <file src=".\net461\SQLitePCLRaw.lib.e_sqlite3.targets" target="buildTransitive\net461" />
+    <file src=".\net6.0\SQLitePCLRaw.lib.e_sqlite3.targets" target="buildTransitive\net6.0" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="_._" target="lib/net461/_._" />
     <!--empty directory in lib to avoid nuget adding a reference-->
