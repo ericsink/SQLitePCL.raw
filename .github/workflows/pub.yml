@@ -35,21 +35,10 @@ jobs:
       run: dotnet workload install android
     - name: Install workload tvos
       run: dotnet workload install tvos
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
     - name: Setup .NET 3.1
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Setup .NET 2.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.1.x
-    - name: Add msbuild to PATH
-      if: startsWith(matrix.os, 'windows')
-      uses: microsoft/setup-msbuild@v1.0.2
     - name: Install T4
       run: dotnet tool install --global dotnet-t4
     - name: Build
