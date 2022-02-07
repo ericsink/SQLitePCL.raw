@@ -40,10 +40,6 @@ jobs:
       run: dotnet workload install android
     - name: Install workload tvos
       run: dotnet workload install tvos
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
     - name: Setup .NET 3.1
       uses: actions/setup-dotnet@v1
       with:
