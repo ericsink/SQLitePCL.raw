@@ -11,6 +11,7 @@ jobs:
 
     strategy:
       matrix:
+        # TODO want macos-latest here too, but the build currently fails there
         os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
