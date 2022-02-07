@@ -23,10 +23,6 @@
     <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\nativeassets\uap10.0\e_sqlite3.dll" />
     <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\nativeassets\uap10.0\e_sqlite3.dll" />
     <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlite3.dll" />
-    <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\arm64\e_sqlite3.dll" target="runtimes\win10-arm64\nativeassets\net6.0-windows10\e_sqlite3.dll" />
-    <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\arm\e_sqlite3.dll" target="runtimes\win10-arm\nativeassets\net6.0-windows10\e_sqlite3.dll" />
-    <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\x64\e_sqlite3.dll" target="runtimes\win10-x64\nativeassets\net6.0-windows10\e_sqlite3.dll" />
-    <file src="$cb_bin_path$\e_sqlite3\win\v142\appcontainer\x86\e_sqlite3.dll" target="runtimes\win10-x86\nativeassets\net6.0-windows10\e_sqlite3.dll" />
     <file src="$cb_bin_path$\e_sqlite3\mac\x86_64\libe_sqlite3.dylib" target="runtimes\osx-x64\native\libe_sqlite3.dylib" />
     <file src="$cb_bin_path$\e_sqlite3\mac\arm64\libe_sqlite3.dylib" target="runtimes\osx-arm64\native\libe_sqlite3.dylib" />
     <file src="$cb_bin_path$\e_sqlite3\linux\x64\libe_sqlite3.so" target="runtimes\linux-x64\native\libe_sqlite3.so" />

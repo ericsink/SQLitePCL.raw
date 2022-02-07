@@ -24,7 +24,6 @@ public enum TFM
 {
     NONE,
     UWP,
-    WIN10,
     NETSTANDARD20,
     NET461,
 }
@@ -39,7 +38,6 @@ public static class common
         {
             case TFM.NONE: throw new Exception("TFM.NONE.AsString()");
             case TFM.UWP: return "uap10.0";
-            case TFM.WIN10: return "net6.0-windows10";
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.NET461: return "net461";
             default:
@@ -317,25 +315,6 @@ public static class gen
             );
     }
 
-    static void write_nuspec_file_entry_native_win10(
-        WhichLib lib,
-        string toolset,
-        string flavor,
-        string cpu,
-        string rid,
-        XmlWriter f
-        )
-    {
-        var filename = lib.AsString_libname_in_nupkg(LibSuffix.DLL);
-        write_nuspec_file_entry_nativeassets(
-            make_cb_path_win(lib, toolset, flavor, cpu),
-            rid,
-            TFM.WIN10,
-            filename,
-            f
-            );
-    }
-
     static void write_nuspec_file_entries_from_cb(
         WhichLib lib,
         string win_toolset,
@@ -351,11 +330,6 @@ public static class gen
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
         write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
-
-        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
-        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
-        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
-        write_nuspec_file_entry_native_win10(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
 
         write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
         write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
