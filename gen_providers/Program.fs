@@ -19,7 +19,7 @@ let main argv =
     exec "dotnet" "restore" dir_providers
 
     // TODO the arg list for this function has become ridiculous
-    let gen_provider provider_basename (dllimport_name:string) (subname : string option) conv kind ftr_win32dir ftr_funcptrs ftr_key =
+    let gen_provider provider_basename (dllimport_name:string) (subname : string option) conv kind ftr_win32dir ftr_funcptrs ftr_key ftr_loadextension =
         let dir_name = sprintf "SQLitePCLRaw.provider.%s" provider_basename
         let cs_name = 
             match subname with
@@ -34,14 +34,14 @@ let main argv =
             if kind = "dynamic" then "" 
             else $"-p:NAME_FOR_DLLIMPORT=%s{dllimport_name}"
         // TODO want to change this to the local tool
-        let args = $"-o %s{cs_path} -p:NAME=%s{provider_basename} -p:CONV=%s{conv} -p:KIND=%s{kind} -p:FEATURE_FUNCPTRS=%s{ftr_funcptrs} -p:FEATURE_WIN32DIR=%s{ftr_win32dir} -p:FEATURE_KEY=%s{ftr_key} %s{dllimport_name_arg} provider.tt"
+        let args = $"-o %s{cs_path} -p:NAME=%s{provider_basename} -p:CONV=%s{conv} -p:KIND=%s{kind} -p:FEATURE_FUNCPTRS=%s{ftr_funcptrs} -p:FEATURE_WIN32DIR=%s{ftr_win32dir} -p:FEATURE_KEY=%s{ftr_key} -p:FEATURE_LOADEXTENSION=%s{ftr_loadextension} %s{dllimport_name_arg} provider.tt"
         exec "t4" args dir_providers
 
-    gen_provider "dynamic_cdecl" null None "Cdecl" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "dynamic_stdcall" null None "StdCall" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "internal" "__Internal" (Some "legacy") "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "internal" "__Internal" (Some "funcptrs") "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
-    gen_provider "winsqlite3" "winsqlite3" None "StdCall" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
+    gen_provider "dynamic_cdecl" null None "Cdecl" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
+    gen_provider "dynamic_stdcall" null None "StdCall" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
+    gen_provider "internal" "__Internal" (Some "legacy") "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
+    gen_provider "internal" "__Internal" (Some "funcptrs") "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
+    gen_provider "winsqlite3" "winsqlite3" None "StdCall" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
 
     // for the various DllImport providers below, we generate
     // several sub-variants, which are mapped to TFMs for multi-targeting
@@ -50,17 +50,17 @@ let main argv =
     let subname_most = "most"
     let subname_funcptrs = "funcptrs"
 
-    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
-    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
+    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
+    gen_provider "e_sqlite3" "e_sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
 
-    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
+    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
+    gen_provider "e_sqlcipher" "e_sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
 
-    gen_provider "sqlcipher" "sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true"
-    gen_provider "sqlcipher" "sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true"
+    gen_provider "sqlcipher" "sqlcipher" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
+    gen_provider "sqlcipher" "sqlcipher" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
 
-    gen_provider "sqlite3" "sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false"
-    gen_provider "sqlite3" "sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false"
+    gen_provider "sqlite3" "sqlite3" (Some subname_most) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
+    gen_provider "sqlite3" "sqlite3" (Some subname_funcptrs) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/true" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
 
     0 // return an integer exit code
 

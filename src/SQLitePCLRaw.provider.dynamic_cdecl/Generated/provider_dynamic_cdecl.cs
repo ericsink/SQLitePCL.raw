@@ -594,6 +594,19 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_load_extension(sqlite3 db, utf8z zFile, utf8z zProc, out utf8z pzErrMsg)
+        {
+            fixed (byte* p_zFile = zFile, p_zProc = zProc)
+            {
+                var rc = NativeMethods.sqlite3_load_extension(
+                            db, p_zFile, p_zProc,
+                            out var p_zErrMsg);
+                pzErrMsg = utf8z.FromPtr(p_zErrMsg);
+                return rc;
+            }
+        }
+
+
         // ----------------------------------------------------------------
 
         // Passing a callback into SQLite is tricky.  The implementation details
@@ -1564,6 +1577,7 @@ namespace SQLitePCL
 			sqlite3_table_column_metadata = (MyDelegateTypes.sqlite3_table_column_metadata) Load(gf, typeof(MyDelegateTypes.sqlite3_table_column_metadata));
 			sqlite3_value_text = (MyDelegateTypes.sqlite3_value_text) Load(gf, typeof(MyDelegateTypes.sqlite3_value_text));
 			sqlite3_enable_load_extension = (MyDelegateTypes.sqlite3_enable_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_enable_load_extension));
+			sqlite3_load_extension = (MyDelegateTypes.sqlite3_load_extension) Load(gf, typeof(MyDelegateTypes.sqlite3_load_extension));
 			sqlite3_limit = (MyDelegateTypes.sqlite3_limit) Load(gf, typeof(MyDelegateTypes.sqlite3_limit));
 			sqlite3_initialize = (MyDelegateTypes.sqlite3_initialize) Load(gf, typeof(MyDelegateTypes.sqlite3_initialize));
 			sqlite3_shutdown = (MyDelegateTypes.sqlite3_shutdown) Load(gf, typeof(MyDelegateTypes.sqlite3_shutdown));
@@ -1716,6 +1730,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_table_column_metadata sqlite3_table_column_metadata;
 		public static MyDelegateTypes.sqlite3_value_text sqlite3_value_text;
 		public static MyDelegateTypes.sqlite3_enable_load_extension sqlite3_enable_load_extension;
+		public static MyDelegateTypes.sqlite3_load_extension sqlite3_load_extension;
 		public static MyDelegateTypes.sqlite3_limit sqlite3_limit;
 		public static MyDelegateTypes.sqlite3_initialize sqlite3_initialize;
 		public static MyDelegateTypes.sqlite3_shutdown sqlite3_shutdown;
@@ -1964,6 +1979,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_enable_load_extension(sqlite3 db, int enable);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_load_extension(sqlite3 db, byte* zFile, byte* zProc, out byte* pzErrMsg);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_limit(sqlite3 db, int id, int newVal);

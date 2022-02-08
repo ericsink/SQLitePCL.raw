@@ -576,6 +576,13 @@ namespace SQLitePCL
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
 
+        unsafe int ISQLite3Provider.sqlite3_load_extension(sqlite3 db, utf8z zFile, utf8z zProc, out utf8z pzErrMsg)
+        {
+            pzErrMsg = utf8z.FromPtr(null);
+            return raw.SQLITE_ERROR;
+        }
+
+
         // ----------------------------------------------------------------
 
         // Passing a callback into SQLite is tricky.  The implementation details

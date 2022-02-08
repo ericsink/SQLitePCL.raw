@@ -681,6 +681,11 @@ namespace SQLitePCL
             return Provider.sqlite3_enable_load_extension(db, onoff);
         }
 
+        static public int sqlite3_load_extension(sqlite3 db, utf8z file, utf8z proc, out utf8z errmsg)
+        {
+            return Provider.sqlite3_load_extension(db, file, proc, out errmsg);
+        }
+
         static public utf8z sqlite3_sourceid()
         {
             return Provider.sqlite3_sourceid();

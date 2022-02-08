@@ -253,9 +253,7 @@ namespace SQLitePCL
         int sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> key);
         int sqlite3_rekey_v2(sqlite3 db, utf8z dbname, ReadOnlySpan<byte> key);
 
-#if not // TODO consider
-        int sqlite3_load_extension(sqlite3 db, utf8z fileName, utf8z procName, ref IntPtr pError);
-#endif
+        int sqlite3_load_extension(sqlite3 db, utf8z zFile, utf8z zProc, out utf8z pzErrMsg);
 
         int sqlite3_initialize();
         int sqlite3_shutdown();

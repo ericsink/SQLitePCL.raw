@@ -5,6 +5,7 @@
 <#@ parameter name='KIND' #>
 <#@ parameter name='NAME_FOR_DLLIMPORT' #>
 <#@ parameter name='FEATURE_WIN32DIR' #>
+<#@ parameter name='FEATURE_LOADEXTENSION' #>
 <#@ parameter name='FEATURE_FUNCPTRS' #>
 <#@ parameter name='FEATURE_KEY' #>
 /*
@@ -815,6 +816,33 @@ namespace SQLitePCL
         {
             return NativeMethods.sqlite3_enable_load_extension(db, onoff);
         }
+
+        unsafe int ISQLite3Provider.sqlite3_load_extension(sqlite3 db, utf8z zFile, utf8z zProc, out utf8z pzErrMsg)
+        {
+<#
+	if (FEATURE_LOADEXTENSION == "FEATURE_LOADEXTENSION/true")
+    {
+#>
+            fixed (byte* p_zFile = zFile, p_zProc = zProc)
+            {
+                var rc = NativeMethods.sqlite3_load_extension(
+                            db, p_zFile, p_zProc,
+                            out var p_zErrMsg);
+                pzErrMsg = utf8z.FromPtr(p_zErrMsg);
+                return rc;
+            }
+<#
+    }
+    else
+    {
+#>
+            pzErrMsg = utf8z.FromPtr(null);
+            return raw.SQLITE_ERROR;
+<#
+    }
+#>
+        }
+
 
         // ----------------------------------------------------------------
 
@@ -2059,6 +2087,18 @@ namespace SQLitePCL
             ),
         new Function(
             "int",
+            "sqlite3_load_extension",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "zFile"),
+                new Parm("byte*", "zProc"),
+                new Parm("byte*", "pzErrMsg").SetIsOut(true),
+            }
+            )
+            .SetFeature("loadextension")
+            ,
+        new Function(
+            "int",
             "sqlite3_limit",
             new Parm[] {
                 new Parm("sqlite3", "db"),
@@ -3083,6 +3123,31 @@ namespace SQLitePCL
 
         };
 
+        bool check_feature(Function f)
+        {
+            if (f.feature == null)
+            {
+                // fine
+                return true;
+            }
+            else if (f.feature == "key")
+            {
+                return (FEATURE_KEY == "FEATURE_KEY/true");
+            }
+            else if (f.feature == "win32")
+            {
+                return (FEATURE_WIN32DIR == "FEATURE_WIN32DIR/true");
+            }
+            else if (f.feature == "loadextension")
+            {
+                return (FEATURE_LOADEXTENSION == "FEATURE_LOADEXTENSION/true");
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
 	void write_dynamic_load_stuff()
 	{
 #>
@@ -3118,6 +3183,8 @@ namespace SQLitePCL
 <#+
 	foreach (var f in a_funcs)
 	{
+        if (check_feature(f))
+        {
         var s = f.nam;
 #>
 			<#= s #> = (MyDelegateTypes.<#= s #>) Load(gf, typeof(MyDelegateTypes.<#= s #>));
@@ -3128,6 +3195,7 @@ namespace SQLitePCL
 			<#= s #>_arm64cc = (MyDelegateTypes.<#= s #>_arm64cc) Load(gf, typeof(MyDelegateTypes.<#= s #>_arm64cc));
 <#+
         }
+        }
 	}
 #>
 		}
@@ -3135,6 +3203,8 @@ namespace SQLitePCL
 <#+
 	foreach (var f in a_funcs)
 	{
+        if (check_feature(f))
+        {
         var s = f.nam;
 #>
 		public static MyDelegateTypes.<#= s #> <#= s #>;
@@ -3144,6 +3214,7 @@ namespace SQLitePCL
 #>
 		public static MyDelegateTypes.<#= s #>_arm64cc <#= s #>_arm64cc;
 <#+
+        }
         }
 	}
 	}
@@ -3256,31 +3327,9 @@ namespace SQLitePCL
 
         void write_method(Function f)
         {
-            if (f.feature == null)
+            if (!check_feature(f))
             {
-                // fine
-            }
-            else if (f.feature == "key")
-            {
-                if (FEATURE_KEY != "FEATURE_KEY/true")
-                {
-                    return;
-                }
-            }
-            else if (f.feature == "win32")
-            {
-                if (FEATURE_WIN32DIR == "FEATURE_WIN32DIR/true")
-                {
-                    // fine
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
+                return;
             }
             {
                 var a_parms = get_parm_list(f);
