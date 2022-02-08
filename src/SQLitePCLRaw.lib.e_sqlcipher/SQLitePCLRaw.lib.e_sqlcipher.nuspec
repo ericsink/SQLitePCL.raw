@@ -31,7 +31,11 @@
     <file src="$cb_bin_path$\e_sqlcipher\linux\armsf\libe_sqlcipher.so" target="runtimes\linux-armel\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\arm64\libe_sqlcipher.so" target="runtimes\linux-arm64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\musl-x64\libe_sqlcipher.so" target="runtimes\linux-musl-x64\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\e_sqlcipher\linux\musl-armhf\libe_sqlcipher.so" target="runtimes\linux-musl-arm\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\e_sqlcipher\linux\musl-arm64\libe_sqlcipher.so" target="runtimes\linux-musl-arm64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\musl-x64\libe_sqlcipher.so" target="runtimes\alpine-x64\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\e_sqlcipher\linux\musl-armhf\libe_sqlcipher.so" target="runtimes\alpine-arm\native\libe_sqlcipher.so" />
+    <file src="$cb_bin_path$\e_sqlcipher\linux\musl-arm64\libe_sqlcipher.so" target="runtimes\alpine-arm64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\mips64\libe_sqlcipher.so" target="runtimes\linux-mips64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\s390x\libe_sqlcipher.so" target="runtimes\linux-s390x\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\wasm\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlcipher.a" />
