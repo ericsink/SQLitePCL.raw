@@ -106,7 +106,7 @@ public static class gen
             f.WriteElementString("depversion_xunit", "2.4.1");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
-            f.WriteElementString("monoandroid_tfm", "monoandroid8.0");
+            f.WriteElementString("monoandroid_tfm", "monoandroid9.0");
 
             f.WriteEndElement(); // PropertyGroup
             f.WriteEndElement(); // project
