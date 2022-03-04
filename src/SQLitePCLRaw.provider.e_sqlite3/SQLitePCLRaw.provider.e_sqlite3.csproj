@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- TODO things mentioning net5.0 below are experimental, not ready for release -->
+
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net5.0</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -9,6 +11,19 @@
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_sqlite3.snk</AssemblyOriginatorKeyFile>
     <PackageDescription>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlite3', the SQLite builds provided with SQLitePCLRaw.</PackageDescription>
   </PropertyGroup>
+
+<!-- 
+  TODO this is an example of how we might put an
+  assembly into RID-specific nuspec areas while
+  staying with multi-targeting. 
+-->
+<Target Name="CustomContentTarget">
+    <ItemGroup>
+        <TfmSpecificPackageFile Include="$(OutputPath)\$(AssemblyName).dll">
+            <PackagePath>runtimes/browser-wasm/lib/net6.0</PackagePath>
+        </TfmSpecificPackageFile>
+    </ItemGroup>
+</Target>  
 
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
@@ -20,6 +35,14 @@
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <Compile Include="Generated\provider_e_sqlite3_funcptrs.cs" />
+</ItemGroup>
+
+<PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CustomContentTarget</TargetsForTfmSpecificContentInPackage>
+</PropertyGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <Compile Include="Generated\provider_e_sqlite3_most.cs" />
 </ItemGroup>
 
 </Project>
