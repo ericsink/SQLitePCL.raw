@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net6.0-windows</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -15,11 +15,15 @@
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <Compile Include="Generated\provider_sqlite3_prenet5_notwin.cs" />
+    <Compile Include="Generated\provider_sqlite3_prenet5_win.cs" />
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <Compile Include="Generated\provider_sqlite3_funcptrs_notwin.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+    <Compile Include="Generated\provider_sqlite3_funcptrs_win.cs" />
 </ItemGroup>
 
 </Project>
