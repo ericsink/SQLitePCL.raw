@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Xamarin.Legacy.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0-ios;net6.0-android;xamarin.ios10;$(monoandroid_tfm);net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0-ios;net6.0-maccatalyst;net6.0-android;xamarin.ios10;$(monoandroid_tfm);net461</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_e_sqlcipher</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
@@ -16,6 +16,7 @@
 
   <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
   <Import Condition=" '$(TargetFramework)' == 'net6.0-ios' " Project="..\msbuild_bundle_fragments\e_sqlcipher_ios.xml" />
+  <Import Condition=" '$(TargetFramework)' == 'net6.0-maccatalyst' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
   <Import Condition=" '$(TargetFramework)' == 'net6.0-android' " Project="..\msbuild_bundle_fragments\e_sqlcipher_android.xml" />
   <Import Condition=" '$(TargetFramework)' == 'xamarin.ios10' " Project="..\msbuild_bundle_fragments\e_sqlcipher_ios.xml" />
   <Import Condition=" '$(TargetFramework)' == '$(monoandroid_tfm)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_android.xml" />

@@ -31,6 +31,8 @@ jobs:
         include-prerelease: true
     - name: Install workload ios
       run: dotnet workload install ios
+    - name: Install workload maccatalyst
+      run: dotnet workload install maccatalyst
     - name: Install workload android
       run: dotnet workload install android
     - name: Install workload tvos

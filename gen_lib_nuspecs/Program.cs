@@ -27,6 +27,7 @@ public enum TFM
     NETSTANDARD20,
     NET461,
     NET60,
+    MACCATALYST,
 }
 
 public static class common
@@ -42,6 +43,7 @@ public static class common
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.NET461: return "net461";
             case TFM.NET60: return "net6.0";
+            case TFM.MACCATALYST: return "net6.0-maccatalyst15.2";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
         }
@@ -260,6 +262,16 @@ public static class gen
         return Path.Combine("$cb_bin_path$", dir_name, "mac", cpu, lib_name);
     }
 
+    static string make_cb_path_maccatalyst(
+        WhichLib lib,
+        string cpu
+        )
+    {
+        var dir_name = lib.AsString_basename_in_cb();
+        var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
+        return Path.Combine("$cb_bin_path$", dir_name, "maccatalyst", cpu, lib_name);
+    }
+
     static void write_nuspec_file_entry_native_linux(
         WhichLib lib,
         string cpu_in_cb,
@@ -302,6 +314,23 @@ public static class gen
         write_nuspec_file_entry_native(
             make_cb_path_mac(lib, cpu_in_cb),
             rid,
+            filename,
+            f
+            );
+    }
+
+    static void write_nuspec_file_entry_native_maccatalyst(
+        WhichLib lib,
+        string cpu_in_cb,
+        string rid,
+        XmlWriter f
+        )
+    {
+        var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
+        write_nuspec_file_entry_nativeassets(
+            make_cb_path_maccatalyst(lib, cpu_in_cb),
+            rid,
+            TFM.MACCATALYST,
             filename,
             f
             );
@@ -362,6 +391,9 @@ public static class gen
 
         write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
         write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
+
+        write_nuspec_file_entry_native_maccatalyst(lib, "x86_64", "osx-x64", f);
+        write_nuspec_file_entry_native_maccatalyst(lib, "arm64", "osx-arm64", f);
 
         write_nuspec_file_entry_native_linux(lib, "x64", "linux-x64", f);
         write_nuspec_file_entry_native_linux(lib, "x86", "linux-x86", f);
