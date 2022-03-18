@@ -108,6 +108,9 @@ public static class gen
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
             f.WriteElementString("monoandroid_tfm", "monoandroid9.0");
 
+            f.WriteComment("The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434");
+            f.WriteElementString("NoNFloatUsing", "true");
+
             f.WriteEndElement(); // PropertyGroup
             f.WriteEndElement(); // project
 
