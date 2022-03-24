@@ -5,6 +5,7 @@
 		<SignAssembly>true</SignAssembly>
 		<AssemblyName>SQLitePCLRaw.lib.sqlcipher</AssemblyName>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.sqlcipher.snk</AssemblyOriginatorKeyFile>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 <ItemGroup>
