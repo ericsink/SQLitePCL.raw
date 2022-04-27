@@ -25,8 +25,8 @@
     <file src="$cb_bin_path$\e_sqlcipher\win\v142\appcontainer\x86\e_sqlcipher.dll" target="runtimes\win10-x86\nativeassets\uap10.0\e_sqlcipher.dll" />
     <file src="$cb_bin_path$\e_sqlcipher\mac\x86_64\libe_sqlcipher.dylib" target="runtimes\osx-x64\native\libe_sqlcipher.dylib" />
     <file src="$cb_bin_path$\e_sqlcipher\mac\arm64\libe_sqlcipher.dylib" target="runtimes\osx-arm64\native\libe_sqlcipher.dylib" />
-    <file src="$cb_bin_path$\e_sqlcipher\maccatalyst\x86_64\libe_sqlcipher.dylib" target="runtimes\osx-x64\nativeassets\net6.0-maccatalyst15.2\libe_sqlcipher.dylib" />
-    <file src="$cb_bin_path$\e_sqlcipher\maccatalyst\arm64\libe_sqlcipher.dylib" target="runtimes\osx-arm64\nativeassets\net6.0-maccatalyst15.2\libe_sqlcipher.dylib" />
+    <file src="$cb_bin_path$\e_sqlcipher\maccatalyst\x86_64\libe_sqlcipher.dylib" target="runtimes\maccatalyst-x64\native\libe_sqlcipher.dylib" />
+    <file src="$cb_bin_path$\e_sqlcipher\maccatalyst\arm64\libe_sqlcipher.dylib" target="runtimes\maccatalyst-arm64\native\libe_sqlcipher.dylib" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\x64\libe_sqlcipher.so" target="runtimes\linux-x64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\x86\libe_sqlcipher.so" target="runtimes\linux-x86\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\armhf\libe_sqlcipher.so" target="runtimes\linux-arm\native\libe_sqlcipher.so" />

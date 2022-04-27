@@ -327,10 +327,9 @@ public static class gen
         )
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
-        write_nuspec_file_entry_nativeassets(
+        write_nuspec_file_entry_native(
             make_cb_path_maccatalyst(lib, cpu_in_cb),
             rid,
-            TFM.MACCATALYST,
             filename,
             f
             );
@@ -392,8 +391,8 @@ public static class gen
         write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
         write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
 
-        write_nuspec_file_entry_native_maccatalyst(lib, "x86_64", "osx-x64", f);
-        write_nuspec_file_entry_native_maccatalyst(lib, "arm64", "osx-arm64", f);
+        write_nuspec_file_entry_native_maccatalyst(lib, "x86_64", "maccatalyst-x64", f);
+        write_nuspec_file_entry_native_maccatalyst(lib, "arm64", "maccatalyst-arm64", f);
 
         write_nuspec_file_entry_native_linux(lib, "x64", "linux-x64", f);
         write_nuspec_file_entry_native_linux(lib, "x86", "linux-x86", f);
@@ -469,6 +468,20 @@ public static class gen
                     f
                     );
             }
+#if not
+            {
+                var tname = string.Format("{0}.targets", id);
+                Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0-maccatalyst"));
+                var path_targets = Path.Combine(dir_proj, "net6.0-maccatalyst", tname);
+                var relpath_targets = Path.Combine(".", "net6.0-maccatalyst", tname);
+                gen_nuget_targets_maccatalyst(path_targets, WhichLib.E_SQLITE3);
+                common.write_nuspec_file_entry(
+                    relpath_targets,
+                    string.Format("buildTransitive\\{0}", TFM.MACCATALYST.AsString()),
+                    f
+                    );
+            }
+#endif
 
             // TODO need a comment here to explain these
             common.write_empty(f, TFM.NET461);
@@ -669,6 +682,44 @@ public static class gen
         }
 
     }
+
+#if not
+    private static void gen_nuget_targets_maccatalyst(string dest, WhichLib lib)
+    {
+        var settings = common.XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        using (XmlWriter f = XmlWriter.Create(dest, settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+            f.WriteAttributeString("ToolsVersion", "4.0");
+
+            var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
+
+            f.WriteStartElement("ItemGroup");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'maccatalyst-x64' ");
+            f.WriteStartElement("NativeReference");
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-x64\\nativeassets\\net6.0\\{0}", filename));
+            f.WriteEndElement(); // Content
+            f.WriteEndElement(); // ItemGroup
+
+            f.WriteStartElement("ItemGroup");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'maccatalyst-arm64' ");
+            f.WriteStartElement("NativeReference");
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-arm64\\nativeassets\\net6.0\\{0}", filename));
+            f.WriteEndElement(); // Content
+            f.WriteEndElement(); // ItemGroup
+
+            f.WriteEndElement(); // Project
+
+            f.WriteEndDocument();
+        }
+
+    }
+#endif
 
     public static void Main(string[] args)
     {
