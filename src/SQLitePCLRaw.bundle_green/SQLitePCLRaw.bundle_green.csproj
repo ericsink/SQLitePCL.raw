@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Xamarin.Legacy.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0-ios;net6.0-maccatalyst;net6.0-android;xamarin.ios10;$(monoandroid_tfm);net461;net6.0-tvos10</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);$(tfm_classic_ios);$(tfm_classic_android);net461;$(tfm_net6_tvos)</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_green</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net6.0-ios' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net6.0-maccatalyst' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net6.0-android' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'xamarin.ios10' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(monoandroid_tfm)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_ios)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_maccatalyst)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_android)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_classic_ios)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_classic_android)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
   <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\e_sqlite3_dynamic.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net6.0-tvos10' " Project="..\msbuild_bundle_fragments\e_sqlite3_tvos.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_tvos)' " Project="..\msbuild_bundle_fragments\e_sqlite3_tvos.xml" />
 
 </Project>
 

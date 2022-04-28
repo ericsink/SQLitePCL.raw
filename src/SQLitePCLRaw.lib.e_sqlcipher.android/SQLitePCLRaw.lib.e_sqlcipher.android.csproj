@@ -1,6 +1,6 @@
 <Project Sdk="Xamarin.Legacy.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;$(monoandroid_tfm)</TargetFrameworks>
+		<TargetFrameworks>$(tfm_net6_android);$(tfm_classic_android)</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlcipher.snk</AssemblyOriginatorKeyFile>

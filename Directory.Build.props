@@ -4,9 +4,9 @@
     <Copyright>Copyright 2014-2022 SourceGear, LLC</Copyright>
     <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
-    <Version>2.1.0-pre20220427114414</Version>
-    <AssemblyVersion>2.1.0.1577</AssemblyVersion>
-    <FileVersion>2.1.0.1577</FileVersion>
+    <Version>2.1.0-pre20220428150518</Version>
+    <AssemblyVersion>2.1.0.1578</AssemblyVersion>
+    <FileVersion>2.1.0.1578</FileVersion>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
     <ProviderLangVersion>10.0</ProviderLangVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -22,7 +22,12 @@
     <depversion_xunit>2.4.1</depversion_xunit>
     <depversion_xunit_runner_visualstudio>2.4.1</depversion_xunit_runner_visualstudio>
     <depversion_microsoft_net_test_sdk>15.0.0</depversion_microsoft_net_test_sdk>
-    <monoandroid_tfm>monoandroid9.0</monoandroid_tfm>
+    <tfm_classic_android>monoandroid9.0</tfm_classic_android>
+    <tfm_classic_ios>xamarin.ios10</tfm_classic_ios>
+    <tfm_net6_ios>net6.0-ios14.2</tfm_net6_ios>
+    <tfm_net6_tvos>net6.0-tvos10</tfm_net6_tvos>
+    <tfm_net6_maccatalyst>net6.0-ios14.0</tfm_net6_maccatalyst>
+    <tfm_net6_android>net6.0-android</tfm_net6_android>
     <!--The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434-->
     <NoNFloatUsing>true</NoNFloatUsing>
   </PropertyGroup>

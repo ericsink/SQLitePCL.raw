@@ -1,6 +1,6 @@
 <Project Sdk="Xamarin.Legacy.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-ios;xamarin.ios10</TargetFrameworks>
+		<TargetFrameworks>$(tfm_net6_ios);$(tfm_classic_ios)</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
