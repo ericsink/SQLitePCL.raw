@@ -3119,6 +3119,27 @@ namespace SQLitePCL
                 new Parm("int", "length").SetIsOut(true),
             }
             ),
+        new Function(
+            "int",
+            "sqlite3_create_module",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+                new Parm("byte*", "pModule"),
+                new Parm("IntPtr", "pClientData"),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_create_module_v2",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "dbName"),
+                new Parm("byte*", "pModule"),
+                new Parm("IntPtr", "pClientData"),
+                new Parm("NativeMethods.callback_destroy", "fdestroy"),
+            }
+            ),
 
 
         };
