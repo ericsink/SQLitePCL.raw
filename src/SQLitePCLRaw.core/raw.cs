@@ -1494,5 +1494,10 @@ namespace SQLitePCL
 		{
 			return Provider.sqlite3_keyword_name(i, out name);
 		}
+
+		static public int sqlite3_drop_modules(sqlite3 db, string[] keep)
+		{
+			return Provider.sqlite3_drop_modules(db, keep);
+		}
     }
 }

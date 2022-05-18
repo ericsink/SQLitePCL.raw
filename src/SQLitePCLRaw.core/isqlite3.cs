@@ -276,6 +276,7 @@ namespace SQLitePCL
 
 		int sqlite3_keyword_count();
 		int sqlite3_keyword_name(int i, out string name);
+        int sqlite3_drop_modules(sqlite3 db, string[] keep);
     }
 }
 

@@ -1756,6 +1756,52 @@ namespace SQLitePCL
 			return rc;
 		}
 
+		unsafe int ISQLite3Provider.sqlite3_drop_modules(sqlite3 db, string[] keep)
+		{
+            if (keep == null || keep.Length == 0)
+            {
+                return NativeMethods.sqlite3_drop_modules(db, null);
+            }
+
+            IntPtr[] azKeep = new IntPtr[keep.Length];
+            fixed (IntPtr* pazKeep = azKeep)
+            {
+                try
+                {
+                    for (int i = 0; i < keep.Length; i++)
+                    {
+                        azKeep[i] = to_utf8_ptr_with_z(keep[i]);
+                    }
+
+                    return NativeMethods.sqlite3_drop_modules(db, pazKeep);
+                }
+                finally
+                {
+                    for (int i = 0; i < keep.Length; i++)
+                    {
+                        Marshal.FreeHGlobal(azKeep[i]);
+                    }
+                }
+            }
+
+            unsafe IntPtr to_utf8_ptr_with_z(string sourceText)
+            {
+                if (sourceText == null)
+                {
+                    return IntPtr.Zero;
+                }
+
+                fixed (char* sourceTextPtr = sourceText)
+                {
+                    var length = Encoding.UTF8.GetByteCount(sourceTextPtr, sourceText.Length);
+                    var result = (byte*)Marshal.AllocHGlobal(length + 1).ToPointer();
+                    var bytesWritten = Encoding.UTF8.GetBytes(sourceTextPtr, sourceText.Length, result, length);
+                    result[length] = 0;
+                    return (IntPtr)result;
+                }
+            }
+		}
+
 	static class NativeMethods
 	{
 <#
@@ -3117,6 +3163,14 @@ namespace SQLitePCL
                 new Parm("int", "i"),
                 new Parm("byte*", "name").SetIsOut(true),
                 new Parm("int", "length").SetIsOut(true),
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_drop_modules",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("IntPtr*", "azKeep"),
             }
             ),
         new Function(
