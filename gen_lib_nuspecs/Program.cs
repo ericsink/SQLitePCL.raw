@@ -230,7 +230,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DLL);
-        return Path.Combine("$cb_bin_path$", dir_name, "win", toolset, flavor, arch, lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "win", toolset, flavor, arch, lib_name);
     }
 
     static string make_cb_path_linux(
@@ -240,7 +240,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.SO);
-        return Path.Combine("$cb_bin_path$", dir_name, "linux", cpu, lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "linux", cpu, lib_name);
     }
 
     static string make_cb_path_wasm(
@@ -249,7 +249,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.A);
-        return Path.Combine("$cb_bin_path$", dir_name, "wasm", lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "wasm", lib_name);
     }
 
     static string make_cb_path_mac(
@@ -259,7 +259,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
-        return Path.Combine("$cb_bin_path$", dir_name, "mac", cpu, lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "mac", cpu, lib_name);
     }
 
     static string make_cb_path_maccatalyst(
@@ -269,7 +269,7 @@ public static class gen
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.DYLIB);
-        return Path.Combine("$cb_bin_path$", dir_name, "maccatalyst", cpu, lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "maccatalyst", cpu, lib_name);
     }
 
     static void write_nuspec_file_entry_native_linux(
@@ -448,7 +448,7 @@ public static class gen
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net461"));
                 var path_targets = Path.Combine(dir_proj, "net461", tname);
-                var relpath_targets = Path.Combine(".", "net461", tname);
+                var relpath_targets = nuget_path_combine(".", "net461", tname);
                 gen_nuget_targets(path_targets, WhichLib.E_SQLITE3);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -460,7 +460,7 @@ public static class gen
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0"));
                 var path_targets = Path.Combine(dir_proj, "net6.0", tname);
-                var relpath_targets = Path.Combine(".", "net6.0", tname);
+                var relpath_targets = nuget_path_combine(".", "net6.0", tname);
                 gen_nuget_targets_wasm(path_targets, WhichLib.E_SQLITE3);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -473,7 +473,7 @@ public static class gen
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0-maccatalyst"));
                 var path_targets = Path.Combine(dir_proj, "net6.0-maccatalyst", tname);
-                var relpath_targets = Path.Combine(".", "net6.0-maccatalyst", tname);
+                var relpath_targets = nuget_combine(".", "net6.0-maccatalyst", tname);
                 gen_nuget_targets_maccatalyst(path_targets, WhichLib.E_SQLITE3);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -527,7 +527,7 @@ public static class gen
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net461"));
                 var path_targets = Path.Combine(dir_proj, "net461", tname);
-                var relpath_targets = Path.Combine(".", "net461", tname);
+                var relpath_targets = nuget_path_combine(".", "net461", tname);
                 gen_nuget_targets(path_targets, WhichLib.E_SQLCIPHER);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -539,7 +539,7 @@ public static class gen
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0"));
                 var path_targets = Path.Combine(dir_proj, "net6.0", tname);
-                var relpath_targets = Path.Combine(".", "net6.0", tname);
+                var relpath_targets = nuget_path_combine(".", "net6.0", tname);
                 gen_nuget_targets_wasm(path_targets, WhichLib.E_SQLCIPHER);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -681,6 +681,11 @@ public static class gen
             f.WriteEndDocument();
         }
 
+    }
+
+    private static string nuget_path_combine(params string[] paths)
+    {
+        return Path.Combine(paths).Replace('/', '\\');
     }
 
 #if not
