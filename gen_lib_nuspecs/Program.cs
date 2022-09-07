@@ -27,6 +27,7 @@ public enum TFM
     NETSTANDARD20,
     NET461,
     NET60,
+    NET70,
     MACCATALYST,
     XAMARINMAC20,
 }
@@ -44,6 +45,7 @@ public static class common
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.NET461: return "net461";
             case TFM.NET60: return "net6.0";
+            case TFM.NET70: return "net7.0";
             case TFM.MACCATALYST: return "net6.0-maccatalyst15.2";
             case TFM.XAMARINMAC20: return "xamarin.mac20";
             default:
@@ -246,12 +248,13 @@ public static class gen
     }
 
     static string make_cb_path_wasm(
-        WhichLib lib
+        WhichLib lib,
+        TFM tfm
         )
     {
         var dir_name = lib.AsString_basename_in_cb();
         var lib_name = lib.AsString_libname_in_cb(LibSuffix.A);
-        return nuget_path_combine("$cb_bin_path$", dir_name, "wasm", lib_name);
+        return nuget_path_combine("$cb_bin_path$", dir_name, "wasm", tfm.AsString(), lib_name);
     }
 
     static string make_cb_path_mac(
@@ -292,14 +295,15 @@ public static class gen
 
     static void write_nuspec_file_entry_native_wasm(
         WhichLib lib,
+        TFM tfm,
         XmlWriter f
         )
     {
         var filename = lib.AsString_libname_in_nupkg(LibSuffix.A);
         write_nuspec_file_entry_nativeassets(
-            make_cb_path_wasm(lib),
+            make_cb_path_wasm(lib, tfm),
             "browser-wasm",
-            TFM.NET60,
+            tfm,
             filename,
             f
             );
@@ -415,7 +419,29 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "mips64", "linux-mips64", f);
         write_nuspec_file_entry_native_linux(lib, "s390x", "linux-s390x", f);
 
-        write_nuspec_file_entry_native_wasm(lib, f);
+        write_nuspec_file_entry_native_wasm(lib, TFM.NET60, f);
+        write_nuspec_file_entry_native_wasm(lib, TFM.NET70, f);
+    }
+
+    static void write_nuspec_wasm_targets_file_entry(
+        string dir_src,
+        string id,
+        WhichLib lib,
+        TFM tfm,
+        XmlWriter f
+        )
+    {
+        var tname = string.Format("{0}.targets", id);
+        var dir_proj = Path.Combine(dir_src, id);
+        Directory.CreateDirectory(Path.Combine(dir_proj, tfm.AsString()));
+        var path_targets = Path.Combine(dir_proj, tfm.AsString(), tname);
+        var relpath_targets = nuget_path_combine(".", tfm.AsString(), tname);
+        gen_nuget_targets_wasm(path_targets, tfm, lib);
+        common.write_nuspec_file_entry(
+            relpath_targets,
+            string.Format("buildTransitive\\{0}", tfm.AsString()),
+            f
+            );
     }
 
     private static void gen_nuspec_lib_e_sqlite3(string dir_src)
@@ -469,18 +495,6 @@ public static class gen
                     f
                     );
             }
-            {
-                var tname = string.Format("{0}.targets", id);
-                Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0"));
-                var path_targets = Path.Combine(dir_proj, "net6.0", tname);
-                var relpath_targets = nuget_path_combine(".", "net6.0", tname);
-                gen_nuget_targets_wasm(path_targets, WhichLib.E_SQLITE3);
-                common.write_nuspec_file_entry(
-                    relpath_targets,
-                    string.Format("buildTransitive\\{0}", TFM.NET60.AsString()),
-                    f
-                    );
-            }
 #if not
             {
                 var tname = string.Format("{0}.targets", id);
@@ -509,6 +523,9 @@ public static class gen
                     );
             }
 #endif
+
+            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET60, f);
+            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET70, f);
 
             // TODO need a comment here to explain these
             common.write_empty(f, TFM.NET461);
@@ -565,18 +582,9 @@ public static class gen
                     f
                     );
             }
-            {
-                var tname = string.Format("{0}.targets", id);
-                Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0"));
-                var path_targets = Path.Combine(dir_proj, "net6.0", tname);
-                var relpath_targets = nuget_path_combine(".", "net6.0", tname);
-                gen_nuget_targets_wasm(path_targets, WhichLib.E_SQLCIPHER);
-                common.write_nuspec_file_entry(
-                    relpath_targets,
-                    string.Format("buildTransitive\\{0}", TFM.NET60.AsString()),
-                    f
-                    );
-            }
+
+            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLCIPHER, TFM.NET60, f);
+            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLCIPHER, TFM.NET70, f);
 
             // TODO need a comment here to explain these
             common.write_empty(f, TFM.NET461);
@@ -784,7 +792,7 @@ public static class gen
     }
 #endif
 
-    private static void gen_nuget_targets_wasm(string dest, WhichLib lib)
+    private static void gen_nuget_targets_wasm(string dest, TFM tfm, WhichLib lib)
     {
         var settings = common.XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
@@ -803,7 +811,7 @@ public static class gen
             var filename = lib.AsString_libname_in_nupkg(LibSuffix.A);
 
             f.WriteStartElement("NativeFileReference");
-            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\browser-wasm\\nativeassets\\net6.0\\{0}", filename));
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\browser-wasm\\nativeassets\\{0}\\{1}", tfm.AsString(), filename));
             f.WriteEndElement(); // NativeFileReference
 
             f.WriteEndElement(); // ItemGroup

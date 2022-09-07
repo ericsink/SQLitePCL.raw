@@ -40,9 +40,11 @@
     <file src="$cb_bin_path$\e_sqlcipher\linux\musl-arm64\libe_sqlcipher.so" target="runtimes\alpine-arm64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\mips64\libe_sqlcipher.so" target="runtimes\linux-mips64\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\linux\s390x\libe_sqlcipher.so" target="runtimes\linux-s390x\native\libe_sqlcipher.so" />
-    <file src="$cb_bin_path$\e_sqlcipher\wasm\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlcipher.a" />
+    <file src="$cb_bin_path$\e_sqlcipher\wasm\net6.0\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlcipher.a" />
+    <file src="$cb_bin_path$\e_sqlcipher\wasm\net7.0\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net7.0\e_sqlcipher.a" />
     <file src=".\net461\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net461" />
     <file src=".\net6.0\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net6.0" />
+    <file src=".\net7.0\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net7.0" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="_._" target="lib/net461/_._" />
     <!--empty directory in lib to avoid nuget adding a reference-->
