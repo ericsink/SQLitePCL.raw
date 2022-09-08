@@ -28,6 +28,7 @@ public enum TFM
     NET461,
     NET60,
     MACCATALYST,
+    XAMARINMAC20,
 }
 
 public static class common
@@ -44,6 +45,7 @@ public static class common
             case TFM.NET461: return "net461";
             case TFM.NET60: return "net6.0";
             case TFM.MACCATALYST: return "net6.0-maccatalyst15.2";
+            case TFM.XAMARINMAC20: return "xamarin.mac20";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
         }
@@ -445,6 +447,17 @@ public static class gen
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v142", f);
 
             {
+                var tname = string.Format("{0}.props", id);
+                var path_props = Path.Combine(dir_proj, tname);
+                var relpath_props = nuget_path_combine(".", tname);
+                gen_nuget_props(path_props, WhichLib.E_SQLITE3);
+                common.write_nuspec_file_entry(
+                    relpath_props,
+                    "buildTransitive\\",
+                    f
+                    );
+            }
+            {
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net461"));
                 var path_targets = Path.Combine(dir_proj, "net461", tname);
@@ -471,6 +484,20 @@ public static class gen
 #if not
             {
                 var tname = string.Format("{0}.targets", id);
+                Directory.CreateDirectory(Path.Combine(dir_proj, "xamarin.mac20"));
+                var path_targets = Path.Combine(dir_proj, "xamarin.mac20", tname);
+                var relpath_targets = nuget_path_combine(".", "xamarin.mac20", tname);
+                gen_nuget_targets_legacy_xamarin_mac(path_targets, WhichLib.E_SQLITE3);
+                common.write_nuspec_file_entry(
+                    relpath_targets,
+                    string.Format("buildTransitive\\{0}", TFM.XAMARINMAC20.AsString()),
+                    f
+                    );
+            }
+#endif
+#if not
+            {
+                var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0-maccatalyst"));
                 var path_targets = Path.Combine(dir_proj, "net6.0-maccatalyst", tname);
                 var relpath_targets = nuget_combine(".", "net6.0-maccatalyst", tname);
@@ -486,6 +513,9 @@ public static class gen
             // TODO need a comment here to explain these
             common.write_empty(f, TFM.NET461);
             common.write_empty(f, TFM.NETSTANDARD20);
+#if not
+            common.write_empty(f, TFM.XAMARINMAC20);
+#endif
 
             f.WriteEndElement(); // files
 
@@ -609,10 +639,63 @@ public static class gen
         f.WriteEndElement(); // Content
     }
 
+    static void write_nuget_prop_item(
+        string rid,
+        WhichLib lib,
+        XmlWriter f
+        )
+    {
+        var suffix = get_lib_suffix_from_rid(rid);
+        var filename = lib.AsString_libname_in_nupkg(suffix);
+
+        var rid_idsafe = rid.Replace("-", "_");
+        var prop_name = $"path__{lib.AsString_basename_in_nupkg()}__{rid_idsafe}";
+
+        f.WriteElementString(prop_name, string.Format("$(MSBuildThisFileDirectory)..\\runtimes\\{0}\\native\\{1}", rid, filename));
+    }
+
+    private static void gen_nuget_props(string dest, WhichLib lib)
+    {
+        var settings = common.XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        using (XmlWriter f = XmlWriter.Create(dest, settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+            f.WriteAttributeString("ToolsVersion", "4.0");
+
+            f.WriteStartElement("PropertyGroup");
+            write_nuget_prop_item("win-x86", lib, f);
+            write_nuget_prop_item("win-x64", lib, f);
+            write_nuget_prop_item("win-arm", lib, f);
+            write_nuget_prop_item("osx-x64", lib, f);
+            write_nuget_prop_item("osx-arm64", lib, f);
+            write_nuget_prop_item("linux-x86", lib, f);
+            write_nuget_prop_item("linux-x64", lib, f);
+            write_nuget_prop_item("linux-arm", lib, f);
+            write_nuget_prop_item("linux-armel", lib, f);
+            write_nuget_prop_item("linux-arm64", lib, f);
+            write_nuget_prop_item("linux-x64", lib, f);
+            write_nuget_prop_item("linux-mips64", lib, f);
+            write_nuget_prop_item("linux-s390x", lib, f);
+            f.WriteEndElement(); // PropertyGroup
+
+            f.WriteEndElement(); // Project
+
+            f.WriteEndDocument();
+        }
+    }
+
     private static void gen_nuget_targets(string dest, WhichLib lib)
     {
         var settings = common.XmlWriterSettings_default();
         settings.OmitXmlDeclaration = false;
+
+        // TODO these targets appear to be for old situations where RuntimeIdentifier
+        // was not set, like desktop mono, pre-net6 days
 
         using (XmlWriter f = XmlWriter.Create(dest, settings))
         {
@@ -631,6 +714,7 @@ public static class gen
 
             f.WriteStartElement("ItemGroup");
             f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ");
+            // TODO in what case does this make sense?
             write_nuget_target_item("osx-x64", lib, f);
             f.WriteEndElement(); // ItemGroup
 
@@ -652,6 +736,54 @@ public static class gen
         }
     }
 
+#if not
+    private static void gen_nuget_targets_legacy_xamarin_mac(string dest, WhichLib lib)
+    {
+        var settings = common.XmlWriterSettings_default();
+        settings.OmitXmlDeclaration = false;
+
+        using (XmlWriter f = XmlWriter.Create(dest, settings))
+        {
+            f.WriteStartDocument();
+            f.WriteComment("Automatically generated");
+
+            f.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+            f.WriteAttributeString("ToolsVersion", "4.0");
+
+            var filename = lib.AsString_libname_in_nupkg(LibSuffix.DYLIB);
+
+            // --------
+            f.WriteStartElement("ItemGroup");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'osx-x64' ");
+
+            f.WriteStartElement("NativeFileReference");
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-x64\\native\\{0}", filename));
+            f.WriteElementString("Kind", "Dynamic");
+            f.WriteElementString("SmartLink", "False");
+            f.WriteEndElement(); // NativeFileReference
+
+            f.WriteEndElement(); // ItemGroup
+
+            // --------
+            f.WriteStartElement("ItemGroup");
+            f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'osx-arm64' ");
+
+            f.WriteStartElement("NativeFileReference");
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\osx-arm64\\native\\{0}", filename));
+            f.WriteElementString("Kind", "Dynamic");
+            f.WriteElementString("SmartLink", "False");
+            f.WriteEndElement(); // NativeFileReference
+
+            f.WriteEndElement(); // ItemGroup
+
+            f.WriteEndElement(); // Project
+
+            f.WriteEndDocument();
+        }
+
+    }
+#endif
+
     private static void gen_nuget_targets_wasm(string dest, WhichLib lib)
     {
         var settings = common.XmlWriterSettings_default();
@@ -672,7 +804,7 @@ public static class gen
 
             f.WriteStartElement("NativeFileReference");
             f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\browser-wasm\\nativeassets\\net6.0\\{0}", filename));
-            f.WriteEndElement(); // Content
+            f.WriteEndElement(); // NativeFileReference
 
             f.WriteEndElement(); // ItemGroup
 
