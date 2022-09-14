@@ -472,6 +472,7 @@ public static class gen
 
             write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v142", f);
 
+#if not
             {
                 var tname = string.Format("{0}.props", id);
                 var path_props = Path.Combine(dir_proj, tname);
@@ -483,6 +484,7 @@ public static class gen
                     f
                     );
             }
+#endif
             {
                 var tname = string.Format("{0}.targets", id);
                 Directory.CreateDirectory(Path.Combine(dir_proj, "net461"));
@@ -647,6 +649,7 @@ public static class gen
         f.WriteEndElement(); // Content
     }
 
+#if not
     static void write_nuget_prop_item(
         string rid,
         WhichLib lib,
@@ -696,6 +699,7 @@ public static class gen
             f.WriteEndDocument();
         }
     }
+#endif
 
     private static void gen_nuget_targets(string dest, WhichLib lib)
     {
