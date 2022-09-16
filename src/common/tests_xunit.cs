@@ -2862,10 +2862,29 @@ namespace SQLitePCL.Tests
 
             GC.Collect();
 
-            const string VAL = "hello!";
-            raw.sqlite3_log(0, VAL);
+            const string VAL0 = "hello!";
+            raw.sqlite3_log(0, VAL0);
             Assert.Single(msgs);
-            Assert.Equal(VAL, msgs[0]);
+            Assert.Equal(VAL0, msgs[0]);
+
+            const string VAL1 = "world!";
+            raw.sqlite3_log(0, VAL1);
+            Assert.Equal(2, msgs.Count);
+            Assert.Equal(VAL0, msgs[0]);
+            Assert.Equal(VAL1, msgs[1]);
+
+            const int MORE = 17;
+            for (var i = 0; i < MORE; i++)
+            {
+                Assert.Equal(2 + i, msgs.Count);
+                raw.sqlite3_log(0, $"{i}");
+                Assert.Equal(2 + i + 1, msgs.Count);
+            }
+
+            for (var i = 0; i < MORE; i++)
+            {
+                Assert.Equal($"{i}", msgs[i + 2]);
+            }
 
             strdelegate_log no_cb = null;
             rc = raw.sqlite3_config_log(no_cb, null);
