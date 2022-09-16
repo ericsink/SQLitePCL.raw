@@ -49,7 +49,6 @@ namespace SQLitePCL
 {
     using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
 	using System.Reflection;
 	using System.Text;
@@ -222,7 +221,7 @@ namespace SQLitePCL
     {
         if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
         {
-            return $"[UnmanagedCallersOnly (CallConvs = new[] {{ typeof(CallConv{CONV}) }})]";
+            return "[UnmanagedCallersOnly]";
         }
         else
         {
@@ -249,31 +248,31 @@ namespace SQLitePCL
             switch (cb)
             {
                 case "exec":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, IntPtr, int>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, int>";
                 case "commit":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int>";
+                    return "delegate* unmanaged <IntPtr, int>";
                 case "scalar_function":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
                 case "agg_function_step":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
                 case "agg_function_final":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, void>";
                 case "log":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
                 case "collation":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, int, IntPtr, int>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, int, IntPtr, int>";
                 case "rollback":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, void>";
                 case "update":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, IntPtr, Int64, void>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, Int64, void>";
                 case "trace":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, IntPtr, void>";
+                    return "delegate* unmanaged <IntPtr, IntPtr, void>";
                 case "profile":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, IntPtr, long, void>";
+                    return "delegate* unmanaged <IntPtr, IntPtr, long, void>";
                 case "progress_handler":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int>";
+                    return "delegate* unmanaged <IntPtr, int>";
                 case "authorizer":
-                    return $"delegate* unmanaged[{CONV}] <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
+                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
                 default:
                     throw new NotImplementedException();
             }
