@@ -44,11 +44,30 @@
 	{
 		throw new NotImplementedException();
 	}
+	if (
+		(FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/false")
+		|| (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
+		|| (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/plain")
+		)
+	{
+	}
+	else
+	{
+		throw new NotImplementedException("invalid value for FEATURE_FUNCPTRS");
+	}
 #>
 namespace SQLitePCL
 {
     using System;
     using System.Collections.Generic;
+<#
+    if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
+    {
+#>
+    using System.Runtime.CompilerServices;
+<#
+    }
+#>
     using System.Runtime.InteropServices;
 	using System.Reflection;
 	using System.Text;
@@ -216,12 +235,16 @@ namespace SQLitePCL
     // UnmanagedFunctionPointerAttribute with a delegate and MonoPInvokeCallback
     // to
     // UnmanagedCallersOnly and C# 9.3 function pointers, requiring .NET 5 min
-    bool USE_FUNCPTRS = (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true");
+    bool USE_FUNCPTRS = (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false");
     string get_monopinvokecallback_attr(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/plain")
         {
             return "[UnmanagedCallersOnly]";
+        }
+        else if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
+        {
+            return $"[UnmanagedCallersOnly (CallConvs = new[] {{ typeof(CallConv{CONV}) }})]";
         }
         else
         {
@@ -231,7 +254,7 @@ namespace SQLitePCL
 
     string get_cb_delegate_field(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
             return "";
         }
@@ -243,36 +266,45 @@ namespace SQLitePCL
 
     string get_cb_type(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
+            string callingconv;
+            if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
+            {
+                callingconv = $"[{CONV}]";
+            }
+            else
+            {
+                callingconv = "";
+            }
             switch (cb)
             {
                 case "exec":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, int>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, IntPtr, int>";
                 case "commit":
-                    return "delegate* unmanaged <IntPtr, int>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int>";
                 case "scalar_function":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, void>";
                 case "agg_function_step":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, void>";
                 case "agg_function_final":
-                    return "delegate* unmanaged <IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, void>";
                 case "log":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, void>";
                 case "collation":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, int, IntPtr, int>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, int, IntPtr, int>";
                 case "rollback":
-                    return "delegate* unmanaged <IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, void>";
                 case "update":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, Int64, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, IntPtr, Int64, void>";
                 case "trace":
-                    return "delegate* unmanaged <IntPtr, IntPtr, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, IntPtr, void>";
                 case "profile":
-                    return "delegate* unmanaged <IntPtr, IntPtr, long, void>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, IntPtr, long, void>";
                 case "progress_handler":
-                    return "delegate* unmanaged <IntPtr, int>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int>";
                 case "authorizer":
-                    return "delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
+                    return $"delegate* unmanaged{callingconv} <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int>";
                 default:
                     throw new NotImplementedException();
             }
@@ -285,7 +317,7 @@ namespace SQLitePCL
 
     string get_cb_val_field(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
             return $"&{cb}_hook_bridge_impl";
         }
@@ -297,7 +329,7 @@ namespace SQLitePCL
 
     string get_cb_val_nofield(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
             return $"&{cb}_hook_bridge_impl";
         }
@@ -309,7 +341,7 @@ namespace SQLitePCL
 
     string get_cb_arg(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
             return $"(IntPtr) {cb}";
         }
@@ -321,7 +353,7 @@ namespace SQLitePCL
 
     string get_cb_null()
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+        if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
         {
             return "IntPtr.Zero";
         }
@@ -1771,7 +1803,7 @@ namespace SQLitePCL
 <#
 		write_api_entries(KIND);
 	}
-    if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+    if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
     {
     }
     else
@@ -3272,7 +3304,7 @@ namespace SQLitePCL
             string get_fixed_parm_type(Parm p)
             {
                 string typ = p.typ;
-                if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/true")
+                if (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false")
                 {
                     switch (typ)
                     {

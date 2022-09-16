@@ -50,10 +50,12 @@ public static class gen
         PATCH_VERSION
         );
 
-    // keep one of the following 3
-    //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    // keep one of the following 2:
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    //public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+
+    // or maaaaybe this one, but probably not:
     //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 
     public static string ASSEMBLY_VERSION = string.Format("{0}.{1}.{2}.{3}",
         MAJOR_VERSION,

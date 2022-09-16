@@ -27,6 +27,7 @@ namespace SQLitePCL
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
 	using System.Reflection;
 	using System.Text;
@@ -154,7 +155,7 @@ namespace SQLitePCL
             NativeMethods.sqlite3_interrupt(db);
         }
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static int exec_hook_bridge_impl(IntPtr p, int n, IntPtr values_ptr, IntPtr names_ptr)
         {
             exec_hook_info hi = exec_hook_info.from_ptr(p);
@@ -166,7 +167,7 @@ namespace SQLitePCL
         {
             int rc;
 
-			delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, int> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, IntPtr, int> cb;
 			exec_hook_info hi;
             if (func != null)
             {
@@ -613,7 +614,7 @@ namespace SQLitePCL
         // is shared but not portable.  It is in the util.cs file which is compiled
         // into each platform assembly.
         
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static int commit_hook_bridge_impl(IntPtr p)
         {
             commit_hook_info hi = commit_hook_info.from_ptr(p);
@@ -631,7 +632,7 @@ namespace SQLitePCL
                 info.commit = null;
             }
 
-			delegate* unmanaged <IntPtr, int> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int> cb;
 			commit_hook_info hi;
             if (func != null)
             {
@@ -653,7 +654,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void scalar_function_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr p = NativeMethods.sqlite3_user_data(context);
@@ -673,7 +674,7 @@ namespace SQLitePCL
 
             // 1 is SQLITE_UTF8
 			int arg4 = 1 | flags;
-			delegate* unmanaged <IntPtr, int, IntPtr, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, void> cb;
 			function_hook_info hi;
             if (func != null)
             {
@@ -698,7 +699,7 @@ namespace SQLitePCL
 
 		static IDisposable disp_log_hook_handle;
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
         {
             log_hook_info hi = log_hook_info.from_ptr(p);
@@ -715,7 +716,7 @@ namespace SQLitePCL
                 disp_log_hook_handle = null;
             }
 
-			delegate* unmanaged <IntPtr, int, IntPtr, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, void> cb;
 			log_hook_info hi;
             if (func != null)
             {
@@ -747,7 +748,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void agg_function_step_hook_bridge_impl(IntPtr context, int num_args, IntPtr argsptr)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
@@ -758,7 +759,7 @@ namespace SQLitePCL
             hi.call_step(context, agg, num_args, argsptr);
         }
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void agg_function_final_hook_bridge_impl(IntPtr context)
         {
             IntPtr agg = NativeMethods.sqlite3_aggregate_context(context, 8);
@@ -782,8 +783,8 @@ namespace SQLitePCL
 
             // 1 is SQLITE_UTF8
 			int arg4 = 1 | flags;
-			delegate* unmanaged <IntPtr, int, IntPtr, void> cb_step;
-			delegate* unmanaged <IntPtr, void> cb_final;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, void> cb_step;
+			delegate* unmanaged[Cdecl] <IntPtr, void> cb_final;
 			function_hook_info hi;
             if (func_step != null)
             {
@@ -812,7 +813,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static int collation_hook_bridge_impl(IntPtr p, int len1, IntPtr pv1, int len2, IntPtr pv2)
         {
             collation_hook_info hi = collation_hook_info.from_ptr(p);
@@ -835,7 +836,7 @@ namespace SQLitePCL
                 // TODO maybe turn off the hook here, for now
             }
 
-			delegate* unmanaged <IntPtr, int, IntPtr, int, IntPtr, int> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, int, IntPtr, int> cb;
 			collation_hook_info hi;
             if (func != null)
             {
@@ -862,7 +863,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void update_hook_bridge_impl(IntPtr p, int typ, IntPtr db, IntPtr tbl, Int64 rowid)
         {
             update_hook_info hi = update_hook_info.from_ptr(p);
@@ -880,7 +881,7 @@ namespace SQLitePCL
                 info.update = null;
             }
 
-			delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, Int64, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, IntPtr, Int64, void> cb;
 			update_hook_info hi;
             if (func != null)
             {
@@ -902,7 +903,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void rollback_hook_bridge_impl(IntPtr p)
         {
             rollback_hook_info hi = rollback_hook_info.from_ptr(p);
@@ -920,7 +921,7 @@ namespace SQLitePCL
                 info.rollback = null;
             }
 
-			delegate* unmanaged <IntPtr, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, void> cb;
 			rollback_hook_info hi;
             if (func != null)
             {
@@ -942,7 +943,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void trace_hook_bridge_impl(IntPtr p, IntPtr s)
         {
             trace_hook_info hi = trace_hook_info.from_ptr(p);
@@ -960,7 +961,7 @@ namespace SQLitePCL
                 info.trace = null;
             }
 
-			delegate* unmanaged <IntPtr, IntPtr, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, IntPtr, void> cb;
 			trace_hook_info hi;
             if (func != null)
             {
@@ -982,7 +983,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void profile_hook_bridge_impl(IntPtr p, IntPtr s, long elapsed)
         {
             profile_hook_info hi = profile_hook_info.from_ptr(p);
@@ -1000,7 +1001,7 @@ namespace SQLitePCL
                 info.profile = null;
             }
 
-			delegate* unmanaged <IntPtr, IntPtr, long, void> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, IntPtr, long, void> cb;
 			profile_hook_info hi;
             if (func != null)
             {
@@ -1022,7 +1023,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static int progress_handler_hook_bridge_impl(IntPtr p)
         {
             progress_hook_info hi = progress_hook_info.from_ptr(p);
@@ -1040,7 +1041,7 @@ namespace SQLitePCL
                 info.progress = null;
             }
 
-			delegate* unmanaged <IntPtr, int> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int> cb;
 			progress_hook_info hi;
             if (func != null)
             {
@@ -1064,7 +1065,7 @@ namespace SQLitePCL
         // Passing a callback into SQLite is tricky.  See comments near commit_hook
         // implementation in pinvoke/SQLite3Provider.cs
 
-        [UnmanagedCallersOnly]
+        [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static int authorizer_hook_bridge_impl(IntPtr p, int action_code, IntPtr param0, IntPtr param1, IntPtr dbName, IntPtr inner_most_trigger_or_view)
         {
             authorizer_hook_info hi = authorizer_hook_info.from_ptr(p);
@@ -1082,7 +1083,7 @@ namespace SQLitePCL
                 info.authorizer = null;
             }
 
-			delegate* unmanaged <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int> cb;
+			delegate* unmanaged[Cdecl] <IntPtr, int, IntPtr, IntPtr, IntPtr, IntPtr, int> cb;
 			authorizer_hook_info hi;
             if (func != null)
             {
