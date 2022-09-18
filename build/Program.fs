@@ -111,6 +111,11 @@ let main argv =
             let args = sprintf "run --framework=%s" tfm
             exec "dotnet" args (Path.Combine(top, "test_nupkgs", dir, "fake_xunit"))
 
+    if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then
+        let args = "run -f net6.0-windows -r win-x86 --no-self-contained"
+        exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
+        exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
+
     printfn "generating push.bat"
     let bat = System.Collections.Generic.List<string>()
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
