@@ -339,6 +339,12 @@ namespace SQLitePCL
         public const int SQLITE_TRACE_ROW = 0x04;
         public const int SQLITE_TRACE_CLOSE = 0x08;
 
+        public const int SQLITE_SERIALIZE_NOCOPY = 0x001;   /* Do no memory allocations */
+
+        public const int SQLITE_DESERIALIZE_FREEONCLOSE = 1; /* Call sqlite3_free() on close */
+        public const int SQLITE_DESERIALIZE_RESIZEABLE = 2; /* Resize using sqlite3_realloc64() */
+        public const int SQLITE_DESERIALIZE_READONLY = 4; /* Database is read-only */
+
         static public int sqlite3_open(utf8z filename, out sqlite3 db)
         {
             int rc = Provider.sqlite3_open(filename, out var p_db);
@@ -1494,5 +1500,126 @@ namespace SQLitePCL
 		{
 			return Provider.sqlite3_keyword_name(i, out name);
 		}
+
+        static public byte[] sqlite3_serialize(sqlite3 db, utf8z schema)
+        {
+            var p = Provider.sqlite3_serialize(db, schema, out var size, 0);
+            if (p == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            try
+            {
+                if (size > int.MaxValue)
+                {
+                    throw new OverflowException();
+                }
+                unsafe
+                {
+                    return new ReadOnlySpan<byte>(p.ToPointer(), (int)size).ToArray();
+                }
+            }
+            finally
+            {
+                Provider.sqlite3_free(p);
+            }
+        }
+
+        static public byte[] sqlite3_serialize(sqlite3 db, string schema)
+        {
+            return sqlite3_serialize(db, schema.to_utf8z());
+        }
+
+        static public long sqlite3_serialize(sqlite3 db, utf8z schema, System.IO.Stream stream)
+        {
+            var p = Provider.sqlite3_serialize(db, schema, out var size, 0);
+            if (p == IntPtr.Zero)
+            {
+                return -1;
+            }
+
+            try
+            {
+                unsafe
+                {
+                    new System.IO.UnmanagedMemoryStream((byte*)p, size).CopyTo(stream);
+                }
+                return size;
+            }
+            finally
+            {
+                Provider.sqlite3_free(p);
+            }
+        }
+
+        static public long sqlite3_serialize(sqlite3 db, string schema, System.IO.Stream stream)
+        {
+            return sqlite3_serialize(db, schema.to_utf8z(), stream);
+        }
+
+        static public int sqlite3_deserialize(sqlite3 db, utf8z schema, ReadOnlySpan<byte> data)
+        {
+            var size = data.Length;
+
+            var p = Provider.sqlite3_malloc(size);
+            if (p == IntPtr.Zero)
+            {
+                return SQLITE_NOMEM;
+            }
+
+            try
+            {
+                unsafe
+                {
+                    data.CopyTo(new Span<byte>(p.ToPointer(), size));
+                }
+            }
+            catch
+            {
+                Provider.sqlite3_free(p);
+                throw;
+            }
+
+            uint flags = SQLITE_DESERIALIZE_RESIZEABLE | SQLITE_DESERIALIZE_FREEONCLOSE;
+            return Provider.sqlite3_deserialize(db, schema, p, size, size, flags);
+        }
+
+        static public int sqlite3_deserialize(sqlite3 db, string schema, ReadOnlySpan<byte> data)
+        {
+            return sqlite3_deserialize(db, schema.to_utf8z(), data);
+        }
+
+        static public int sqlite3_deserialize(sqlite3 db, utf8z schema, System.IO.Stream stream)
+        {
+            var size = stream.Length;
+
+            var p = Provider.sqlite3_malloc64((ulong)size);
+            if (p == IntPtr.Zero)
+            {
+                return SQLITE_NOMEM;
+            }
+
+            try
+            {
+                unsafe
+                {
+                    stream.CopyTo(new System.IO.UnmanagedMemoryStream((byte*)p, size, size, System.IO.FileAccess.Write));
+                }
+            }
+            catch
+            {
+                Provider.sqlite3_free(p);
+                throw;
+            }
+
+            uint flags = SQLITE_DESERIALIZE_RESIZEABLE | SQLITE_DESERIALIZE_FREEONCLOSE;
+            return Provider.sqlite3_deserialize(db, schema, p, size, size, flags);
+        }
+
+        static public int sqlite3_deserialize(sqlite3 db, string schema, System.IO.Stream stream)
+        {
+            return sqlite3_deserialize(db, schema.to_utf8z(), stream);
+        }
     }
 }

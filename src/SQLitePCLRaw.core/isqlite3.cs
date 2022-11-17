@@ -246,6 +246,8 @@ namespace SQLitePCL
         int sqlite3_stricmp(IntPtr p, IntPtr q);
         int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
+        IntPtr sqlite3_malloc(int n);
+        IntPtr sqlite3_malloc64(ulong n);
         void sqlite3_free(IntPtr p);
 
         int sqlite3_key(sqlite3 db, ReadOnlySpan<byte> key);
@@ -276,6 +278,9 @@ namespace SQLitePCL
 
 		int sqlite3_keyword_count();
 		int sqlite3_keyword_name(int i, out string name);
+
+        IntPtr sqlite3_serialize(sqlite3 db, utf8z schema, out long size, uint flags);
+        int sqlite3_deserialize(sqlite3 db, utf8z schema, IntPtr data, long szDb, long szBuf, uint flags);
     }
 }
 
