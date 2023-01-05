@@ -579,8 +579,14 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_load_extension(sqlite3 db, utf8z zFile, utf8z zProc, out utf8z pzErrMsg)
         {
-            pzErrMsg = utf8z.FromPtr(null);
-            return raw.SQLITE_ERROR;
+            fixed (byte* p_zFile = zFile, p_zProc = zProc)
+            {
+                var rc = NativeMethods.sqlite3_load_extension(
+                            db, p_zFile, p_zProc,
+                            out var p_zErrMsg);
+                pzErrMsg = utf8z.FromPtr(p_zErrMsg);
+                return rc;
+            }
         }
 
 
@@ -1580,6 +1586,9 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_enable_load_extension(sqlite3 db, int enable);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_load_extension(sqlite3 db, byte* zFile, byte* zProc, out byte* pzErrMsg);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_limit(sqlite3 db, int id, int newVal);
