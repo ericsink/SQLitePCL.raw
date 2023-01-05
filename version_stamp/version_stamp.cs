@@ -66,7 +66,7 @@ public static class gen
 
     private const string NUSPEC_RELEASE_NOTES = "TODO url";
 
-    const string COPYRIGHT = "Copyright 2014-2022 SourceGear, LLC";
+    const string COPYRIGHT = "Copyright 2014-2023 SourceGear, LLC";
     const string AUTHORS = "Eric Sink";
     const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
     const string PACKAGE_TAGS = "sqlite";
