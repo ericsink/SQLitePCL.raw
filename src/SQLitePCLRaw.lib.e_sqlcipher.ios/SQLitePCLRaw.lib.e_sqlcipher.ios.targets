@@ -1,18 +1,18 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Condition="'$(RuntimeIdentifier)'=='ios-arm64'">
-    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\device\e_sqlite3.a">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\device\e_sqlcipher.a">
       <Kind>Static</Kind>
       <SmartLink>False</SmartLink>
     </NativeReference>
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)'=='iossimulator-x64'">
-    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\simulator\e_sqlite3.a">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\simulator\e_sqlcipher.a">
       <Kind>Static</Kind>
       <SmartLink>False</SmartLink>
     </NativeReference>
   </ItemGroup>
   <ItemGroup Condition="'$(RuntimeIdentifier)'=='iossimulator-arm64'">
-    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\simulator\e_sqlite3.a">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\static\simulator\e_sqlcipher.a">
       <Kind>Static</Kind>
       <SmartLink>False</SmartLink>
     </NativeReference>
