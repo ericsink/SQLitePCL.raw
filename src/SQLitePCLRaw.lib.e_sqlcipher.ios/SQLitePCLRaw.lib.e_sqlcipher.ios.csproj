@@ -7,15 +7,24 @@
         <PackageDescription>This package contains platform-specific native code builds of SQLCipher (see sqlcipher/sqlcipher on GitHub) for use with SQLitePCLRaw.  Note that these sqlcipher builds are unofficial and unsupported.  For official sqlcipher builds, contact Zetetic.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
 	</PropertyGroup>
 
-<ItemGroup>
+<ItemGroup Condition="'$(TargetFramework)' == '$(tfm_classic_ios)'">
     <Compile Include="..\..\src\common\embedded_init.cs" />
+</ItemGroup>
+
+<ItemGroup>
     <Compile Include="imp_ios_internal.cs" />
 </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == '$(tfm_classic_ios)'">
     <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlcipher\ios\device\e_sqlcipher.a">
       <Link>e_sqlcipher.a</Link>
     </ManifestResourceWithNoCulture>
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="$(cb_bin_path)\e_sqlcipher\ios\device\e_sqlcipher.a" Pack="true" PackagePath="static\device" />
+      <None Include="$(cb_bin_path)\e_sqlcipher\ios\simulator\e_sqlcipher.a" Pack="true" PackagePath="static\simulator" />
+      <None Include="SQLitePCLRaw.lib.e_sqlcipher.ios.targets" Pack="true" PackagePath="build\$(tfm_net6_ios)" />
   </ItemGroup>
 
 </Project>
