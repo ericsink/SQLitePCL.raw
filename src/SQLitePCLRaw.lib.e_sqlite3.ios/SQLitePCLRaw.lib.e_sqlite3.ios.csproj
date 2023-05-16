@@ -1,6 +1,6 @@
 <Project Sdk="Xamarin.Legacy.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(tfm_net6_ios);$(tfm_classic_ios)</TargetFrameworks>
+		<TargetFrameworks>$(tfm_classic_ios)</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
@@ -13,9 +13,15 @@
 </ItemGroup>
 
   <ItemGroup>
-    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlite3\ios\e_sqlite3.a">
+    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlite3\ios\device\e_sqlite3.a">
       <Link>e_sqlite3.a</Link>
     </ManifestResourceWithNoCulture>
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="$(cb_bin_path)\e_sqlite3\ios\device\e_sqlite3.a" Pack="true" PackagePath="static\device" />
+      <None Include="$(cb_bin_path)\e_sqlite3\ios\simulator\e_sqlite3.a" Pack="true" PackagePath="static\simulator" />
+      <None Include="SQLitePCLRaw.lib.e_sqlite3.ios.targets" Pack="true" PackagePath="build\$(tfm_net6_ios)" />
   </ItemGroup>
 
 </Project>
