@@ -8,11 +8,11 @@
     </PropertyGroup>
 
 <ItemGroup Condition="'$(TargetFramework)' == '$(tfm_classic_ios)'">
-    <Compile Include="..\..\src\common\embedded_init.cs" />
+    <Compile Include="imp_ios_internal.cs" />
 </ItemGroup>
 
 <ItemGroup>
-    <Compile Include="imp_ios_internal.cs" />
+    <Compile Include="..\..\src\common\embedded_init.cs" />
 </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == '$(tfm_classic_ios)'">
