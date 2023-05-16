@@ -13,7 +13,7 @@
 </ItemGroup>
 
   <ItemGroup>
-    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlcipher\ios\e_sqlcipher.a">
+    <ManifestResourceWithNoCulture Include="$(cb_bin_path)\e_sqlcipher\ios\device\e_sqlcipher.a">
       <Link>e_sqlcipher.a</Link>
     </ManifestResourceWithNoCulture>
   </ItemGroup>
