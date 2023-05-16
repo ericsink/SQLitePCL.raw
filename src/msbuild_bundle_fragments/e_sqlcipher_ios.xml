@@ -2,7 +2,7 @@
 <Project>
 
   <PropertyGroup>
-	<DefineConstants>$(DefineConstants);PROVIDER_internal;EMBEDDED_INIT</DefineConstants>
+	<DefineConstants>$(DefineConstants);PROVIDER_internal</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
