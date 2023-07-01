@@ -1500,19 +1500,19 @@ namespace SQLitePCL
 			return Provider.sqlite3_keyword_name(i, out name);
 		}
 
-        static public void sqlite3_malloc(int n)
+        static public IntPtr sqlite3_malloc(int n)
         {
             return Provider.sqlite3_malloc(n);
         }
 
-        static public void sqlite3_malloc64(long n)
+        static public IntPtr sqlite3_malloc64(long n)
         {
             return Provider.sqlite3_malloc64(n);
         }
 
         static public void sqlite3_free(IntPtr p)
         {
-            return Provider.sqlite3_free(p);
+            Provider.sqlite3_free(p);
         }
 
         static public IntPtr sqlite3_serialize(sqlite3 db, string schema, out long size, int flags)

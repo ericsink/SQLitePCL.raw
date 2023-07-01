@@ -212,7 +212,7 @@ namespace SQLitePCL
 
         IntPtr ISQLite3Provider.sqlite3_malloc64(long n)
         {
-            NativeMethods.sqlite3_malloc64(p);
+            return NativeMethods.sqlite3_malloc64(p);
         }
 
         void ISQLite3Provider.sqlite3_free(IntPtr p)
