@@ -3201,8 +3201,8 @@ namespace SQLitePCL
                 new Parm("sqlite3", "db"),
                 new Parm("byte*", "schema"),
                 new Parm("IntPtr", "data"),
-                new Parm("long", "szDb")
-                new Parm("long", "szBuf")
+                new Parm("long", "szDb"),
+                new Parm("long", "szBuf"),
                 new Parm("int", "flags")
             }
             ),
