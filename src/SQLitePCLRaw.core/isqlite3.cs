@@ -53,7 +53,7 @@ namespace SQLitePCL
     /// boundary between the portable class library and the platform-specific code
     /// below.
     ///
-    /// In general, it is defined to be as low-level as possible while still remaninig
+    /// In general, it is defined to be as low-level as possible while still remaining
     /// "portable".  For example, a sqlite3 connection handle appears here as an IntPtr.
     /// Same goes for the C-level sqlite3_stmt pointer, also an IntPtr.
     ///
@@ -246,6 +246,8 @@ namespace SQLitePCL
         int sqlite3_stricmp(IntPtr p, IntPtr q);
         int sqlite3_strnicmp(IntPtr p, IntPtr q, int n);
 
+        IntPtr sqlite3_malloc(int n);
+        IntPtr sqlite3_malloc64(long n);
         void sqlite3_free(IntPtr p);
 
         int sqlite3_key(sqlite3 db, ReadOnlySpan<byte> key);
@@ -276,6 +278,9 @@ namespace SQLitePCL
 
 		int sqlite3_keyword_count();
 		int sqlite3_keyword_name(int i, out string name);
+
+        IntPtr sqlite3_serialize(sqlite3 db, utf8z schema, out long size, int flags);
+        int sqlite3_deserialize(sqlite3 db, utf8z schema, IntPtr data, long szDb, long szBuf, int flags);
     }
 }
 
