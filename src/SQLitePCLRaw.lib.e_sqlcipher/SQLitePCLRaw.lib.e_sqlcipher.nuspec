@@ -43,9 +43,11 @@
     <file src="$cb_bin_path$\e_sqlcipher\linux\ppc64le\libe_sqlcipher.so" target="runtimes\linux-ppc64le\native\libe_sqlcipher.so" />
     <file src="$cb_bin_path$\e_sqlcipher\wasm\net6.0\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlcipher.a" />
     <file src="$cb_bin_path$\e_sqlcipher\wasm\net7.0\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net7.0\e_sqlcipher.a" />
+    <file src="$cb_bin_path$\e_sqlcipher\wasm\net8.0\e_sqlcipher.a" target="runtimes\browser-wasm\nativeassets\net8.0\e_sqlcipher.a" />
     <file src=".\net461\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net461" />
     <file src=".\net6.0\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net6.0" />
     <file src=".\net7.0\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net7.0" />
+    <file src=".\net8.0\SQLitePCLRaw.lib.e_sqlcipher.targets" target="buildTransitive\net8.0" />
     <!--empty directory in lib to avoid nuget adding a reference-->
     <file src="_._" target="lib/net461/_._" />
     <!--empty directory in lib to avoid nuget adding a reference-->
