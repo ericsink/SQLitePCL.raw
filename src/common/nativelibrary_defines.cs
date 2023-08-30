@@ -24,6 +24,7 @@ namespace SQLitePCL
         public const int WHERE_RUNTIME_RID = 0x02;
         public const int WHERE_ARCH = 0x04;
         public const int WHERE_ADJACENT = 0x08;
+        public const int WHERE_CODEBASE = 0x10;
     }
 }
 

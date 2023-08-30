@@ -370,6 +370,11 @@ namespace SQLitePCL
                 a.Add(Path.Combine(dir, libname));
             }
 
+            if ((flags & WHERE_CODEBASE) != 0) {
+               var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+               a.Add(Path.Combine(dir, libname));
+            }
+
             return a;
         }
 
