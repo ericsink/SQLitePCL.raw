@@ -372,7 +372,7 @@ namespace SQLitePCL
 
             if ((flags & WHERE_CODEBASE) != 0) {
                var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
-               a.Add(Path.Combine(dir, libname));
+               a.Add(new Uri(Path.Combine(dir, libname)).AbsolutePath);
             }
 
             return a;
