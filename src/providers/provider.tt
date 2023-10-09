@@ -1553,7 +1553,13 @@ namespace SQLitePCL
         {
             fixed (byte* p_t = t)
             {
-                return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, t.Length, new IntPtr(-1));
+                // passing a zero-length span to sqlite3_bind_text() requires
+                // a non-null pointer, even though conceptually, that pointer
+                // point to zero things, ie nothing. for that case, pass the
+                // address of `dummy` instead.
+                
+                byte dummy = 0;
+                return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t != null ? p_t : &dummy, t.Length, new IntPtr(-1));
             }
         }
 
@@ -1561,8 +1567,14 @@ namespace SQLitePCL
         {
             fixed (char* p_t = t)
             {
+                // passing a zero-length span to sqlite3_bind_text() requires
+                // a non-null pointer, even though conceptually, that pointer
+                // point to zero things, ie nothing. for that case, pass the
+                // address of `dummy` instead.
+                
+                char dummy = '\0';
                 // mul span length times 2 to get num bytes, which is what sqlite wants
-                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t != null ? p_t : &dummy, t.Length * 2, new IntPtr(-1));
             }
         }
 
@@ -1581,25 +1593,15 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_blob(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> blob)
         {
-            if (blob.Length == 0)
+            fixed (byte* p = blob)
             {
                 // passing a zero-length blob to sqlite3_bind_blob() requires
                 // a non-null pointer, even though conceptually, that pointer
-                // point to zero things, ie nothing.
-
-                var ba_fake = new byte[] { 42 };
-                ReadOnlySpan<byte> span_fake = ba_fake;
-                fixed (byte* p_fake = span_fake)
-                {
-                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p_fake, 0, new IntPtr(-1));
-                }
-            }
-            else
-            {
-                fixed (byte* p = blob)
-                {
-                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p, blob.Length, new IntPtr(-1));
-                }
+                // point to zero things, ie nothing. for that case, pass the
+                // address of `dummy` instead.
+                
+                byte dummy = 0;
+                return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p != null ? p : &dummy, blob.Length, new IntPtr(-1));
             }
         }
 
