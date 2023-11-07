@@ -108,8 +108,6 @@ public static class gen
             f.WriteElementString("depversion_xunit", "2.4.1");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
-            f.WriteElementString("tfm_classic_android", "monoandroid9.0");
-            f.WriteElementString("tfm_classic_ios", "xamarin.ios10");
             f.WriteElementString("tfm_net6_ios", "net6.0-ios14.2");
             f.WriteElementString("tfm_net6_tvos", "net6.0-tvos10"); // TODO seems wrong
             f.WriteElementString("tfm_net6_maccatalyst", "net6.0-ios14.0");

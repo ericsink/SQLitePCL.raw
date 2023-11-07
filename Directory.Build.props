@@ -4,9 +4,9 @@
     <Copyright>Copyright 2014-2023 SourceGear, LLC</Copyright>
     <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
-    <Version>2.1.5-pre20230515124719</Version>
-    <AssemblyVersion>2.1.5.1960</AssemblyVersion>
-    <FileVersion>2.1.5.1960</FileVersion>
+    <Version>2.1.6</Version>
+    <AssemblyVersion>2.1.6.2136</AssemblyVersion>
+    <FileVersion>2.1.6.2136</FileVersion>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
     <ProviderLangVersion>10.0</ProviderLangVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -22,8 +22,6 @@
     <depversion_xunit>2.4.1</depversion_xunit>
     <depversion_xunit_runner_visualstudio>2.4.1</depversion_xunit_runner_visualstudio>
     <depversion_microsoft_net_test_sdk>15.0.0</depversion_microsoft_net_test_sdk>
-    <tfm_classic_android>monoandroid9.0</tfm_classic_android>
-    <tfm_classic_ios>xamarin.ios10</tfm_classic_ios>
     <tfm_net6_ios>net6.0-ios14.2</tfm_net6_ios>
     <tfm_net6_tvos>net6.0-tvos10</tfm_net6_tvos>
     <tfm_net6_maccatalyst>net6.0-ios14.0</tfm_net6_maccatalyst>

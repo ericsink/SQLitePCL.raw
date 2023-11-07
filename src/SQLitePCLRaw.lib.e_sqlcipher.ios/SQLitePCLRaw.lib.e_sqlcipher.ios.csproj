@@ -1,6 +1,6 @@
-<Project Sdk="Xamarin.Legacy.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(tfm_net6_ios);$(tfm_classic_ios)</TargetFrameworks>
+		<TargetFrameworks>$(tfm_net6_ios)</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlcipher.snk</AssemblyOriginatorKeyFile>

@@ -1,10 +1,11 @@
-<Project Sdk="Xamarin.Legacy.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(tfm_net6_android);$(tfm_classic_android)</TargetFrameworks>
+		<TargetFrameworks>$(tfm_net6_android)</TargetFrameworks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3.snk</AssemblyOriginatorKeyFile>
         <PackageDescription>This package contains platform-specific native code builds of SQLite for use with SQLitePCLRaw.  To use this, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
+    <CheckEolWorkloads>false</CheckEolWorkloads>
 	</PropertyGroup>
 
 <ItemGroup>

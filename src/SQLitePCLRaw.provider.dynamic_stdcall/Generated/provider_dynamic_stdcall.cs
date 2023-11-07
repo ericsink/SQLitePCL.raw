@@ -708,7 +708,7 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-		static IDisposable disp_log_hook_handle;
+		static hook_handle disp_log_hook_handle;
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_log))]
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
