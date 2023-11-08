@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net6.0-windows</TargetFrameworks>
+    <LangVersion>$(ProviderLangVersion)</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_sqlite3mc.snk</AssemblyOriginatorKeyFile>
+    <PackageDescription>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlite3mc', the SQLite3 Multiple Ciphers builds provided with SQLitePCLRaw.</PackageDescription>
+  </PropertyGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Include="Generated\provider_e_sqlite3mc_prenet5_win.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Compile Include="Generated\provider_e_sqlite3mc_funcptrs_notwin.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+    <Compile Include="Generated\provider_e_sqlite3mc_funcptrs_win.cs" />
+</ItemGroup>
+
+</Project>

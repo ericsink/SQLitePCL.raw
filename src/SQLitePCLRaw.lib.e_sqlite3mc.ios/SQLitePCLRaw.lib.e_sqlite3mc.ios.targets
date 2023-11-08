@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Condition="'$(RuntimeIdentifier)'=='ios-arm64' or '$(ComputedPlatform)'=='iPhone'">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\static\device\e_sqlite3mc.a">
+      <Kind>Static</Kind>
+      <SmartLink>False</SmartLink>
+      <ForceLoad>true</ForceLoad>
+    </NativeReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(RuntimeIdentifier)'=='iossimulator-arm64' or '$(RuntimeIdentifier)'=='iossimulator-x64' or '$(ComputedPlatform)'=='iPhoneSimulator'">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\static\simulator\e_sqlite3mc.a">
+      <Kind>Static</Kind>
+      <SmartLink>False</SmartLink>
+      <ForceLoad>true</ForceLoad>
+    </NativeReference>
+  </ItemGroup>
+</Project>
