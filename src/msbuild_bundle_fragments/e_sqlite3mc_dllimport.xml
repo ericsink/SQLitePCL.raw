@@ -1,0 +1,13 @@
+﻿<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_e_sqlite3mc</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3mc" Version="$(version)" />
+	<ProjectReference Include="..\SQLitePCLRaw.provider.e_sqlite3mc\SQLitePCLRaw.provider.e_sqlite3mc.csproj" />
+  </ItemGroup>
+
+</Project>
+

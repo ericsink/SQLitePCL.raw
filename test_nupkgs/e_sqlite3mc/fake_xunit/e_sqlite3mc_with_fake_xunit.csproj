@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net461;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+      <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3mc" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\src\common\attrs_for_tests.cs" />
+    <Compile Include="..\..\..\src\common\fake_xunit.cs" />
+    <Compile Include="..\..\..\src\common\tests_xunit.cs" />
+  </ItemGroup>
+</Project>
