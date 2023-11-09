@@ -1,7 +1,7 @@
-﻿<Project Sdk="Xamarin.Legacy.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);$(tfm_classic_ios);$(tfm_classic_android);net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);net461</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_e_sqlite3mc</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
