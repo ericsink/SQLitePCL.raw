@@ -1662,6 +1662,31 @@ namespace SQLitePCL.Tests
         }
 
         [Fact]
+        public void test_bind_text_empty()
+        {
+            // see issue #557 and PR #558
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                const string s = "";
+                var ba = new byte[Encoding.UTF8.GetByteCount(s)];
+                Encoding.UTF8.GetBytes(s, 0, s.Length, ba, 0);
+                var sp = ba.AsSpan();
+                using (sqlite3_stmt stmt = db.prepare("INSERT INTO foo (x) VALUES (?)"))
+                {
+                    stmt.bind_text(1, sp);
+                    stmt.step();
+                }
+                using (sqlite3_stmt stmt = db.prepare("SELECT x FROM foo"))
+                {
+                    stmt.step_row();
+                    var s2 = stmt.column_text(0);
+                    Assert.Equal("", s2);
+                }
+            }
+        }
+
+        [Fact]
         public void test_bind_text16()
         {
             using (sqlite3 db = ugly.open(":memory:"))
