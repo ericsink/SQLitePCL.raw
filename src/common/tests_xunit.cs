@@ -3431,5 +3431,371 @@ namespace SQLitePCL.Tests
         }
 
     }
+
+    [Collection("Init")]
+    public class class_test_serialize_deserialize
+    {
+        [Fact]
+        public void test_serialize_should_return_size()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serialized = raw.sqlite3_serialize(db, "main", out long size, 0);
+                
+                Assert.True(serialized != IntPtr.Zero);
+                Assert.True(size > 0);
+
+                raw.sqlite3_free(serialized);
+            }
+        }
+
+        [Fact]
+        public void test_serialize_nocopy_should_return_size()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serialized = raw.sqlite3_serialize(db, "main", out long size, raw.SQLITE_SERIALIZE_NOCOPY);
+
+                // Don't assert serialized != null; contiguous copy of the db is not guaranteed to exist in memory when NOCOPY is used.
+                
+                Assert.True(size > 0);
+            }
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_same_db_instance_should_roundtrip()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serialized = raw.sqlite3_serialize(db, "main", out long size, 0);
+
+                int deserializeResult = raw.sqlite3_deserialize(db, "main", serialized, size, size, raw.SQLITE_DESERIALIZE_FREEONCLOSE);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                int count = db.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                Assert.Equal(5, count);
+            }
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_different_db_instances_allochglobal_should_roundtrip()
+        {
+            byte[] serializedBuffer;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serializedPtr1 = raw.sqlite3_serialize(db1, "main", out long size, 0);
+
+                serializedBuffer = new byte[size];
+                System.Runtime.InteropServices.Marshal.Copy(serializedPtr1, serializedBuffer, 0, (int)size);
+
+                raw.sqlite3_free(serializedPtr1);
+            }
+
+            {
+                IntPtr serializedPtr2 = System.Runtime.InteropServices.Marshal.AllocHGlobal(serializedBuffer.Length);
+                System.Runtime.InteropServices.Marshal.Copy(serializedBuffer, 0, serializedPtr2, serializedBuffer.Length);
+
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+                    int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr2, serializedBuffer.Length, serializedBuffer.Length, 0);
+
+                    Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                    int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                    Assert.Equal(5, count);
+                }
+
+                System.Runtime.InteropServices.Marshal.FreeHGlobal(serializedPtr2);
+            }
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_different_db_instances_shared_intptr_should_roundtrip()
+        {
+            IntPtr serializedPtr;
+            long size;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                serializedPtr = raw.sqlite3_serialize(db1, "main", out size, 0);
+            }
+
+            using (sqlite3 db2 = ugly.open(":memory:"))
+            {
+                int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr, size, size, 0);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                Assert.Equal(5, count);
+            }
+
+            raw.sqlite3_free(serializedPtr);
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_different_db_instances_sqlite3malloc64_should_roundtrip()
+        {
+            IntPtr serializedPtr;
+            long size;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serializeResultPtr = raw.sqlite3_serialize(db1, "main", out size, 0);
+
+                serializedPtr = raw.sqlite3_malloc64(size);
+
+                unsafe
+                {
+                    var source = new Span<byte>(serializeResultPtr.ToPointer(), (int)size);
+                    var dest = new Span<byte>(serializedPtr.ToPointer(), (int)size);
+                    source.CopyTo(dest);
+                }
+
+                raw.sqlite3_free(serializeResultPtr);
+            }
+
+            using (sqlite3 db2 = ugly.open(":memory:"))
+            {
+                int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr, size, size, 0);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                Assert.Equal(5, count);
+            }
+
+            raw.sqlite3_free(serializedPtr);
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_different_db_instances_sqlite3malloc_should_roundtrip()
+        {
+            IntPtr serializedPtr;
+            long size;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serializeResultPtr = raw.sqlite3_serialize(db1, "main", out size, 0);
+
+                serializedPtr = raw.sqlite3_malloc((int)size);
+
+                unsafe
+                {
+                    var source = new Span<byte>(serializeResultPtr.ToPointer(), (int)size);
+                    var dest = new Span<byte>(serializedPtr.ToPointer(), (int)size);
+                    source.CopyTo(dest);
+                }
+
+                raw.sqlite3_free(serializeResultPtr);
+            }
+
+            using (sqlite3 db2 = ugly.open(":memory:"))
+            {
+                int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr, size, size, 0);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                Assert.Equal(5, count);
+            }
+
+            raw.sqlite3_free(serializedPtr);
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_resizable_should_allow_adding_rows()
+        {
+            IntPtr serializedPtr;
+            long size;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                serializedPtr = raw.sqlite3_serialize(db1, "main", out size, 0);
+            }
+
+            using (sqlite3 db2 = ugly.open(":memory:"))
+            {
+                int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr, size, size, raw.SQLITE_DESERIALIZE_RESIZEABLE);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                var stmt = db2.prepare(
+                    "INSERT INTO foo (x) VALUES ('"
+                    // 3437 characters
+                    + "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                    + "Risus feugiat in ante metus dictum. Congue quisque egestas diam in. Dui sapien eget mi proin sed libero enim sed faucibus. "
+                    + "Dignissim cras tincidunt lobortis feugiat vivamus at augue eget arcu. Leo in vitae turpis massa sed elementum tempus egestas. "
+                    + "Amet tellus cras adipiscing enim. Ut venenatis tellus in metus vulputate. Dolor sit amet consectetur adipiscing elit pellentesque "
+                    + "habitant morbi tristique. Est placerat in egestas erat. Luctus accumsan tortor posuere ac ut consequat semper. Arcu non odio "
+                    + "euismod lacinia at quis risus. Tortor id aliquet lectus proin. Tempus iaculis urna id volutpat lacus. Elementum curabitur vitae "
+                    + "nunc sed velit dignissim sodales ut eu. Nascetur ridiculus mus mauris vitae. Natoque penatibus et magnis dis. Posuere sollicitudin "
+                    + "aliquam ultrices sagittis orci a. Aenean et tortor at risus viverra adipiscing. Rhoncus est pellentesque elit ullamcorper "
+                    + "dignissim. Consectetur a erat nam at lectus urna. Vulputate mi sit amet mauris commodo quis imperdiet massa tincidunt. Eleifend "
+                    + "quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien "
+                    + "et ligula. A diam maecenas sed enim. Tristique magna sit amet purus. Volutpat ac tincidunt vitae semper quis lectus nulla at "
+                    + "volutpat. Ut sem nulla pharetra diam sit. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Tortor "
+                    + "at risus viverra adipiscing at in. Faucibus pulvinar elementum integer enim neque volutpat ac tincidunt vitae. Iaculis at erat "
+                    + "pellentesque adipiscing commodo elit. Purus gravida quis blandit turpis cursus in hac habitasse. Amet consectetur adipiscing "
+                    + "elit duis tristique sollicitudin. Faucibus pulvinar elementum integer enim neque volutpat ac. Lectus proin nibh nisl condimentum "
+                    + "id venenatis a condimentum vitae. Enim eu turpis egestas pretium aenean pharetra. Nibh venenatis cras sed felis eget velit "
+                    + "aliquet sagittis. Est velit egestas dui id ornare arcu odio ut. Odio ut enim blandit volutpat maecenas volutpat blandit aliquam "
+                    + "etiam. Nam aliquam sem et tortor consequat id. Nunc faucibus a pellentesque sit. Cursus euismod quis viverra nibh. Neque viverra "
+                    + "justo nec ultrices dui sapien eget mi proin. Aenean pharetra magna ac placerat vestibulum lectus mauris. Ut consequat semper "
+                    + "viverra nam. Ac orci phasellus egestas tellus rutrum. Dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in. "
+                    + "Leo in vitae turpis massa. Faucibus ornare suspendisse sed nisi lacus sed. Quam nulla porttitor massa id. Cursus turpis massa "
+                    + "tincidunt dui ut ornare lectus sit amet. Scelerisque eleifend donec pretium vulputate sapien. Turpis in eu mi bibendum neque. "
+                    + "Nunc eget lorem dolor sed viverra ipsum. Vel quam elementum pulvinar etiam non quam lacus. Mauris in aliquam sem fringilla ut "
+                    + "morbi tincidunt augue. Auctor eu augue ut lectus. Eget duis at tellus at urna condimentum. Tincidunt arcu non sodales neque "
+                    + "sodales ut etiam sit amet. Nec feugiat nisl pretium fusce id velit ut tortor pretium. Nibh cras pulvinar mattis nunc sed. Sit "
+                    + "amet venenatis urna cursus eget. Molestie ac feugiat sed lectus. Pharetra massa massa ultricies mi quis hendrerit dolor magna "
+                    + "eget. Tempor nec feugiat nisl pretium fusce id velit. Posuere sollicitudin aliquam ultrices sagittis."
+                    + "')");
+
+                int stepResult = raw.sqlite3_step(stmt);
+
+                Assert.Equal(raw.SQLITE_DONE, stepResult);
+
+                int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                Assert.Equal(6, count);
+            }
+
+            raw.sqlite3_free(serializedPtr);
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_extra_maxDataSize_should_allow_adding_rows()
+        {
+            byte[] serializedBuffer;
+
+            using (sqlite3 db1 = ugly.open(":memory:"))
+            {
+                db1.exec("CREATE TABLE foo (x text);");
+                db1.exec("INSERT INTO foo (x) VALUES ('b')");
+                db1.exec("INSERT INTO foo (x) VALUES ('c')");
+                db1.exec("INSERT INTO foo (x) VALUES ('d')");
+                db1.exec("INSERT INTO foo (x) VALUES ('e')");
+                db1.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serializedPtr1 = raw.sqlite3_serialize(db1, "main", out long size, 0);
+
+                serializedBuffer = new byte[size];
+                System.Runtime.InteropServices.Marshal.Copy(serializedPtr1, serializedBuffer, 0, (int)size);
+
+                raw.sqlite3_free(serializedPtr1);
+            }
+
+            {
+                int maxDataSize = serializedBuffer.Length + 4096; // Additional 4k of memory at end of buffer should be sufficient
+
+                IntPtr serializedPtr2 = System.Runtime.InteropServices.Marshal.AllocHGlobal(maxDataSize);
+                System.Runtime.InteropServices.Marshal.Copy(serializedBuffer, 0, serializedPtr2, serializedBuffer.Length);
+
+                using (sqlite3 db2 = ugly.open(":memory:"))
+                {
+                    int deserializeResult = raw.sqlite3_deserialize(db2, "main", serializedPtr2, serializedBuffer.Length, maxDataSize, 0);
+
+                    Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                    db2.exec("INSERT INTO foo (x) VALUES ('g')");
+
+                    int count = db2.query_scalar<int>("SELECT COUNT(*) FROM foo;");
+
+                    Assert.Equal(6, count);
+                }
+
+                System.Runtime.InteropServices.Marshal.FreeHGlobal(serializedPtr2);
+            }
+        }
+
+        [Fact]
+        public void test_serialize_deserialize_readonly_updating_row_should_fail()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                db.exec("CREATE TABLE foo (x text);");
+                db.exec("INSERT INTO foo (x) VALUES ('b')");
+                db.exec("INSERT INTO foo (x) VALUES ('c')");
+                db.exec("INSERT INTO foo (x) VALUES ('d')");
+                db.exec("INSERT INTO foo (x) VALUES ('e')");
+                db.exec("INSERT INTO foo (x) VALUES ('f')");
+
+                IntPtr serialized = raw.sqlite3_serialize(db, "main", out long size, 0);
+
+                int deserializeResult = raw.sqlite3_deserialize(db, "main", serialized, size, size, raw.SQLITE_DESERIALIZE_FREEONCLOSE | raw.SQLITE_DESERIALIZE_READONLY);
+
+                Assert.Equal(raw.SQLITE_OK, deserializeResult);
+
+                var stmt = db.prepare("UPDATE foo SET x = 'z' WHERE x = 'b'");
+                int stepResult = raw.sqlite3_step(stmt);
+
+                Assert.Equal(raw.SQLITE_READONLY, stepResult);
+            }
+        }
+    }
 }
 

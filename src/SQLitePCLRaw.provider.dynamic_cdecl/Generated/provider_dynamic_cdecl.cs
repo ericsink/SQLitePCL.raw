@@ -135,6 +135,16 @@ namespace SQLitePCL
 			return rc;
         }
 
+        IntPtr ISQLite3Provider.sqlite3_malloc(int n)
+        {
+            return NativeMethods.sqlite3_malloc(n);
+        }
+
+        IntPtr ISQLite3Provider.sqlite3_malloc64(long n)
+        {
+            return NativeMethods.sqlite3_malloc64(n);
+        }
+
         void ISQLite3Provider.sqlite3_free(IntPtr p)
         {
             NativeMethods.sqlite3_free(p);
@@ -708,7 +718,7 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-		static IDisposable disp_log_hook_handle;
+		static hook_handle disp_log_hook_handle;
 
         [MonoPInvokeCallback (typeof(NativeMethods.callback_log))]
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
@@ -1519,6 +1529,22 @@ namespace SQLitePCL
 			return rc;
 		}
 
+        unsafe IntPtr ISQLite3Provider.sqlite3_serialize(sqlite3 db, utf8z schema, out long size, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_serialize(db, p_schema, out size, flags);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_deserialize(sqlite3 db, utf8z schema, IntPtr data, long szDb, long szBuf, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_deserialize(db, p_schema, data, szDb, szBuf, flags);
+            }
+        }
+
 	static class NativeMethods
 	{
 		static Delegate Load(IGetFunctionPointer gf, Type delegate_type)
@@ -1586,6 +1612,7 @@ namespace SQLitePCL
 			sqlite3_threadsafe = (MyDelegateTypes.sqlite3_threadsafe) Load(gf, typeof(MyDelegateTypes.sqlite3_threadsafe));
 			sqlite3_sourceid = (MyDelegateTypes.sqlite3_sourceid) Load(gf, typeof(MyDelegateTypes.sqlite3_sourceid));
 			sqlite3_malloc = (MyDelegateTypes.sqlite3_malloc) Load(gf, typeof(MyDelegateTypes.sqlite3_malloc));
+			sqlite3_malloc64 = (MyDelegateTypes.sqlite3_malloc64) Load(gf, typeof(MyDelegateTypes.sqlite3_malloc64));
 			sqlite3_realloc = (MyDelegateTypes.sqlite3_realloc) Load(gf, typeof(MyDelegateTypes.sqlite3_realloc));
 			sqlite3_free = (MyDelegateTypes.sqlite3_free) Load(gf, typeof(MyDelegateTypes.sqlite3_free));
 			sqlite3_stricmp = (MyDelegateTypes.sqlite3_stricmp) Load(gf, typeof(MyDelegateTypes.sqlite3_stricmp));
@@ -1701,6 +1728,8 @@ namespace SQLitePCL
 			sqlite3_create_function_v2 = (MyDelegateTypes.sqlite3_create_function_v2) Load(gf, typeof(MyDelegateTypes.sqlite3_create_function_v2));
 			sqlite3_keyword_count = (MyDelegateTypes.sqlite3_keyword_count) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_count));
 			sqlite3_keyword_name = (MyDelegateTypes.sqlite3_keyword_name) Load(gf, typeof(MyDelegateTypes.sqlite3_keyword_name));
+			sqlite3_serialize = (MyDelegateTypes.sqlite3_serialize) Load(gf, typeof(MyDelegateTypes.sqlite3_serialize));
+			sqlite3_deserialize = (MyDelegateTypes.sqlite3_deserialize) Load(gf, typeof(MyDelegateTypes.sqlite3_deserialize));
 		}
 
 		public static MyDelegateTypes.sqlite3_close sqlite3_close;
@@ -1739,6 +1768,7 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_threadsafe sqlite3_threadsafe;
 		public static MyDelegateTypes.sqlite3_sourceid sqlite3_sourceid;
 		public static MyDelegateTypes.sqlite3_malloc sqlite3_malloc;
+		public static MyDelegateTypes.sqlite3_malloc64 sqlite3_malloc64;
 		public static MyDelegateTypes.sqlite3_realloc sqlite3_realloc;
 		public static MyDelegateTypes.sqlite3_free sqlite3_free;
 		public static MyDelegateTypes.sqlite3_stricmp sqlite3_stricmp;
@@ -1854,6 +1884,8 @@ namespace SQLitePCL
 		public static MyDelegateTypes.sqlite3_create_function_v2 sqlite3_create_function_v2;
 		public static MyDelegateTypes.sqlite3_keyword_count sqlite3_keyword_count;
 		public static MyDelegateTypes.sqlite3_keyword_name sqlite3_keyword_name;
+		public static MyDelegateTypes.sqlite3_serialize sqlite3_serialize;
+		public static MyDelegateTypes.sqlite3_deserialize sqlite3_deserialize;
 	[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 	public delegate void callback_log(IntPtr pUserData, int errorCode, IntPtr pMessage);
 
@@ -2006,6 +2038,9 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate IntPtr sqlite3_malloc(int n);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate IntPtr sqlite3_malloc64(long n);
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate IntPtr sqlite3_realloc(IntPtr p, int n);
@@ -2362,6 +2397,12 @@ namespace SQLitePCL
 
 		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
 		public unsafe delegate int sqlite3_keyword_name(int i, out byte* name, out int length);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate IntPtr sqlite3_serialize(sqlite3 db, byte* schema, out long size, int flags);
+
+		[UnmanagedFunctionPointer(CALLING_CONVENTION)]
+		public unsafe delegate int sqlite3_deserialize(sqlite3 db, byte* schema, IntPtr data, long szDb, long szBuf, int flags);
 
 	}
 

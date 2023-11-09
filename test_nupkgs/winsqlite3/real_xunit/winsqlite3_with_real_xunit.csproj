@@ -2,6 +2,7 @@
   <PropertyGroup>
     <!-- TODO for some reason, including net461 here fails with Test Aborted and no details given -->
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="microsoft.net.test.sdk" Version="$(depversion_microsoft_net_test_sdk)" />
