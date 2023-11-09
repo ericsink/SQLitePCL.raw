@@ -811,7 +811,6 @@ namespace SQLitePCL.Tests
         #endif
         }
 
-#if TODO
         [Fact]
         public void test_sqlite3_soft_heap_limit64()
         {
@@ -828,6 +827,10 @@ namespace SQLitePCL.Tests
 
             query = raw.sqlite3_soft_heap_limit64(-1);
             Assert.Equal(limit, query);
+
+            raw.sqlite3_soft_heap_limit64(0);
+            var gone = raw.sqlite3_soft_heap_limit64(-1);
+            Assert.Equal(0, gone);
         }
 
         [Fact]
@@ -849,8 +852,11 @@ namespace SQLitePCL.Tests
 
             query = raw.sqlite3_hard_heap_limit64(-1);
             Assert.Equal(limit, query);
+
+            raw.sqlite3_hard_heap_limit64(0);
+            var gone = raw.sqlite3_hard_heap_limit64(-1);
+            Assert.Equal(0, gone);
         }
-#endif
 
         [Fact]
         public void test_sqlite3_status()
