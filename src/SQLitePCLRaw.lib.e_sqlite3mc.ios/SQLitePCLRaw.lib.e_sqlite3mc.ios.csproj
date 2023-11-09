@@ -1,0 +1,17 @@
+<Project Sdk="Xamarin.Legacy.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(tfm_net6_ios);$(tfm_classic_ios)</TargetFrameworks>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.lib.e_sqlite3mc.snk</AssemblyOriginatorKeyFile>
+		<PackageDescription>This package contains platform-specific native code builds of SQLite3 Multiple Ciphers (see utelle/SQLite3MultipleCiphers on GitHub) for use with SQLitePCLRaw.  To use this package, you need SQLitePCLRaw.core as well as one of the SQLitePCLRaw.provider.* packages.  Convenience packages are named SQLitePCLRaw.bundle_*.</PackageDescription>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(cb_bin_path)\e_sqlite3mc\ios\device\e_sqlite3mc.a" Pack="true" PackagePath="static\device" />
+		<None Include="$(cb_bin_path)\e_sqlite3mc\ios\simulator\e_sqlite3mc.a" Pack="true" PackagePath="static\simulator" />
+		<None Include="SQLitePCLRaw.lib.e_sqlite3mc.ios.targets" Pack="true" PackagePath="build" />
+		<None Include="SQLitePCLRaw.lib.e_sqlite3mc.ios.targets" Pack="true" PackagePath="buildTransitive" />
+	</ItemGroup>
+</Project>
+

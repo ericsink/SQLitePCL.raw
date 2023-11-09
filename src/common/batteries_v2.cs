@@ -91,6 +91,8 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
 #elif PROVIDER_e_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
+#elif PROVIDER_e_sqlite3mc
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3mc());
 #elif PROVIDER_sqlcipher
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlcipher());
 #elif PROVIDER_winsqlite3
@@ -105,6 +107,8 @@ namespace SQLitePCL
 		    DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT | NativeLibrary.WHERE_CODEBASE);
 #elif PROVIDER_NAME_e_sqlcipher
 		    DoDynamic_cdecl("e_sqlcipher", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT);
+#elif PROVIDER_NAME_e_sqlite3mc
+		    DoDynamic_cdecl("e_sqlite3mc", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT);
 #elif PROVIDER_NAME_sqlcipher
 		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_ARCH); // TODO coordinate with zetetic
 #elif PROVIDER_NAME_winsqlite3
