@@ -29,6 +29,7 @@
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <UapDefaultAssetScale>100</UapDefaultAssetScale>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

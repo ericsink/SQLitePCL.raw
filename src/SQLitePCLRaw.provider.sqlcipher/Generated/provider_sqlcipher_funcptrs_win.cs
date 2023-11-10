@@ -130,6 +130,16 @@ namespace SQLitePCL
 			return rc;
         }
 
+        IntPtr ISQLite3Provider.sqlite3_malloc(int n)
+        {
+            return NativeMethods.sqlite3_malloc(n);
+        }
+
+        IntPtr ISQLite3Provider.sqlite3_malloc64(long n)
+        {
+            return NativeMethods.sqlite3_malloc64(n);
+        }
+
         void ISQLite3Provider.sqlite3_free(IntPtr p)
         {
             NativeMethods.sqlite3_free(p);
@@ -703,7 +713,7 @@ namespace SQLitePCL
 
         // ----------------------------------------------------------------
 
-		static IDisposable disp_log_hook_handle;
+		static hook_handle disp_log_hook_handle;
 
         [UnmanagedCallersOnly (CallConvs = new[] { typeof(CallConvCdecl) })]
         static void log_hook_bridge_impl(IntPtr p, int rc, IntPtr s)
@@ -1514,6 +1524,22 @@ namespace SQLitePCL
 			return rc;
 		}
 
+        unsafe IntPtr ISQLite3Provider.sqlite3_serialize(sqlite3 db, utf8z schema, out long size, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_serialize(db, p_schema, out size, flags);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_deserialize(sqlite3 db, utf8z schema, IntPtr data, long szDb, long szBuf, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_deserialize(db, p_schema, data, szDb, szBuf, flags);
+            }
+        }
+
 	static class NativeMethods
 	{
         private const string SQLITE_DLL = "sqlcipher";
@@ -1625,6 +1651,9 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_malloc(int n);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe IntPtr sqlite3_malloc64(long n);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_realloc(IntPtr p, int n);
@@ -1970,6 +1999,12 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_keyword_name(int i, out byte* name, out int length);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe IntPtr sqlite3_serialize(sqlite3 db, byte* schema, out long size, int flags);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_deserialize(sqlite3 db, byte* schema, IntPtr data, long szDb, long szBuf, int flags);
 
 	}
 

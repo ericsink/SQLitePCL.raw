@@ -205,6 +205,16 @@ namespace SQLitePCL
 			return rc;
         }
 
+        IntPtr ISQLite3Provider.sqlite3_malloc(int n)
+        {
+            return NativeMethods.sqlite3_malloc(n);
+        }
+
+        IntPtr ISQLite3Provider.sqlite3_malloc64(long n)
+        {
+            return NativeMethods.sqlite3_malloc64(n);
+        }
+
         void ISQLite3Provider.sqlite3_free(IntPtr p)
         {
             NativeMethods.sqlite3_free(p);
@@ -1802,6 +1812,22 @@ namespace SQLitePCL
 			return rc;
 		}
 
+        unsafe IntPtr ISQLite3Provider.sqlite3_serialize(sqlite3 db, utf8z schema, out long size, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_serialize(db, p_schema, out size, flags);
+            }
+        }
+
+        unsafe int ISQLite3Provider.sqlite3_deserialize(sqlite3 db, utf8z schema, IntPtr data, long szDb, long szBuf, int flags)
+        {
+            fixed (byte* p_schema = schema)
+            {
+                return NativeMethods.sqlite3_deserialize(db, p_schema, data, szDb, szBuf, flags);
+            }
+        }
+
 	static class NativeMethods
 	{
 <#
@@ -2193,6 +2219,13 @@ namespace SQLitePCL
             "sqlite3_malloc",
             new Parm[] {
                 new Parm("int", "n"),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_malloc64",
+            new Parm[] {
+                new Parm("long", "n"),
             }
             ),
         new Function(
@@ -3163,6 +3196,28 @@ namespace SQLitePCL
                 new Parm("int", "i"),
                 new Parm("byte*", "name").SetIsOut(true),
                 new Parm("int", "length").SetIsOut(true),
+            }
+            ),
+        new Function(
+            "IntPtr",
+            "sqlite3_serialize",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "schema"),
+                new Parm("long", "size").SetIsOut(true),
+                new Parm("int", "flags")
+            }
+            ),
+        new Function(
+            "int",
+            "sqlite3_deserialize",
+            new Parm[] {
+                new Parm("sqlite3", "db"),
+                new Parm("byte*", "schema"),
+                new Parm("IntPtr", "data"),
+                new Parm("long", "szDb"),
+                new Parm("long", "szBuf"),
+                new Parm("int", "flags")
             }
             ),
 
