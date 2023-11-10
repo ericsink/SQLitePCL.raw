@@ -339,6 +339,11 @@ namespace SQLitePCL
         public const int SQLITE_TRACE_ROW = 0x04;
         public const int SQLITE_TRACE_CLOSE = 0x08;
 
+        public const int SQLITE_SERIALIZE_NOCOPY = 1; /* SQLite will not allocate memory. */
+        public const int SQLITE_DESERIALIZE_FREEONCLOSE = 1; /* SQLite will call sqlite3_free() on close. */
+        public const int SQLITE_DESERIALIZE_RESIZEABLE = 2; /* SQLite will resize using sqlite3_realloc64(). */
+        public const int SQLITE_DESERIALIZE_READONLY = 4; /* Database is read-only. */
+
         static public int sqlite3_open(utf8z filename, out sqlite3 db)
         {
             int rc = Provider.sqlite3_open(filename, out var p_db);
@@ -1494,5 +1499,30 @@ namespace SQLitePCL
 		{
 			return Provider.sqlite3_keyword_name(i, out name);
 		}
+
+        static public IntPtr sqlite3_malloc(int n)
+        {
+            return Provider.sqlite3_malloc(n);
+        }
+
+        static public IntPtr sqlite3_malloc64(long n)
+        {
+            return Provider.sqlite3_malloc64(n);
+        }
+
+        static public void sqlite3_free(IntPtr p)
+        {
+            Provider.sqlite3_free(p);
+        }
+
+        static public IntPtr sqlite3_serialize(sqlite3 db, string schema, out long size, int flags)
+        {
+            return Provider.sqlite3_serialize(db, schema.to_utf8z(), out size, flags);
+        }
+
+        static public int sqlite3_deserialize(sqlite3 db, string schema, IntPtr data, long deserializedDataSize, long maxDataSize, int flags)
+        {
+            return Provider.sqlite3_deserialize(db, schema.to_utf8z(), data, deserializedDataSize, maxDataSize, flags);
+        }
     }
 }

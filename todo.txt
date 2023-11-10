@@ -54,9 +54,6 @@ sqlite3_normalized_sql
 
 sqlite3_value_frombind
 
-sqlite3_serialize
-sqlite3_deserialize
-
 sqlite3_keyword_count/name/check
 
 need 3 ways of doing dynamic load:
