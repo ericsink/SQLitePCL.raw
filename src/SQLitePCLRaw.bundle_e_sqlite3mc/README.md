@@ -4,7 +4,6 @@ This library provides C#/.NET bindings for [SQLite3 Multiple Ciphers](https://ut
 
 ## Table of Contents
 
-- [Version history](#version-history)
 - [Usage](#usage)
 - [Passphrase based database encryption support](#passphrase-based-database-encryption-support)
 - [Examples for cipher configuration](#examples-for-cipher-configuration)
