@@ -3339,12 +3339,24 @@ namespace SQLitePCL.Tests
             }
         }
 
+        private static bool is_sqlite3mc()
+        {
+            using (sqlite3 db = ugly.open(":memory:"))
+            {
+                var s = db.query_scalar<string>("PRAGMA cipher");
+                return !string.IsNullOrEmpty(s);
+            }
+        }
+
         [Fact]
         public void test_encrypted_file_with_pragma()
         {
-            if (is_sqlcipher())
+            if (is_sqlcipher() || is_sqlite3mc())
             {
-                Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
+                if (is_sqlcipher())
+                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
+                else
+                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3393,15 +3405,19 @@ namespace SQLitePCL.Tests
             else
             {
                 Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
+                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
             }
         }
 
         [Fact]
         public void test_encrypted_file_with_key()
         {
-            if (is_sqlcipher())
+            if (is_sqlcipher() || is_sqlite3mc())
             {
-                Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
+                if (is_sqlcipher())
+                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
+                else
+                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3460,6 +3476,54 @@ namespace SQLitePCL.Tests
             else
             {
                 Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
+                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
+            }
+        }
+
+        [Fact]
+        public void test_database_is_SQLCipher4()
+        {
+            if (is_sqlite3mc())
+            {
+                Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
+                // Test to access database encrypted with SQLCipher version 4
+                // Result: 78536 1 1 one one 1 2 one two
+                using (sqlite3 db = ugly.open("file:sqlcipher-4.0-testkey.db?cipher=sqlcipher&legacy=4"))
+                {
+                    const string pswd = "testkey";
+                    var key = u.to_utf8(pswd);
+                    db.key(key);
+                    var value = db.query_scalar<int>("select count(*) from t1");
+                    Assert.Equal(78536, value);
+                }
+            }
+            else
+            {
+                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
+            }
+        }
+
+        [Fact]
+        public void test_database_is_custom_SQLCipher2()
+        {
+            if (is_sqlite3mc())
+            {
+                Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
+                // Test to access database encrypted with SQLCipher version 2
+                // using 4000 iterations for the HMAC key derivation and a HMAC salt mask of zero
+                // Result: 38768 test-0-0 test-0-1 test-1-0 test-1-1
+                using (sqlite3 db = ugly.open("file:sqlcipher-2.0-beta-testkey.db?cipher=sqlcipher&legacy=2&fast_kdf_iter=4000&hmac_salt_mask=0"))
+                {
+                    const string pswd = "testkey";
+                    var key = u.to_utf8(pswd);
+                    db.key(key);
+                    var value = db.query_scalar<int>("select count(*) from t1");
+                    Assert.Equal(38768, value);
+                }
+            }
+            else
+            {
+                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
             }
         }
 
