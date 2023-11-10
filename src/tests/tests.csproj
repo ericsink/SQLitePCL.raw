@@ -24,4 +24,9 @@
     <Compile Include="my_batteries_v2.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="..\common\sqlcipher-2.0-beta-testkey.db" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="..\common\sqlcipher-4.0-testkey.db" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
