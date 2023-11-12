@@ -1,14 +1,12 @@
-# SQLite3 Multiple Ciphers NuGet
+# SQLite3 Multiple Ciphers NuGet Package
 
 This library provides C#/.NET bindings for [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/). It leverages [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw#readme) to create the bindings.
 
 ## Table of Contents
 
-- [Version history](#version-history)
 - [Usage](#usage)
 - [Passphrase based database encryption support](#passphrase-based-database-encryption-support)
 - [Examples for cipher configuration](#examples-for-cipher-configuration)
-- [License](#license)
 - [Acknowledgements](#acknowledgements)
 - [See also](#see-also)
 
@@ -98,7 +96,7 @@ using (db)
     }
 }
 ```
-## <a name="encryption" />Passphrase based database encryption support
+## Passphrase based database encryption support
 
 This NuGet package supports access to **encrypted** [SQLite](https://www.sqlite.org) databases from .NET applications. It is based on the project [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/).
 
@@ -163,16 +161,14 @@ The resulting connection string looks like this:
 using var connection = new SqliteConnection("Data Source=file:example.db?cipher=rc4;Password=Password12!");
 ```
 
-## License
-
-**SQLite3 Multiple Ciphers NuGet** is free software and is licensed under the [MIT license](LICENSE).
-
 ## Acknowledgements
 
 The following people have contributed to **SQLite3 Multiple Ciphers NuGet**:
 
 - [Brice Lambson](https://github.com/bricelam)
 - [Josh Menzel](https://github.com/jammerxd)
+- [Eric Sink](https://github.com/ericsink)
+- [Ulrich Telle](https://github.com/utelle)
 
 ## See also
 

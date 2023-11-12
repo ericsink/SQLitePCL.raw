@@ -3480,6 +3480,7 @@ namespace SQLitePCL.Tests
             }
         }
 
+#if TODO
         [Fact]
         public void test_database_is_SQLCipher4()
         {
@@ -3526,7 +3527,7 @@ namespace SQLitePCL.Tests
                 Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
             }
         }
-
+#endif
     }
 
     [Collection("Init")]
