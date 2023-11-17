@@ -37,6 +37,7 @@ let main argv =
         let args = $"-o %s{cs_path} -p:NAME=%s{provider_basename} -p:CONV=%s{conv} -p:KIND=%s{kind} -p:FEATURE_FUNCPTRS=%s{ftr_funcptrs} -p:FEATURE_WIN32DIR=%s{ftr_win32dir} -p:FEATURE_KEY=%s{ftr_key} -p:FEATURE_LOADEXTENSION=%s{ftr_loadextension} %s{dllimport_name_arg} provider.tt"
         exec "t4" args dir_providers
 
+    // TODO FEATURE_FUNCPTRS/plain should go away, issue #573
     gen_provider "dynamic_cdecl" null None "Cdecl" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
     gen_provider "dynamic_stdcall" null None "StdCall" "dynamic" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
     gen_provider "internal" "__Internal" (Some "legacy") "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
@@ -59,19 +60,19 @@ let main argv =
         gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
-        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/plain" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
+        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
 
     for s in ["e_sqlcipher"; "sqlcipher"; ] do
         gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
-        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/plain" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
+        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
 
     for s in ["e_sqlite3mc"; "sqlite3mc"; ] do
         gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
-        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/plain" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
+        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
 
     0 // return an integer exit code
 
