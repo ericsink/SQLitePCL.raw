@@ -51,8 +51,8 @@ public static class gen
         );
 
     // keep one of the following 2:
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
-    //public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+    //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 
     // or maaaaybe this one, but probably not:
     //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
