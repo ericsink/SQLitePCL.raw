@@ -33,7 +33,7 @@ namespace SQLitePCL
 	using System.Text;
 
 	[Preserve(AllMembers = true)]
-    public sealed class SQLite3Provider_e_sqlite3 : ISQLite3Provider
+    public sealed class SQLite3Provider_sqlite3mc : ISQLite3Provider
     {
 		const CallingConvention CALLING_CONVENTION = CallingConvention.Cdecl;
 
@@ -43,7 +43,7 @@ namespace SQLitePCL
 
         string ISQLite3Provider.GetNativeLibraryName()
         {
-            return "e_sqlite3";
+            return "sqlite3mc";
         }
 
         bool my_streq(IntPtr p, IntPtr q, int len)
@@ -235,22 +235,34 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_key(sqlite3 db, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_key(db, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_key_v2(sqlite3 db, utf8z name, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_key_v2(db, p_name, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_rekey(db, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_rekey_v2(sqlite3 db, utf8z name, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_rekey_v2(db, p_name, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
@@ -1541,7 +1553,7 @@ namespace SQLitePCL
 
 	static class NativeMethods
 	{
-        private const string SQLITE_DLL = "e_sqlite3";
+        private const string SQLITE_DLL = "sqlite3mc";
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_close(IntPtr db);
@@ -1821,6 +1833,18 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_key(sqlite3 db, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_key_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_rekey(sqlite3 db, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_config_none(int op);

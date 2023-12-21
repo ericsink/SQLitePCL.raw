@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\SQLitePCLRaw.lib.e_sqlite3mc.ios\SQLitePCLRaw.lib.e_sqlite3mc.ios.csproj" />
 	<ProjectReference Include="..\SQLitePCLRaw.provider.internal\SQLitePCLRaw.provider.internal.csproj" />
   </ItemGroup>
 

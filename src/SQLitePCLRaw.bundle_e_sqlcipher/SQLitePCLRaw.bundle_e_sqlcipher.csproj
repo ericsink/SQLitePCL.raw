@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.SDK">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);net461</TargetFrameworks>
+    <TargetFrameworks>$(tfm_net);$(tfm_ios);$(tfm_maccatalyst);$(tfm_framework);$(tfm_tvos)</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_e_sqlcipher</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
@@ -14,11 +14,15 @@
     <Compile Include="..\..\src\common\batteries_v2.cs" />
   </ItemGroup>
 
-  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_ios)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_ios.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_maccatalyst)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_android)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_android.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dynamic.xml" />
+  <ItemGroup>
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlcipher" Version="$(version)" />
+  </ItemGroup>
+
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_ios)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_internal.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_maccatalyst)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_framework)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_dynamic.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_tvos)' " Project="..\msbuild_bundle_fragments\e_sqlcipher_internal.xml" />
 
 </Project>
 

@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>$(tfm_net)</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == '$(tfm_framework)' ">
       <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
       <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>

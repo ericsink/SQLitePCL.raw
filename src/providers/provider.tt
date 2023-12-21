@@ -47,7 +47,6 @@
 	if (
 		(FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/false")
 		|| (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
-		|| (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/plain")
 		)
 	{
 	}
@@ -248,11 +247,7 @@ namespace SQLitePCL
     bool USE_FUNCPTRS = (FEATURE_FUNCPTRS != "FEATURE_FUNCPTRS/false");
     string get_monopinvokecallback_attr(string cb)
     {
-        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/plain")
-        {
-            return "[UnmanagedCallersOnly]";
-        }
-        else if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
+        if (FEATURE_FUNCPTRS == "FEATURE_FUNCPTRS/callingconv")
         {
             return $"[UnmanagedCallersOnly (CallConvs = new[] {{ typeof(CallConv{CONV}) }})]";
         }

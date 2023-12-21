@@ -25,8 +25,8 @@ public static class gen
     public const string ROOT_NAME = "SQLitePCLRaw";
 
     public const int MAJOR_VERSION = 2;
-    public const int MINOR_VERSION = 1;
-    public const int PATCH_VERSION = 7;
+    public const int MINOR_VERSION = 2;
+    public const int PATCH_VERSION = 0;
 
     // a version string with a -pre-timestamp in it
     public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
@@ -51,8 +51,8 @@ public static class gen
         );
 
     // keep one of the following 2:
-    //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    //public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 
     // or maaaaybe this one, but probably not:
     //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
@@ -105,13 +105,15 @@ public static class gen
             f.WriteElementString("cb_bin_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))");
             f.WriteElementString("src_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))");
             f.WriteElementString("pkg_version_for_testing", "$(Version)");
-            f.WriteElementString("depversion_xunit", "2.4.1");
-            f.WriteElementString("depversion_xunit_runner_visualstudio", "2.4.1");
-            f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
-            f.WriteElementString("tfm_net6_ios", "net6.0-ios14.2");
-            f.WriteElementString("tfm_net6_tvos", "net6.0-tvos10"); // TODO seems wrong
-            f.WriteElementString("tfm_net6_maccatalyst", "net6.0-ios14.0");
-            f.WriteElementString("tfm_net6_android", "net6.0-android"); // TODO seems wrong
+            f.WriteElementString("depversion_xunit", "2.6.3");
+            f.WriteElementString("depversion_xunit_runner_visualstudio", "2.5.5");
+            f.WriteElementString("depversion_microsoft_net_test_sdk", "17.8.0");
+            f.WriteElementString("tfm_net", "net6.0");
+            f.WriteElementString("tfm_framework", "net462");
+            f.WriteElementString("tfm_windows", "net6.0-windows");
+            f.WriteElementString("tfm_ios", "net8.0-ios");
+            f.WriteElementString("tfm_tvos", "net8.0-tvos");
+            f.WriteElementString("tfm_maccatalyst", "net8.0-maccatalyst");
 
             f.WriteComment("The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434");
             f.WriteElementString("NoNFloatUsing", "true");

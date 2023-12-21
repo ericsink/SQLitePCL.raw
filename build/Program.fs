@@ -19,26 +19,12 @@ let main argv =
 
     exec "dotnet" "run .." (Path.Combine(top, "version_stamp"))
 
-    exec "dotnet" "run .." (Path.Combine(top, "gen_lib_nuspecs"))
     exec "dotnet" "run" (Path.Combine(top, "gen_providers"))
 
     let dir_nupkgs = Path.Combine(top, "nupkgs")
     Directory.CreateDirectory(dir_nupkgs) |> ignore
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
-
-    let nuspec_dirs = [
-        "lib.e_sqlite3"
-        "lib.e_sqlcipher"
-        "lib.e_sqlite3mc"
-    ]
-
-    for s in nuspec_dirs do
-        let name = sprintf "SQLitePCLRaw.%s" s
-        let dir_proj = Path.Combine(top, "src", name)
-        let path_empty = Path.Combine(dir_proj, "_._")
-        if not (File.Exists(path_empty)) then
-            File.WriteAllText(path_empty, "")
 
     let pack_dirs = [
         "core"
@@ -53,20 +39,13 @@ let main argv =
         "provider.sqlite3" 
         "provider.sqlcipher" 
         "provider.sqlite3mc"
-        "lib.e_sqlite3.android"
-        "lib.e_sqlite3.ios"
-        "lib.e_sqlite3.tvos"
-        "lib.e_sqlcipher.android"
-        "lib.e_sqlcipher.ios"
-        "lib.e_sqlite3mc.android"
-        "lib.e_sqlite3mc.ios"
         "lib.e_sqlite3"
         "lib.e_sqlcipher"
         "lib.e_sqlite3mc"
-        "bundle_green"
         "bundle_e_sqlite3"
         "bundle_e_sqlcipher"
         "bundle_e_sqlite3mc"
+        "bundle_green"
         "bundle_zetetic"
         "bundle_winsqlite3"
         "bundle_sqlite3"
@@ -99,9 +78,8 @@ let main argv =
         ]
 
     let fake_xunit_tfms = [
-        yield "netcoreapp3.1"
         yield "net6.0"
-        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net461"
+        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net462"
         ]
 
     let fake_xunit_dirs = [
@@ -109,7 +87,7 @@ let main argv =
         yield "e_sqlcipher"
         yield "e_sqlite3mc"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
-        yield "sqlite3"
+        //yield "sqlite3"
         ]
 
     for tfm in fake_xunit_tfms do

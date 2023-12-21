@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);net461;$(tfm_net6_tvos)</TargetFrameworks>
+    <TargetFrameworks>$(tfm_net);$(tfm_ios);$(tfm_maccatalyst);$(tfm_framework);$(tfm_tvos)</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_green</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
@@ -14,12 +14,15 @@
     <Compile Include="..\..\src\common\batteries_v2.cs" />
   </ItemGroup>
 
-  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_ios)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_maccatalyst)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_android)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\e_sqlite3_dynamic.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_tvos)' " Project="..\msbuild_bundle_fragments\e_sqlite3_tvos.xml" />
+  <ItemGroup>
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="$(version)" />
+  </ItemGroup>
+
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_ios)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_maccatalyst)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_framework)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dynamic.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_tvos)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
 
 </Project>
 

@@ -388,10 +388,10 @@ namespace SQLitePCL.Tests
                 long rowid_2 = db.last_insert_rowid();
 
                 byte[] blob_1 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_1);
-                Assert.Equal(blob_1.Length, len_1);
+                Assert.Equal(len_1, blob_1.Length);
 
                 byte[] blob_2 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_2);
-                Assert.Equal(blob_2.Length, len_2);
+                Assert.Equal(len_2, blob_2.Length);
 
                 Func<sqlite3_blob, byte[], bool> Check =
                 (bh, ba) =>
@@ -441,7 +441,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 0))
                 {
@@ -481,7 +481,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 0))
                 {
@@ -528,7 +528,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 for (int i = 0; i < 100; i++)
                 {

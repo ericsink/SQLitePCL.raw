@@ -1,0 +1,51 @@
+﻿<Project>
+
+    <ItemGroup>
+        <None Include="buildTransitive\**\*" Pack="True" PackagePath="buildTransitive" />
+        <None Include="lib\**\*" Pack="True" PackagePath="lib" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\plain\x86\$(cb_name).dll" Pack="True" PackagePath="runtimes\win-x86\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\plain\x64\$(cb_name).dll" Pack="True" PackagePath="runtimes\win-x64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\plain\arm\$(cb_name).dll" Pack="True" PackagePath="runtimes\win-arm\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\plain\arm64\$(cb_name).dll" Pack="True" PackagePath="runtimes\win-arm64\native" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\appcontainer\arm64\$(cb_name).dll" Pack="True" PackagePath="runtimes\win10-arm64\nativeassets\uap10.0\$(cb_name).dll" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\appcontainer\arm\$(cb_name).dll" Pack="True" PackagePath="runtimes\win10-arm\nativeassets\uap10.0\$(cb_name).dll" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\appcontainer\x64\$(cb_name).dll" Pack="True" PackagePath="runtimes\win10-x64\nativeassets\uap10.0\$(cb_name).dll" />
+        <None Include="$(cb_bin_path)\$(cb_name)\win\v142\appcontainer\x86\$(cb_name).dll" Pack="True" PackagePath="runtimes\win10-x86\nativeassets\uap10.0\$(cb_name).dll" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\mac\x86_64\lib$(cb_name).dylib" Pack="True" PackagePath="runtimes\osx-x64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\mac\arm64\lib$(cb_name).dylib" Pack="True" PackagePath="runtimes\osx-arm64\native" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\maccatalyst\x86_64\lib$(cb_name).dylib" Pack="True" PackagePath="runtimes\maccatalyst-x64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\maccatalyst\arm64\lib$(cb_name).dylib" Pack="True" PackagePath="runtimes\maccatalyst-arm64\native" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\x64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-x64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\x86\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-x86\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\armhf\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-arm\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\armsf\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-armel\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\arm64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-arm64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\musl-x64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-musl-x64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\musl-armhf\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-musl-arm\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\musl-arm64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-musl-arm64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\musl-s390x\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-musl-s390x\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\mips64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-mips64\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\s390x\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-s390x\native" />
+        <None Include="$(cb_bin_path)\$(cb_name)\linux\ppc64le\lib$(cb_name).so" Pack="True" PackagePath="runtimes\linux-ppc64le\native" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\wasm\net6.0\$(cb_name).a" Pack="True" PackagePath="runtimes\browser-wasm\nativeassets\net6.0\$(cb_name).a" />
+        <None Include="$(cb_bin_path)\$(cb_name)\wasm\net7.0\$(cb_name).a" Pack="True" PackagePath="runtimes\browser-wasm\nativeassets\net7.0\$(cb_name).a" />
+        <None Include="$(cb_bin_path)\$(cb_name)\wasm\net8.0\$(cb_name).a" Pack="True" PackagePath="runtimes\browser-wasm\nativeassets\net8.0\$(cb_name).a" />
+
+        <None Include="$(cb_bin_path)\$(cb_name)\android\armeabi-v7a\lib$(cb_name).so" Pack="True" PackagePath="runtimes\android-arm\native" LinkBase="%(PackagePath)" />
+        <None Include="$(cb_bin_path)\$(cb_name)\android\arm64-v8a\lib$(cb_name).so" Pack="True" PackagePath="runtimes\android-arm64\native" LinkBase="%(PackagePath)" />
+        <None Include="$(cb_bin_path)\$(cb_name)\android\x86_64\lib$(cb_name).so" Pack="True" PackagePath="runtimes\android-x64\native" LinkBase="%(PackagePath)" />
+        <None Include="$(cb_bin_path)\$(cb_name)\android\x86\lib$(cb_name).so" Pack="True" PackagePath="runtimes\android-x86\native" LinkBase="%(PackagePath)" />
+
+		<None Include="$(cb_bin_path)\$(cb_name)\ios\device\$(cb_name).a" Pack="true" PackagePath="runtimes\ios-arm\native;runtimes\ios-arm64\native" LinkBase="runtimes\ios-arm64\native" />
+		<None Include="$(cb_bin_path)\$(cb_name)\ios\simulator\$(cb_name).a" Pack="true" PackagePath="runtimes\iossimulator-arm64\native;runtimes\iossimulator-x64\native;runtimes\iossimulator-x86\native" LinkBase="runtimes\iossimulator-x64\native" />
+
+    </ItemGroup>
+
+</Project>
+

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <cb_name>e_sqlite3</cb_name>
+    <cb_name>e_sqlite3mc</cb_name>
   </PropertyGroup>
 
   <Import Project="..\cb.xml" />
