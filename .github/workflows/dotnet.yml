@@ -33,7 +33,7 @@ jobs:
       uses: android-actions/setup-android@v3
       with:
         cmdline-tools-version: 9123335
-      run: sdkmanager tools "platforms;android-27" "platforms;android-28" "platforms;android-29" "platforms;android-30"
+        - run: sdkmanager tools "platforms;android-27" "platforms;android-28" "platforms;android-29" "platforms;android-30"
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
