@@ -113,7 +113,7 @@ public static class gen
             f.WriteElementString("tfm_net6_ios", "net6.0-ios14.2");
             f.WriteElementString("tfm_net6_tvos", "net6.0-tvos10"); // TODO seems wrong
             f.WriteElementString("tfm_net6_maccatalyst", "net6.0-ios14.0");
-            f.WriteElementString("tfm_net6_android", "net6.0-android"); // TODO seems wrong
+            f.WriteElementString("tfm_net6_android", "net7.0-android"); // TODO seems wrong
 
             f.WriteComment("The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434");
             f.WriteElementString("NoNFloatUsing", "true");
