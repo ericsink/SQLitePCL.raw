@@ -51,8 +51,8 @@ public static class gen
         );
 
     // keep one of the following 2:
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
-    //public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+    //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 
     // or maaaaybe this one, but probably not:
     //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
@@ -66,7 +66,7 @@ public static class gen
 
     private const string NUSPEC_RELEASE_NOTES = "TODO url";
 
-    const string COPYRIGHT = "Copyright 2014-2023 SourceGear, LLC";
+    const string COPYRIGHT = "Copyright 2014-2024 SourceGear, LLC";
     const string AUTHORS = "Eric Sink";
     const string SUMMARY = "SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite";
     const string PACKAGE_TAGS = "sqlite";
