@@ -29,6 +29,7 @@ public enum TFM
     NET60,
     NET70,
     NET80,
+    NET90,
     MACCATALYST,
     XAMARINMAC20,
 }
@@ -48,6 +49,7 @@ public static class common
             case TFM.NET60: return "net6.0";
             case TFM.NET70: return "net7.0";
             case TFM.NET80: return "net8.0";
+            case TFM.NET90: return "net9.0";
             case TFM.MACCATALYST: return "net6.0-maccatalyst15.2";
             case TFM.XAMARINMAC20: return "xamarin.mac20";
             default:
@@ -422,6 +424,7 @@ public static class gen
         write_nuspec_file_entry_native_wasm(lib, TFM.NET60, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET70, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET80, f);
+        write_nuspec_file_entry_native_wasm(lib, TFM.NET90, f);
     }
 
     static void write_nuspec_wasm_targets_file_entry(
@@ -530,6 +533,7 @@ public static class gen
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET60, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET70, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET80, f);
+            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET90, f);
 
             // TODO need a comment here to explain these
             common.write_empty(f, TFM.NET461);
