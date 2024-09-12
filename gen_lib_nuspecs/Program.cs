@@ -419,7 +419,7 @@ public static class gen
 
         write_nuspec_file_entry_native_linux(lib, "mips64", "linux-mips64", f);
         write_nuspec_file_entry_native_linux(lib, "s390x", "linux-s390x", f);
-	write_nuspec_file_entry_native_linux(lib, "ppc64le", "linux-ppc64le", f);
+        write_nuspec_file_entry_native_linux(lib, "ppc64le", "linux-ppc64le", f);
 
         write_nuspec_file_entry_native_wasm(lib, TFM.NET60, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET70, f);
