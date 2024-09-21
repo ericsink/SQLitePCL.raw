@@ -35,8 +35,11 @@
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-x64\libe_sqlite3.so" target="runtimes\linux-musl-x64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-armhf\libe_sqlite3.so" target="runtimes\linux-musl-arm\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\musl-arm64\libe_sqlite3.so" target="runtimes\linux-musl-arm64\native\libe_sqlite3.so" />
+    <file src="$cb_bin_path$\e_sqlite3\linux\musl-s390x\libe_sqlite3.so" target="runtimes\linux-musl-s390x\native\libe_sqlite3.so" />
+    <file src="$cb_bin_path$\e_sqlite3\linux\musl-riscv64\libe_sqlite3.so" target="runtimes\linux-musl-riscv64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\mips64\libe_sqlite3.so" target="runtimes\linux-mips64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\s390x\libe_sqlite3.so" target="runtimes\linux-s390x\native\libe_sqlite3.so" />
+    <file src="$cb_bin_path$\e_sqlite3\linux\riscv64\libe_sqlite3.so" target="runtimes\linux-riscv64\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\linux\ppc64le\libe_sqlite3.so" target="runtimes\linux-ppc64le\native\libe_sqlite3.so" />
     <file src="$cb_bin_path$\e_sqlite3\wasm\net6.0\e_sqlite3.a" target="runtimes\browser-wasm\nativeassets\net6.0\e_sqlite3.a" />
     <file src="$cb_bin_path$\e_sqlite3\wasm\net7.0\e_sqlite3.a" target="runtimes\browser-wasm\nativeassets\net7.0\e_sqlite3.a" />
