@@ -411,15 +411,16 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "armhf", "linux-arm", f);
         write_nuspec_file_entry_native_linux(lib, "armsf", "linux-armel", f);
         write_nuspec_file_entry_native_linux(lib, "arm64", "linux-arm64", f);
+        write_nuspec_file_entry_native_linux(lib, "s390x", "linux-s390x", f);
+        write_nuspec_file_entry_native_linux(lib, "riscv64", "linux-riscv64", f);
+        write_nuspec_file_entry_native_linux(lib, "mips64", "linux-mips64", f);
+        write_nuspec_file_entry_native_linux(lib, "ppc64le", "linux-ppc64le", f);
 
         write_nuspec_file_entry_native_linux(lib, "musl-x64", "linux-musl-x64", f);
         write_nuspec_file_entry_native_linux(lib, "musl-armhf", "linux-musl-arm", f);
         write_nuspec_file_entry_native_linux(lib, "musl-arm64", "linux-musl-arm64", f);
         write_nuspec_file_entry_native_linux(lib, "musl-s390x", "linux-musl-s390x", f);
-
-        write_nuspec_file_entry_native_linux(lib, "mips64", "linux-mips64", f);
-        write_nuspec_file_entry_native_linux(lib, "s390x", "linux-s390x", f);
-	write_nuspec_file_entry_native_linux(lib, "ppc64le", "linux-ppc64le", f);
+        write_nuspec_file_entry_native_linux(lib, "musl-riscv64", "linux-musl-riscv64", f);
 
         write_nuspec_file_entry_native_wasm(lib, TFM.NET60, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET70, f);
@@ -757,7 +758,8 @@ public static class gen
             write_nuget_prop_item("linux-x64", lib, f);
             write_nuget_prop_item("linux-mips64", lib, f);
             write_nuget_prop_item("linux-s390x", lib, f);
-	    write_nuget_prop_item("linux-ppc64le", lib, f);
+            write_nuget_prop_item("linux-ppc64le", lib, f);
+            write_nuget_prop_item("linux-riscv64", lib, f);
             f.WriteEndElement(); // PropertyGroup
 
             f.WriteEndElement(); // Project
@@ -806,6 +808,7 @@ public static class gen
             write_nuget_target_item("linux-x64", lib, f);
             write_nuget_target_item("linux-mips64", lib, f);
             write_nuget_target_item("linux-s390x", lib, f);
+            write_nuget_target_item("linux-riscv64", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteEndElement(); // Project

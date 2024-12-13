@@ -66,5 +66,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>false</Pack>
     </Content>
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-riscv64\native\libe_sqlite3.so">
+      <Link>runtimes\linux-riscv64\native\libe_sqlite3.so</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>false</Pack>
+    </Content>
   </ItemGroup>
 </Project>
