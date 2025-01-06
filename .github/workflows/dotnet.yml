@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ no-xamarin ]
   pull_request:
     branches: [ master ]
 
@@ -11,8 +11,8 @@ jobs:
 
     strategy:
       matrix:
-        # TODO want macos-latest here too, but the build currently fails there
-        os: [windows-latest]
+        # TODO want macos here too, but the build currently fails there
+        os: [windows-2022]
 
     runs-on: ${{ matrix.os }}
 
@@ -25,35 +25,16 @@ jobs:
       with:
         repository: ericsink/cb
         path: "cb"
-    - name: "Set up Java: 11"
-      uses: actions/setup-java@v1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        java-version: 11
-    - name: Setup Android SDK 27, 28, 29 and 30
-      uses: android-actions/setup-android@v3
-      with:
-        cmdline-tools-version: 9123335
-    - run: sdkmanager tools "platforms;android-27" "platforms;android-28" "platforms;android-29" "platforms;android-30"
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-        include-prerelease: true
-    - name: Install workload ios
-      run: dotnet workload install ios
-    - name: Install workload maccatalyst
-      run: dotnet workload install maccatalyst
-    - name: Install workload android
-      run: dotnet workload install android
-    - name: Install workload tvos
-      run: dotnet workload install tvos
-    - name: Setup .NET 3.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
+        dotnet-version: 9.0.x
+    - name: Install workload maui
+      run: dotnet workload install maui
     - name: Install T4
       run: dotnet tool install --global dotnet-t4
     - name: Build
       run: |
         cd SQLitePCL.raw/build
         dotnet run
+
