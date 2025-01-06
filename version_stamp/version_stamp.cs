@@ -24,8 +24,8 @@ public static class gen
 {
     public const string ROOT_NAME = "SQLitePCLRaw";
 
-    public const int MAJOR_VERSION = 2;
-    public const int MINOR_VERSION = 2;
+    public const int MAJOR_VERSION = 3;
+    public const int MINOR_VERSION = 0;
     public const int PATCH_VERSION = 0;
 
     // a version string with a -pre-timestamp in it
