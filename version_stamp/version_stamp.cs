@@ -111,9 +111,9 @@ public static class gen
             f.WriteElementString("tfm_net", "net8.0");
             f.WriteElementString("tfm_framework", "net462");
             f.WriteElementString("tfm_windows", "net8.0-windows");
-            f.WriteElementString("tfm_ios", "net8.0-ios");
-            f.WriteElementString("tfm_tvos", "net8.0-tvos");
-            f.WriteElementString("tfm_maccatalyst", "net8.0-maccatalyst17.2");
+            f.WriteElementString("tfm_ios", "net8.0-ios18.0");
+            f.WriteElementString("tfm_tvos", "net8.0-tvos18.0");
+            f.WriteElementString("tfm_maccatalyst", "net8.0-maccatalyst18.0");
 
             f.WriteComment("The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434");
             f.WriteElementString("NoNFloatUsing", "true");
