@@ -11,8 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        # TODO want macos here too, but the build currently fails there
-        os: [windows-2022]
+        os: [windows-2022, ubuntu-24.04, macos-14]
 
     runs-on: ${{ matrix.os }}
 

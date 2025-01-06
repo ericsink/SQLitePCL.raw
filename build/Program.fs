@@ -78,7 +78,7 @@ let main argv =
         ]
 
     let fake_xunit_tfms = [
-        yield "net6.0"
+        yield "net8.0"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net462"
         ]
 
