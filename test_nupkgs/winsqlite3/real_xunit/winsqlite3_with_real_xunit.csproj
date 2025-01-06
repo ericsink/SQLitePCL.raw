@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!-- TODO for some reason, including net461 here fails with Test Aborted and no details given -->
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>$(tfm_net)</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
