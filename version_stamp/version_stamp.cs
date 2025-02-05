@@ -110,10 +110,10 @@ public static class gen
             f.WriteElementString("depversion_microsoft_net_test_sdk", "15.0.0");
             f.WriteElementString("tfm_classic_android", "monoandroid9.0");
             f.WriteElementString("tfm_classic_ios", "xamarin.ios10");
-            f.WriteElementString("tfm_net6_ios", "net6.0-ios14.2");
-            f.WriteElementString("tfm_net6_tvos", "net6.0-tvos10"); // TODO seems wrong
-            f.WriteElementString("tfm_net6_maccatalyst", "net6.0-ios14.0");
-            f.WriteElementString("tfm_net6_android", "net6.0-android"); // TODO seems wrong
+            f.WriteElementString("tfm_net8_ios", "net8.0-ios14.2");
+            f.WriteElementString("tfm_net8_tvos", "net8.0-tvos10"); // TODO seems wrong
+            f.WriteElementString("tfm_net8_maccatalyst", "net8.0-ios14.0");
+            f.WriteElementString("tfm_net8_android", "net8.0-android"); // TODO seems wrong
 
             f.WriteComment("The NoNFloatUsing below is a workaround for xamarin/xamarin-macios/#14434");
             f.WriteElementString("NoNFloatUsing", "true");

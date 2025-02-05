@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Xamarin.Legacy.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_classic_ios);net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;$(tfm_net8_ios);$(tfm_classic_ios);net461</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
 	<PackageId>SQLitePCLRaw.bundle_zetetic</PackageId>
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\sqlcipher_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_ios)' " Project="..\msbuild_bundle_fragments\sqlcipher_ios.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_net8_ios)' " Project="..\msbuild_bundle_fragments\sqlcipher_ios.xml" />
   <Import Condition=" '$(TargetFramework)' == '$(tfm_classic_ios)' " Project="..\msbuild_bundle_fragments\sqlcipher_ios.xml" />
   <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\sqlcipher_dynamic.xml" />
 

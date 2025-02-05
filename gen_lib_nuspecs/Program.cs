@@ -26,7 +26,6 @@ public enum TFM
     UWP,
     NETSTANDARD20,
     NET461,
-    NET60,
     NET70,
     NET80,
     NET90,
@@ -46,11 +45,10 @@ public static class common
             case TFM.UWP: return "uap10.0";
             case TFM.NETSTANDARD20: return "netstandard2.0";
             case TFM.NET461: return "net461";
-            case TFM.NET60: return "net6.0";
             case TFM.NET70: return "net7.0";
             case TFM.NET80: return "net8.0";
             case TFM.NET90: return "net9.0";
-            case TFM.MACCATALYST: return "net6.0-maccatalyst15.2";
+            case TFM.MACCATALYST: return "net8.0-maccatalyst";
             case TFM.XAMARINMAC20: return "xamarin.mac20";
             default:
                 throw new NotImplementedException(string.Format("TFM.AsString for {0}", e));
@@ -422,7 +420,6 @@ public static class gen
         write_nuspec_file_entry_native_linux(lib, "musl-s390x", "linux-musl-s390x", f);
         write_nuspec_file_entry_native_linux(lib, "musl-riscv64", "linux-musl-riscv64", f);
 
-        write_nuspec_file_entry_native_wasm(lib, TFM.NET60, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET70, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET80, f);
         write_nuspec_file_entry_native_wasm(lib, TFM.NET90, f);
@@ -519,9 +516,9 @@ public static class gen
 #if not
             {
                 var tname = string.Format("{0}.targets", id);
-                Directory.CreateDirectory(Path.Combine(dir_proj, "net6.0-maccatalyst"));
-                var path_targets = Path.Combine(dir_proj, "net6.0-maccatalyst", tname);
-                var relpath_targets = nuget_combine(".", "net6.0-maccatalyst", tname);
+                Directory.CreateDirectory(Path.Combine(dir_proj, "net8.0-maccatalyst"));
+                var path_targets = Path.Combine(dir_proj, "net8.0-maccatalyst", tname);
+                var relpath_targets = nuget_combine(".", "net8.0-maccatalyst", tname);
                 gen_nuget_targets_maccatalyst(path_targets, WhichLib.E_SQLITE3);
                 common.write_nuspec_file_entry(
                     relpath_targets,
@@ -531,7 +528,6 @@ public static class gen
             }
 #endif
 
-            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET60, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET70, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET80, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3, TFM.NET90, f);
@@ -592,7 +588,6 @@ public static class gen
                     );
             }
 
-            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLCIPHER, TFM.NET60, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLCIPHER, TFM.NET70, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLCIPHER, TFM.NET80, f);
 
@@ -649,7 +644,6 @@ public static class gen
                     );
             }
 
-            write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3MC, TFM.NET60, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3MC, TFM.NET70, f);
             write_nuspec_wasm_targets_file_entry(dir_src, id, WhichLib.E_SQLITE3MC, TFM.NET80, f);
 
@@ -920,14 +914,14 @@ public static class gen
             f.WriteStartElement("ItemGroup");
             f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'maccatalyst-x64' ");
             f.WriteStartElement("NativeReference");
-            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-x64\\nativeassets\\net6.0\\{0}", filename));
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-x64\\nativeassets\\net8.0\\{0}", filename));
             f.WriteEndElement(); // Content
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
             f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == 'maccatalyst-arm64' ");
             f.WriteStartElement("NativeReference");
-            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-arm64\\nativeassets\\net6.0\\{0}", filename));
+            f.WriteAttributeString("Include", string.Format("$(MSBuildThisFileDirectory)..\\..\\runtimes\\maccatalyst-arm64\\nativeassets\\net8.0\\{0}", filename));
             f.WriteEndElement(); // Content
             f.WriteEndElement(); // ItemGroup
 
