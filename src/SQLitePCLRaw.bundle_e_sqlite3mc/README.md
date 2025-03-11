@@ -33,6 +33,10 @@ var version = (string)command.ExecuteScalar()!;
 Console.WriteLine(version);
 ```
 
+**Note**:  
+Beginning with _SQLite_ version 3.48.0 the behaviour of the _SQLite_ library changed. Unfortunately, this change makes the `Password` property in the connection string unusable, because _Microsoft.Data.SQLite_ indirectly accesses the database file **before** the encryption key is properly set up.  
+As a work-around remove the `Password` property from the connection string and either provide the passphrase as a URI parmeter (with the keyword `key=` or `hexkey=`) or explicitly issue a `PRAGMA key` statement immediately after opening a database connection.
+
 ### Dapper
 
 Use [Dapper](https://dapperlib.github.io/Dapper/) with Microsoft.Data.Sqlite by following the same instructions detailed above.
@@ -100,7 +104,7 @@ using (db)
 
 This NuGet package supports access to **encrypted** [SQLite](https://www.sqlite.org) databases from .NET applications. It is based on the project [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/).
 
-**SQLite3 Multiple Ciphers** is an extension to the public domain version of SQLite that allows applications to read and write encrypted database files. Currently 5 different encryption cipher schemes are supported:
+**SQLite3 Multiple Ciphers** is an extension to the public domain version of SQLite that allows applications to read and write encrypted database files. Currently 7 different encryption cipher schemes are supported:
 
 - [wxSQLite3](https://github.com/utelle/wxsqlite3): AES 128 Bit CBC - No HMAC
 - [wxSQLite3](https://github.com/utelle/wxsqlite3): AES 256 Bit CBC - No HMAC  
@@ -111,6 +115,9 @@ This cipher scheme is currently the _default_ cipher scheme.
 All _SQLCipher_ variants (from version 1 up to version 4) can be accessed.
 - [System.Data.SQLite](http://system.data.sqlite.org): RC4  
 Supported for compatibility with earlier _System.Data.SQLite_ versions only. Don't use it in new projects. Since early 2020 the official **System.Data.SQLite** distribution no longer includes the RC4 encryption extension.
+- [Ascon](https://ascon.iaik.tugraz.at/): Ascon-128 v1.2  
+_Ascon_ has been [selected as new standard](https://csrc.nist.gov/News/2023/lightweight-cryptography-nist-selects-ascon) for [lightweight cryptography](https://csrc.nist.gov/projects/lightweight-cryptography) in the [NIST Lightweight Cryptography competition (2019–2023)](https://csrc.nist.gov/projects/lightweight-cryptography/finalists).
+- [AEGIS](https://cfrg.github.io/draft-irtf-cfrg-aegis-aead/draft-irtf-cfrg-aegis-aead.html): AEGIS Family of Authenticated Encryption Algorithms
 
 In addition to reading and writing encrypted database files it is also possible to read and write plain unencrypted database files.
 
