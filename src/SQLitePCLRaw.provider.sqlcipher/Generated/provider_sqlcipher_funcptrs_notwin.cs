@@ -1555,6 +1555,18 @@ namespace SQLitePCL
 	{
         private const string SQLITE_DLL = "sqlcipher";
 
+#if NET
+		static NativeMethods()
+		{
+			if (AppContext.TryGetSwitch("SQLitePCL.LinkageType.Static", out bool isStatic) && isStatic)
+			{
+				nint selfHandle = NativeLibrary.GetMainProgramHandle();
+				NativeLibrary.SetDllImportResolver(typeof(NativeMethods).Assembly,
+					(string libraryName, Assembly asm, DllImportSearchPath? dllImportSearchPath) => selfHandle;
+			}
+		}
+#endif
+
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_close(IntPtr db);
 

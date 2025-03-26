@@ -1835,6 +1835,18 @@ namespace SQLitePCL
 #>
         private const string SQLITE_DLL = "<#= NAME_FOR_DLLIMPORT #>";
 
+#if NET
+		static NativeMethods()
+		{
+			if (AppContext.TryGetSwitch("SQLitePCL.LinkageType.Static", out bool isStatic) && isStatic)
+			{
+				nint selfHandle = NativeLibrary.GetMainProgramHandle();
+				NativeLibrary.SetDllImportResolver(typeof(NativeMethods).Assembly,
+					(string libraryName, Assembly asm, DllImportSearchPath? dllImportSearchPath) => selfHandle;
+			}
+		}
+#endif
+
 <#
 		write_api_entries(KIND);
 	}
