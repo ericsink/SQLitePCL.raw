@@ -100,7 +100,7 @@ let main argv =
 
     let fake_xunit_tfms = [
         yield "netcoreapp3.1"
-        yield "net6.0"
+        yield "net8.0"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net461"
         ]
 
@@ -122,7 +122,7 @@ let main argv =
 
 #if not // TODO currently fails in the GitHub Action, not yet sure why
     if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then
-        let args = "run -f net6.0-windows -r win-x86 --no-self-contained"
+        let args = "run -f net8.0-windows -r win-x86 --no-self-contained"
         exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
         exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
         exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlite3mc", "fake_xunit"))
