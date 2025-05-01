@@ -17,6 +17,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>false</Pack>
     </Content>
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-arm64\native\e_sqlite3.dll">
+      <Link>runtimes\win-arm64\native\e_sqlite3.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>false</Pack>
+    </Content>
   </ItemGroup>
   <ItemGroup Condition=" '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Unix' AND Exists('/Library/Frameworks') ">
     <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libe_sqlite3.dylib">
