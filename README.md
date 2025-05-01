@@ -4,23 +4,43 @@
 SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw)
 access to SQLite. License:  Apache License v2.
 
-# Version 2.0
+# How you can support this project
 
-SQLitePCLRaw 2.0 is a major release.  See [the release notes](v2.md)
-for more information.
+In the .NET ecosystem, SQLitePCLRaw is very popular.  According to nuget.org, it has been downloaded hundreds of millions of times.
 
-# Compatibility
+Maintaining this package is a non-trivial effort, and I am asking the .NET community to support that effort.  Here are three ways you can do that:
 
-As of version 2.0, SQLitePCLRaw requires NetStandard2.0:
+1.  Send me money
+2.  Do business with my company
+3.  Do me a favor
 
-- Xamarin.Android
-- Xamarin.iOS
-- UWP
-- .NET Framework 4.6.1 or higher, preferably 4.7.2
-- Linux with Mono
-- MacOS with Mono
-- .NET Core 3.1, .NET 5.x and up, etc
-- NetStandard 2.0
+## (1) Send me money
+
+To support this project financially, you can use GitHub Sponsors:
+
+https://github.com/sponsors/ericsink
+
+Any amount is accepted and appreciated.
+
+## (2) Do business with my company
+
+My business partner (Corey Steffen) and I own a software development company called SourceGear.  Our team does software development projects for other companies, including server side, web applications, and mobile apps.  You can support my efforts by engaging with our company.
+
+https://services.sourcegear.com/
+
+We use a variety of technologies depending on the needs of the customer, but we are obviously adept in the use of .NET and SQLite.  Please contact me to discuss how our team could be of service.
+
+## (3) Do me a favor
+
+Want to support my efforts without using money?  Do me a favor by telling people about my word games.  :-)
+
+(a) Word Zero -- a two-person game similar to Scrabble.  Currently iOS-only, available in the App Store.  Options for both free and paid play.
+
+(b) Word Box -- a free daily word puzzle, available at https://wordbox.game/
+
+I am always wanting to attract more players, but purchasing ads for these kinds of games is very expensive.  You would be doing me a favor by spreading the word.  For example, Word Box has an easy way to post your score for the day on social media.
+
+And if you choose this "Do me a favor" option, make sure to let me know, so I can thank you.
 
 # How the packaging works
 
@@ -65,54 +85,6 @@ The SQLitePCLRaw.core package contains no providers.
 All the various providers are in packages with ids of
 the form SQLitePCLRaw.provider.\*.
 
-# Provider names
-
-There is a `dynamic` provider which does not use a hard-coded
-DllImport string.  This one is used as often as possible.
-
-The DllImport-based providers are named for the exact string which is used
-for DllImport (pinvoke).
-
-For example:
-
-    [DllImport("foo")]
-    public static extern int whatever();
-
-This pinvoke will look for a library called "foo".
-
-- On Windows, that means "foo.dll".
-- On Unix, "libfoo.so"
-- On MacOS, "libfoo.dylib"
-
-(The actual rules are more complicated than this.)
-
-So, a provider where all the DllImport attributes were
-using "foo", would have "foo" in its package id and
-in its class name.
-
-# Included providers
-
-SQLitePCLRaw includes the following providers:
-
-- "dynamic" -- Uses dynamic loading of the native library
-instead of DllImport attributes.
-
-- "e\_sqlite3" -- This is the name of all SQLite builds provided
-as part of this project.
-
-- "e\_sqlcipher" -- This is the name of the unofficial and unsupported
-SQLCipher builds which are provided as part of this project.
-
-- "sqlite3" -- This matches the name of the system-provided SQLite
-on iOS (which is fine), and Android (which is not allowed).
-And it matches the official name of builds provided at sqlite.org.
-
-- "sqlcipher" -- Intended to be used for official SQLCipher builds
-from Zetetic.
-
-- "winsqlite3" -- Matches the name of the library provided by
-recent builds of Windows 10.
-
 # SQLitePCLRaw.lib
 
 A provider is the bridge between the core assembly and the native
@@ -138,9 +110,13 @@ and you want to use the same recent version of SQLite on each platform,
 e\_sqlite3 should be a good choice.
 
 - "e\_sqlcipher" -- These are unofficial and unsupported builds
-of the open source SQLCipher code.
+of the open source SQLCipher code.  You should not use these packages.
+You should buy official supported builds from Zetetic.
 
-The build scripts for both of the above are in the ericsink/cb repo.
+- "e\_sqlite3mc" -- These are builds of SQLite3MultipleCiphers, another
+library which adds encryption capabilities to SQLite.
+
+The build scripts for all of the above are in the ericsink/cb repo.
 
 # A trio of packages
 
@@ -189,21 +165,6 @@ SQLite is used.
 
 The purpose of the bundles is to make things easier by taking
 away flexibility and control.  You don't have to use them.
-
-## How do I build this?
-
-#### Requirements
-
-* Install the `t4` cli tool with `dotnet tool install --global dotnet-t4`
-* Clone the [cb](https://github.com/ericsink/cb) repository in the same directory as you cloned this `SQLitePCL.raw` repository
-* Make sure that the *Mobile development with.NET* workload [is installed](https://docs.microsoft.com/en-us/visualstudio/install/modify-visual-studio)
-
-Then, from a Developer Command Prompt for Visual Studio 2017 or 2019:
-
-```
-cd build
-dotnet run
-```
 
 ## Can this library be used to write a mobile app?
 
@@ -268,54 +229,4 @@ However, this is not the the sort of fork which is created for the purpose of
 producing a pull request.  The changes I've made are so extensive that I do not
 plan to submit a pull request unless one is requested.  I plan to maintain this
 code going forward.
-
-## What is SQLitePCL.Ugly?
-
-Well, it's a bunch of extension methods, a
-layer that provides method call syntax.
-It also switches the error handling model from integer return
-codes to exception throwing.
-
-For example, the sqlite3\_stmt class represents a statement
-handle, but you still have to do things like this:
-
-    int rc;
-
-    sqlite3 db;
-    rc = raw.sqlite3_open(":memory:", out db);
-    if (rc != raw.SQLITE_OK)
-    {
-        error
-    }
-    sqlite3_stmt stmt;
-    rc = raw.sqlite3_prepare(db, "CREATE TABLE foo (x int)", out stmt);
-    if (rc != raw.SQLITE_OK)
-    {
-        error
-    }
-    rc = raw.sqlite3_step(stmt);
-    if (rc == raw.SQLITE_DONE)
-    {
-        whatever
-    }
-    else
-    {
-        error
-    }
-    raw.sqlite3_finalize(stmt);
-
-The Ugly layer allows me to do things like this:
-
-    using (sqlite3 db = ugly.open(":memory:"))
-    {
-        sqlite3_stmt stmt = db.prepare("CREATE TABLE foo (x int)");
-        stmt.step();
-    }
-
-This exception-throwing wrapper exists so that I can have something
-easier against which to write tests.  It retains all the "lower-case
-and underscores" ugliness of the layer(s) below.  
-It does not do things "The C# Way".
-As such, this is not
-a wrapper intended for public consumption.  
 
