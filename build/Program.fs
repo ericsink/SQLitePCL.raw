@@ -34,16 +34,13 @@ let main argv =
         "provider.internal" 
         "provider.winsqlite3" 
         "provider.e_sqlite3" 
-        "provider.e_sqlcipher" 
         "provider.e_sqlite3mc"
         "provider.sqlite3" 
         "provider.sqlcipher" 
         "provider.sqlite3mc"
         "lib.e_sqlite3"
-        "lib.e_sqlcipher"
         "lib.e_sqlite3mc"
         "bundle_e_sqlite3"
-        "bundle_e_sqlcipher"
         "bundle_e_sqlite3mc"
         "bundle_green"
         "bundle_zetetic"
@@ -71,7 +68,6 @@ let main argv =
 
     let real_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlcipher"
         yield "e_sqlite3mc"
         // TODO do bundle_sqlite3 real_xunit here?
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
@@ -84,7 +80,6 @@ let main argv =
 
     let fake_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlcipher"
         yield "e_sqlite3mc"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         //yield "sqlite3"
@@ -102,7 +97,6 @@ let main argv =
     if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then
         let args = "run -f net6.0-windows -r win-x86 --no-self-contained"
         exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlite3", "fake_xunit"))
-        exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlcipher", "fake_xunit"))
         exec "dotnet" args (Path.Combine(top, "test_nupkgs", "e_sqlite3mc", "fake_xunit"))
 #endif
 
