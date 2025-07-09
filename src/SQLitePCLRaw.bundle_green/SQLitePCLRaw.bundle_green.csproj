@@ -19,9 +19,10 @@
   </ItemGroup>
 
   <Import Condition=" '$(TargetFramework)' == '$(tfm_net)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
+  <Import Condition=" '$(TargetFramework)' == '$(tfm_framework)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
+
   <Import Condition=" '$(TargetFramework)' == '$(tfm_ios)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
   <Import Condition=" '$(TargetFramework)' == '$(tfm_maccatalyst)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_framework)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dynamic.xml" />
   <Import Condition=" '$(TargetFramework)' == '$(tfm_tvos)' " Project="..\msbuild_bundle_fragments\sqlite3_dllimport.xml" />
 
 </Project>
