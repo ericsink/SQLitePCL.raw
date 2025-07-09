@@ -42,6 +42,7 @@ let main argv =
         "bundle_e_sqlite3mc"
         "bundle_green"
         "bundle_zetetic"
+        "bundle_winsqlite3"
         "bundle_sqlite3"
     ]
     for s in pack_dirs do
@@ -66,6 +67,8 @@ let main argv =
     let real_xunit_dirs = [
         yield "e_sqlite3"
         yield "e_sqlite3mc"
+        // TODO do bundle_sqlite3 real_xunit here?
+        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         ]
 
     let fake_xunit_tfms = [
@@ -76,6 +79,8 @@ let main argv =
     let fake_xunit_dirs = [
         yield "e_sqlite3"
         yield "e_sqlite3mc"
+        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
+        //yield "sqlite3"
         ]
 
     for tfm in fake_xunit_tfms do
