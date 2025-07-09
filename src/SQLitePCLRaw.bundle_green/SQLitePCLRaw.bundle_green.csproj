@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="$(version)" />
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="$(lib_e_sqlite3_package_reference_version)" />
   </ItemGroup>
 
   <Import Condition=" '$(TargetFramework)' == '$(tfm_net)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
