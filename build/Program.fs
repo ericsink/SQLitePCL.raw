@@ -40,7 +40,6 @@ let main argv =
         "provider.sqlite3mc"
         "bundle_e_sqlite3"
         "bundle_e_sqlite3mc"
-        "bundle_green"
         "bundle_zetetic"
         "bundle_winsqlite3"
         "bundle_sqlite3"
