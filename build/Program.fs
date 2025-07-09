@@ -38,8 +38,6 @@ let main argv =
         "provider.sqlite3" 
         "provider.sqlcipher" 
         "provider.sqlite3mc"
-        "lib.e_sqlite3"
-        "lib.e_sqlite3mc"
         "bundle_e_sqlite3"
         "bundle_e_sqlite3mc"
         "bundle_green"

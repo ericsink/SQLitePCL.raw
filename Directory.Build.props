@@ -4,9 +4,9 @@
     <Copyright>Copyright 2014-2025 SourceGear, LLC</Copyright>
     <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
-    <Version>3.0.0-pre20250708104333</Version>
-    <AssemblyVersion>3.0.0.2745</AssemblyVersion>
-    <FileVersion>3.0.0.2745</FileVersion>
+    <Version>3.0.0-pre20250709105425</Version>
+    <AssemblyVersion>3.0.0.2746</AssemblyVersion>
+    <FileVersion>3.0.0.2746</FileVersion>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
     <ProviderLangVersion>10.0</ProviderLangVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -16,9 +16,10 @@
     <RepositoryUrl>https://github.com/ericsink/SQLitePCL.raw</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'nupkgs'))</PackageOutputPath>
-    <cb_bin_path>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))</cb_bin_path>
     <src_path>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))</src_path>
     <pkg_version_for_testing>$(Version)</pkg_version_for_testing>
+    <lib_e_sqlite3_package_reference_version>3.50.2</lib_e_sqlite3_package_reference_version>
+    <lib_e_sqlite3mc_package_reference_version>3.49.1</lib_e_sqlite3mc_package_reference_version>
     <depversion_xunit>2.6.3</depversion_xunit>
     <depversion_xunit_runner_visualstudio>2.5.5</depversion_xunit_runner_visualstudio>
     <depversion_microsoft_net_test_sdk>17.8.0</depversion_microsoft_net_test_sdk>
