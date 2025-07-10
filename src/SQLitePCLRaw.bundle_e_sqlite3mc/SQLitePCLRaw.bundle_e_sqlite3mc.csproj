@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3mc" Version="$(lib_e_sqlite3mc_package_reference_version)" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="README.md" Pack="True" PackagePath="" />
   </ItemGroup>
 

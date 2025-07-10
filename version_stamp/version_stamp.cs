@@ -105,7 +105,6 @@ public static class gen
             f.WriteElementString("src_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))");
             f.WriteElementString("pkg_version_for_testing", "$(Version)");
             f.WriteElementString("lib_e_sqlite3_package_reference_version", "3.50.2");
-            f.WriteElementString("lib_e_sqlite3mc_package_reference_version", "3.49.1");
             f.WriteElementString("depversion_xunit", "2.6.3");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.5.5");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "17.8.0");

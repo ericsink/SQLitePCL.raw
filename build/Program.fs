@@ -40,6 +40,7 @@ let main argv =
         "provider.sqlcipher" 
         "provider.sqlite3mc"
         "bundle_e_sqlite3"
+        "bundle_e_see"
         "bundle_e_sqlite3mc"
         "bundle_zetetic"
         "bundle_winsqlite3"
@@ -66,7 +67,7 @@ let main argv =
 
     let real_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlite3mc"
+        //yield "e_sqlite3mc"
         // TODO do bundle_sqlite3 real_xunit here?
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         ]
@@ -78,7 +79,7 @@ let main argv =
 
     let fake_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlite3mc"
+        //yield "e_sqlite3mc"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         //yield "sqlite3"
         ]

@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2014-2021 SourceGear, LLC
+   Copyright 2014-2025 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -89,8 +89,8 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_sqlite3());
 #elif PROVIDER_e_sqlite3
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
-#elif PROVIDER_e_sqlcipher
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlcipher());
+#elif PROVIDER_e_see
+		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_see());
 #elif PROVIDER_e_sqlite3mc
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3mc());
 #elif PROVIDER_sqlcipher
@@ -99,8 +99,6 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
 #elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif PROVIDER_cil
-		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_cil());
 #elif PROVIDER_dynamic
 
 #if PROVIDER_NAME_e_sqlite3
