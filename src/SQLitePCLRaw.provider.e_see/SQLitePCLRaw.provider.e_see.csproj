@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(tfm_framework);$(tfm_net);$(tfm_windows)</TargetFrameworks>
+    <LangVersion>$(ProviderLangVersion)</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!--
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.provider.e_see.snk</AssemblyOriginatorKeyFile>
+    -->
+    <PackageDescription>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_see', the SEE builds available for SEE licenses.</PackageDescription>
+  </PropertyGroup>
+
+<ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == '$(tfm_framework)' ">
+    <Compile Include="Generated\provider_e_see_prenet5_win.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == '$(tfm_net)' ">
+    <Compile Include="Generated\provider_e_see_funcptrs_notwin.cs" />
+</ItemGroup>
+
+<ItemGroup Condition=" '$(TargetFramework)' == '$(tfm_windows)' ">
+    <Compile Include="Generated\provider_e_see_funcptrs_win.cs" />
+</ItemGroup>
+
+</Project>
