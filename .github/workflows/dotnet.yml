@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-2022, macos-15]
+        os: [windows-2025, macos-15]
 
     runs-on: ${{ matrix.os }}
 
@@ -20,10 +20,6 @@ jobs:
       with:
         fetch-depth: 0
         path: "SQLitePCL.raw"
-    - uses: actions/checkout@v2
-      with:
-        repository: ericsink/cb
-        path: "cb"
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
