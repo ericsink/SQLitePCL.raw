@@ -99,26 +99,6 @@ namespace SQLitePCL
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
 #elif PROVIDER_internal
 		    SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_internal());
-#elif PROVIDER_dynamic
-
-#if PROVIDER_NAME_e_sqlite3
-		    DoDynamic_cdecl("e_sqlite3", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT | NativeLibrary.WHERE_CODEBASE);
-#elif PROVIDER_NAME_e_sqlcipher
-		    DoDynamic_cdecl("e_sqlcipher", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT);
-#elif PROVIDER_NAME_e_sqlite3mc
-		    DoDynamic_cdecl("e_sqlite3mc", NativeLibrary.WHERE_RUNTIME_RID | NativeLibrary.WHERE_ADJACENT);
-#elif PROVIDER_NAME_sqlcipher
-		    DoDynamic_cdecl("sqlcipher", NativeLibrary.WHERE_ARCH); // TODO coordinate with zetetic
-#elif PROVIDER_NAME_winsqlite3
-		    DoDynamic_stdcall("winsqlite3", NativeLibrary.WHERE_PLAIN);
-#elif PROVIDER_NAME_sqlite3
-		    DoDynamic_cdecl("sqlite3", NativeLibrary.WHERE_PLAIN);
-#else
-#error batteries_v2.cs built with PROVIDER_dynamic but no PROVIDER_NAME specified
-#endif
-
-#elif PROVIDER_none
-            throw new Exception("This is the 'bait'.  You probably need to add one of the SQLitePCLRaw.bundle_* nuget packages to your platform project.");
 #else
 #error batteries_v2.cs built with nothing specified
 #endif
