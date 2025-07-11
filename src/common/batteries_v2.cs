@@ -32,6 +32,7 @@ namespace SQLitePCL
     public static class Batteries_V2
     {
 #if PROVIDER_dynamic
+        // TODO this can probably go away.  bundles don't use dynamic provider anymore
         class MyGetFunctionPointer : IGetFunctionPointer
         {
             readonly IntPtr _dll;
