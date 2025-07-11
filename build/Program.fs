@@ -71,7 +71,7 @@ let main argv =
 
     let fake_xunit_tfms = [
         yield "net8.0"
-        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net462"
+        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net471"
         ]
 
     let fake_xunit_dirs = [

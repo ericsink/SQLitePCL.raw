@@ -109,7 +109,7 @@ public static class gen
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.5.5");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "17.8.0");
             f.WriteElementString("tfm_net", "net8.0");
-            f.WriteElementString("tfm_framework", "net462");
+            f.WriteElementString("tfm_framework", "net471");
             f.WriteElementString("tfm_windows", "net8.0-windows");
             f.WriteElementString("tfm_ios", "net8.0-ios18.0");
             f.WriteElementString("tfm_tvos", "net8.0-tvos18.0");
