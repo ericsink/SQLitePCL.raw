@@ -43,7 +43,6 @@ let main argv =
         "bundle_e_see"
         "bundle_e_sqlite3mc"
         "bundle_zetetic"
-        "bundle_winsqlite3"
         "bundle_sqlite3"
     ]
     for s in pack_dirs do

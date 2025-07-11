@@ -39,7 +39,14 @@ namespace SQLitePCL.Tests
         {
             //SQLitePCL.Setup.Load("c:/Windows/system32/winsqlite3.dll");
             //SQLitePCL.Setup.Load("e_sqlite3.dll");
+#if TESTS_INIT_NONE
+            // the init is apparently being done elsewhere
+#elif TESTS_INIT_WINSQLITE3
+            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+#else
+            // default is to assume there's a bundle
             SQLitePCL.Batteries_V2.Init();
+#endif
         }
     }
 
