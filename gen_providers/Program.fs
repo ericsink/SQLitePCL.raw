@@ -61,19 +61,24 @@ let main argv =
     let subname_funcptrs_win = "funcptrs_win"
     let subname_funcptrs_notwin = "funcptrs_notwin"
 
-    for s in ["e_sqlite3"; "sqlite3"; ] do
-        gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
-        gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
-        gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
-        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
-
-    for s in ["sqlcipher"; ] do
+    // the e_sqlite3 provider does include FEATURE_KEY, which means it can be used for
+    // crypto-enabled builds that have the name e_sqlite3.
+    for s in ["e_sqlite3"; ] do
         gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
         gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"
 
-    for s in ["e_sqlite3mc"; "sqlite3mc"; ] do
+    // the sqlite3 provider is intended for use with the system sqlite like on Linux or iOS.
+    // no FEATURE_KEY
+    for s in ["sqlite3"; ] do
+        gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
+        gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/false"
+        gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
+        gen_provider s s (Some subname_funcptrs_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/false" "FEATURE_LOADEXTENSION/true"
+
+    // the sqlcipher provider is for use with Zetetic's official SQLCipher builds
+    for s in ["sqlcipher"; ] do
         gen_provider s s (Some subname_prenet5_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_prenet5_notwin) "Cdecl" "dllimport" "FEATURE_WIN32DIR/false" "FEATURE_FUNCPTRS/false" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/false"
         gen_provider s s (Some subname_funcptrs_win) "Cdecl" "dllimport" "FEATURE_WIN32DIR/true" "FEATURE_FUNCPTRS/callingconv" "FEATURE_KEY/true" "FEATURE_LOADEXTENSION/true"

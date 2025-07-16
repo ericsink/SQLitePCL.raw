@@ -34,12 +34,9 @@ let main argv =
         "provider.internal" 
         "provider.winsqlite3" 
         "provider.e_sqlite3" 
-        "provider.e_sqlite3mc"
         "provider.sqlite3" 
         "provider.sqlcipher" 
-        "provider.sqlite3mc"
         "bundle_e_sqlite3"
-        "bundle_e_sqlite3mc"
         "bundle_zetetic"
     ]
     for s in pack_dirs do
