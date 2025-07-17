@@ -7,7 +7,7 @@
 	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
     <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included</PackageDescription>
+    <PackageDescription>This package sets the configuration for using e_sqlite3 but does not bring in that native library itself.  It's like bundle_e_sqlite3, except it's hollow.</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
