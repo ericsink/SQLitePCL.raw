@@ -36,6 +36,7 @@ let main argv =
         "provider.e_sqlite3" 
         "provider.sqlite3" 
         "provider.sqlcipher" 
+        "config.e_sqlite3"
         "bundle_e_sqlite3"
         "bundle_zetetic"
     ]

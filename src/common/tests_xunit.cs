@@ -3334,36 +3334,14 @@ namespace SQLitePCL.Tests
 
     }
 
+    #if TEST_WITH_CRYPTO
+
     [Collection("Init")]
     public class class_test_crypto
     {
-        private static bool is_sqlcipher()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                var s = db.query_scalar<string>("PRAGMA cipher_version");
-                return !string.IsNullOrEmpty(s);
-            }
-        }
-
-        private static bool is_sqlite3mc()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                var s = db.query_scalar<string>("PRAGMA cipher");
-                return !string.IsNullOrEmpty(s);
-            }
-        }
-
         [Fact]
         public void test_encrypted_file_with_pragma()
         {
-            if (is_sqlcipher() || is_sqlite3mc())
-            {
-                if (is_sqlcipher())
-                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
-                else
-                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3408,23 +3386,11 @@ namespace SQLitePCL.Tests
                 Assert.False(check_sum("wrong phrase"));
 
                 ugly.vfs__delete(null, name, 1);
-            }
-            else
-            {
-                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
-                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
-            }
         }
 
         [Fact]
         public void test_encrypted_file_with_key()
         {
-            if (is_sqlcipher() || is_sqlite3mc())
-            {
-                if (is_sqlcipher())
-                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
-                else
-                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3479,12 +3445,6 @@ namespace SQLitePCL.Tests
                 Assert.True(check_sum(new_key));
 
                 ugly.vfs__delete(null, name, 1);
-            }
-            else
-            {
-                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
-                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
-            }
         }
 
 #if TODO
@@ -3511,6 +3471,7 @@ namespace SQLitePCL.Tests
             }
         }
 
+#if TODO
         [Fact]
         public void test_database_is_custom_SQLCipher2()
         {
@@ -3534,8 +3495,10 @@ namespace SQLitePCL.Tests
                 Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
             }
         }
+        #endif
 #endif
     }
+#endif
 
     [Collection("Init")]
     public class class_test_serialize_deserialize

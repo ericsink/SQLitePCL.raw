@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(tfm_net)</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);TEST_WITH_CRYPTO</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == '$(tfm_framework)' ">
       <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
@@ -12,7 +13,8 @@
     <PackageReference Include="xunit" Version="$(depversion_xunit)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(depversion_xunit_runner_visualstudio)" />
 
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3mc" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.config.e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.lib.e_sqlite3mc" Version="3.49.1" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>
