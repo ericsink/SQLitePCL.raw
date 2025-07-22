@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(tfm_framework);$(tfm_net);$(tfm_windows)</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);TEST_WITH_CRYPTO</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == '$(tfm_framework)' ">
+      <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+      <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="sqlitepclraw.config.e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="SourceGear.SEE" Version="3.50.3" />
+    <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\src\common\attrs_for_tests.cs" />
+    <Compile Include="..\..\..\src\common\fake_xunit.cs" />
+    <Compile Include="..\..\..\src\common\tests_xunit.cs" />
+  </ItemGroup>
+</Project>
