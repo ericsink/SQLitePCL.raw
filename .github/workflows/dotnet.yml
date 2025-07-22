@@ -32,10 +32,9 @@ jobs:
       run: dotnet workload install tvos
     - name: Install T4
       run: dotnet tool install --global dotnet-t4
-    - name: Import password for packages
+    - name: Build
       env:
         SG_NUGET_TOKEN: ${{ secrets.SG_NUGET_TOKEN }}
-    - name: Build
       run: |
         cd SQLitePCL.raw/build
         dotnet run
