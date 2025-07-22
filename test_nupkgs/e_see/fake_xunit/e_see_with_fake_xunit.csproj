@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="sqlitepclraw.config.e_sqlite3" Version="$(pkg_version_for_testing)" />
-    <PackageReference Include="SourceGear.SEE" Version="3.50.3" />
+    <PackageReference Include="SourceGear.SEE" Version="$(see_pkg_version_for_testing)" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>
