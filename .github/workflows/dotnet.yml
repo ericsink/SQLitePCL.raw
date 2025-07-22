@@ -35,6 +35,7 @@ jobs:
     - name: Build
       env:
         SG_NUGET_TOKEN: ${{ secrets.SG_NUGET_TOKEN }}
+        SEE_ACTIVATION_CODE: ${{ secrets.SEE_ACTIVATION_CODE }}
       run: |
         cd SQLitePCL.raw/build
         dotnet run
