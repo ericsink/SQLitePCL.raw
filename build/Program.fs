@@ -38,7 +38,6 @@ let main argv =
         "provider.sqlcipher" 
         "config.e_sqlite3"
         "bundle_e_sqlite3"
-        "bundle_zetetic"
     ]
     for s in pack_dirs do
         let dir_name = sprintf "SQLitePCLRaw.%s" s
