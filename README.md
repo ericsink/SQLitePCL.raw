@@ -32,7 +32,7 @@ as part of this project.  It contains builds of the native SQLite code library
 for server platforms and with the most commonly used features enabled.
 I update this package from time to time.
 
-My company (SourceGear) operates a paid service at nuget.sourcegear.com
+SourceGear operates a paid service at nuget.sourcegear.com
 which provides various native SQLite builds which are
 updated immediately after each SQLite release.  These include regular
 SQLite builds, or various options with encryption support.  We can also provide

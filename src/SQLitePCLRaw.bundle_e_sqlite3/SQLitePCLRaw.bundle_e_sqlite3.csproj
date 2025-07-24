@@ -4,8 +4,13 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
 	<PackageId>SQLitePCLRaw.bundle_e_sqlite3</PackageId>
-    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included</PackageDescription>
+    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().</PackageDescription>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\common\README.md" Pack="True" PackagePath="README.md" />
+  </ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.config.e_sqlite3\SQLitePCLRaw.config.e_sqlite3.csproj" />
