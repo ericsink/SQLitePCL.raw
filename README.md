@@ -1,13 +1,67 @@
 
 # SQLitePCLRaw
 
-SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw)
-access to SQLite. License:  Apache License v2.
+SQLitePCLRaw is a .NET Portable Class Library (PCL) for low-level (raw)
+access to SQLite.
 
-# How the packaging works
+This library is open source (Apache License v2) and has been downloaded
+hundreds of millions of times on nuget.org.
+
+My name is Eric Sink.  I am:
+
+- the maintainer of this library
+- the founder of SourceGear, a small software company in Illinois
+- part of the SQLite core team
+
+You can email me at either eric@sourcegear.com or eric@sqlite.org
+
+# Technical Support
+
+If you need help using SQLite with .NET, you can post a question
+here in this repo, and there is a chance that I or someone else
+will answer it.
+
+If you are interested in private technical support with more structure,
+SourceGear provides technical support agreements at
+various levels.  Contact me for a price quote.
+
+# SQLite builds
+
+The SQLitePCLRaw.lib.e_sqlite3 package is published publicly on nuget.org 
+as part of this project.  It contains builds of the native SQLite code library
+for server platforms and with the most commonly used features enabled.
+I update this package from time to time.
+
+My company (SourceGear) operates a paid service at nuget.sourcegear.com
+which provides various native SQLite builds which are
+updated immediately after each SQLite release.  These include regular
+SQLite builds, or various options with encryption support.  We can also provide
+custom configurations.
+
+If you are interested in SourceGear's SQLite build service, please
+contact me for a price quote.
+
+# Encryption support
+
+I no longer publish encryption-enabled SQLite builds without cost.
+
+My recommended solution for encryption support is the SQLite Encryption Extension (SEE), which is the official implementation from the SQLite team:
+
+https://sqlite.org/com/see.html
+
+The SEE is not open source -- a paid license is required.  SourceGear's SQLite build service
+provides SEE builds in the form of nuget packages.
+
+The recommended way to use a crypto-enabled SQLite build is to name the shared library `e_sqlite3` and use the `SQLitePCLRaw.config.e_sqlite3` package.
+Using this approach, you can use open source alternatives to SEE, including:
+
+- SQLCipher (builds available for purchase from Zetetic)
+- SQLite3 Multiple Ciphers (maintained by @utelle, builds available in SourceGear's SQLite build service)
+
+# The structure of these packages
 
 The main assembly is SQLitePCLRaw.core.  A portable library project would
-need to only take a dep on this one.  All the other packages
+need to only take a dependency on this one.  All the other packages
 deal with initialization and the question of which instance 
 of the native SQLite library is involved.
 
@@ -45,11 +99,6 @@ the form SQLitePCLRaw.provider.\*.
 
 # Provider names
 
-There is a `dynamic` provider which does not use a hard-coded
-DllImport string.  This one is the most difficult to use but offers
-the most control.  It can be used to load a custom-built native
-SQLite library.
-
 The DllImport-based providers are named for the exact string which is used
 for DllImport (pinvoke).
 
@@ -70,12 +119,14 @@ So, a provider where all the DllImport attributes were
 using "foo", would have "foo" in its package id and
 in its class name.
 
+There is also a `dynamic` provider which does not use a hard-coded
+DllImport string.  This one is the most difficult to use but can
+support advanced use cases where the loading decision needs
+to be made at runtime.
+
 # Included providers
 
 SQLitePCLRaw includes several different providers.  Examples:
-
-- "dynamic" -- Uses dynamic loading of the native library
-instead of DllImport attributes.
 
 - "e\_sqlite3" -- This is the name of all SQLite builds provided
 as part of this project.
@@ -90,7 +141,11 @@ from Zetetic.
 - "winsqlite3" -- Matches the name of the library provided by
 recent builds of Windows.
 
-# SQLitePCLRaw.lib.e\_sqlite3 packages
+- "dynamic" -- Uses dynamic loading of the native library
+instead of DllImport attributes.  This can be used to support
+advanced use cases.
+
+# SQLitePCLRaw.lib.e\_sqlite3
 
 A provider is the bridge between the core assembly and the native
 code, but the provider does not contain the native code itself.
@@ -116,49 +171,52 @@ packages:
 - SQLitePCLRaw.core
 - SQLitePCLRaw.provider.whatever
 
-And in many cases one of these as well:
+And in many cases, you also need a package containing the native SQLite library itself.  For example:
 
-- SQLitePCLRaw.lib.whatever
+- SQLitePCLRaw.lib.e_sqlite3
 
-And in your platform-specific code, you need to call:
+Then, in your platform-specific code, you need to call:
 
     SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_whatever());
 
-But the word "whatever" is different on each platform.
-For example, on Android, using e\_sqlite3, you need:
+But the word "whatever" can differ, depending on the platform or desired 
+configuration.
 
-- SQLitePCLRaw.core
-- SQLitePCLRaw.provider.e\_sqlite3.android
-- SQLitePCLRaw.lib.e\_sqlite3.android
-
-and you need to call:
+In the most common cases, using DllImport to load a library named
+"e_sqlite3", the initialization call looks like this:
 
     SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
 
-# Bundles
+but some platforms are special, like iOS, for example.
 
-To make things easier, SQLitePCLRaw includes "bundle" packages.
-These packages automatically bring in the right dependencies for
-each platform.  They also provide a single Init() call that is the
-same for all platforms.
-
-Think of a bundle as way of giving a "batteries included" experience.
-
-So for example, SQLitePCLRaw.bundle\_e\_sqlite3 is a bundle that
-uses e\_sqlite3 in all cases.  Just add this package, and call:
+For convenience, the "SQLitePCLRaw.config.e_sqlite3" package provides the 
+right dependencies and initialization code for each platform to use
+any SQLite library named "e_sqlite3".  Using this package, you
+can initialize things on any platform by calling:
 
     SQLitePCL.Batteries_V2.Init();
 
-The purpose of the bundles is to make things easier by taking
-away flexibility and control.  You don't have to use them.
+But you still need to bring in a native SQLite library with
+"e_sqlite3" as the base name.  The "SQLitePCLRaw.config.e_sqlite3" doesn't
+do that, because there are multiple possibilities, and it wants to defer 
+the choice until later.
 
-## How do I build this?
+If you want to use a plain SQLite library with the most commonly used
+features, just add the "SQLitePCLRaw.lib.e_sqlite3" package.
+
+For backward compatibility with previous releases, the SQLitePCLRaw.bundle_e_sqlite3
+package continues to be available, but all it does is bring in two dependencies:
+
+- SQLitePCLRaw.config.e_sqlite3
+- SQLitePCLRaw.lib.e_sqlite
+
+## How do I build SQLitePCLRaw?
 
 #### Requirements
 
-TODO need .NET SDK
+* Install the .NET SDK
 * Install the `t4` cli tool with `dotnet tool install --global dotnet-t4`
-* Make sure that the *Mobile development with.NET* workload [is installed](https://docs.microsoft.com/en-us/visualstudio/install/modify-visual-studio)
+* Install the workloads for iOS, Android, tvOS, and MacCatalyst
 
 ```
 cd build
@@ -213,39 +271,15 @@ The `sqlite-net-pcl` package uses SQLitePCLRaw:
 ## How does this compare to System.Data.SQLite?
 
 [System.Data.SQLite](http://system.data.sqlite.org) is an ADO.NET-style SQLite wrapper developed by the
-core SQLite team.  It is very full-featured, supporting LINQ and Entity Framework.  And for obvious reasons, 
-it does a fantastic job of the SQLite side of things.
+core SQLite team.
 
 In mid-2025, I joined the SQLite core team and became the maintainer of System.Data.SQLite,
-but System.Data.SQLite and SQLitePCLRaw are unrelated and likely to remain that way.
+but despite the fact that I maintain both, System.Data.SQLite and SQLitePCLRaw are unrelated and likely to remain that way.
 
 ## Why is this called SQLitePCLRaw?
 
 [SQLitePCL](https://sqlitepcl.codeplex.com/) was a SQLite Portable Class Library released on Codeplex by MS Open Tech.
 
-This library is a fork of that code.  Sort of.
-
-It is a fork in the 2007 sense of the word.  I made significant use of the code.  I preserved copyright notices.
-
-However, this is not the the sort of fork which is created for the purpose of
-producing a pull request.  The changes I've made are so extensive that I do not
-plan to submit a pull request unless one is requested.  I plan to maintain this
-code going forward.
-
-# Encryption support
-
-My recommended solution for encryption support is the SQLite Encryption Extension (SEE), which is the official implementation from the SQLite team:
-
-https://sqlite.org/com/see.html
-
-The SEE is not open source -- a paid license is required. 
-
-SQLitePCLRaw.provider.e\_see supports native code builds with the base name `e_see`.  TODO
-
-SQLitePCLRaw also includes providers for two open source alternatives to the SEE: 
-
-- SQLCipher (from Zetetic)
-- SQLite3 Multiple Ciphers (from @utelle).
-
-I no longer maintain and distribute encryption-enabled SQLite builds without cost.
+This library started as fork of that code, but I removed all the higher-level functionality, and what was
+left was "raw".
 
