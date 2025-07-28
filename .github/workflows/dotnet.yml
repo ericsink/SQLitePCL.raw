@@ -24,12 +24,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: Install workload ios
-      run: dotnet workload install ios
-    - name: Install workload maccatalyst
-      run: dotnet workload install maccatalyst
-    - name: Install workload tvos
-      run: dotnet workload install tvos
+    #- name: Install workload ios
+      #run: dotnet workload install ios
+    #- name: Install workload maccatalyst
+      #run: dotnet workload install maccatalyst
+    #- name: Install workload tvos
+      #run: dotnet workload install tvos
     - name: Install T4
       run: dotnet tool install --global dotnet-t4
     - name: Build
