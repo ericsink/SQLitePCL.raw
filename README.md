@@ -25,7 +25,10 @@ If you are interested in private technical support with more structure,
 SourceGear provides technical support agreements at
 various levels.  Contact me for a price quote.
 
-# SQLite builds
+If you are not a SourceGear customer and you contact me directly 
+with technical support questions, I may not respond.
+
+# SQLite Builds
 
 The SQLitePCLRaw.lib.e_sqlite3 package is published publicly on nuget.org 
 as part of this project.  It contains builds of the native SQLite code library
@@ -41,7 +44,7 @@ custom configurations.
 If you are interested in SourceGear's SQLite build service, please
 contact me for a price quote.
 
-# Encryption support
+# Encryption
 
 I no longer publish encryption-enabled SQLite builds without cost.
 
@@ -57,6 +60,16 @@ Using this approach, you can use open source alternatives to SEE, including:
 
 - SQLCipher (builds available for purchase from Zetetic)
 - SQLite3 Multiple Ciphers (maintained by @utelle, builds available in SourceGear's SQLite build service)
+
+# How you can support this project
+
+If you are not a SourceGear customer and would like support this open 
+source project for the benefit of the .NET community, you can do so 
+through GitHub Sponsors:
+
+https://github.com/sponsors/ericsink
+
+Any amount is accepted and appreciated.
 
 # The structure of these packages
 
