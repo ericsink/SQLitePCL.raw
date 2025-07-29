@@ -15,6 +15,11 @@ My name is Eric Sink.  I am:
 
 You can email me at either eric@sourcegear.com or eric@sqlite.org
 
+# Version 3.0
+
+SQLitePCLRaw 3.0 is a major release.  See [the release notes](v3.md)
+for more information.
+
 # Technical Support
 
 If you need help using SQLite with .NET, you can post a question
