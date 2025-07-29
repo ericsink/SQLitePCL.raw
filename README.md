@@ -10,7 +10,7 @@ hundreds of millions of times on nuget.org.
 My name is Eric Sink.  I am:
 
 - the maintainer of this library
-- the founder of SourceGear, a small software company in Illinois
+- the founder of SourceGear
 - part of the SQLite core team
 
 You can email me at either eric@sourcegear.com or eric@sqlite.org
@@ -300,4 +300,5 @@ but despite the fact that I maintain both, System.Data.SQLite and SQLitePCLRaw a
 
 This library started as fork of that code, but I removed all the higher-level functionality, and what was
 left was "raw".
+
 
