@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>$(tfm_net)</TargetFrameworks>
     <LangVersion>$(ProviderLangVersion)</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -14,11 +14,7 @@
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
 </ItemGroup>
 
-<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <Compile Include="Generated\provider_internal_legacy.cs" />
-</ItemGroup>
-
-<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+<ItemGroup Condition=" '$(TargetFramework)' == '$(tfm_net)' ">
     <Compile Include="Generated\provider_internal_funcptrs.cs" />
 </ItemGroup>
 

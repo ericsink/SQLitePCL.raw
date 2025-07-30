@@ -39,7 +39,14 @@ namespace SQLitePCL.Tests
         {
             //SQLitePCL.Setup.Load("c:/Windows/system32/winsqlite3.dll");
             //SQLitePCL.Setup.Load("e_sqlite3.dll");
+#if TESTS_INIT_NONE
+            // the init is apparently being done elsewhere
+#elif TESTS_INIT_WINSQLITE3
+            SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
+#else
+            // default is to assume there's a bundle
             SQLitePCL.Batteries_V2.Init();
+#endif
         }
     }
 
@@ -388,10 +395,10 @@ namespace SQLitePCL.Tests
                 long rowid_2 = db.last_insert_rowid();
 
                 byte[] blob_1 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_1);
-                Assert.Equal(blob_1.Length, len_1);
+                Assert.Equal(len_1, blob_1.Length);
 
                 byte[] blob_2 = db.query_scalar<byte[]>("SELECT b FROM foo WHERE rowid=?;", rowid_2);
-                Assert.Equal(blob_2.Length, len_2);
+                Assert.Equal(len_2, blob_2.Length);
 
                 Func<sqlite3_blob, byte[], bool> Check =
                 (bh, ba) =>
@@ -441,7 +448,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 0))
                 {
@@ -481,7 +488,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 using (sqlite3_blob bh = db.blob_open("main", "foo", "b", rowid, 0))
                 {
@@ -528,7 +535,7 @@ namespace SQLitePCL.Tests
                 long rowid = db.last_insert_rowid();
 
                 byte[] blob = db.query_scalar<byte[]>("SELECT b FROM foo;");
-                Assert.Equal(blob.Length, len);
+                Assert.Equal(len, blob.Length);
 
                 for (int i = 0; i < 100; i++)
                 {
@@ -3327,36 +3334,14 @@ namespace SQLitePCL.Tests
 
     }
 
+    #if TEST_WITH_CRYPTO
+
     [Collection("Init")]
     public class class_test_crypto
     {
-        private static bool is_sqlcipher()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                var s = db.query_scalar<string>("PRAGMA cipher_version");
-                return !string.IsNullOrEmpty(s);
-            }
-        }
-
-        private static bool is_sqlite3mc()
-        {
-            using (sqlite3 db = ugly.open(":memory:"))
-            {
-                var s = db.query_scalar<string>("PRAGMA cipher");
-                return !string.IsNullOrEmpty(s);
-            }
-        }
-
         [Fact]
         public void test_encrypted_file_with_pragma()
         {
-            if (is_sqlcipher() || is_sqlite3mc())
-            {
-                if (is_sqlcipher())
-                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
-                else
-                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3401,23 +3386,11 @@ namespace SQLitePCL.Tests
                 Assert.False(check_sum("wrong phrase"));
 
                 ugly.vfs__delete(null, name, 1);
-            }
-            else
-            {
-                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
-                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
-            }
         }
 
         [Fact]
         public void test_encrypted_file_with_key()
         {
-            if (is_sqlcipher() || is_sqlite3mc())
-            {
-                if (is_sqlcipher())
-                    Assert.Contains("sqlcipher", raw.GetNativeLibraryName());
-                else
-                    Assert.Contains("sqlite3mc", raw.GetNativeLibraryName());
                 string name;
                 using (sqlite3 db = ugly.open(":memory:"))
                 {
@@ -3472,12 +3445,6 @@ namespace SQLitePCL.Tests
                 Assert.True(check_sum(new_key));
 
                 ugly.vfs__delete(null, name, 1);
-            }
-            else
-            {
-                Assert.DoesNotContain("sqlcipher", raw.GetNativeLibraryName());
-                Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
-            }
         }
 
 #if TODO
@@ -3504,6 +3471,7 @@ namespace SQLitePCL.Tests
             }
         }
 
+#if TODO
         [Fact]
         public void test_database_is_custom_SQLCipher2()
         {
@@ -3527,8 +3495,10 @@ namespace SQLitePCL.Tests
                 Assert.DoesNotContain("sqlite3mc", raw.GetNativeLibraryName());
             }
         }
+        #endif
 #endif
     }
+#endif
 
     [Collection("Init")]
     public class class_test_serialize_deserialize

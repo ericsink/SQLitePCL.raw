@@ -17,4 +17,5 @@ project.lock.json
 /nupkgs/push.bat
 /gen_nuspecs.exe
 **/_._
+lib_nupkgs/*.nupkg
 

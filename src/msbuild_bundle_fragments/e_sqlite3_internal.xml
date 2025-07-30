@@ -1,0 +1,12 @@
+
+<Project>
+
+  <PropertyGroup>
+	<DefineConstants>$(DefineConstants);PROVIDER_internal</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.provider.internal\SQLitePCLRaw.provider.internal.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -25,4 +25,9 @@
     <Compile Include="Generated\provider_dynamic_cdecl.cs" />
 </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\..\src\common\gfp.cs" />
+    <Compile Include="..\..\src\common\nativelibrary_for_netstandard2.cs" />
+  </ItemGroup>
+
 </Project>

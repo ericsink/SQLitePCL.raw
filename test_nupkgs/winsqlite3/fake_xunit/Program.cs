@@ -5,7 +5,7 @@ public static class foo
 {
     public static int Main()
     {
-        SQLitePCL.Batteries_V2.Init();
+        SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_winsqlite3());
         return Xunit.Run.AllTestsInCurrentAssembly();
     }
 }

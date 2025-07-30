@@ -1,27 +1,24 @@
-﻿<Project Sdk="Xamarin.Legacy.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net6_ios);$(tfm_net6_maccatalyst);$(tfm_net6_android);$(tfm_classic_ios);$(tfm_classic_android);net461;$(tfm_net6_tvos)</TargetFrameworks>
-    <SignAssembly>true</SignAssembly>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 	<PackageId>SQLitePCLRaw.bundle_e_sqlite3</PackageId>
-	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().  Policy of this bundle: e_sqlite3 included</PackageDescription>
+    <PackageDescription>This 'batteries-included' bundle brings in SQLitePCLRaw.core and the necessary stuff for certain common use cases.  Call SQLitePCL.Batteries.Init().</PackageDescription>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\src\common\batteries_v2.cs" />
+    <None Include="..\common\README.md" Pack="True" PackagePath="README.md" />
   </ItemGroup>
 
-  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_ios)' " Project="..\msbuild_bundle_fragments\e_sqlite3_ios.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_maccatalyst)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_android)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_classic_ios)' " Project="..\msbuild_bundle_fragments\e_sqlite3_ios.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_classic_android)' " Project="..\msbuild_bundle_fragments\e_sqlite3_android.xml" />
-  <Import Condition=" '$(TargetFramework)' == 'net461' " Project="..\msbuild_bundle_fragments\e_sqlite3_dynamic.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net6_tvos)' " Project="..\msbuild_bundle_fragments\e_sqlite3_tvos.xml" />
+  <ItemGroup>
+	<ProjectReference Include="..\SQLitePCLRaw.config.e_sqlite3\SQLitePCLRaw.config.e_sqlite3.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="$(lib_e_sqlite3_package_reference_version)" />
+  </ItemGroup>
 
 </Project>
 

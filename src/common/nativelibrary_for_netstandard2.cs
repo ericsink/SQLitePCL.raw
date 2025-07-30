@@ -1,5 +1,5 @@
 /*
-   Copyright 2014-2019 SourceGear, LLC
+   Copyright 2014-2025 SourceGear, LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -65,29 +65,26 @@ namespace SQLitePCL
 
         }
 
-        enum LibSuffix
-        {
-            DLL,
-            DYLIB,
-            SO,
-        }
-
         enum Loader
         {
             win,
             dlopen,
         }
 
-        public static IntPtr Load(string libraryName, System.Reflection.Assembly assy, int flags)
+        public static IntPtr Load(string path)
         {
             var logWriter = new StringWriter();
-            logWriter.WriteLine($"Library {libraryName} not found");
-            var h = MyLoad(libraryName, assy, flags, s => logWriter.WriteLine(s));
-            if (h == IntPtr.Zero)
+            // TODO check file exists?
+            logWriter.WriteLine($"Library {path} not found");
+            var plat = WhichLoader();
+            if (TryLoad(path, plat, s => logWriter.WriteLine(s), out var api))
+            {
+                return api;
+            }
+            else
             {
                 throw new Exception(logWriter.ToString());
             }
-            return h;
         }
         static IntPtr MyGetExport(IntPtr handle, string name)
         {
@@ -130,32 +127,12 @@ namespace SQLitePCL
                 throw new NotImplementedException();
             }
         }
-        public static bool TryLoad(string libraryName, System.Reflection.Assembly assy, int flags, out IntPtr handle)
-        {
-            var h = MyLoad(libraryName, assy, flags, s => { });
-            handle = h;
-            return h != IntPtr.Zero;
-        }
+
         public static bool TryGetExport(IntPtr handle, string name, out IntPtr address)
         {
             var h = MyGetExport(handle, name);
             address = h;
             return h != IntPtr.Zero;
-        }
-
-        static string basename_to_libname(string basename, LibSuffix suffix)
-        {
-            switch (suffix)
-            {
-                case LibSuffix.DLL:
-                    return string.Format("{0}.dll", basename);
-                case LibSuffix.DYLIB:
-                    return string.Format("lib{0}.dylib", basename);
-                case LibSuffix.SO:
-                    return string.Format("lib{0}.so", basename);
-                default:
-                    throw new NotImplementedException();
-            }
         }
 
         static bool TryLoad(
@@ -238,189 +215,8 @@ namespace SQLitePCL
             }
         }
 
-        static LibSuffix WhichLibSuffix()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return LibSuffix.DLL;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return LibSuffix.SO;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return LibSuffix.DYLIB;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        static string get_rid_front()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return "win";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "linux";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "osx";
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        static string get_rid_back()
-        {
-            switch (RuntimeInformation.OSArchitecture)
-            {
-                case Architecture.Arm:
-                    return "arm";
-                case Architecture.Arm64:
-                    return "arm64";
-                case Architecture.X64:
-                    return (IntPtr.Size == 8) ? "x64" : "x86";
-                case Architecture.X86:
-                    return "x86";
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        static string get_rid()
-        {
-            var front = get_rid_front();
-            var back = get_rid_back();
-            return $"{front}-{back}";
-        }
-
-        static bool Search(
-            IList<string> a,
-            Loader plat,
-            Action<string> log,
-            out string name,
-            out IntPtr h
-            )
-        {
-            foreach (var s in a)
-            {
-                if (TryLoad(s, plat, log, out var api))
-                {
-                    name = s;
-                    h = api;
-                    return true;
-                }
-            }
-            name = null;
-            h = IntPtr.Zero;
-            return false;
-        }
-
-        static List<string> MakePossibilitiesFor(
-            string basename,
-            System.Reflection.Assembly assy,
-            int flags,
-            LibSuffix suffix
-            )
-        {
-            var a = new List<string>();
-
-#if not
-			a.Add(basename);
-#endif
-
-            var libname = basename_to_libname(basename, suffix);
-            if ((flags & WHERE_PLAIN) != 0)
-            {
-                a.Add(libname);
-            }
-
-#if not // TODO is this ever useful?
-			{
-				var dir = System.IO.Directory.GetCurrentDirectory();
-				a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
-			}
-#endif
-
-            if ((flags & WHERE_RUNTIME_RID) != 0)
-            {
-                var rid = get_rid();
-                var dir = System.IO.Path.GetDirectoryName(assy.Location);
-                a.Add(Path.Combine(dir, "runtimes", rid, "native", libname));
-            }
-
-            if ((flags & WHERE_ARCH) != 0)
-            {
-                var dir = System.IO.Path.GetDirectoryName(assy.Location);
-                var arch = get_rid_back();
-                a.Add(Path.Combine(dir, arch, libname));
-            }
-
-            if ((flags & WHERE_ADJACENT) != 0)
-            {
-                var dir = System.IO.Path.GetDirectoryName(assy.Location);
-                a.Add(Path.Combine(dir, libname));
-            }
-
-            if ((flags & WHERE_CODEBASE) != 0 &&
-                RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework")
-               ) 
-            {
-                var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
-                a.Add(new Uri(Path.Combine(dir, libname)).AbsolutePath);
-            }
-
-            return a;
-        }
-
-#if not
-		static IntPtr Load_ios_internal()
-		{
-			// TODO err check this
-			var dll = NativeLib_dlopen.dlopen(null, NativeLib_dlopen.RTLD_NOW);
-            return dll;
-		}
-#endif
-
-        static IntPtr MyLoad(
-            string basename,
-            System.Reflection.Assembly assy,
-            int flags,
-            Action<string> log
-            )
-        {
-            // TODO make this code accept a string that already has the suffix?
-            // TODO does S.R.I.NativeLibrary do that?
-
-            var plat = WhichLoader();
-            log($"plat: {plat}");
-            var suffix = WhichLibSuffix();
-            log($"suffix: {suffix}");
-            var a = MakePossibilitiesFor(basename, assy, flags, suffix);
-            log($"possibilities ({a.Count}):");
-            foreach (var (s, i) in a.Select((s, i) => (s, i)))
-            {
-                log($"    {i+1}) {s}");
-            }
-            if (Search(a, plat, log, out var lib, out var h))
-            {
-                log($"found: {lib}");
-                return h;
-            }
-            else
-            {
-                log("NOT FOUND");
-                return IntPtr.Zero;
-            }
-        }
     }
+
 }
+
 

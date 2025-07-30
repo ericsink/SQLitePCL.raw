@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1;net6.0;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>$(tfm_framework);$(tfm_net);$(tfm_windows)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);TEST_WITH_CRYPTO</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == '$(tfm_framework)' ">
       <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
       <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="sqlitepclraw.bundle_e_sqlite3mc" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.config.e_sqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.lib.e_sqlite3mc" Version="3.49.1" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>

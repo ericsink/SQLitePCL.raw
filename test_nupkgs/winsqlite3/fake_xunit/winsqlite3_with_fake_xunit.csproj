@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>$(tfm_framework);$(tfm_net)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DefineConstants>$(DefineConstants);TESTS_INIT_NONE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="sqlitepclraw.bundle_winsqlite3" Version="$(pkg_version_for_testing)" />
+    <PackageReference Include="sqlitepclraw.provider.winsqlite3" Version="$(pkg_version_for_testing)" />
     <PackageReference Include="sqlitepclraw.ugly" Version="$(pkg_version_for_testing)" />
   </ItemGroup>
   <ItemGroup>

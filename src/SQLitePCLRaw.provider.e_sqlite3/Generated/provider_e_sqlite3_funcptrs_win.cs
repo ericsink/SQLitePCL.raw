@@ -238,22 +238,34 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_key(sqlite3 db, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_key(db, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_key_v2(sqlite3 db, utf8z name, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_key_v2(db, p_name, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_rekey(sqlite3 db, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k)
+            {
+                return NativeMethods.sqlite3_rekey(db, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_rekey_v2(sqlite3 db, utf8z name, ReadOnlySpan<byte> k)
         {
-            return raw.SQLITE_ERROR;
+            fixed (byte* p = k, p_name = name)
+            {
+                return NativeMethods.sqlite3_rekey_v2(db, p_name, p, k.Length);
+            }
         }
 
         unsafe int ISQLite3Provider.sqlite3_prepare_v2(sqlite3 db, ReadOnlySpan<byte> sql, out IntPtr stm, out ReadOnlySpan<byte> tail)
@@ -1275,18 +1287,36 @@ namespace SQLitePCL
 
         unsafe int ISQLite3Provider.sqlite3_bind_text(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<byte> t)
         {
-            fixed (byte* p_t = t)
+            if (t.Length == 0)
             {
-                return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, t.Length, new IntPtr(-1));
+                // sqlite wants a valid pointer here even though the string is zero length
+                byte dummy = 0;
+                return NativeMethods.sqlite3_bind_text(stm, paramIndex, &dummy, 0, new IntPtr(-1));
+            }
+            else
+            {
+                fixed (byte* p_t = t)
+                {
+                    return NativeMethods.sqlite3_bind_text(stm, paramIndex, p_t, t.Length, new IntPtr(-1));
+                }
             }
         }
 
         unsafe int ISQLite3Provider.sqlite3_bind_text16(sqlite3_stmt stm, int paramIndex, ReadOnlySpan<char> t)
         {
-            fixed (char* p_t = t)
+            if (t.Length == 0)
             {
-                // mul span length times 2 to get num bytes, which is what sqlite wants
-                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+                // sqlite wants a valid pointer here even though the string is zero length
+                char dummy = '\0';
+                return NativeMethods.sqlite3_bind_text16(stm, paramIndex, &dummy, 0, new IntPtr(-1));
+            }
+            else
+            {
+                fixed (char* p_t = t)
+                {
+                    // mul span length times 2 to get num bytes, which is what sqlite wants
+                    return NativeMethods.sqlite3_bind_text16(stm, paramIndex, p_t, t.Length * 2, new IntPtr(-1));
+                }
             }
         }
 
@@ -1311,12 +1341,8 @@ namespace SQLitePCL
                 // a non-null pointer, even though conceptually, that pointer
                 // point to zero things, ie nothing.
 
-                var ba_fake = new byte[] { 42 };
-                ReadOnlySpan<byte> span_fake = ba_fake;
-                fixed (byte* p_fake = span_fake)
-                {
-                    return NativeMethods.sqlite3_bind_blob(stm, paramIndex, p_fake, 0, new IntPtr(-1));
-                }
+                byte dummy = 0;
+                return NativeMethods.sqlite3_bind_blob(stm, paramIndex, &dummy, 0, new IntPtr(-1));
             }
             else
             {
@@ -1810,6 +1836,18 @@ namespace SQLitePCL
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe IntPtr sqlite3_aggregate_context(IntPtr context, int nBytes);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_key(sqlite3 db, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_key_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_rekey(sqlite3 db, byte* key, int keylen);
+
+		[DllImport(SQLITE_DLL, ExactSpelling=true, CallingConvention = CALLING_CONVENTION)]
+		public static extern unsafe int sqlite3_rekey_v2(sqlite3 db, byte* dbname, byte* key, int keylen);
 
 		[DllImport(SQLITE_DLL, ExactSpelling=true, EntryPoint = "sqlite3_config", CallingConvention = CALLING_CONVENTION)]
 		public static extern unsafe int sqlite3_config_none(int op);
