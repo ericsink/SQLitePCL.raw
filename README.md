@@ -35,10 +35,11 @@ with technical support questions, I may not respond.
 
 # SQLite Builds
 
-The SQLitePCLRaw.lib.e_sqlite3 package is published publicly on nuget.org 
-as part of this project.  It contains builds of the native SQLite code library
-for server platforms and with the most commonly used features enabled.
-I update this package from time to time.
+For use with SQLitePCLRaw, the nuget package `SourceGear.sqlite3` contains 
+builds of the native SQLite code library for most platforms, and with the 
+most commonly used features enabled.  The version of this package available
+publicly on nuget.org is updated periodically but may not always contain 
+the latest version of SQLite.
 
 SourceGear operates a paid service at nuget.sourcegear.com
 which provides various native SQLite builds which are
@@ -163,7 +164,7 @@ recent builds of Windows.
 instead of DllImport attributes.  This can be used to support
 advanced use cases.
 
-# SQLitePCLRaw.lib.e\_sqlite3
+# SourceGear.sqlite3
 
 A provider is the bridge between the core assembly and the native
 code, but the provider does not contain the native code itself.
@@ -176,7 +177,7 @@ But in cases where the app is going to be bundling the native
 code library, those bits need to make it into your build output
 somehow.
 
-For the convenience of developers using SQLitePCLRaw, the `SQLitePCLRaw.lib.e_sqlite3` 
+For the convenience of developers using SQLitePCLRaw, the `SourceGear.sqlite3` 
 package contains builds of the native SQLite code for several platforms.
 The build configuration is the same for every platform, and includes
 full-text-search.  
@@ -191,7 +192,7 @@ packages:
 
 And in many cases, you also need a package containing the native SQLite library itself.  For example:
 
-- SQLitePCLRaw.lib.e_sqlite3
+- SourceGear.sqlite3
 
 Then, in your platform-specific code, you need to call:
 
@@ -220,13 +221,13 @@ do that, because there are multiple possibilities, and it wants to defer
 the choice until later.
 
 If you want to use a plain SQLite library with the most commonly used
-features, just add the "SQLitePCLRaw.lib.e_sqlite3" package.
+features, just add the "SourceGear.sqlite3" package.
 
 For backward compatibility with previous releases, the SQLitePCLRaw.bundle_e_sqlite3
 package continues to be available, but all it does is bring in two dependencies:
 
 - SQLitePCLRaw.config.e_sqlite3
-- SQLitePCLRaw.lib.e_sqlite
+- SourceGear.sqlite3
 
 ## How do I build SQLitePCLRaw?
 
