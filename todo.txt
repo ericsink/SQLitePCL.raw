@@ -1,4 +1,8 @@
 
+NOTE:  this file hasn't been updated in a long time
+
+--
+
 cleanup src/tests+t2, include sqlcipher as well
 
 lib package for xamarin mac
