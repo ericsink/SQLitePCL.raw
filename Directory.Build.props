@@ -4,9 +4,9 @@
     <Copyright>Copyright 2014-2025 SourceGear, LLC</Copyright>
     <Company>SourceGear</Company>
     <Authors>Eric Sink</Authors>
-    <Version>3.0.1</Version>
-    <AssemblyVersion>3.0.1.2773</AssemblyVersion>
-    <FileVersion>3.0.1.2773</FileVersion>
+    <Version>3.0.2</Version>
+    <AssemblyVersion>3.0.2.2801</AssemblyVersion>
+    <FileVersion>3.0.2.2801</FileVersion>
     <Description>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite</Description>
     <ProviderLangVersion>10.0</ProviderLangVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -18,8 +18,8 @@
     <PackageOutputPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'nupkgs'))</PackageOutputPath>
     <src_path>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))</src_path>
     <pkg_version_for_testing>$(Version)</pkg_version_for_testing>
-    <lib_e_sqlite3_package_reference_version>3.50.3</lib_e_sqlite3_package_reference_version>
-    <see_pkg_version_for_testing>3.50.3.1</see_pkg_version_for_testing>
+    <lib_e_sqlite3_package_reference_version>3.50.4.2</lib_e_sqlite3_package_reference_version>
+    <see_pkg_version_for_testing>3.50.4.2</see_pkg_version_for_testing>
     <depversion_xunit>2.6.3</depversion_xunit>
     <depversion_xunit_runner_visualstudio>2.5.5</depversion_xunit_runner_visualstudio>
     <depversion_microsoft_net_test_sdk>17.8.0</depversion_microsoft_net_test_sdk>
