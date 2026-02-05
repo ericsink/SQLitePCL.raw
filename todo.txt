@@ -106,8 +106,6 @@ investigate GC.AddMemoryPressure()
 
 investigate new utf8 things in System.Memory pkg
 
-multi-target to avoid dep on System.Memory for netcore2.1+ ?
-
 need some tests for sqlite-ish case insensitivity of
 collation names
 
