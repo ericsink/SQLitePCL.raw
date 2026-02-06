@@ -26,6 +26,7 @@ let main argv =
     for s in Directory.GetFiles(dir_nupkgs, "*.nupkg") do
         File.Delete(s)
 
+    // All the regular packages
     let pack_dirs = [
         "core"
         "ugly" 
@@ -36,6 +37,23 @@ let main argv =
         "provider.e_sqlite3" 
         "provider.sqlite3" 
         "provider.sqlcipher" 
+    ]
+    for s in pack_dirs do
+        let dir_name = sprintf "SQLitePCLRaw.%s" s
+        exec "dotnet" "pack -c Release" (Path.Combine(top, "src", dir_name))
+
+    // These two "batteries" assemblies are built but not packed in their own packages
+    let build_dirs = [
+        "batteries.e_sqlite3.internal"
+        "batteries.e_sqlite3.dllimport"
+    ]
+    for s in build_dirs do
+        let dir_name = sprintf "SQLitePCLRaw.%s" s
+        exec "dotnet" "build -c Release" (Path.Combine(top, "src", dir_name))
+
+    // These two packages are built using a dummy csproj and a separate nuspec,
+    // and the config package contains the batteries assemblies built above.
+    let pack_dirs = [
         "config.e_sqlite3"
         "bundle_e_sqlite3"
     ]

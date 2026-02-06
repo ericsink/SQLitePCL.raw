@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SQLitePCLRaw.config.e_sqlite3</id>
+    <version>$version$</version>
+    <authors>Eric Sink</authors>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <readme>README.md</readme>
+    <description>This package sets the configuration for using e_sqlite3 but does not bring in that native library itself.  It's like bundle_e_sqlite3, except it's hollow.</description>
+    <copyright>Copyright 2014-2026 SourceGear, LLC</copyright>
+    <tags>sqlite</tags>
+    <repository type="git" url="https://github.com/ericsink/SQLitePCL.raw" commit="96043b8cff323f21919df86a431c136655d81b4a" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.1">
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-ios26.0">
+        <dependency id="SQLitePCLRaw.provider.internal" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-maccatalyst26.0">
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net10.0-tvos26.0">
+        <dependency id="SQLitePCLRaw.provider.internal" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="SQLitePCLRaw.provider.e_sqlite3" version="$version$" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.internal/bin/Release/net8.0/SQLitePCLRaw.batteries_v2.dll" target="lib/net10.0-ios26.0/SQLitePCLRaw.batteries_v2.dll" />
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.internal/bin/Release/net8.0/SQLitePCLRaw.batteries_v2.dll" target="lib/net10.0-tvos26.0/SQLitePCLRaw.batteries_v2.dll" />
+
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.dllimport/bin/Release/netstandard2.0/SQLitePCLRaw.batteries_v2.dll" target="lib/net471/SQLitePCLRaw.batteries_v2.dll" />
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.dllimport/bin/Release/netstandard2.0/SQLitePCLRaw.batteries_v2.dll" target="lib/net8.0/SQLitePCLRaw.batteries_v2.dll" />
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.dllimport/bin/Release/netstandard2.0/SQLitePCLRaw.batteries_v2.dll" target="lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll" />
+    <file src="../SQLitePCLRaw.batteries.e_sqlite3.dllimport/bin/Release/netstandard2.0/SQLitePCLRaw.batteries_v2.dll" target="lib/net10.0-maccatalyst26.0/SQLitePCLRaw.batteries_v2.dll" />
+    <file src="../common/README.md" target="README.md" />
+  </files>
+</package>

@@ -1,30 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- This is just a dummy csproj for dotnet pack -->
+
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(tfm_net);$(tfm_ios);$(tfm_maccatalyst);$(tfm_framework);$(tfm_tvos)</TargetFrameworks>
-    <SignAssembly>true</SignAssembly>
-	<PackageId>SQLitePCLRaw.config.e_sqlite3</PackageId>
-	<AssemblyName>SQLitePCLRaw.batteries_v2</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\sn\SQLitePCLRaw.batteries_v2.snk</AssemblyOriginatorKeyFile>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <PackageDescription>This package sets the configuration for using e_sqlite3 but does not bring in that native library itself.  It's like bundle_e_sqlite3, except it's hollow.</PackageDescription>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoBuild>true</NoBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <NuspecFile>pack.nuspec</NuspecFile>
+    <NuspecProperties>version=$(Version)</NuspecProperties>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\..\src\common\batteries_v2.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\common\README.md" Pack="True" PackagePath="README.md" />
-  </ItemGroup>
-
-  <Import Condition=" '$(TargetFramework)' == 'netstandard2.0' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_net)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_ios)' " Project="..\msbuild_bundle_fragments\e_sqlite3_internal.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_maccatalyst)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_framework)' " Project="..\msbuild_bundle_fragments\e_sqlite3_dllimport.xml" />
-  <Import Condition=" '$(TargetFramework)' == '$(tfm_tvos)' " Project="..\msbuild_bundle_fragments\e_sqlite3_internal.xml" />
 
 </Project>
 
