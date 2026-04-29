@@ -13,9 +13,12 @@ My name is Eric Sink.  I am:
 - the founder of SourceGear, a small software company in Illinois
 - part of the SQLite core team
 
-You can email me at either eric@sourcegear.com or eric@sqlite.org.
-Please contact me if you are interested in any of the following
-related services available from SourceGear:
+SourceGear offers various SQLite-related products and services,
+described further at:
+
+https://sqlite.sourcegear.com/
+
+including:
 
 ## Technical Support
 
@@ -24,10 +27,11 @@ SourceGear offers technical support agreements at various price levels.
 ## SQLite builds
 
 SourceGear operates a paid service at nuget.sourcegear.com
-which provides various native SQLite builds which are
+that provides various native SQLite builds which are
 updated immediately after each SQLite release.  These include regular
-SQLite builds, or various options with encryption support.  We can also provide
-custom configurations.
+SQLite builds, or various options with encryption support.  Signed builds
+and supply chain information like SBOMs are also available.  We can also 
+provide custom configurations.
 
 ## Encryption support
 
