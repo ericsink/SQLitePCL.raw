@@ -433,6 +433,64 @@ namespace SQLitePCL.Tests
             GC.KeepAlive(rolling);
         }
 
+        // Audit #1: the string overloads of prepare_v2/v3 used to throw
+        // ArgumentOutOfRangeException on the same MISUSE path because they
+        // unconditionally sliced the (now empty) tail span.  These tests
+        // assert they return rc cleanly with an empty tail string instead.
+        [Fact]
+        public void test_prepare_v2_string_tolerates_uninitialised_pzTail()
+        {
+            var rolling = new byte[256][];
+            var rnd = new Random(42);
+            for (var i = 0; i < 512; i++)
+            {
+                rolling[i % rolling.Length] = new byte[rnd.Next(1024, 128 * 1024)];
+
+                var db = ugly.open(":memory:");
+                db.manual_close_v2();
+                try
+                {
+                    int rc = raw.sqlite3_prepare_v2(db, "SELECT 1;", out var stmt, out string tail);
+
+                    Assert.Equal(raw.SQLITE_MISUSE, rc);
+                    Assert.Equal("", tail);
+                    stmt?.Dispose();
+                }
+                finally
+                {
+                    db.Dispose();
+                }
+            }
+            GC.KeepAlive(rolling);
+        }
+
+        [Fact]
+        public void test_prepare_v3_string_tolerates_uninitialised_pzTail()
+        {
+            var rolling = new byte[256][];
+            var rnd = new Random(42);
+            for (var i = 0; i < 512; i++)
+            {
+                rolling[i % rolling.Length] = new byte[rnd.Next(1024, 128 * 1024)];
+
+                var db = ugly.open(":memory:");
+                db.manual_close_v2();
+                try
+                {
+                    int rc = raw.sqlite3_prepare_v3(db, "SELECT 1;", 0, out var stmt, out string tail);
+
+                    Assert.Equal(raw.SQLITE_MISUSE, rc);
+                    Assert.Equal("", tail);
+                    stmt?.Dispose();
+                }
+                finally
+                {
+                    db.Dispose();
+                }
+            }
+            GC.KeepAlive(rolling);
+        }
+
         [Fact]
         public void test_bind_parameter_index()
         {
