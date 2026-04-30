@@ -89,7 +89,7 @@ let main argv =
 
     let fake_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_see"
+        if Environment.GetEnvironmentVariable("SG_NUGET_TOKEN") |> isNull |> not then yield "e_see"
         //yield "e_sqlite3mc"
         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         ]

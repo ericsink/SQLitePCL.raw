@@ -304,7 +304,6 @@ namespace SQLitePCL
             fixed (byte* p_sql = sql)
             {
                 var rc = NativeMethods.sqlite3_prepare_v3(db, p_sql, sql.Length, flags, out stm, out var p_tail);
-                // Follow-up to 854eeb0: funcptrs_win's v3 span variant was missed in that commit — same p_tail bounds guard as the other three provider variants.
                 if (p_tail != null && p_tail >= p_sql && p_tail <= p_sql + sql.Length)
                 {
                     var len_consumed = (int) (p_tail - p_sql);
