@@ -387,6 +387,8 @@ namespace SQLitePCL.Tests
                     Assert.Same(instances[0], instances[i]);
                 }
             }
+        }
+
         // Regression test for the ArgumentOutOfRangeException variant of the
         // long-standing prepare-race bug class (see issues #108, #321, #430,
         // #479, #588). The provider's span overload of sqlite3_prepare_v2

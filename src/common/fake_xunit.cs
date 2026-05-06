@@ -64,6 +64,11 @@ namespace Xunit
             count++;
             if (actual.Contains(sub)) throw new Exception($"expected that {actual} not contain {sub}");
         }
+        public static void Same(object expected, object actual)
+        {
+            count++;
+            if (!Object.ReferenceEquals(expected, actual)) throw new Exception($"expected ReferenceEquals {expected} but actual {actual}");
+        }
         public static void Equal<T>(T expected, T actual)
             where T : class
         {
