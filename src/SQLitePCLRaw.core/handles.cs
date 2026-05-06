@@ -28,6 +28,7 @@ namespace SQLitePCL
     using System;
     using System.Collections.Concurrent;
     using System.Runtime.InteropServices;
+    using System.Threading;
 
     public class sqlite3_backup : SafeHandle
     {
@@ -346,24 +347,29 @@ namespace SQLitePCL
         public T GetOrCreateExtra<T>(Func<T> f)
             where T : class, IDisposable
         {
-            if (extra != null)
+            // Audit #7: atomic check-and-set so two threads racing the first hook registration cannot both create T and silently drop one container's callbacks/GCHandles.
+            var existing = Volatile.Read(ref extra);
+            if (existing != null)
             {
-                return (T)extra;
+                return (T)existing;
             }
-            else
+            var candidate = f();
+            var previous = Interlocked.CompareExchange(ref extra, candidate, null);
+            if (previous != null)
             {
-                var q = f();
-                extra = q;
-                return q;
+                candidate.Dispose();
+                return (T)previous;
             }
+            return candidate;
         }
 
         private void dispose_extra()
         {
-            if (extra != null)
+            // Audit #8: pair Interlocked.Exchange with GetOrCreateExtra's CAS so disposal and creation don't race on a half-disposed object.
+            var snapshot = Interlocked.Exchange(ref extra, null);
+            if (snapshot != null)
             {
-                extra.Dispose();
-                extra = null;
+                snapshot.Dispose();
             }
         }
 

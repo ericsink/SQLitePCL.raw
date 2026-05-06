@@ -349,6 +349,44 @@ namespace SQLitePCL.Tests
             }
         }
 
+        // Audit #7: GetOrCreateExtra used to allow two threads racing the first
+        // call to both create T, with one quietly winning extra and the loser's
+        // instance silently leaking.  The patched CAS path guarantees a single
+        // shared instance is returned to all callers.
+        sealed class extra_marker : IDisposable
+        {
+            public bool disposed;
+            public void Dispose() { disposed = true; }
+        }
+
+        [Fact]
+        public void test_get_or_create_extra_returns_same_instance_under_contention()
+        {
+            using (var db = ugly.open(":memory:"))
+            {
+                var n_threads = Math.Max(4, Environment.ProcessorCount);
+                var instances = new extra_marker[n_threads];
+                var threads = new System.Threading.Thread[n_threads];
+                var start = new System.Threading.ManualResetEventSlim();
+                for (var i = 0; i < n_threads; i++)
+                {
+                    var idx = i;
+                    threads[i] = new System.Threading.Thread(() =>
+                    {
+                        start.Wait();
+                        instances[idx] = db.GetOrCreateExtra(() => new extra_marker());
+                    });
+                    threads[i].Start();
+                }
+                start.Set();
+                foreach (var t in threads) t.Join();
+
+                Assert.NotNull(instances[0]);
+                for (var i = 1; i < n_threads; i++)
+                {
+                    Assert.Same(instances[0], instances[i]);
+                }
+            }
         // Regression test for the ArgumentOutOfRangeException variant of the
         // long-standing prepare-race bug class (see issues #108, #321, #430,
         // #479, #588). The provider's span overload of sqlite3_prepare_v2
