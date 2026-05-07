@@ -7,7 +7,7 @@
     <NoBuild>true</NoBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <NuspecFile>pack.nuspec</NuspecFile>
-    <NuspecProperties>version=$(Version)</NuspecProperties>
+    <NuspecProperties>version=$(Version);lib_e_sqlite3_package_reference_version=$(lib_e_sqlite3_package_reference_version)</NuspecProperties>
   </PropertyGroup>
 
 </Project>

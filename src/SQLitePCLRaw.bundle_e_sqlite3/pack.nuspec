@@ -14,7 +14,7 @@
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="SQLitePCLRaw.config.e_sqlite3" version="$version$" exclude="Build,Analyzers" />
-        <dependency id="SourceGear.sqlite3" version="3.50.4.2" exclude="Build,Analyzers" />
+        <dependency id="SourceGear.sqlite3" version="$lib_e_sqlite3_package_reference_version$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
