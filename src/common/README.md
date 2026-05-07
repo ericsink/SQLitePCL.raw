@@ -20,14 +20,10 @@ https://sqlite.sourcegear.com/
 
 including:
 
-## Technical Support
-
-SourceGear offers technical support agreements at various price levels.
-
 ## SQLite builds
 
 SourceGear operates a paid service at nuget.sourcegear.com
-that provides various native SQLite builds which are
+that provides native SQLite builds which are
 updated immediately after each SQLite release.  These include regular
 SQLite builds, or various options with encryption support.  Signed builds
 and supply chain information like SBOMs are also available.  We can also 
@@ -43,6 +39,10 @@ https://sqlite.org/com/see.html
 
 The SEE is not open source -- a paid license is required.  SourceGear's SQLite build service
 provides SEE builds in the form of nuget packages.
+
+## Technical Support
+
+SourceGear offers technical support agreements at various price levels.
 
 ## Custom software development
 
