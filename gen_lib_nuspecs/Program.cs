@@ -392,13 +392,13 @@ public static class gen
     {
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "x86", "win-x86", f);
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "x64", "win-x64", f);
-        write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm", "win-arm", f);
+        //write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm", "win-arm", f);
         write_nuspec_file_entry_native_win(lib, win_toolset, "plain", "arm64", "win-arm64", f);
 
-        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
-        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
-        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
-        write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
+        //write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm64", "win10-arm64", f);
+        //write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "arm", "win10-arm", f);
+        //write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x64", "win10-x64", f);
+        //write_nuspec_file_entry_native_uwp(lib, win_toolset, "appcontainer", "x86", "win10-x86", f);
 
         write_nuspec_file_entry_native_mac(lib, "x86_64", "osx-x64", f);
         write_nuspec_file_entry_native_mac(lib, "arm64", "osx-arm64", f);
@@ -475,7 +475,7 @@ public static class gen
 
             f.WriteStartElement("files");
 
-            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v142", f);
+            write_nuspec_file_entries_from_cb(WhichLib.E_SQLITE3, "v143", f);
 
 #if not
             {
@@ -946,8 +946,6 @@ public static class gen
         var dir_src = Path.Combine(dir_root, "src");
 
         gen_nuspec_lib_e_sqlite3(dir_src);
-        gen_nuspec_lib_e_sqlcipher(dir_src);
-        gen_nuspec_lib_e_sqlite3mc(dir_src);
     }
 }
 

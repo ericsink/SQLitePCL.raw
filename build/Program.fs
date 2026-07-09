@@ -46,30 +46,13 @@ let main argv =
         "provider.dynamic_cdecl" 
         "provider.dynamic_stdcall" 
         "provider.internal" 
-        "provider.winsqlite3" 
         "provider.e_sqlite3" 
-        "provider.e_sqlcipher" 
-        "provider.e_sqlite3mc"
         "provider.sqlite3" 
-        "provider.sqlcipher" 
-        "provider.sqlite3mc"
         "lib.e_sqlite3.android"
         "lib.e_sqlite3.ios"
         "lib.e_sqlite3.tvos"
-        "lib.e_sqlcipher.android"
-        "lib.e_sqlcipher.ios"
-        "lib.e_sqlite3mc.android"
-        "lib.e_sqlite3mc.ios"
         "lib.e_sqlite3"
-        "lib.e_sqlcipher"
-        "lib.e_sqlite3mc"
-        "bundle_green"
         "bundle_e_sqlite3"
-        "bundle_e_sqlcipher"
-        "bundle_e_sqlite3mc"
-        "bundle_zetetic"
-        "bundle_winsqlite3"
-        "bundle_sqlite3"
     ]
     for s in pack_dirs do
         let dir_name = sprintf "SQLitePCLRaw.%s" s
@@ -92,24 +75,14 @@ let main argv =
 
     let real_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlcipher"
-        yield "e_sqlite3mc"
-        // TODO do bundle_sqlite3 real_xunit here?
-        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
         ]
 
     let fake_xunit_tfms = [
-        yield "netcoreapp3.1"
         yield "net6.0"
-        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "net461"
         ]
 
     let fake_xunit_dirs = [
         yield "e_sqlite3"
-        yield "e_sqlcipher"
-        yield "e_sqlite3mc"
-        if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then yield "winsqlite3"
-        yield "sqlite3"
         ]
 
     for tfm in fake_xunit_tfms do

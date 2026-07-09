@@ -26,7 +26,7 @@ public static class gen
 
     public const int MAJOR_VERSION = 2;
     public const int MINOR_VERSION = 1;
-    public const int PATCH_VERSION = 11;
+    public const int PATCH_VERSION = 12;
 
     // a version string with a -pre-timestamp in it
     public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
@@ -51,8 +51,8 @@ public static class gen
         );
 
     // keep one of the following 2:
-    //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
-    public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
+    public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE_TIMESTAMP;
+    //public static string NUSPEC_VERSION = NUSPEC_VERSION_RELEASE;
 
     // or maaaaybe this one, but probably not:
     //public static string NUSPEC_VERSION = NUSPEC_VERSION_PRE;
@@ -102,7 +102,7 @@ public static class gen
             f.WriteElementString("RepositoryType", "git");
             f.WriteElementString("PackageOutputPath", string.Format("$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '{0}'))", nupkgs_dir_name));
 
-            f.WriteElementString("cb_bin_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..', 'cb', 'bld', 'bin'))");
+            f.WriteElementString("cb_bin_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '..', 'cb2', 'bld', 'bin'))");
             f.WriteElementString("src_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))");
             f.WriteElementString("pkg_version_for_testing", "$(Version)");
             f.WriteElementString("depversion_xunit", "2.4.1");
