@@ -26,7 +26,7 @@ public static class gen
 
     public const int MAJOR_VERSION = 3;
     public const int MINOR_VERSION = 0;
-    public const int PATCH_VERSION = 4;
+    public const int PATCH_VERSION = 5;
 
     // a version string with a -pre-timestamp in it
     public static string NUSPEC_VERSION_PRE_TIMESTAMP = string.Format("{0}.{1}.{2}-pre{3}",
@@ -104,8 +104,8 @@ public static class gen
 
             f.WriteElementString("src_path", "$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'src'))");
             f.WriteElementString("pkg_version_for_testing", "$(Version)");
-            f.WriteElementString("lib_e_sqlite3_package_reference_version", "3.53.3");
-            f.WriteElementString("see_pkg_version_for_testing", "3.53.3");
+            f.WriteElementString("lib_e_sqlite3_package_reference_version", "3.53.4");
+            f.WriteElementString("see_pkg_version_for_testing", "3.53.4");
             f.WriteElementString("depversion_xunit", "2.6.3");
             f.WriteElementString("depversion_xunit_runner_visualstudio", "2.5.5");
             f.WriteElementString("depversion_microsoft_net_test_sdk", "17.8.0");
