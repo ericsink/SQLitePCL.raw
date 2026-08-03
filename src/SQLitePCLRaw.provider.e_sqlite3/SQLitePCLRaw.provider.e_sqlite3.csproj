@@ -10,8 +10,10 @@
     <PackageDescription>SQLitePCLRaw is a Portable Class Library (PCL) for low-level (raw) access to SQLite.  Packages named 'SQLitePCLRaw.provider.*' (like this one) are 'plugins' that allow SQLitePCLRaw.core to access the native SQLite library.  This provider does DllImport of 'e_sqlite3', the SQLite builds provided with SQLitePCLRaw.</PackageDescription>
   </PropertyGroup>
 
+
 <ItemGroup>
 	<ProjectReference Include="..\SQLitePCLRaw.core\SQLitePCLRaw.core.csproj" />
+	<None Include="build\SQLitePCLRaw.provider.e_sqlite3.targets" Pack="true" PackagePath="build\" />
 </ItemGroup>
 
 <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

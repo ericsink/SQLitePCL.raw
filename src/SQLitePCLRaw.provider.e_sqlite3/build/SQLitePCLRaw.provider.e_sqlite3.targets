@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Suppress WASM0001 for browser-wasm consumers.
+
+    The native sqlite3_config() and sqlite3_db_config() functions use C varargs,
+    which WASM does not support. Ignore the warning.
+  -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'browser-wasm' or '$(UsingBrowserRuntimeWorkload)' == 'true'">
+    <NoWarn>$(NoWarn);WASM0001</NoWarn>
+  </PropertyGroup>
+</Project>
