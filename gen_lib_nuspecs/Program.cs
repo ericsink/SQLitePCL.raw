@@ -789,7 +789,6 @@ public static class gen
             f.WriteAttributeString("Condition", " '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Windows_NT' ");
             write_nuget_target_item("win-x86", lib, f);
             write_nuget_target_item("win-x64", lib, f);
-            write_nuget_target_item("win-arm", lib, f);
             f.WriteEndElement(); // ItemGroup
 
             f.WriteStartElement("ItemGroup");
